@@ -3,6 +3,12 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  0.9.2
+
+   Bugs fixed:
+
+     o Encoding support for CodeSource
+
   0.9.1
 
     Features added:

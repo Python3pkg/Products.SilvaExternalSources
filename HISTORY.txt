@@ -4,5 +4,9 @@ See also LICENSE.txt
 SilvaExternalSources changes
 
   0.7
+
+    Lots of additions and bugfixes, including new CVSSource object.
+ 
+  0.2 
  
     Initial public release.

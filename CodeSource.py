@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.14 $
+# $Revision: 1.15 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -12,6 +12,7 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 # Silva
 from Products.Silva.SilvaPermissions import ViewManagementScreens, AccessContentsInformation
 from Products.Silva.helpers import add_and_edit
+from Products.Silva.i18n import translate as _
 
 icon="www/codesource.png"
 
@@ -22,7 +23,10 @@ class CodeSource(ExternalSource, Folder):
     meta_type = "Silva Code Source"
 
     security = ClassSecurityInfo()
-    
+
+    # UTF as UI is in UTF-8
+    _data_encoding = 'UTF-8'
+        
     # ZMI Tabs
     manage_options = (
         {'label':'Edit', 'action':'editCodeSource'},
@@ -51,9 +55,11 @@ class CodeSource(ExternalSource, Folder):
             script = self[self._script_id]
         except KeyError:
             return None
-
-        return script(**kw)
-
+        result = script(**kw)
+        if type(result) is unicode:
+            return result
+        return unicode(result, self.data_encoding())
+    
     # MANAGERS
 
     security.declareProtected(ViewManagementScreens, 'manage_editCodeSource')

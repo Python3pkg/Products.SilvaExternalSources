@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.9 $
+# $Revision: 1.10 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -65,31 +65,42 @@ class SQLSource(ExternalSource, Folder):
     def to_html(self, REQUEST, **kw):
         """ render HTML for SQL source
         """
-        q = {}
-        q.update(REQUEST)
-        q.update(kw)
-
-        brains = self._get_data(q)        
+        brains = self._get_data(kw)
+        layout = self[self._layout_id]
+        # XXX: we're materializing all data in the resultset here which
+        # hurts performance for large sets. Brains 'normally' lazily
+        # retrieve the data, but then we need to decode to unicode in
+        # the wrong - i.e. in the ZPT layer - layer...
+        #
+        # We need a better way.
+        #
+        data = [self._decode_dict_helper(d) for d in brains.dictionaries()]
         # We don't need to pass in the request explicitly (how would I do
         # that anyway) since we're calling the layout (e.g. a ZPT or Python
         # Script) which can get to the request itself.        
-        return self.layout(
-            table=self._unicode_helper(
-                brains.dictionaries()), parameters=kw)
+        return layout(table=data, parameters=kw)
 
     def _get_data(self, args):
         if not self._sql_method:
             self._set_sql_method()
         elif self._v_cached_parameters != self.form().get_field_ids():
             self._set_sql_method()
+        args = self._encode_dict_helper(args)
         return self._sql_method(REQUEST=args)
 
-    def _unicode_helper(self, dictionaries):
-        for d in dictionaries:
-            for key, value in d.items():
-                if type(value) is type(''):
-                    d[key] = unicode(value, self._data_encoding, 'replace')
-        return dictionaries
+    def _decode_dict_helper(self, dictionary):
+        for key, value in dictionary.items():
+            if type(value) is type(''):
+                dictionary[key] = unicode(
+                    value, self._data_encoding, 'replace')
+        return dictionary
+    
+    def _encode_dict_helper(self, dictionary):
+        for key, value in dictionary.items():
+            if type(value) is type(u''):
+                dictionary[key] =  value.encode(
+                    self._data_encoding, 'replace')
+        return dictionary
 
     # MODIFIERS
 

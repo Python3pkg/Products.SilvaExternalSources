@@ -12,17 +12,6 @@ except FormValidationError, e:
 
 model.sec_update_last_author_info()
 
-if result.has_key('csv_dataencoding'):
-    de = result['csv_dataencoding'].strip()
-    try:
-        unicode('abcd', de, 'replace')
-    except LookupError:
-        # unknown encoding, return error message
-        msg_type = 'error'
-        msg = "Unknown encoding %s, not changed!. " % de
-        return view.tab_edit(message_type=msg_type, message=msg)
-    model.set_data_encoding(de)
-
 if result.has_key('csv_description'):
     model.set_description(result['csv_description'])
 

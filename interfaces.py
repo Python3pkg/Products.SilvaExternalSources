@@ -62,3 +62,8 @@ class IExternalSource(Interface):
         what data is will render in the document.
         """
         pass
+
+    def get_title(self):
+        """Returns the title of this instance.
+        """
+        pass

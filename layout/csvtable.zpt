@@ -31,7 +31,7 @@
     >
     <caption 
       tal:condition="parameters/show_caption | string:true"
-      tal:content="here/title"
+      tal:content="python: here.get_title()"
     />
     <thead tal:condition="headings|nothing">
       <tr>

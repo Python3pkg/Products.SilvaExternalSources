@@ -30,4 +30,4 @@ def initialize(context):
         )
 
     registerDirectory('views', globals())
-    registerTypeForMetadata(getattr(CSVSource.CSVSource, 'meta_type'))
+    registerTypeForMetadata(CSVSource.CSVSource.meta_type)

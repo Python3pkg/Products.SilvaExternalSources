@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.3 $
+# $Revision: 1.4 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -53,7 +53,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
     _has_headings = 1
 
     def __init__(self, id, title, file):
-        CSVSource.inheritedAttribute('__init__')(self, id, title)
+        CSVSource.inheritedAttribute('__init__')(self, id, None)
         self._raw_data = None
         self._data = []
         self._has_headings = CSVSource._has_headings
@@ -68,8 +68,14 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
     def has_headings (self):
         return self._has_headings
 
-    def raw_data (self):
-        return self._raw_data
+    def raw_data (self, encoding=None):
+        if encoding is None:
+            return self._raw_data
+        if type(self._raw_data) != type(u''):
+            data = unicode(self._raw_data, self._data_encoding, 'replace')
+        else:
+            data = self._raw_data
+        return data.encode(encoding)
 
     def to_html(self, REQUEST, **kw):
         """ render HTML for CSV source
@@ -82,6 +88,24 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         else:
             headings = None
         return layout(table=rows, headings=headings, parameters=kw)
+
+    def get_title (self):
+        return SilvaObject.get_title(self)
+
+    def description (self):
+        """ Return desc from meta-data system"""
+        ms = self.service_metadata
+        return ms.getMetadataValue(self, 'silva-extra', 'content_description')
+
+    def set_description (self, desc ):
+        t = type(desc)
+        if t == type(u''):
+            desc = desc.encode('utf-8')
+        ms = self.service_metadata
+        binding = ms.getMetadata(self)
+        d = {'content_description' : desc}
+        binding.setValues('silva-extra', d)
+        pass
 
     # MODIFIERS
 
@@ -118,6 +142,10 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         self._has_headings = (not not headings)
         return
 
+    def set_title (self, title):
+        SilvaObject.set_title(self, title)
+        return
+
     # MANAGERS
 
     security.declareProtected(ViewManagementScreens, 'manage_editCSVSource')
@@ -141,9 +169,17 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
                 self.update_data(self._raw_data)
             msg += 'Data encoding changed. '
         if title and title != self.title:
+            # XXX
+            # ZMI is assumed to be in latin1
+            if type(title) == type(''):
+                title = unicode(title, 'latin1', 'replace')
             self.set_title(title)
             msg += 'Title changed. '
         if description and description != self._description:
+            # XXX
+            # ZMI is assumed to be in latin1
+            if type(description) == type(''):
+                description = unicode(description, 'latin1', 'replace')
             self.set_description(description)
             msg += 'Description changed. '
         if not (not not cacheable) is (not not self._is_cacheable):
@@ -201,6 +237,10 @@ def manage_addCSVSource(context, id, title, file=None, REQUEST=None):
     reset_table_layout(cs)
     frm = ZMIForm('form', 'Empty Form')
     cs.set_form(frm)
+    # XXX
+    # ZMI is assumed to be in latin1
+    if type(title) == type(''):
+        title = unicode(title, 'latin1', 'replace')
     cs.set_title(title)
     add_and_edit(context, id, REQUEST, screen='editCSVSource')
     return ''

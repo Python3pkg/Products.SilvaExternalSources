@@ -3,6 +3,10 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  0.3
+ 
+    ...
+
   0.2
  
     Initial public release.

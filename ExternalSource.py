@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.20 $
+# $Revision: 1.21 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -198,8 +198,9 @@ class ExternalSource(Acquisition.Implicit):
         purposes of testing the ExternalSource.
         """
         form = self.form()
-
         if REQUEST is not None and form:
+            if not hasattr(REQUEST, 'model'):
+                REQUEST.model = self
             try:
                 kw = form.validate_all(REQUEST)
             except (FormValidationError, ValidationError), err:

@@ -21,8 +21,7 @@
           &laquo;
           Previous
           <span tal:content="p/length">n</span> 
-          items
-        </a>
+          items</a>
       </span>
 
 
@@ -107,9 +106,7 @@
           tal:attributes="href python: '%s?%s' % (url , mq( request.form, {batch.b_start_str:n.first} ))">
           Next
           <span tal:content="n/length">n</span> 
-          items
-          &raquo;
-        </a>
+          items &raquo;</a>
       </span>
  
     </div>

@@ -3,10 +3,10 @@ See also LICENSE.txt
 
 Meta::
 
-  Valid for:  SilvaExternalSources 0.8
+  Valid for:  SilvaExternalSources 0.9
   Author:     Jan-Wijbrand Kolman
   Email:      jw at infrae.com
-  CVS:        $Revision: 1.9 $
+  CVS:        $Revision: 1.10 $
 
 SilvaExternalSources:
 

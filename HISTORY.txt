@@ -3,6 +3,13 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  0.9
+
+    Features added:
+
+      o XML exporter for external source-based data in
+        documents. Needed to support Silva's XSLT rendering.
+
   0.8
 
     Bugs fixed:

@@ -3,20 +3,10 @@ See also LICENSE.txt
 
 Meta::
 
-  Valid for:  SilvaExternalSources 0.3
+  Valid for:  SilvaExternalSources 0.7
   Author:     Jan-Wijbrand Kolman
   Email:      jw at infrae.com
-  CVS:        $Revision: 1.6 $
-
-  TODO:
-
-    o Make buttons for reset layout and reset parameters form in SQL Source
-
-    o Unit tests
-
-    o Define to_xml() implementation and use
-
-    o Check SQLSource for possible SQL injection bugs
+  CVS:        $Revision: 1.7 $
 
   SilvaExternalSources:
 
@@ -26,7 +16,7 @@ Meta::
     executing a Python script.
 
     Since an external source can potentially be resource intensive or a
-    expose a vunerability, only users with ZMI access (usualy site
+    expose a vulnerability, only users with ZMI access (usualy site
     managers) can create external sources. It is their responsibilty to
     make sure no vunerabilities are exposed to the Authors.
 
@@ -38,16 +28,22 @@ Meta::
     By implementing the IExternalSource interface, one can create new types
     of external sources. See 'interfaces.py' for more details on this.
 
-    The SilvaExternalSources extension currently implements two external
-    sources: 'Silva Code Source' and 'Silva SQL Source':
+    The SilvaExternalSources extension currently implements three
+    external sources: 'Silva Code Source', 'Silva SQL Source' and
+    'Silva CSV Source'.  The latter is special in that it also shows
+    up as an asset in Silva. This is possible because no code is
+    contained in a CSVSource.
 
     See also documentation in the doc subdirectory of this Product.
 
-  KNOW ISSUES:
+  KNOWN ISSUES:
 
     o For the CSVSource object the description field from the metadata
     system is used. In cases where this desciption field is not filled in,
     it might acquire its value from the source's container object.
 
-    o Something on that not all Formulator widgets can succesfully be used
-    for parameters yet.
+    o Not all Formulator widgets can succesfully be used for
+    parameters yet, in particular check boxes and multi selection
+    fields. We are working on adding facilities to Formulator to
+    improve this.
+

@@ -10,7 +10,7 @@
     table options/table | nothing;
 
     Batch nocall:modules/Products/Silva/batch/Batch;
-    b_size parameters/csvbatchsize | string: 10;
+    b_size parameters/csvbatchsize;
     b_start python: 0;
     b_start request/b_start | b_start;
     
@@ -18,7 +18,7 @@
 
     headings parameters/headings | nothing;
 
-    table_class parameters/csvtableclass;
+    table_class parameters/csvtableclass | python:'';
     even_style parameters/even_row_style | nothing;
     odd_style parameters/odd_row_style | nothing;
     "
@@ -32,6 +32,7 @@
     <caption 
       tal:condition="parameters/show_caption | nothing"
       tal:content="python: here.get_title()" />
+
     <tal:block tal:repeat="row batch">
       
       <thead tal:condition="repeat/row/start">
@@ -41,7 +42,7 @@
           </tal:block>
         </tr>
       </thead>
-      <tbody tal:condition="not:repeat/row/start">
+      <tbody tal:omit-tag="not:repeat/row/start">
         <tr tal:define="iterate repeat/row/even;"
           tal:attributes="
             class python: iterate and 'even' or 'odd';
@@ -52,6 +53,8 @@
           </tal:block>
         </tr>
       </tbody>
+
     </tal:block>
+
   </table>
 </div>

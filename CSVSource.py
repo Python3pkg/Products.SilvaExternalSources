@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.14 $
+# $Revision: 1.15 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -54,6 +54,8 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 
     _layout_id = 'layout'
 
+    _default_batch_size = 20
+
     def __init__(self, id, title, file):
         CSVSource.inheritedAttribute('__init__')(self, id, '')
         self._raw_data = None
@@ -86,7 +88,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             bs = int(param.get('csvbatchsize'))
             param['csvbatchsize'] = bs
         else:
-            param['csvbatchsize'] = 10
+            param['csvbatchsize'] = CSVSource._default_batch_size
         if param.has_key('csvheadings'):
             h = int(param.get('csvheadings', 0))
             param['csvheadings'] = h

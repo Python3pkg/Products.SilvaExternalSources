@@ -43,8 +43,8 @@
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>
-          <default>25</default>
-          <description>Number of rows to show.</description>
+          <default></default>
+          <description>Number of rows to show. If empty, the default value is set to 20.</description>
           <display_maxwidth type="int">2</display_maxwidth>
           <display_width type="int">3</display_width>
           <end type="int">100</end>

@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.12 $
+# $Revision: 1.13 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -69,7 +69,7 @@ class CodeSource(ExternalSource, Folder):
             except LookupError:
                 # unknown encoding, return error message
                 m = _("Unknown encoding ${enc}, not changed! ")
-                m.mapping = {"enc":charset}
+                m.set_mapping({"enc":charset})
                 sm = unicode(m)
                 msg += sm #"Unknown encoding %s, not changed!. " % data_encoding
                 return self.editCodeSource(manage_tabs_message=msg)
@@ -115,7 +115,7 @@ class CodeSource(ExternalSource, Folder):
                 m = _('no script id specified! ')
             else:
                 m = _('This code source does not contain an callable object with id "${id}"! ')
-                m.mapping = {'id': script_id}
+                m.set_mapping({'id': script_id})
             sm = unicode(m)
             msg += sm
 

@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.26 $
+# $Revision: 1.27 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -210,13 +210,13 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         except LookupError:
             # unknown encoding, return error message
             m = _("Unknown encoding ${enc}, not changed! ")
-            m.mapping = {"enc":charset}
+            m.set_mapping({"enc":charset})
             sm = unicode(m)
             msg += sm #"Unknown encoding %s, not changed!. " % charset
             return self.editCSVSource(manage_tabs_message=msg)
         self.set_data_encoding(charset)
         m = _("Data encoding changed to: ${enc}. ")
-        m.mapping = {"enc":charset}
+        m.set_mapping({"enc":charset})
         sm = unicode(m)
         msg += sm #'Data encoding changed to: %s. ' % charset
 

@@ -1,5 +1,9 @@
 from Products.Silva import mangle
 
+# I18N stuff
+from Products.Silva.i18n import translate as _
+
+
 model = context.REQUEST.model
 view = context
 REQUEST = context.REQUEST
@@ -43,13 +47,18 @@ try:
     unicode('abcd', de, 'replace')
 except LookupError:
     # unknown encoding, return error message
-    msg = "Unknown encoding '%s'. CSVSource not added! " % de
+    m = _('Unknown encoding ${enc}. CSVSource not added! ')
+    m.set_mapping({'enc':de})
+    msg = unicode(m)
     return view.add_form(message_type="error", message=msg)
 
 try:
     model.manage_addProduct['SilvaExternalSources'].manage_addCSVSource(id, title, file)
 except IOError, e:
-    return view.add_form(message_type="error", message="Problem %s" %e)
+    m = _('Problem ${exception}')
+    m.set_mapping({'exception':e})
+    msg = unicode(m)
+    return view.add_form(message_type="error", message=msg)
 object = getattr(model, id)
 
 # update last author info in new object
@@ -60,6 +69,7 @@ object.set_data_encoding(de)
 if REQUEST.has_key('add_edit_submit'):
     REQUEST.RESPONSE.redirect(object.absolute_url() + '/edit/tab_edit')
 else:
-    return model.edit['tab_edit'](
-        message_type="feedback",
-        message="Added %s %s." % (object.meta_type, view.quotify(id)))
+    m = _('Added ${metatype} ${id}.')
+    m.set_mapping({'metatype':object.metatype, 'id':view.quotify(id)})
+    msg = unicode(m)
+    return model.edit['tab_edit'](message_type="feedback", message=msg)

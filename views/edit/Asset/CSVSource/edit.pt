@@ -36,13 +36,13 @@
       <tr>
         <th class="align-right"
           width="12%"
-          i18n:translate="element">
+          i18n:translate="">
           element
         </th>
-        <th i18n:translate="content">
+        <th i18n:translate="">
           content
         </th>
-        <th width="40%" i18n:translate="note">
+        <th width="40%" i18n:translate="">
           note
         </th>
       </tr>
@@ -96,7 +96,7 @@
         </tal:block>
         <tr class="top-controls">
           <td colspan="3">
-            <h3 i18n:translate="csv_source_upload">
+            <h3 i18n:translate="">
               csv source upload
             </h3>
           </td>
@@ -106,13 +106,13 @@
         <tr>
           <th class="align-right"
             width="12%"
-            i18n:translate="element">
+            i18n:translate="">
             element
           </th>
-          <th i18n:translate="content">
+          <th i18n:translate="">
             content
           </th>
-          <th width="40%" i18n:translate="note">
+          <th width="40%" i18n:translate="">
             note
           </th>
         </tr>
@@ -167,7 +167,7 @@
         </tal:block>
         <tr class="top-controls">
           <td colspan="2">
-            <h3 i18n:translate="csv_source_raw_data">
+            <h3 i18n:translate="">
               comma separated value data
             </h3>
           </td>
@@ -177,10 +177,10 @@
         <tr>
           <th class="align-right"
             width="5%"
-            i18n:translate="element">
+            i18n:translate="">
             element
           </th>
-          <th i18n:translate="content">
+          <th i18n:translate="">
             content
           </th>
         </tr>

@@ -1,5 +1,11 @@
 from Products.Silva import mangle
 from Products.Formulator.Errors import ValidationError, FormValidationError
+
+# I18N stuff
+from Products.Silva.i18n import translate as _
+
+###
+
 model = context.REQUEST.model
 view = context
 
@@ -18,7 +24,9 @@ if result.has_key('csv_description'):
     desc = result['csv_description'].strip()
     model.set_description(desc)
 
-msg = ['Title and Description changed.']
+m = _('Title and Description changed.')
+msg = unicode(m)
+
 msg_type = 'feedback'
 
-return view.tab_edit(message_type=msg_type, message=' '.join(msg))
+return view.tab_edit(message_type=msg_type, message=msg)

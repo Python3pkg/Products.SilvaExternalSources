@@ -17,7 +17,7 @@
             <alternate_name></alternate_name>
             <css_class></css_class>
             <default></default>
-            <description>Character set of the data set.</description>
+            <description>Character set of the source data.</description>
             <enabled type="int">1</enabled>
             <external_validator></external_validator>
             <extra></extra>
@@ -44,7 +44,7 @@
           <alternate_name></alternate_name>
           <css_class></css_class>
           <default></default>
-          <description>Specify the character set of the data set manually.</description>
+          <description>Specify the character set of the source data manually.</description>
           <display_maxwidth type="int">80</display_maxwidth>
           <display_width type="int">40</display_width>
           <external_validator></external_validator>
@@ -52,7 +52,7 @@
           <hidden type="int">0</hidden>
           <max_length></max_length>
           <required type="int">0</required>
-          <title>character set</title>
+          <title>set designation</title>
           <truncate type="int">0</truncate>
           <unicode type="int">0</unicode>
           <whitespace_preserve type="int">0</whitespace_preserve>
@@ -71,14 +71,14 @@
           <alternate_name></alternate_name>
           <css_class></css_class>
           <default></default>
-          <description>File to upload as data set.</description>
+          <description>File to upload as source data.</description>
           <display_maxwidth></display_maxwidth>
           <display_width type="int">40</display_width>
           <external_validator></external_validator>
           <extra></extra>
           <required type="int">0</required>
           <hidden type="int">0</hidden>
-          <title>file</title>
+          <title>csv file</title>
         </values>
         <tales>
         </tales>

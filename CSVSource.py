@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.6 $
+# $Revision: 1.7 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -70,9 +70,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
     def has_headings (self):
         return self._has_headings
 
-    def raw_data (self, encoding=None):
-        if encoding is None:
-            encoding = 'utf-8'
+    def raw_data (self):
         if type(self._raw_data) != type(u''):
             data = unicode(self._raw_data, self._data_encoding, 'replace')
         else:

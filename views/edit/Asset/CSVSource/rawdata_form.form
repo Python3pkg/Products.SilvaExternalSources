@@ -32,7 +32,7 @@
           <width type="int">80</width>
         </values>
         <tales>
-          <default>python:form.REQUEST.model.raw_data('utf-8')</default>
+          <default>python:form.REQUEST.model.raw_data()</default>
         </tales>
         <messages>
           <message name="external_validator_failed">The input failed the external validator.</message>

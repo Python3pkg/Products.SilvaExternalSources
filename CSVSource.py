@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.12 $
+# $Revision: 1.13 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -17,7 +17,7 @@ from Products.Silva.helpers import add_and_edit
 from Products.Silva.SilvaObject import SilvaObject
 from Products.Silva.interfaces import IAsset
 
-icon="www/externalsource.png"
+icon="www/csvsource.png"
 
 import ASV
 

@@ -32,9 +32,8 @@
     <caption 
       tal:condition="parameters/show_caption | nothing"
       tal:content="python: here.get_title()" />
-
+    
     <tal:block tal:repeat="row batch">
-      
       <thead tal:condition="repeat/row/start">
         <tr>
           <tal:block repeat="cell row">
@@ -42,19 +41,19 @@
           </tal:block>
         </tr>
       </thead>
-      <tbody tal:omit-tag="not:repeat/row/start">
-        <tr tal:define="iterate repeat/row/even;"
+    </tal:block>
+    <tbody>
+      <tal:block repeat="row batch">
+        <tr tal:condition="not:repeat/row/start"
+        tal:define="iterate repeat/row/even;"
           tal:attributes="
             class python: iterate and 'even' or 'odd';
             style python: iterate and even_style or odd_style;
             " >
-          <tal:block repeat="cell row">
-            <td tal:content="cell" />
-          </tal:block>
+          <td tal:repeat="cell row" tal:content="cell" />
         </tr>
-      </tbody>
-
-    </tal:block>
-
+      </tal:block>
+    </tbody>
+    
   </table>
 </div>

@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.5 $
+# $Revision: 1.6 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -217,4 +217,4 @@ def manage_addSQLSource(context, id, title, REQUEST=None):
     reset_parameter_form(datasource)
     # table rendering layout pagetemplate
     reset_table_layout(datasource)
-    add_and_edit(context, id, REQUEST)
+    add_and_edit(context, id, REQUEST, 'editSQLSource')

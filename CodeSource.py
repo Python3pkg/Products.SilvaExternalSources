@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.4 $
+# $Revision: 1.5 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -82,8 +82,12 @@ class CodeSource(ExternalSource, Folder):
 
         try:
             script = self[script_id]
-        except KeyError:
-            msg += '<b>Warning</b>: This code source does not contain an object with id "%s"' % script_id
+        except KeyError:            
+            msg += '<b>Warning</b>: '
+            if not script_id:
+                msg += 'no script id specified! '
+            else:
+                msg += 'This code source does not contain an callable object with id "%s"! ' % script_id
 
         return self.editCodeSource(manage_tabs_message=msg)
 
@@ -100,4 +104,4 @@ def manage_addCodeSource(context, id, title, script_id=None, REQUEST=None):
     cs = context._getOb(id)
     cs.set_form(ZMIForm('form', 'Parameters form'))
 
-    add_and_edit(context, id, REQUEST)
+    add_and_edit(context, id, REQUEST, 'editCodeSource')

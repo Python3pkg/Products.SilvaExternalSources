@@ -12,8 +12,6 @@
 <metal:use-macro use-macro="view/macro_asset_edit/macros/editor">
 
 <!-- remove the title input box -->
-<metal:fill-slot fill-slot='title_metadata'></metal:fill-slot>
-<metal:fill-slot fill-slot='title_editor'></metal:fill-slot>
 <!-- end of title input box -->
 <metal:fill-slot fill-slot="additional_tools">
 

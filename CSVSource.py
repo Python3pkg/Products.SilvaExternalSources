@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.9 $
+# $Revision: 1.10 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -8,6 +8,7 @@ from Globals import InitializeClass, package_home
 from AccessControl import ClassSecurityInfo
 from OFS.Folder import Folder
 from Products.Formulator.Form import ZMIForm
+from Products.Formulator.XMLToForm import XMLToForm
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 # Silva
@@ -16,7 +17,7 @@ from Products.Silva.helpers import add_and_edit
 from Products.Silva.SilvaObject import SilvaObject
 from Products.Silva.interfaces import IAsset
 
-icon="www/codesource.png"
+icon="www/externalsource.png"
 
 import ASV
 
@@ -83,15 +84,30 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         """
         layout = self[self._layout_id]
         rows = self._data[:]
+	param = {}
+	param.update(kw)
+        if not param.get('csvtableclass'):
+            param['csvtableclass'] = 'default'
+        if param.get('csvbatchsize'):
+            bs = int(param.get('csvbatchsize'))
+            param['csvbatchsize'] = bs
+        else:
+            param['csvbatchsize'] = 10
+        if param.get('csvheadings'):
+            h = int(param.get('csvheadings'))
+            param['csvheadings'] = h
+        else:
+            param['csvheadings'] = 1
+        print 'params 1', str(param)
         if rows and self._has_headings:
             headings = rows[0]
             rows = rows[1:]
+            param['headings'] = headings
         else:
+            param['headings'] = None
             headings = None
-	parameters = {}
-	parameters.update(kw)
-	parameters['table_class'] = self._table_class
-        return layout(table=rows, headings=headings, parameters=parameters)
+        print 'params 2', str(param)
+        return layout(table=rows, parameters=param)
 
     def get_title (self):
         """Return meta-data title for this instance
@@ -239,7 +255,7 @@ def reset_parameter_form(csvsource):
     f.close()
     csvsource.set_form(form)
 
-def reset_table_layout(sqlsource):
+def reset_table_layout(cs):
     # Works for Zope object implementing a 'write()" method...
     layout = [
         ('layout', ZopePageTemplate, 'csvtable.zpt'),
@@ -249,9 +265,9 @@ def reset_table_layout(sqlsource):
     for id, klass, file in layout:
         filename = os.path.join(package_home(globals()), 'layout', file)
         f = open(filename, 'rb')
-        if not id in sqlsource.objectIds():
-            sqlsource._setObject(id, klass(id))
-        sqlsource[id].write(f.read())
+        if not id in cs.objectIds():
+            cs._setObject(id, klass(id))
+        cs[id].write(f.read())
         f.close()
 
 
@@ -262,9 +278,9 @@ def manage_addCSVSource(context, id, title, file=None, REQUEST=None):
     context._setObject(id, cs)
     cs = context._getOb(id)
     reset_table_layout(cs)
-    frm = ZMIForm('form', 'Empty Form')
-    cs.set_form(frm)
-##     reset_parameter_form(cs)
+##     frm = ZMIForm('form', 'Empty Form')
+##     cs.set_form(frm)
+    reset_parameter_form(cs)
     # XXX
     # ZMI is assumed to be in utf-8
     if type(title) == type(''):

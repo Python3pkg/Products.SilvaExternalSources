@@ -12,26 +12,6 @@
       <title>Default</title>
       <fields>
 
-      <field><id>csvheadings</id> <type>ListField</type>
-        <values>
-          <alternate_name></alternate_name>
-          <css_class></css_class>
-          <description></description>
-          <external_validator></external_validator>
-          <extra></extra>
-          <hidden type="int">0</hidden>
-          <default></default>
-          <first_item type="int">1</first_item>
-          <items type="list">[('Yes','1'), ('No','0')]</items>
-          <size type="int">1</size>
-          <title>First row is heading</title>
-        </values>
-        <tales>
-        </tales>
-        <messages>
-          <message name="external_validator_failed">The input failed the external validator.</message>
-        </messages>
-      </field>
       <field><id>csvbatchsize</id> <type>IntegerField</type>
         <values>
           <alternate_name></alternate_name>
@@ -63,16 +43,17 @@
           <alternate_name></alternate_name>
           <css_class></css_class>
           <default></default>
-          <description></description>
+          <description>Choose a style of the table which fits in your needs.</description>
+          <enabled type="int">1</enabled>
           <external_validator></external_validator>
           <extra></extra>
           <extra_item></extra_item>
+          <first_item type="int">0</first_item>
           <hidden type="int">0</hidden>
-          <first_item type="int">1</first_item>
-          <items type="list">[]</items>
+          <items type="list">[('Simple table (no formatting)', 'simple'), ('Plain table (bold heading, no borders)', 'plain'), ('List table (bold underlined heading, borderless rows)', 'list'), ('Grid table (bold bordered heading, bordered rows)', 'grid'), ('Data grid table (bold borderless heading, bordered rows)', 'datagrid')]</items>
+          <required type="int">1</required>
           <size type="int">1</size>
-          <required type="int">0</required>
-          <title>Table style</title>
+          <title>Table style:</title>
           <unicode type="int">0</unicode>
           <whitespace_preserve type="int">0</whitespace_preserve>
         </values>

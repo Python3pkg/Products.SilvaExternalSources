@@ -6,41 +6,59 @@ __allow_access_to_unprotected_subobjects__ = 1
 module_security = ModuleSecurityInfo('Products.SilvaExternalSources.interfaces')
 
 class IExternalSource(Interface):
-    """Access to an external source of data.
-
-    The ExternalSource is responsible for composing a Formulator form
-    for the UI, to render the data in XHTML and XML and to specify
-    its cacheability.
+    """ Access to an external source of data.
     """
 
     # ACCESSORS
 
     def form():
-        """ Return the formulator form for the UI.
+        """ Returns a Formulator form or None if not applicable.
+        
+        This Formulator form is used in the Silva Document 'external data'
+        document element to render the parameters UI.
         """
         pass
 
     def to_html(REQUEST, **kw):
-        """ Render the HTML for inclusion in the render Silva HTML.
+        """ Returns the HTML for inclusion in the rendered Silva HTML.
         """
         pass
 
     def to_xml(REQUEST, **kw):
-        """ Render the XML for this source.
+        """ Returns XML for this source for inclusion in exported Silva XML.
+        
+        NOTE: The use of this feature is not yet fully defined!
+        
         """
         pass
 
     def is_cacheable(**kw):
-        """ Specify the cacheability for this source.
+        """ Returns the cacheability (true or false) for this source.
+        
+        Silva Document atempts to cache the public rendering. If a document
+        references this external source, it will check for its cachability.
+        If the data from this source can be cached this source will only be
+        called once.
         """
         pass
 
     def data_encoding():
-        """ Specify the encoding of source's data.
+        """ Returns the encoding of source's data.
+        
+        Silva expects unicode for its document data. This parameter
+        specifies the encoding of the original data so it can be properly
+        converted to unicode when passing the data to the Silva Document.
+        
+        NOTE: This is usually only used *within* the external source
+        implementation.
         """
         pass
 
     def description():
-        """ Specify the use of this source.
+        """ Returns the purpose of this external source.
+        
+        The description is shown in the 'external data' element's editor.
+        It can contain a description of the use of its parameters and the
+        what data is will render in the document.
         """
         pass

@@ -14,7 +14,7 @@
     b_start python: 0;
     b_start request/b_start | b_start;
     
-    batch python: Batch(table, int(b_size), int(b_start));
+    batch python: Batch(table, int(b_size), int(b_start), orphan=0);
 
     headings parameters/headings | nothing;
 

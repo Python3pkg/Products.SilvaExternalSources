@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.9 $
+# $Revision: 1.10 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -10,7 +10,7 @@ from OFS.Folder import Folder
 from Products.Formulator.Form import ZMIForm
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 # Silva
-from Products.Silva.SilvaPermissions import ViewManagementScreens
+from Products.Silva.SilvaPermissions import ViewManagementScreens, AccessContentsInformation
 from Products.Silva.helpers import add_and_edit
 
 icon="www/codesource.png"
@@ -28,7 +28,10 @@ class CodeSource(ExternalSource, Folder):
         {'label':'Edit', 'action':'editCodeSource'},
         ) + Folder.manage_options
 
-    security.declareProtected(ViewManagementScreens, 'codeSourceEdit')    
+    security.declareProtected(AccessContentsInformation, 'get_rendered_form_for_editor')
+    security.declareProtected(AccessContentsInformation, 'validate_form_to_request')
+
+    security.declareProtected(ViewManagementScreens, 'editCodeSource')
     editCodeSource = PageTemplateFile(
         'www/codeSourceEdit', globals(),  __name__='editCodeSource')
 

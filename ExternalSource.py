@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.13 $
+# $Revision: 1.14 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -69,6 +69,18 @@ def getSourceForId(context, id):
     else:
         return getSourceForId(context.aq_parent, id)    
 
+# helper function copied from 
+# SilvaDocument/widgets/element/doc_element/source/mode_edit/save_helper.py
+def ustr(text, enc='utf-8'):
+    if text is None:
+        return u''
+    elif type(text) == type(''):
+        return unicode(text, enc, 'replace')
+    elif type(text) == type(u''):
+        return text
+    else:
+        return unicode(str(text), enc, 'replace')
+
 class ExternalSource(Acquisition.Implicit):
 
     __implements__ = IExternalSource
@@ -92,6 +104,61 @@ class ExternalSource(Acquisition.Implicit):
         """ get to the parameters form
         """
         return self.parameters
+
+    def get_rendered_form_for_editor(self, REQUEST=None):
+        """return the rendered form"""
+        print repr(REQUEST.form)
+        xml = ['<?xml version="1.0" encoding="UTF-8" ?>\n',
+                '<form action="" method="POST">',
+                '<table width="100%" id="extsourceform" style="display: block" class="plain">']
+        for field in self.parameters.get_fields():
+            xml.append('<tr><td>%s</td>' % field.title())
+            value = None
+            if REQUEST.form.has_key(field.id):
+                value = REQUEST.form[field.id]
+            xml.append('<td>%s</td></tr>' % (field.render(value)))
+        xml.append('</table></form>')
+        if REQUEST is not None:
+            REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8')
+        return ''.join(xml)
+
+    def validate_form_to_request(self, REQUEST):
+        """validate the form
+        
+            when validation succeeds return a 200 with the keys and values
+            to set on the external source element in the document as an
+            XML mapping, if validation fails return a 400 with the error
+            message
+        """
+        form = self.parameters
+        print repr(REQUEST.form)
+        try:
+            result = form.validate_all(REQUEST)
+        except FormValidationError, e:
+            REQUEST.RESPONSE.setStatus(400, 'Bad Request')
+            return '&'.join(['%s=%s' % (e.field['title'], e.error_text) for e in e.errors])
+        else:
+            REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml');
+            xml = self._formresult_to_xml(result)
+            return xml
+
+    def _formresult_to_xml(self, formresult):
+        """returns a result dictionary as an xml mapping"""
+        xml = ['<sourcedata>']
+        for key, value in formresult.items():
+            xml.append('<parameter key="%s">%s</parameter>' % 
+                        (self._xml_escape(ustr(key)), self._xml_escape(ustr(value))))
+        xml.append('</sourcedata>')
+        return ''.join(xml)
+
+    def _xml_escape(self, input):
+        """entitize illegal chars in xml"""
+        input = input.replace('&', '&amp;')
+        input = input.replace('<', '&lt;')
+        input = input.replace('>', '&gt;')
+        input = input.replace('"', '&quot;')
+        input = input.replace("'", '&apos;')
+        return input
 
     def to_html(self, REQUEST=None, **kw):
         """ Render the HTML for inclusion in the rendered Silva HTML.

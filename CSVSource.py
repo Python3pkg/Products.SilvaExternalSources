@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.21 $
+# $Revision: 1.22 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -84,8 +84,8 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         """
         layout = self[self._layout_id]
         rows = self._data[:]
-	param = {}
-	param.update(kw)
+        param = {}
+        param.update(kw)
         if not param.get('csvtableclass'):
             param['csvtableclass'] = 'default'
         if param.get('csvbatchsize'):

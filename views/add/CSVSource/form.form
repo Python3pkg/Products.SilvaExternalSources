@@ -44,7 +44,7 @@
           <css_class>store</css_class>
           <default></default>
           <title>title</title>
-          <description>The title will be publicly visible, and is used for the link in indexes.</description>
+          <description>The title might be publicly visible.</description>
           <extra></extra>
           <unicode>1</unicode>
         </values>
@@ -63,7 +63,7 @@
             <extra_item></extra_item>
             <first_item type="int">0</first_item>
             <hidden type="int">0</hidden>
-            <items type="list">[('Use specified character coding below.','default'), ('Unicode (UTF-8)', 'utf-8'), ('Western Europe (ISO-8859-1)', 'ISO-8859-1'), ('Western Europe (ISO-8859-15/EURO)', 'ISO-8859-15'), ('Western Europe (ASCII/US)', 'ASCII'), ('Western Europe (Windows-1252/WinLatin 1)', 'cp1252'), ('Western Europe (Apple Macintosh)', 'mac_roman'), ('Cyrillic (ISO-8859-5)', 'ISO-8859-5')]</items>
+            <items type="list">[('Use specified character coding below.','default'), ('Unicode (UTF-8)', 'utf-8'), ('Western Europe (ISO-8859-1)', 'ISO-8859-1'), ('Western Europe (ISO-8859-15/EURO)', 'ISO-8859-15'), ('Western Europe (ASCII/US)', 'ASCII'), ('Western Europe (Windows-1252/WinLatin 1)', 'cp1252'), ('Western Europe (Apple Macintosh/mac_roman)', 'mac_roman'), ('Cyrillic (ISO-8859-5)', 'ISO-8859-5')]</items>
             <required type="int">1</required>
             <size type="int">1</size>
             <title>character coding</title>
@@ -91,7 +91,7 @@
           <hidden type="int">0</hidden>
           <max_length></max_length>
           <required type="int">0</required>
-          <title>designation of coding</title>
+          <title>coding designation</title>
           <truncate type="int">0</truncate>
           <unicode type="int">0</unicode>
           <whitespace_preserve type="int">0</whitespace_preserve>

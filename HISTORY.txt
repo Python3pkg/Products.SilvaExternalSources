@@ -3,13 +3,13 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
-  0.8b
+  0.8b1
 
-    features added:
+    Features added:
      
       o Kupu support.
 
-    bugs fixed:
+    Bugs fixed:
 
       o The description could not be set empty. It can now.
 

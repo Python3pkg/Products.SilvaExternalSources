@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.24 $
+# $Revision: 1.25 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -162,15 +162,19 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 ##         return
 
     security.declareProtected(
-        SilvaPermissions.ViewManagementScreens, 'set_table_class')
+        SilvaPermissions.ChangeSilvaContent, 'set_table_class')
     def set_table_class (self, css_class):
         self._table_class = css_class
         return 
 
+    security.declareProtected(
+        SilvaPermissions.ChangeSilvaContent, 'set_title')
     def set_title (self, title):
         CSVSource.inheritedAttribute('set_title')(self, title)
         return
 
+    security.declareProtected(
+        SilvaPermissions.ChangeSilvaContent, 'set_description')
     def set_description(self, desc):
         t = type(desc)
         if t == type(u''):

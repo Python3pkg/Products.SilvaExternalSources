@@ -1,0 +1,42 @@
+Copyright (c) 2002, 2003 Infrae. All rights reserved.
+See also LICENSE.txt
+
+Meta::
+
+  Valid for:  SilvaExternalSources 0.9.3
+  Author:     Jan-Wijbrand Kolman
+  Email:      jw at infrae.com
+  CVS:        $Revision: 1.1 $
+
+
+    # ACCESSORS
+
+    def form():
+        """ Return the formulator form for the UI.
+        """
+        pass
+
+    def to_html(REQUEST, **kw):
+        """ Render the HTML for inclusion in the render Silva HTML.
+        """
+        pass
+
+    def to_xml(REQUEST, **kw):
+        """ Render the XML for this source.
+        """
+        pass
+
+    def is_cacheable(**kw):
+        """ Specify the cacheability for this source.
+        """
+        pass
+
+    def data_encoding(self):
+        """ Specify the encoding of source's data.
+        """
+        pass
+
+    def description(self):
+        """ Specify the use of this source.
+        """
+        pass

@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.5 $
+# $Revision: 1.6 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -55,7 +55,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
     _has_headings = 1
 
     def __init__(self, id, title, file):
-        CSVSource.inheritedAttribute('__init__')(self, id, None)
+        CSVSource.inheritedAttribute('__init__')(self, id, '')
         self._raw_data = None
         self._data = []
         self._has_headings = CSVSource._has_headings
@@ -77,7 +77,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             data = unicode(self._raw_data, self._data_encoding, 'replace')
         else:
             data = self._raw_data
-        return data.encode(encoding)
+        return data
 
     def to_html(self, REQUEST, **kw):
         """ render HTML for CSV source
@@ -92,22 +92,15 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         return layout(table=rows, headings=headings, parameters=kw)
 
     def get_title (self):
-        return SilvaObject.get_title(self)
+        """Return meta-data title for this instance
+        """
+        ms = self.service_metadata
+        return ms.getMetadataValue(self, 'silva-content', 'maintitle')
 
     def description (self):
         """ Return desc from meta-data system"""
         ms = self.service_metadata
         return ms.getMetadataValue(self, 'silva-extra', 'content_description')
-
-    def set_description (self, desc ):
-        t = type(desc)
-        if t == type(u''):
-            desc = desc.encode('utf-8')
-        ms = self.service_metadata
-        binding = ms.getMetadata(self)
-        d = {'content_description' : desc}
-        binding.setValues('silva-extra', d)
-        pass
 
     # MODIFIERS
 
@@ -145,8 +138,18 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         return
 
     def set_title (self, title):
-        SilvaObject.set_title(self, title)
+        CSVSource.inheritedAttribute('set_title')(self, title)
         return
+
+    def set_description (self, desc ):
+        t = type(desc)
+        if t == type(u''):
+            desc = desc.encode('utf-8')
+        ms = self.service_metadata
+        binding = ms.getMetadata(self)
+        d = {'content_description' : desc}
+        binding.setValues('silva-extra', d)
+        pass
 
     # MANAGERS
 
@@ -212,6 +215,14 @@ manage_addCSVSourceForm = PageTemplateFile(
 
 import os
 
+def reset_parameter_form(csvsource):
+    filename = os.path.join(package_home(globals()), 'layout', 'csvparameters.xml')
+    f = open(filename, 'rb')
+    form = ZMIForm('form', 'Parameters form')
+    XMLToForm(f.read(), form)
+    f.close()
+    csvsource.set_form(form)
+
 def reset_table_layout(sqlsource):
     # Works for Zope object implementing a 'write()" method...
     layout = [
@@ -237,6 +248,7 @@ def manage_addCSVSource(context, id, title, file=None, REQUEST=None):
     reset_table_layout(cs)
     frm = ZMIForm('form', 'Empty Form')
     cs.set_form(frm)
+##     reset_parameter_form(cs)
     # XXX
     # ZMI is assumed to be in utf-8
     if type(title) == type(''):

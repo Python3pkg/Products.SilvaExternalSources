@@ -28,7 +28,6 @@ if result.has_key('file'):
     fin = result['file']
     data = fin.read()
     if data:
-        model.set_data_encoding(de)
         model.update_data(data)
         msg += 'Data uploaded. '
 

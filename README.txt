@@ -6,7 +6,7 @@ Meta::
   Valid for:  SilvaExternalSources 0.3
   Author:     Jan-Wijbrand Kolman
   Email:      jw at infrae.com
-  CVS:        $Revision: 1.5 $
+  CVS:        $Revision: 1.6 $
 
   TODO:
 
@@ -42,3 +42,12 @@ Meta::
     sources: 'Silva Code Source' and 'Silva SQL Source':
 
     See also documentation in the doc subdirectory of this Product.
+
+  KNOW ISSUES:
+
+    o For the CSVSource object the description field from the metadata
+    system is used. In cases where this desciption field is not filled in,
+    it might acquire its value from the source's container object.
+
+    o Something on that not all Formulator widgets can succesfully be used
+    for parameters yet.

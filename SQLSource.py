@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.11 $
+# $Revision: 1.12 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -135,6 +135,17 @@ class SQLSource(ExternalSource, Folder):
         """ Edit SQLSource object
         """
         msg = ''
+
+        if data_encoding and data_encoding != self._data_encoding:
+            try:
+                unicode('abcd', data_encoding, 'replace')
+            except LookupError:
+                # unknown encoding, return error message
+                msg += "Unknown encoding %s, not changed!. " % data_encoding
+                return self.editSQLSource(manage_tabs_message=msg)
+            self.set_data_encoding(data_encoding)
+            msg += 'Data encoding changed. '
+
         if title and title != self.title:
             self.title = title
             msg += 'Title changed. '
@@ -146,10 +157,6 @@ class SQLSource(ExternalSource, Folder):
         if statement and statement != self._statement:
             self._set_statement(statement)
             msg += 'SQL statement changed. '
-
-        if data_encoding and data_encoding != self._data_encoding:
-            self.set_data_encoding(data_encoding)
-            msg += 'Data encoding changed. '
 
         if description and description != self._description:
             self.set_description(description)

@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.7 $
+# $Revision: 1.8 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -59,6 +59,17 @@ class CodeSource(ExternalSource, Folder):
         """ Edit CodeSource object
         """
         msg = ''
+
+        if data_encoding and data_encoding != self._data_encoding:
+            try:
+                unicode('abcd', data_encoding, 'replace')
+            except LookupError:
+                # unknown encoding, return error message
+                msg += "Unknown encoding %s, not changed!. " % data_encoding
+                return self.editCodeSource(manage_tabs_message=msg)
+            self.set_data_encoding(data_encoding)
+            msg += 'Data encoding changed. '
+
         if title and title != self.title:
             self.title = title
             msg += 'Title changed. '
@@ -66,10 +77,6 @@ class CodeSource(ExternalSource, Folder):
         if script_id and script_id != self._script_id:
             self._script_id = script_id
             msg += 'Script id changed. '
-
-        if data_encoding and data_encoding != self._data_encoding:
-            self.set_data_encoding(data_encoding)
-            msg += 'Data encoding changed. '
 
         if description and description != self._description:
             self.set_description(description)

@@ -3,31 +3,14 @@ See also LICENSE.txt
 
 Meta::
 
-  Valid for:  SilvaExternalSources 0.7
+  Valid for:  SilvaExternalSources 0.8
   Author:     Martijn Faassen
   Email:      faasen at infrae.com
-  CVS:        $Revision: 1.2 $
+  CVS:        $Revision: 1.3 $
 
-SilvaExternalSources is a Silva extension. You need to run Silva 0.9.3.
-
-Extensive documentation (with pictures!) on how to install and use
-Silva External Sources can be found in the separate
-external_sources_docs.zexp file as a separate download. To install
-this:
-
-  * place the external_sources_doc.zexp in your Zope instances
-    'import' directory.
-
-  * go to your Silva root in the Zope Management Interface.
- 
-  * click the import/export button at the bottom.
-
-  * At the bottom of the screen, fill in 'external_sources_docs.zexp'
-    and press the 'import' button.
-
-  * Now proceed to the Silva User Interface (Silva/Edit..). You should
-    find a new publication 'external_sources'. Publish everything
-    it. You can now read the documents with your web browser.
+SilvaExternalSources is a Silva extension. This version requires Silva
+1.0. Extensive documentation can be accessed by installing a Silva
+root and checking the 'Add Silva documentation' checkbox.
  
 A brief guide to install SilvaExternalSources:
 
@@ -42,6 +25,5 @@ A brief guide to install SilvaExternalSources:
 
 SilvaExternalSources should now be installed! Silva Code Source and
 Silva SQL Source can be added through the Zope Management
-Interface. Silva CVS Source is available through the Silva User
+Interface. Silva CSV Source is available through the Silva User
 Interface.
-

@@ -3,7 +3,11 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
-  0.8
+  0.8b
+
+    features added:
+     
+      o Kupu support.
 
     bugs fixed:
 
@@ -12,10 +16,6 @@ SilvaExternalSources changes
       o The ZMI screens for the ExternalSource objects are now set
         to be in utf-8. This way we can make save assumption for
         decoding the user input into unicode.
-
-    features added:
-     
-      o Kupu support.
 
   0.7
 

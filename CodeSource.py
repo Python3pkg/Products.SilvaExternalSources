@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.11 $
+# $Revision: 1.11.10.1 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -22,6 +22,9 @@ class CodeSource(ExternalSource, Folder):
     meta_type = "Silva Code Source"
 
     security = ClassSecurityInfo()
+
+    # UTF as UI is in UTF-8
+    _data_encoding = 'UTF-8'
     
     # ZMI Tabs
     manage_options = (
@@ -51,8 +54,10 @@ class CodeSource(ExternalSource, Folder):
             script = self[self._script_id]
         except KeyError:
             return None
-
-        return script(**kw)
+        result = script(**kw)
+        if type(result) is unicode:
+            return result
+        return unicode(result, self.data_encoding())
 
     # MANAGERS
 

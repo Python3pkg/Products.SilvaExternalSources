@@ -16,6 +16,7 @@ def install(root):
     registerViews(root.service_view_registry)
     # metadata registration
     setupMetadata(root)
+    configureAddables(root)
 
 def uninstall(root):
     unregisterViews(root.service_view_registry)
@@ -51,3 +52,10 @@ def setupMetadata(root):
     mapping.editMappings(default, tm)
 
 
+def configureAddables(root):
+    addables = ['Silva CSV Source']
+    new_addables = root.get_silva_addables_allowed_in_publication()
+    for a in addables:
+        if a not in new_addables:
+            new_addables.append(a)
+    root.set_silva_addables_allowed_in_publication(new_addables)

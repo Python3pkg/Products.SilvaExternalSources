@@ -3,6 +3,12 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  0.10.1
+
+    Bugs fixed:
+
+     o Fixed missing import for Silva.i18n.translate
+
   0.10
 
     Features added:

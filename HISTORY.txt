@@ -3,14 +3,18 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
-  0.9.2
+  0.10
+
+    Features added:
+
+     o i18n, German translation.
 
     Bugs fixed:
 
-     o The layout pagetemplate for rendering the SQL result set now gets more 
-       information about the columns names and their order. The pagetemplates
-       of existing SQL Source instances need to be updated to make use
-       of this information.
+     o The layout pagetemplate for rendering the SQL result set now
+       gets more information about the columns names and their
+       order. The pagetemplates of existing SQL Source instances need
+       to be updated to make use of this information.
 
   0.9.1
 

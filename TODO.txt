@@ -1,9 +1,9 @@
-  TODO:
+TODO:
 
-    o Make buttons for reset layout and reset parameters form in SQL Source
+  o Make buttons for reset layout and reset parameters form in SQL Source
 
-    o Unit tests
+  o Unit tests
 
-    o Define to_xml() implementation and use
+  o Define to_xml() implementation and use
 
-    o Check SQLSource for possible SQL injection bugs
+  o Check SQLSource for possible SQL injection bugs

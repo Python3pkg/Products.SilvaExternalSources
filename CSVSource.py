@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.11 $
+# $Revision: 1.12 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -53,14 +53,10 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 
     _layout_id = 'layout'
 
-    _has_headings = 1
-    _table_class = 'default'
-
     def __init__(self, id, title, file):
         CSVSource.inheritedAttribute('__init__')(self, id, '')
         self._raw_data = None
         self._data = []
-        self._has_headings = CSVSource._has_headings
         if file is not None:
             self.update_data(file.read())
         else:

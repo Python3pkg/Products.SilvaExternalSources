@@ -6,7 +6,7 @@ Meta::
   Valid for:  SilvaExternalSources 0.7
   Author:     Jan-Wijbrand Kolman
   Email:      jw at infrae.com
-  CVS:        $Revision: 1.7 $
+  CVS:        $Revision: 1.8 $
 
   SilvaExternalSources:
 
@@ -33,6 +33,11 @@ Meta::
     'Silva CSV Source'.  The latter is special in that it also shows
     up as an asset in Silva. This is possible because no code is
     contained in a CSVSource.
+
+    A separate 'external_sources_doc.zexp' is available for
+    download. This contains a Silva publication with information on
+    how to install and use external sources. See INSTALL.txt for
+    detailed instructions on how to install this publication.
 
     See also documentation in the doc subdirectory of this Product.
 

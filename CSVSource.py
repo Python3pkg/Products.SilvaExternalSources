@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.22 $
+# $Revision: 1.23 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -163,10 +163,12 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         CSVSource.inheritedAttribute('set_title')(self, title)
         return
 
-    def set_description (self, desc ):
+    def set_description(self, desc):
         t = type(desc)
         if t == type(u''):
             desc = desc.encode('utf-8')
+        # Since the metadata system will re-validate, it cannot
+        # accept unicode... ugh... so, re-encode to utf-8 first.
         ms = self.service_metadata
         binding = ms.getMetadata(self)
         d = {'content_description' : desc}
@@ -193,19 +195,22 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             return self.editCSVSource(manage_tabs_message=msg)
         self.set_data_encoding(charset)
         msg += 'Data encoding changed to: %s. ' % charset
+
+        # Assume title is in the encoding as specified 
+        # by "management_page_charset". Store it in unicode.
+        title = unicode(
+            title, self.management_page_charset, 'replace')
         
         if title and title != self.title:
-            # XXX
-            # ZMI is assumed to be in utf-8
-            if type(title) == type(''):
-                title = unicode(title, 'utf-8', 'replace')
             self.set_title(title)
             msg += 'Title changed. '
+            
+        # Assume description is in the encoding as specified 
+        # by "management_page_charset". Store it in unicode.
+        description = unicode(
+            description, self.management_page_charset, 'replace')
+            
         if description and description != self._description:
-            # XXX
-            # ZMI is assumed to be in utf-8
-            if type(description) == type(''):
-                description = unicode(description, 'utf-8', 'replace')
             self.set_description(description)
             msg += 'Description changed. '
         if not (not not cacheable) is (not not self._is_cacheable):

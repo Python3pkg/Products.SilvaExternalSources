@@ -30,7 +30,7 @@ class IExternalSource(Interface):
         """
         pass
 
-    def is_cacheable(REQUEST, **kw):
+    def is_cacheable(**kw):
         """ Specify the cacheability for this source.
         """
         pass

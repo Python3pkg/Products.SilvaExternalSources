@@ -3,6 +3,13 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  future
+
+    Bugs fixed:
+
+      o Configure the correct "add" permissions (esp. for
+        CSV Sources)
+
   0.8b1
 
     Features added:

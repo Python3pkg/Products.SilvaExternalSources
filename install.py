@@ -2,7 +2,7 @@
 """
 
 from Products.Silva.install import add_fss_directory_view
-
+from Products.Silva import roleinfo
 
 def is_installed(root):
     # Hack to get installed state of this extension
@@ -16,6 +16,7 @@ def install(root):
     registerViews(root.service_view_registry)
     # metadata registration
     setupMetadata(root)
+    configureSecurity(root)
     configureAddables(root)
 
 def uninstall(root):
@@ -41,8 +42,16 @@ def unregisterViews(reg):
     # edit
     reg.unregister('edit', 'Silva CSV Source')
     # public
+    
     reg.unregister('public', 'Silva CSV Source')
 
+def configureSecurity(root):
+    """Update the security tab settings to the Silva defaults.
+    """
+    add_permissions = ('Add Silva CSV Sources',)
+    for add_permission in add_permissions:
+        root.manage_permission(add_permission, roleinfo.AUTHOR_ROLES)
+    
 def setupMetadata(root):
     mapping = root.service_metadata.getTypeMapping()
     default = ''

@@ -1,7 +1,7 @@
 <!--
 Copyright (c) 2002 Infrae. All rights reserved.
 See also LICENSE.txt
-Version of this file: $Revision: 1.4 $
+Version of this file: $Revision: 1.5 $
 -->
 <tal:block replace="structure here/manage_page_header" />
 <tal:block 
@@ -11,8 +11,25 @@ Version of this file: $Revision: 1.4 $
 <h2 class="form-help">
   Edit SQLSource
 </h2>
+
 <form action="manage_editSQLSource" method="post">
   <table cellspacing="0" cellpadding="2" border="0">
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-label">
+          Parameters
+        </div>
+      </td>
+      <td align="left" valign="top">
+        <h3 class="form-help">
+          <a 
+            tal:attributes="
+              href string:${here/absolute_url}/parameters/manage_main">
+            edit parameters
+          </a>
+        </h3>
+      </td>
+    </tr>
     <tr>
       <td align="left" valign="top">
         <div class="form-label">

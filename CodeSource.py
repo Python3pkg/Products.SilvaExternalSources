@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.6 $
+# $Revision: 1.7 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -26,7 +26,6 @@ class CodeSource(ExternalSource, Folder):
     # ZMI Tabs
     manage_options = (
         {'label':'Edit', 'action':'editCodeSource'},
-        {'label':'Parameters', 'action':'parameters/manage_main'},        
         ) + Folder.manage_options
 
     security.declareProtected(ViewManagementScreens, 'codeSourceEdit')    

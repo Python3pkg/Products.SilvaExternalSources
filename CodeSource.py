@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.11.10.1 $
+# $Revision: 1.11.10.2 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -57,7 +57,7 @@ class CodeSource(ExternalSource, Folder):
         result = script(**kw)
         if type(result) is unicode:
             return result
-        return unicode(result, self.data_encoding())
+        return unicode(result, self.data_encoding(), 'replace')
 
     # MANAGERS
 

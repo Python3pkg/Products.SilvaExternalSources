@@ -6,7 +6,7 @@ Meta::
   Valid for:  SilvaExternalSources 0.3
   Author:     Jan-Wijbrand Kolman
   Email:      jw at infrae.com
-  CVS:        $Revision: 1.2 $
+  CVS:        $Revision: 1.3 $
 
 
 SilvaExternalSource - Silva Code Source
@@ -22,7 +22,8 @@ SilvaExternalSource - Silva Code Source
 
     When adding one needs to provide the new Code Source an id, title and a
     script id. It is this script id that is used to determine what code
-    fragment to execute. After adding a Code Source, it needs editing.
+    fragment to execute. After adding a Code Source, it will need some more
+    editing.
 
   Editing:
 
@@ -41,3 +42,5 @@ SilvaExternalSource - Silva Code Source
       Actual scripts are here...
 
   View:
+
+    

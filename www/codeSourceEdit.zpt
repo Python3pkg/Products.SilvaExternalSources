@@ -1,7 +1,7 @@
 <!--
 Copyright (c) 2002 Infrae. All rights reserved.
 See also LICENSE.txt
-Version of this file: $Revision: 1.2 $
+Version of this file: $Revision: 1.3 $
 -->
 <tal:block replace="structure here/manage_page_header" />
 <tal:block 
@@ -63,6 +63,17 @@ Version of this file: $Revision: 1.2 $
           name="description" 
           tal:content="here/description"
         />
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-label">
+          Source is cacheable
+        </div>
+      </td>
+      <td align="left" valign="top">
+        <input type="checkbox" name="cacheable" 
+          tal:attributes="checked python: here.is_cacheable() and 'checked' or nothing" />
       </td>
     </tr>
     <tr>

@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.4 $
+# $Revision: 1.5 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -69,8 +69,11 @@ class SQLSource(ExternalSource, Folder):
         q = {}
         q.update(REQUEST)
         q.update(kw)
-        
+
         brains = self._get_data(q)
+        # We don't need to pass in the request explicitly (how would I do
+        # that anyway) since we're calling the layout (e.g. a ZPT or Python-
+        # Script) which can get to the request itself.
         return self.layout(
             table=self._table_helper(brains), parameters=kw)
 
@@ -88,12 +91,12 @@ class SQLSource(ExternalSource, Folder):
                     celldata = u''
                 elif type(cell) is type(''):
                     celldata = unicode(cell, enc, 'replace')
+                elif type(cell) is type(u''):
+                    celldata = cell
                 else:
                     celldata = unicode(str(cell), enc, 'replace')
                 cells.append(celldata)
         return table
-
-    #def to_xml(self, REQUEST, **kw):        
 
     def _get_data(self, args):
         if not self._sql_method:
@@ -129,7 +132,9 @@ class SQLSource(ExternalSource, Folder):
     security.declareProtected(ViewManagementScreens, 'manage_editSQLSource')
     def manage_editSQLSource(
         self, title, connection_id, data_encoding, statement, 
-        description=None, layout_id=None, reset_layout=None, reset_params=None):
+        description=None, cacheable=None, layout_id=None, reset_layout=None,
+        reset_params=None
+        ):
         """ Edit SQLSource object
         """
         msg = ''
@@ -153,6 +158,10 @@ class SQLSource(ExternalSource, Folder):
             self.set_description(description)
             msg += 'Description changed. '
 
+        if not (not not cacheable) is (not not self._is_cacheable):
+            self.set_is_cacheable(cacheable)
+            msg += 'Cacheability setting changed. '
+
         if layout_id and layout_id != self._layout_id:
             self._layout_id = layout_id
             msg += 'Layout object id changed. '
@@ -175,9 +184,10 @@ addSQLSource = PageTemplateFile(
 import os
 
 def reset_table_layout(sqlsource):
+    # Works for Zope object implementing a 'write()" method...
     layout = [
         ('layout', ZopePageTemplate, 'table.zpt'),
-        ('getBatch', PythonScript, 'batch.py'),
+        ('macro', ZopePageTemplate, 'macro.zpt'),
     ]
 
     for id, klass, file in layout:
@@ -186,7 +196,7 @@ def reset_table_layout(sqlsource):
         if not id in sqlsource.objectIds():
             sqlsource._setObject(id, klass(id))
         sqlsource[id].write(f.read())
-    f.close()    
+        f.close()
 
 def reset_parameter_form(sqlsource):
     filename = os.path.join(package_home(globals()), 'layout', 'parameters.xml')
@@ -202,7 +212,7 @@ def manage_addSQLSource(context, id, title, REQUEST=None):
     datasource = SQLSource(id, title)
     context._setObject(id, datasource)
     datasource = context._getOb(id)
-    datasource._set_statement('SELECT * FROM <dtml-var table>')
+    datasource._set_statement('SELECT <dtml-var columns> FROM <dtml-var table>')
     # parameters form
     reset_parameter_form(datasource)
     # table rendering layout pagetemplate

@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.2 $
+# $Revision: 1.3 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -61,6 +61,7 @@ class ExternalSource(Acquisition.Implicit):
     parameters = None # Cannot make it 'private'; the form won't work in the ZMI if it was.
     _data_encoding = 'ascii'
     _description = 'No description available'
+    _is_cacheable = 0
 
     def __init__(self, id, title):
         self.id = id
@@ -73,20 +74,20 @@ class ExternalSource(Acquisition.Implicit):
         """
         return self.parameters
 
-    def to_html(self, REQUEST, **kw):
+    def to_html(self, REQUEST=None, **kw):
         """ Render the HTML for inclusion in the rendered Silva HTML.
         """
         return ''
 
-    def to_xml(self, REQUEST, **kw):
+    def to_xml(self, REQUEST=None, **kw):
         """ Render the XML for this source.
         """
-        return '<source></source>'
+        return ''
 
-    def is_cacheable(self, REQUEST, **kw):
+    def is_cacheable(self, **kw):
         """ Specify the cacheability.
         """
-        return 0
+        return self._is_cacheable
 
     def data_encoding(self):
         """ Specify the encoding of source's data.
@@ -134,5 +135,11 @@ class ExternalSource(Acquisition.Implicit):
         """ set description of external source's use
         """
         self._description = desc
+
+    security.declareProtected(ViewManagementScreens, 'set_is_cacheable')
+    def set_is_cacheable(self, cacheable):
+        """ set cacheablility of source
+        """
+        self._is_cacheable = cacheable
 
 InitializeClass(ExternalSource)

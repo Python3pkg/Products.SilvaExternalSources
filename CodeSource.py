@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.3 $
+# $Revision: 1.4 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -56,7 +56,7 @@ class CodeSource(ExternalSource, Folder):
 
     security.declareProtected(ViewManagementScreens, 'manage_editCodeSource')
     def manage_editCodeSource(
-        self, title, script_id, data_encoding, description=None):
+        self, title, script_id, data_encoding, description=None, cacheable=None):
         """ Edit CodeSource object
         """
         msg = ''
@@ -75,7 +75,11 @@ class CodeSource(ExternalSource, Folder):
         if description and description != self._description:
             self.set_description(description)
             msg += 'Description changed. '
-        
+
+        if not (not not cacheable) is (not not self._is_cacheable):
+            self.set_is_cacheable(cacheable)
+            msg += 'Cacheability setting changed. '
+
         try:
             script = self[script_id]
         except KeyError:

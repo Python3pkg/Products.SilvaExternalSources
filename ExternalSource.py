@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.14 $
+# $Revision: 1.15 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -89,7 +89,10 @@ class ExternalSource(Acquisition.Implicit):
 
     security = ClassSecurityInfo()
 
+    management_page_charset = 'utf-8'
+    
     parameters = None # Cannot make it 'private'; the form won't work in the ZMI if it was.
+
     _data_encoding = 'ISO-8859-15'
     _description = ''
     _is_cacheable = 0
@@ -226,6 +229,10 @@ class ExternalSource(Acquisition.Implicit):
     def set_description(self, desc):
         """ set description of external source's use
         """
+        # If it is not unicode already, assume it is in the encoding as
+        # specified by "management_page_charset".
+        if type(desc) != type(u''):
+            desc = unicode(desc, self.management_page_charset, 'replace')
         self._description = desc
 
     security.declareProtected(ViewManagementScreens, 'set_is_cacheable')

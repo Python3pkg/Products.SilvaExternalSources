@@ -81,7 +81,7 @@
             <message name="external_validator_failed">The input failed the external validator.</message>
           </messages>
         </field>
-        <field><id>csvtableclass</id> <type>ListField</type>
+        <field><id>table_class</id> <type>ListField</type>
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>

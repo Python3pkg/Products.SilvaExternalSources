@@ -11,11 +11,91 @@
 
 <metal:use-macro use-macro="view/macro_asset_edit/macros/editor">
 
+<!-- remove the title input box -->
+
+<metal:fill-slot fill-slot='title_metadata'>
+  
+</metal:fill-slot>
+
+<metal:fill-slot fill-slot='title_editor'>
+  
+</metal:fill-slot>
 
 <metal:fill-slot fill-slot="additional_tools">
+<!-- end of title input box -->
 
 <!--   <metal:block use-macro="view/macro_asset_edit/macros/uploader" /> -->
 
+  <!-- UPLOAD FORM -->
+
+  <form method="POST"
+    name="form"
+    action="."
+    enctype="multipart/form-data">
+    <table class="listing">
+      <thead>
+        <tal:block replace="nothing">
+          ______________ top controls row ______________
+        </tal:block>
+        <tr class="top-controls">
+          <td colspan="3">
+            <h3 i18n:translate="csv_source_upload">
+              CSV Source upload
+            </h3>
+          </td>
+        </tr>
+      </thead>
+      <tbody tal:define="fields view/upload_form/get_fields">
+        <tr>
+          <th class="align-right"
+            width="12%"
+            i18n:translate="element">
+            element
+          </th>
+          <th i18n:translate="content">
+            content
+          </th>
+          <th width="40%" i18n:translate="note">
+            note
+          </th>
+        </tr>
+        <tal:repeat repeat="field fields">
+          <tal:define define="iterate repeat/field/odd">
+            <tr tal:attributes="class python:iterate and 'odd' or 'even'">
+              <td class="field-title">
+                <span tal:replace="python:field['title']">
+                  title</span><span class="warning"
+                  tal:condition="python:field.is_required()">*</span>
+              </td>
+              <td>
+                <input tal:replace="structure python:field.render_from_request(request)" />
+              </td>
+              <td>
+                <span tal:replace="structure python:field.get_value('description')">
+                  comments here (field description)
+                </span>
+              </td>
+            </tr>
+          </tal:define>
+        </tal:repeat>
+      </tbody>
+      <tfoot>
+        <tr class="controls">
+          <td class="align-right"
+            colspan="3">
+            <input class="button"
+              type="submit"
+              name="upload_submit:method"
+              value="upload"
+              title="access key: alt-u"
+              accesskey="u"
+              i18n:attributes="title value"
+            />
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </form>
 
 
 
@@ -90,76 +170,6 @@
     </table>
   </form>
 
-  <!-- UPLOAD FORM -->
-
-  <form method="POST"
-    name="form"
-    action="."
-    enctype="multipart/form-data">
-    <table class="listing">
-      <thead>
-        <tal:block replace="nothing">
-          ______________ top controls row ______________
-        </tal:block>
-        <tr class="top-controls">
-          <td colspan="3">
-            <h3 i18n:translate="csv_source_upload">
-              CSV Source upload
-            </h3>
-          </td>
-        </tr>
-      </thead>
-      <tbody tal:define="fields view/upload_form/get_fields">
-        <tr>
-          <th class="align-right"
-            width="12%"
-            i18n:translate="element">
-            element
-          </th>
-          <th i18n:translate="content">
-            content
-          </th>
-          <th width="40%" i18n:translate="note">
-            note
-          </th>
-        </tr>
-        <tal:repeat repeat="field fields">
-          <tal:define define="iterate repeat/field/odd">
-            <tr tal:attributes="class python:iterate and 'odd' or 'even'">
-              <td class="field-title">
-                <span tal:replace="python:field['title']">
-                  title</span><span class="warning"
-                  tal:condition="python:field.is_required()">*</span>
-              </td>
-              <td>
-                <input tal:replace="structure python:field.render_from_request(request)" />
-              </td>
-              <td>
-                <span tal:replace="structure python:field.get_value('description')">
-                  comments here (field description)
-                </span>
-              </td>
-            </tr>
-          </tal:define>
-        </tal:repeat>
-      </tbody>
-      <tfoot>
-        <tr class="controls">
-          <td class="align-right"
-            colspan="3">
-            <input class="button"
-              type="submit"
-              name="upload_submit:method"
-              value="upload"
-              title="access key: alt-u"
-              accesskey="u"
-              i18n:attributes="title value"
-            />
-          </td>
-        </tr>
-      </tfoot>
-    </table>
-  </form>
   <!-- RAW DATA FORM -->
 
   <form method="POST"
@@ -174,7 +184,7 @@
         <tr class="top-controls">
           <td colspan="3">
             <h3 i18n:translate="csv_source_raw_data">
-              CSV Source raw data
+              comma separated value data
             </h3>
           </td>
         </tr>

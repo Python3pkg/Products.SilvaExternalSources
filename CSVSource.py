@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.16 $
+# $Revision: 1.17 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -174,20 +174,25 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         """ Edit CSVSource object
         """
         msg = ''
-        if character_set == 'default' and data_encoding and data_encoding != self._data_encoding:
-            charset = data_encoding
+        if character_set == 'default':
+            if data_encoding != self._data_encoding:
+                charset = data_encoding
+            else:
+                charset = None
+                pass
         else:
             charset = character_set
-        # first check if encoding is known
-        # if not, don't change it and display error message
-        try:
-            unicode('abcd', charset, 'replace')
-        except LookupError:
-            # unknown encoding, return error message
-            msg += "Unknown encoding %s, not changed!. " % charset
-            return self.editCSVSource(manage_tabs_message=msg)
-        self.set_data_encoding(charset)
-        msg += 'Data encoding changed to: %s. ' % charset
+        if charset is not None:
+            # first check if encoding is known
+            # if not, don't change it and display error message
+            try:
+                unicode('abcd', charset, 'replace')
+            except LookupError:
+                # unknown encoding, return error message
+                msg += "Unknown encoding %s, not changed!. " % charset
+                return self.editCSVSource(manage_tabs_message=msg)
+            self.set_data_encoding(charset)
+            msg += 'Data encoding changed to: %s. ' % charset
         
         if title and title != self.title:
             # XXX
@@ -211,9 +216,9 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             data = file.read()
             self.update_data(data)
             msg += 'Data updated. '
-        if not (not not headings) is (not not self._has_headings):
-            self._has_headings = (not not headings)
-            msg += 'Has headings setting changed. '
+##         if not (not not headings) is (not not self._has_headings):
+##             self._has_headings = (not not headings)
+##             msg += 'Has headings setting changed. '
         return self.editCSVSource(manage_tabs_message=msg)
 
     security.declareProtected(ViewManagementScreens, 'manage_editDataCSVSource')
@@ -221,7 +226,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         """ Edit CSVSource raw data
         """
         msg = ''
-        if data and data != self._raw_data:
+        if data:
             self.update_data(data)
             msg += 'Raw data updated. '
         return self.editDataCSVSource(manage_tabs_message=msg)

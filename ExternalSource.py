@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.5 $
+# $Revision: 1.6 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -118,7 +118,7 @@ class ExternalSource(Acquisition.Implicit):
         """
         return self._description
 
-    def index_html(self, REQUEST, RESPONSE):
+    def index_html(self, REQUEST=None, RESPONSE=None, view_method=None):
         """ render HTML with default or other test values in ZMI for
         purposes of testing the ExternalSource.
         """

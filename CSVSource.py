@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.8 $
+# $Revision: 1.9 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -88,7 +88,10 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             rows = rows[1:]
         else:
             headings = None
-        return layout(table=rows, headings=headings, parameters=kw)
+	parameters = {}
+	parameters.update(kw)
+	parameters['table_class'] = self._table_class
+        return layout(table=rows, headings=headings, parameters=parameters)
 
     def get_title (self):
         """Return meta-data title for this instance
@@ -96,6 +99,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         ms = self.service_metadata
         return ms.getMetadataValue(self, 'silva-content', 'maintitle')
 
+    security.declareProtected(ViewManagementScreens, 'get_table_class')
     def get_table_class (self):
         """Returns css class for table """
         return self._table_class
@@ -237,7 +241,6 @@ def reset_parameter_form(csvsource):
 
 def reset_table_layout(sqlsource):
     # Works for Zope object implementing a 'write()" method...
-    import pdb; pdb.set_trace()
     layout = [
         ('layout', ZopePageTemplate, 'csvtable.zpt'),
         ('macro', ZopePageTemplate, 'csvmacro.zpt'),

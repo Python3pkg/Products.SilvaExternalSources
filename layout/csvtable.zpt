@@ -5,12 +5,10 @@
   xmlns:metal="http://xml.zope.org/namespaces/metal"
   xmlns:tal="http://xml.zope.org/namespaces/tal"
   tal:define="
-    view here;
-    model python:view.REQUEST.model;
-    table_class model/get_table_class;
+    parameters options/parameters | nothing;
+    table_class parameters/table_class;
     table options/table | nothing;
     headings options/headings | nothing;
-    parameters options/parameters | nothing;
 
     Batch nocall:modules/Products/Silva/batch/Batch;
     b_size python: 50;

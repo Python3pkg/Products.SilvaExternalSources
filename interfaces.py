@@ -8,7 +8,7 @@ module_security = ModuleSecurityInfo('Products.SilvaExternalSources.interfaces')
 class IExternalSource(Interface):
     """Access to an external source of data.
 
-    The ExternalSource is resposible for composing a Formulator form
+    The ExternalSource is responsible for composing a Formulator form
     for the UI, to render the data in XHTML and XML and to specify
     its cacheability.
     """
@@ -35,12 +35,12 @@ class IExternalSource(Interface):
         """
         pass
 
-    def data_encoding(self):
+    def data_encoding():
         """ Specify the encoding of source's data.
         """
         pass
 
-    def description(self):
+    def description():
         """ Specify the use of this source.
         """
         pass

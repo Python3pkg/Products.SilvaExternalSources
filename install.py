@@ -5,6 +5,8 @@ def is_installed(root):
     return hasattr(root.service_views, 'SilvaExternalSources')
 
 def install(root):
+    # Hack - refresh SilvaDocument to make it pick up this extension
+    root.service_extensions.refresh('SilvaDocument')
     root.service_views.manage_addFolder('SilvaExternalSources')
 
 def uninstall(root):

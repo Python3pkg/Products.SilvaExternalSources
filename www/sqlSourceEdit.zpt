@@ -1,7 +1,7 @@
 <!--
 Copyright (c) 2002 Infrae. All rights reserved.
 See also LICENSE.txt
-Version of this file: $Revision: 1.5 $
+Version of this file: $Revision: 1.6 $
 -->
 <tal:block replace="structure here/manage_page_header" />
 <tal:block 
@@ -9,7 +9,7 @@ Version of this file: $Revision: 1.5 $
   replace="structure here/manage_tabs" />
 
 <h2 class="form-help">
-  Edit SQLSource
+  Edit Silva SQL Source
 </h2>
 
 <form action="manage_editSQLSource" method="post">

@@ -32,7 +32,8 @@
         tal:define="iterate repeat/row/even;"
         tal:attributes="
           class python: iterate and 'even' or 'odd';
-          style python: iterate and even_style or odd_style"
+          style python: iterate and even_style or odd_style;
+          "
         >
         <tal:block repeat="cell row">
           <td tal:content="cell" />

@@ -1,15 +1,16 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.3 $
+# $Revision: 1.4 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
-from OFS.SimpleItem import SimpleItem
+from OFS.Folder import Folder
 from Globals import InitializeClass, package_home
 from AccessControl import ClassSecurityInfo
 from Products.ZSQLMethods.SQL import SQLConnectionIDs, SQL
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
+from Products.PythonScripts.PythonScript import PythonScript
 # Formulator
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.XMLToForm import XMLToForm
@@ -20,7 +21,8 @@ from Products.Silva import mangle
 
 icon="www/silvasqldatasource.png"
 
-class SQLSource(SimpleItem, ExternalSource):
+class SQLSource(ExternalSource, Folder):
+
     __implements__ = IExternalSource
     
     meta_type = "Silva SQL Source"
@@ -28,31 +30,30 @@ class SQLSource(SimpleItem, ExternalSource):
     security = ClassSecurityInfo()
 
     _sql_method_id = 'sql_method'
+    _layout_id = 'layout'
     _v_cached_parameters = None
 
     # ZMI Tabs
     manage_options = (
         {'label':'Edit', 'action':'editSQLSource'},
         {'label':'Parameters', 'action':'parameters/manage_main'},
-        {'label':'Layout', 'action':'layout/manage_main'},
-        {'label':'View', 'action':'index_html'},
-        ) + SimpleItem.manage_options
+        ) + Folder.manage_options
 
     security.declareProtected(ViewManagementScreens, 'sqlSourceEdit')    
     editSQLSource = PageTemplateFile(
         'www/sqlSourceEdit', globals(),  __name__='sqlCodeSource')
-
-    manage_main = editSQLSource
 
     def __init__(self, id, title):
         SQLSource.inheritedAttribute('__init__')(self, id, title)
         self._sql_method = None
         self._statement = None
         self._connection_id = None
-        self.layout = None
 
     # ACCESSORS
-   
+
+    def layout_id(self):
+        return self._layout_id
+
     def connection_id(self):
         return self._connection_id
     
@@ -128,7 +129,7 @@ class SQLSource(SimpleItem, ExternalSource):
     security.declareProtected(ViewManagementScreens, 'manage_editSQLSource')
     def manage_editSQLSource(
         self, title, connection_id, data_encoding, statement, 
-        description=None, reset_layout=None, reset_params=None):
+        description=None, layout_id=None, reset_layout=None, reset_params=None):
         """ Edit SQLSource object
         """
         msg = ''
@@ -152,8 +153,12 @@ class SQLSource(SimpleItem, ExternalSource):
             self.set_description(description)
             msg += 'Description changed. '
 
+        if layout_id and layout_id != self._layout_id:
+            self._layout_id = layout_id
+            msg += 'Layout object id changed. '
+
         if reset_layout:
-            reset_table_pagetemplate(self)
+            reset_table_layout(self)
             msg += 'Table rendering pagetemplate reset to default layout. '
 
         if reset_params:
@@ -169,10 +174,18 @@ addSQLSource = PageTemplateFile(
 
 import os
 
-def reset_table_pagetemplate(sqlsource):
-    filename = os.path.join(package_home(globals()), 'layout', 'table.zpt')
-    f = open(filename, 'rb')
-    sqlsource.layout = ZopePageTemplate('layout', f.read())
+def reset_table_layout(sqlsource):
+    layout = [
+        ('layout', ZopePageTemplate, 'table.zpt'),
+        ('getBatch', PythonScript, 'batch.py'),
+    ]
+
+    for id, klass, file in layout:
+        filename = os.path.join(package_home(globals()), 'layout', file)
+        f = open(filename, 'rb')
+        if not id in sqlsource.objectIds():
+            sqlsource._setObject(id, klass(id))
+        sqlsource[id].write(f.read())
     f.close()    
 
 def reset_parameter_form(sqlsource):
@@ -193,6 +206,5 @@ def manage_addSQLSource(context, id, title, REQUEST=None):
     # parameters form
     reset_parameter_form(datasource)
     # table rendering layout pagetemplate
-    reset_table_pagetemplate(datasource)
+    reset_table_layout(datasource)
     add_and_edit(context, id, REQUEST)
-    return datasource

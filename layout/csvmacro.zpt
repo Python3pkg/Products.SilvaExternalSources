@@ -61,7 +61,9 @@
 
       <!-- Current page -->
       <tal:block condition="batch/navlist">
-        [<span tal:content="batch/pagenumber">Current page number</span>]
+      <span class="brackets">[</span><span class="currentpage" tal:content="batch/pagenumber">
+         Current page number
+       </span><span class="brackets">]</span>
       </tal:block>
     
       <!-- Pagelist with links to next pages for quick navigation -->

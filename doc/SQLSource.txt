@@ -1,4 +1,4 @@
-Copyright (c) 2002-2004 Infrae. All rights reserved.
+Copyright (c) 2002-2005 Infrae. All rights reserved.
 See also LICENSE.txt
 
 Meta::
@@ -6,7 +6,7 @@ Meta::
   Valid for:  SilvaExternalSources 0.3
   Author:     Jan-Wijbrand Kolman
   Email:      jw at infrae.com
-  CVS:        $Revision: 1.4 $
+  CVS:        $Revision: 1.5 $
 
 
 SilvaExternalSource - Silva SQL Source

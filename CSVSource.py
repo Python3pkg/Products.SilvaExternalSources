@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.23 $
+# $Revision: 1.24 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -12,7 +12,7 @@ from Products.Formulator.XMLToForm import XMLToForm
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 # Silva
-from Products.Silva.SilvaPermissions import ViewManagementScreens
+from Products.Silva import SilvaPermissions
 from Products.Silva.helpers import add_and_edit
 from Products.Silva.SilvaObject import SilvaObject
 from Products.Silva.interfaces import IAsset
@@ -47,11 +47,13 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         {'label':'Edit Data', 'action':'editDataCSVSource'},
         ) + Folder.manage_options
 
-    security.declareProtected(ViewManagementScreens, 'csvSourceEdit')    
+    security.declareProtected(
+        SilvaPermissions.ViewManagementScreens, 'csvSourceEdit')    
     editCSVSource = PageTemplateFile(
         'www/csvSourceEdit', globals(),  __name__='editCSVSource')
 
-    security.declareProtected(ViewManagementScreens, 'csvSourceEditData')    
+    security.declareProtected(
+        SilvaPermissions.ViewManagementScreens, 'csvSourceEditData')    
     editDataCSVSource = PageTemplateFile(
         'www/csvSourceEditData', globals(),  __name__='editCSVSourceData')
 
@@ -105,7 +107,8 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         ms = self.service_metadata
         return ms.getMetadataValue(self, 'silva-content', 'maintitle')
 
-    security.declareProtected(ViewManagementScreens, 'get_table_class')
+    security.declareProtected(
+        SilvaPermissions.ViewManagementScreens, 'get_table_class')
     def get_table_class (self):
         """Returns css class for table """
         return self._table_class
@@ -117,6 +120,8 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 
     # MODIFIERS
 
+    security.declareProtected(
+        SilvaPermissions.ChangeSilvaContent, 'update_data')
     def update_data (self, data):
         asv = ASV.ASV()
         asv.input(data, ASV.CSV(), has_field_names=0)
@@ -144,6 +149,8 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         return rows
 
 
+    security.declareProtected(
+        SilvaPermissions.ChangeSilvaContent, 'set_data_encoding')
     def set_data_encoding (self, encoding):
         self._data_encoding = encoding
         self.update_data(self._raw_data)
@@ -154,7 +161,8 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 ##         self._has_headings = (not not headings)
 ##         return
 
-    security.declareProtected(ViewManagementScreens, 'set_table_class')
+    security.declareProtected(
+        SilvaPermissions.ViewManagementScreens, 'set_table_class')
     def set_table_class (self, css_class):
         self._table_class = css_class
         return 
@@ -177,7 +185,8 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 
     # MANAGERS
 
-    security.declareProtected(ViewManagementScreens, 'manage_editCSVSource')
+    security.declareProtected(
+        SilvaPermissions.ViewManagementScreens, 'manage_editCSVSource')
     def manage_editCSVSource(
         self, title, character_set, description=None, cacheable=None,
         headings=None, file=None):
@@ -226,7 +235,8 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 ##             msg += 'Has headings setting changed. '
         return self.editCSVSource(manage_tabs_message=msg)
 
-    security.declareProtected(ViewManagementScreens, 'manage_editDataCSVSource')
+    security.declareProtected(
+        SilvaPermissions.ViewManagementScreens, 'manage_editDataCSVSource')
     def manage_editDataCSVSource(self, data=None):
         """ Edit CSVSource raw data
         """

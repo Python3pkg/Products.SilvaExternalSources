@@ -31,6 +31,16 @@ class IExternalSource(Interface):
         pass
 
     def is_cacheable(REQUEST, **kw):
-        """ Specify the cacheability.
+        """ Specify the cacheability for this source.
+        """
+        pass
+
+    def data_encoding(self):
+        """ Specify the encoding of source's data.
+        """
+        pass
+
+    def description(self):
+        """ Specify the use of this source.
         """
         pass

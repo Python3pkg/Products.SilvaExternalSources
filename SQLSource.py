@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.2 $
+# $Revision: 1.3 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -128,7 +128,7 @@ class SQLSource(SimpleItem, ExternalSource):
     security.declareProtected(ViewManagementScreens, 'manage_editSQLSource')
     def manage_editSQLSource(
         self, title, connection_id, data_encoding, statement, 
-        reset_layout=None, reset_params=None):
+        description=None, reset_layout=None, reset_params=None):
         """ Edit SQLSource object
         """
         msg = ''
@@ -140,13 +140,17 @@ class SQLSource(SimpleItem, ExternalSource):
             self._set_connection_id(connection_id)
             msg += 'Connection id changed. '
 
-        if data_encoding and data_encoding != self._data_encoding:
-            self._data_encoding = data_encoding
-            msg += 'Data encoding changed. '
-
         if statement and statement != self._statement:
             self._set_statement(statement)
             msg += 'SQL statement changed. '
+
+        if data_encoding and data_encoding != self._data_encoding:
+            self.set_data_encoding(data_encoding)
+            msg += 'Data encoding changed. '
+
+        if description and description != self._description:
+            self.set_description(description)
+            msg += 'Description changed. '
 
         if reset_layout:
             reset_table_pagetemplate(self)

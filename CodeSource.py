@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.2 $
+# $Revision: 1.3 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -55,7 +55,8 @@ class CodeSource(ExternalSource, Folder):
     # MANAGERS
 
     security.declareProtected(ViewManagementScreens, 'manage_editCodeSource')
-    def manage_editCodeSource(self, title, script_id, data_encoding):
+    def manage_editCodeSource(
+        self, title, script_id, data_encoding, description=None):
         """ Edit CodeSource object
         """
         msg = ''
@@ -68,9 +69,13 @@ class CodeSource(ExternalSource, Folder):
             msg += 'Script id changed. '
 
         if data_encoding and data_encoding != self._data_encoding:
-            self._data_encoding = data_encoding
+            self.set_data_encoding(data_encoding)
             msg += 'Data encoding changed. '
 
+        if description and description != self._description:
+            self.set_description(description)
+            msg += 'Description changed. '
+        
         try:
             script = self[script_id]
         except KeyError:

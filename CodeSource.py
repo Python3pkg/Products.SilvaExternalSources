@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.11.10.2 $
+# $Revision: 1.11.10.3 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -23,8 +23,11 @@ class CodeSource(ExternalSource, Folder):
 
     security = ClassSecurityInfo()
 
-    # UTF as UI is in UTF-8
-    _data_encoding = 'UTF-8'
+    # XXX backwards compatibility hacks..
+    # Force UI into latin 1
+    management_page_charset = "ISO-8859-15"
+    # latin 1, unfortunately..
+    _data_encoding = 'ISO-8859-15'
     
     # ZMI Tabs
     manage_options = (

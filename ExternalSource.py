@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.15 $
+# $Revision: 1.16 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -229,10 +229,6 @@ class ExternalSource(Acquisition.Implicit):
     def set_description(self, desc):
         """ set description of external source's use
         """
-        # If it is not unicode already, assume it is in the encoding as
-        # specified by "management_page_charset".
-        if type(desc) != type(u''):
-            desc = unicode(desc, self.management_page_charset, 'replace')
         self._description = desc
 
     security.declareProtected(ViewManagementScreens, 'set_is_cacheable')

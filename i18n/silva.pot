@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: Fri Nov 19 15:46:10 2004\n"
+"POT-Creation-Date: Thu Dec  2 10:42:41 2004\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Silva i18n team <walco@infrae.com>\n"
@@ -97,6 +97,46 @@ msgstr ""
 msgid "Added ${metatype} ${id}."
 msgstr ""
 
+#: /views/add/CSVSource/form.form:29
+msgid "id"
+msgstr ""
+
+#: /views/add/CSVSource/form.form:31
+msgid "No spaces or special characters besides &#8216;_&#8217; or &#8216;-&#8217; or &#8216;.&#8217;"
+msgstr ""
+
+#: /views/add/CSVSource/form.form:49
+#: /views/edit/Asset/CSVSource/form.form:30
+msgid "title"
+msgstr ""
+
+#: /views/add/CSVSource/form.form:50
+msgid "The title might be publicly visible."
+msgstr ""
+
+#: /views/add/CSVSource/form.form:62
+#: /views/edit/Asset/CSVSource/charset_form.form:23
+msgid "Character coding of the source data."
+msgstr ""
+
+#: /views/add/CSVSource/form.form:72
+msgid "character coding"
+msgstr ""
+
+#: /views/add/CSVSource/form.form:89
+#: /views/edit/Asset/CSVSource/upload_form.form:23
+msgid "File to upload as source data."
+msgstr ""
+
+#: /views/add/CSVSource/form.form:96
+#: /views/edit/Asset/CSVSource/upload_form.form:30
+msgid "csv file"
+msgstr ""
+
+#: /views/edit/Asset/CSVSource/charset_form.form:33
+msgid "coding"
+msgstr ""
+
 #: /views/edit/Asset/CSVSource/charset_submit.py:25
 msgid "Unknown encoding ${enc}. Character encoding not saved! "
 msgstr ""
@@ -157,6 +197,19 @@ msgstr ""
 
 #: /views/edit/Asset/CSVSource/edit.pt:99
 msgid "csv source upload"
+msgstr ""
+
+#: /views/edit/Asset/CSVSource/form.form:32
+#: /views/edit/Asset/CSVSource/form.form:58
+msgid "Optional, but useful."
+msgstr ""
+
+#: /views/edit/Asset/CSVSource/form.form:56
+msgid "description"
+msgstr ""
+
+#: /views/edit/Asset/CSVSource/rawdata_form.form:32
+msgid "data"
 msgstr ""
 
 #: /views/edit/Asset/CSVSource/rawdata_submit.py:24

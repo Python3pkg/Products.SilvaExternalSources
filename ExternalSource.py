@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.19 $
+# $Revision: 1.20 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -114,6 +114,7 @@ class ExternalSource(Acquisition.Implicit):
             REQUEST.form['model'] = self
         xml = ['<?xml version="1.0" encoding="UTF-8" ?>\n',
                 '<form action="" method="POST">',
+                '<input type="hidden" name="metatype" value="%s" />' % self.meta_type,
                 '<table width="100%" id="extsourceform" style="display: block" class="plain">']
         for field in self.form().get_fields():
             xml.append('<tr><td>%s</td>' % field.title())
@@ -142,6 +143,7 @@ class ExternalSource(Acquisition.Implicit):
             return '&'.join(['%s=%s' % (e.field['title'], e.error_text) for e in e.errors])
         else:
             REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8');
+            result['metatype'] = self.meta_type
             xml = self._formresult_to_xml(result)
             return xml
 

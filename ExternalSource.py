@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.12 $
+# $Revision: 1.13 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -17,7 +17,7 @@ from Products.Formulator.Errors import ValidationError, FormValidationError
 icon="www/silvaexternalsource.png"
 
 module_security = ModuleSecurityInfo(
-'Products.SilvaExternalSources.ExternalSource')
+    'Products.SilvaExternalSources.ExternalSource')
 
 class _AvailableSources:
     """SINGLETON

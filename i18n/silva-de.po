@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "POT-Creation-Date: Fri Nov 19 15:46:10 2004\n"
-"PO-Revision-Date: 2004-11-19 17:02+0100\n"
+"PO-Revision-Date: 2004-11-22 10:29+0100\n"
 "Last-Translator: Guido Goldstein <gst@infrae.com>\n"
 "Language-Team: Silva i18n team <walco@infrae.com>\n"
 "MIME-Version: 1.0\n"
@@ -46,11 +46,11 @@ msgstr ""
 
 #: /CSVSource.py:253
 msgid "Data updated. "
-msgstr ""
+msgstr "Daten geändert."
 
 #: /CSVSource.py:268
 msgid "Raw data updated. "
-msgstr ""
+msgstr "Rohdaten geändert."
 
 #: /CodeSource.py:111
 msgid "<b>Warning</b>: "
@@ -62,7 +62,7 @@ msgstr "keine Script-Id angegeben!"
 
 #: /CodeSource.py:117
 msgid "This code source does not contain an callable object with id \"${id}\"! "
-msgstr ""
+msgstr "Diese CodeSource enthälte kein aufrufbares Objekt mit der Id \"${id}\"!"
 
 #: /CodeSource.py:87
 msgid "Script id changed. "
@@ -74,19 +74,19 @@ msgstr "Datenkodierung geändert."
 
 #: /SQLSource.py:167
 msgid "Connection id changed. "
-msgstr ""
+msgstr "Verbindungs-Id geändert."
 
 #: /SQLSource.py:173
 msgid "SQL statement changed. "
-msgstr ""
+msgstr "SQL-Ausdruck geändert."
 
 #: /SQLSource.py:196
 msgid "Layout object id changed. "
-msgstr ""
+msgstr "Layoutobjeckt-Id geändert."
 
 #: /SQLSource.py:202
 msgid "Table rendering pagetemplate reset to default layout. "
-msgstr ""
+msgstr "Tabellenanzeigetemplate auf Voreinstellung zurückgesetzt."
 
 #: /SQLSource.py:208
 msgid "Parameters form reset to default. "
@@ -114,7 +114,7 @@ msgstr "Encoding gesetzt zu: ${enc}"
 
 #: /views/edit/Asset/CSVSource/edit.pt:143
 msgid "access key: alt-u"
-msgstr ""
+msgstr "Kurzwahl: alt-u"
 
 #: /views/edit/Asset/CSVSource/edit.pt:143
 msgid "upload"
@@ -130,7 +130,7 @@ msgstr "Daten ändern"
 
 #: /views/edit/Asset/CSVSource/edit.pt:206
 msgid "access key: alt-c"
-msgstr ""
+msgstr "Kurzwahl: alt-c"
 
 # Default: "character coding"
 #: /views/edit/Asset/CSVSource/edit.pt:29
@@ -160,7 +160,7 @@ msgstr "Encondig setzen"
 
 #: /views/edit/Asset/CSVSource/edit.pt:73
 msgid "access key: alt-e"
-msgstr ""
+msgstr "Kurzwahl: alt-e"
 
 #: /views/edit/Asset/CSVSource/edit.pt:99
 msgid "csv source upload"

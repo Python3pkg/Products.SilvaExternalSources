@@ -3,10 +3,10 @@ See also LICENSE.txt
 
 Meta::
 
-  Valid for:  SilvaExternalSources 0.9
+  Valid for:  SilvaExternalSources 0.9.1
   Author:     Martijn Faassen
   Email:      faasen at infrae.com
-  CVS:        $Revision: 1.4 $
+  CVS:        $Revision: 1.5 $
 
 SilvaExternalSources is a Silva extension. This version requires Silva
 1.0. Extensive documentation can be accessed by installing a Silva

@@ -1,5 +1,5 @@
 import install
-import CodeSource, SQLSource
+import CodeSource, SQLSource, CSVSource
 # Silva
 from Products.Silva.ExtensionRegistry import extensionRegistry
 
@@ -17,6 +17,15 @@ def initialize(context):
         icon = "www/codesource.png"
         )
  
+    context.registerClass(
+        CSVSource.CSVSource,
+        constructors = (
+            CSVSource.addCSVSource,
+            CSVSource.manage_addCSVSource
+            ),
+        icon = "www/codesource.png"
+        )
+
     context.registerClass(
         SQLSource.SQLSource,
         constructors = (

@@ -1,0 +1,46 @@
+<!--
+Copyright (c) 2004 Infrae. All rights reserved.
+See also LICENSE.txt
+Version of this file: $Revision: 1.1 $
+-->
+<tal:block replace="structure here/manage_page_header" />
+<tal:block 
+  define="manage_tabs_message options/manage_tabs_message | nothing"
+  replace="structure here/manage_tabs" />
+
+<h2 class="form-help">
+  Edit Silva CSV Source Data
+</h2>
+<form action="manage_editDataCSVSource" method="post">
+  <table cellspacing="0" cellpadding="2" border="0">
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-label">
+          Raw Data
+        </div>
+      </td>
+      <td align="left" valign="top">
+        <textarea 
+          style="width: 100%;" 
+          type="text" 
+          cols="60" 
+          rows="25" 
+          wrap="soft"
+          value=""
+          name="data" 
+          tal:content="here/raw_data"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">
+      </td>
+      <td align="left" valign="top">
+        <div class="form-element">
+          <input class="form-element" type="submit" name="submit_edit" value="Save changes" />
+        </div>
+      </td>
+    </tr>
+  </table>
+</form>
+<h1 tal:replace="structure here/manage_page_footer">Footer</h1>

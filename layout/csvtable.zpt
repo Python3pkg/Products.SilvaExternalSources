@@ -6,6 +6,8 @@
   xmlns:tal="http://xml.zope.org/namespaces/tal"
   tal:define="
     view here;
+    model python:view.REQUEST.model;
+    table_class model/get_table_class;
     table options/table | nothing;
     headings options/headings | nothing;
     parameters options/parameters | nothing;
@@ -17,7 +19,6 @@
     
     batch python: Batch(table, b_size, int(b_start), orphan=3);
 
-    table_class parameters/table_class | nothing;
     even_style parameters/even_row_style | nothing;
     odd_style parameters/odd_row_style | nothing;
     "

@@ -21,12 +21,13 @@ try:
 except LookupError:
     # unknown encoding, return error message
     msg_type = 'error'
-    msg = "Unknown encoding %s, not changed!. " % de
+    msg = "Unknown encoding '%s'. Data not uploaded! " % de
+    return view.tab_edit(message_type=msg_type, message=msg)
 else:
     model.set_data_encoding(de)
     msg += 'Encoding set to: %s ' % de
 
-if result.has_key('file'):
+if result.has_key('file') and result['file'] is not None:
     fin = result['file']
     data = fin.read()
     if data:

@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.1 $
+# $Revision: 1.2 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -19,6 +19,11 @@ icon="www/codesource.png"
 import ASV
 
 class CSVSource(ExternalSource, Folder):
+
+    """CSVSource is an ExternalSource which can display tabular data in
+    'comma separated values' format.
+    """
+
 
     __implements__ = IExternalSource
     
@@ -65,21 +70,13 @@ class CSVSource(ExternalSource, Folder):
         """ render HTML for CSV source
         """
         layout = self[self._layout_id]
-        rows = self._unicode_helper(self._data)
+        rows = self._data[:]
         if self._has_headings:
             headings = rows[0]
             rows = rows[1:]
         else:
             headings = None
         return layout(table=rows, headings=headings, parameters=kw)
-
-    def _unicode_helper(self, rows):
-        for r in rows:
-            for i in xrange(len(r)):
-                value = r[i]
-                if type(value) is type(''):
-                    r[i] = unicode(value, self._data_encoding, 'replace')
-        return rows
 
     # MODIFIERS
 
@@ -93,9 +90,18 @@ class CSVSource(ExternalSource, Folder):
             for c in r:
                 l.append(c)
             rows.append(l)
+        rows = self._unicode_helper(rows)
         self._data = rows
         self._raw_data = data
         return
+
+    def _unicode_helper(self, rows):
+        for r in rows:
+            for i in xrange(len(r)):
+                value = r[i]
+                if type(value) is type(''):
+                    r[i] = unicode(value, self._data_encoding, 'replace')
+        return rows
 
     # MANAGERS
 

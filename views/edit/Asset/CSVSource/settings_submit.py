@@ -18,6 +18,9 @@ if result.has_key('csv_description'):
 if result.has_key('csv_headings'):
     model.set_headings(result['csv_headings'])
 
+if result.has_key('csv_table_class'):
+    model.set_table_class(result['csv_table_class'])
+
 msg = ['Settings changed']
 
 return view.tab_edit(message_type=msg_type, message=' '.join(msg))

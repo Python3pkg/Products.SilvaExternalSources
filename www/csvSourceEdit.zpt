@@ -1,7 +1,7 @@
 <!--
 Copyright (c) 2004 Infrae. All rights reserved.
 See also LICENSE.txt
-Version of this file: $Revision: 1.2 $
+Version of this file: $Revision: 1.3 $
 -->
 <tal:block replace="structure here/manage_page_header" />
 <tal:block 
@@ -27,17 +27,6 @@ Version of this file: $Revision: 1.2 $
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          Data encoding
-        </div>
-      </td>
-      <td align="left" valign="top">
-        <input type="text" name="data_encoding" size="40" value=""
-          tal:attributes="value here/data_encoding" />
-      </td>
-    </tr>
-    <tr>
-      <td align="left" valign="top">
-        <div class="form-label">
           Description
         </div>
       </td>
@@ -52,6 +41,44 @@ Version of this file: $Revision: 1.2 $
           name="description" 
           tal:content="here/description"
         />
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-label">
+          Data file
+        </div>
+      </td>
+      <td align="left" valign="top">
+        <input type="file" name="file:file" size="60" value="" />
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-label">
+          Character set
+        </div>
+      </td>
+      <td align="left" valign="top">
+        <select size="1" name="character_set">
+          <option value="default" selected="selected">Use specified character set below.</option>
+          <option value="utf-8">Unicode (UTF-8)</option>
+          <option value="ISO-8859-1" >Western Europe (ISO-8859-1)</option>
+          <option value="ISO-8859-15" >Western Europe (ISO-8859-15/EURO)</option>
+          <option value="ASCII" >Western Europe (ASCII/US)</option>
+          <option value="ISO-8859-5" >Cyrillic (ISO-8859-5)</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-label">
+          Manually specified character set 
+        </div>
+      </td>
+      <td align="left" valign="top">
+        <input type="text" name="data_encoding" size="40" value=""
+          tal:attributes="value here/data_encoding" />
       </td>
     </tr>
     <tr>
@@ -74,16 +101,6 @@ Version of this file: $Revision: 1.2 $
       <td align="left" valign="top">
         <input type="checkbox" name="headings" 
           tal:attributes="checked python: here.has_headings() and 'checked' or nothing" />
-      </td>
-    </tr>
-    <tr>
-      <td align="left" valign="top">
-        <div class="form-label">
-          Data file
-        </div>
-      </td>
-      <td align="left" valign="top">
-        <input type="file" name="file:file" size="60" value="" />
       </td>
     </tr>
     <tr>

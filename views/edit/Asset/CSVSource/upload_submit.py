@@ -12,17 +12,19 @@ msg_type = 'feedback'
 
 msg = ''
 
-if result.has_key('csv_dataencoding'):
+if result['csv_character_set'] == 'default':
     de = result['csv_dataencoding'].strip()
-    try:
-        unicode('abcd', de, 'replace')
-    except LookupError:
-        # unknown encoding, return error message
-        msg_type = 'error'
-        msg = "Unknown encoding %s, not changed!. " % de
-    else:
-        model.set_data_encoding(de)
-        msg += 'Encoding set. '
+else:
+    de = result['csv_character_set'].strip()
+try:
+    unicode('abcd', de, 'replace')
+except LookupError:
+    # unknown encoding, return error message
+    msg_type = 'error'
+    msg = "Unknown encoding %s, not changed!. " % de
+else:
+    model.set_data_encoding(de)
+    msg += 'Encoding set to: %s ' % de
 
 if result.has_key('file'):
     fin = result['file']

@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.7 $
+# $Revision: 1.8 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -53,6 +53,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
     _layout_id = 'layout'
 
     _has_headings = 1
+    _table_class = 'default'
 
     def __init__(self, id, title, file):
         CSVSource.inheritedAttribute('__init__')(self, id, '')
@@ -95,6 +96,10 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         ms = self.service_metadata
         return ms.getMetadataValue(self, 'silva-content', 'maintitle')
 
+    def get_table_class (self):
+        """Returns css class for table """
+        return self._table_class
+        
     def description (self):
         """ Return desc from meta-data system"""
         ms = self.service_metadata
@@ -135,6 +140,11 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         self._has_headings = (not not headings)
         return
 
+    security.declareProtected(ViewManagementScreens, 'set_table_class')
+    def set_table_class (self, css_class):
+        self._table_class = css_class
+        return 
+
     def set_title (self, title):
         CSVSource.inheritedAttribute('set_title')(self, title)
         return
@@ -153,22 +163,26 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 
     security.declareProtected(ViewManagementScreens, 'manage_editCSVSource')
     def manage_editCSVSource(
-        self, title, data_encoding, description=None, cacheable=None,
+        self, title, character_set,  data_encoding, description=None, cacheable=None,
         headings=None, file=None):
         """ Edit CSVSource object
         """
         msg = ''
-        if data_encoding and data_encoding != self._data_encoding:
-            # first check if encoding is known
-            # if not, don't change it and display error message
-            try:
-                unicode('abcd', data_encoding, 'replace')
-            except LookupError:
-                # unknown encoding, return error message
-                msg += "Unknown encoding %s, not changed!. " % data_encoding
-                return self.editCSVSource(manage_tabs_message=msg)
-            self.set_data_encoding(data_encoding)
-            msg += 'Data encoding changed. '
+        if character_set == 'default' and data_encoding and data_encoding != self._data_encoding:
+            charset = data_encoding
+        else:
+            charset = character_set
+        # first check if encoding is known
+        # if not, don't change it and display error message
+        try:
+            unicode('abcd', charset, 'replace')
+        except LookupError:
+            # unknown encoding, return error message
+            msg += "Unknown encoding %s, not changed!. " % charset
+            return self.editCSVSource(manage_tabs_message=msg)
+        self.set_data_encoding(charset)
+        msg += 'Data encoding changed to: %s. ' % charset
+        
         if title and title != self.title:
             # XXX
             # ZMI is assumed to be in utf-8
@@ -223,6 +237,7 @@ def reset_parameter_form(csvsource):
 
 def reset_table_layout(sqlsource):
     # Works for Zope object implementing a 'write()" method...
+    import pdb; pdb.set_trace()
     layout = [
         ('layout', ZopePageTemplate, 'csvtable.zpt'),
         ('macro', ZopePageTemplate, 'csvmacro.zpt'),

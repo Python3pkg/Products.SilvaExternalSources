@@ -17,7 +17,7 @@
           <alternate_name></alternate_name>
           <css_class></css_class>
           <default></default>
-          <description>Choose a style of the table which fits in your needs.</description>
+          <description>Choose a style of the table which fits your needs.</description>
           <enabled type="int">1</enabled>
           <external_validator></external_validator>
           <extra></extra>

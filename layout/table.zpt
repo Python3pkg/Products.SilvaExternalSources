@@ -13,8 +13,8 @@
     b_size python: 10;
     b_start python: 0;
     b_start request/b_start | b_start;
-
-    batch python: Batch(table['rows'], b_size, int(b_start), orphan=3);
+    
+    batch python: Batch(table, b_size, int(b_start), orphan=3);
 
     table_class parameters/table_class | nothing;
     even_style parameters/even_row_style | nothing;
@@ -33,23 +33,23 @@
       tal:content="here/title"
     />
     <thead tal:condition="parameters/show_column_heading | string:true">
-      <tr>
-        <tal:block repeat="name table/names">
-          <th tal:content="name" />        
+      <tr tal:define="row python: batch[0]">
+        <tal:block repeat="name row/keys">
+          <th tal:content="name" />
         </tal:block>
       </tr>
     </thead>
     <tbody>
-      <tal:block 
+      <tal:block
         tal:repeat="row batch">
-        <tr 
+        <tr
           tal:define="iterate repeat/row/even;"
           tal:attributes="
             class python: iterate and 'even' or 'odd';
             style python: iterate and even_style or odd_style;
             "
           >
-          <tal:block repeat="cell row">
+          <tal:block repeat="cell row/values">
             <td tal:content="cell" />
           </tal:block>
         </tr>

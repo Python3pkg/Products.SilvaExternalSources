@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.7 $
+# $Revision: 1.8 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -70,29 +70,13 @@ class SQLSource(ExternalSource, Folder):
         q.update(REQUEST)
         q.update(kw)
 
-        brains = self._get_data(q)
+        brains = self._get_data(q)        
         # We don't need to pass in the request explicitly (how would I do
-        # that anyway) since we're calling the layout (e.g. a ZPT or Python-
-        # Script) which can get to the request itself.
+        # that anyway) since we're calling the layout (e.g. a ZPT or Python
+        # Script) which can get to the request itself.        
         return self.layout(
-            table=self._table_helper(brains), parameters=kw)
-
-    def _table_helper(self, brains):
-        # make cell data unicode strings
-        enc = self._data_encoding
-        table = {}
-        table['names'] = [unicode(name, enc, 'replace') for name in brains.names()]
-        table['rows'] = []
-        for row in brains:            
-            cells = []
-            table['rows'].append(cells)
-            for cell in row:
-                if type(cell) is type(''):
-                    celldata = unicode(cell, enc, 'replace')
-                else:
-                    celldata = cell
-                cells.append(celldata)
-        return table
+            table=self._unicode_helper(
+                brains.dictionaries()), parameters=kw)
 
     def _get_data(self, args):
         if not self._sql_method:
@@ -100,6 +84,13 @@ class SQLSource(ExternalSource, Folder):
         elif self._v_cached_parameters != self.form().get_field_ids():
             self._set_sql_method()
         return self._sql_method(REQUEST=args)
+
+    def _unicode_helper(self, dictionaries):
+        for d in dictionaries:
+            for key, value in d.items():
+                if type(value) is type(''):
+                    d[key] = unicode(value, self._data_encoding, 'replace')
+        return dictionaries
 
     # MODIFIERS
 

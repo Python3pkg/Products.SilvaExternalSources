@@ -9,6 +9,10 @@ SilvaExternalSources changes
 
      o Silva 1.1 compatibility.
 
+    Bugs fixed:
+
+     o Added support for default values in the Kupu editor tool.
+
   0.9
 
     Features added:

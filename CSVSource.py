@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.27 $
+# $Revision: 1.28 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -300,7 +300,6 @@ def reset_table_layout(cs):
         cs[id].write(f.read())
         f.close()
 
-
 def manage_addCSVSource(context, id, title, file=None, REQUEST=None):
     """Add a CSVSource object
     """
@@ -308,13 +307,12 @@ def manage_addCSVSource(context, id, title, file=None, REQUEST=None):
     context._setObject(id, cs)
     cs = context._getOb(id)
     reset_table_layout(cs)
-##     frm = ZMIForm('form', 'Empty Form')
-##     cs.set_form(frm)
     reset_parameter_form(cs)
     # XXX
     # ZMI is assumed to be in utf-8
     if type(title) == type(''):
         title = unicode(title, 'utf-8', 'replace')
     cs.set_title(title)
+    cs.set_description('CSV Source description')
     add_and_edit(context, id, REQUEST, screen='editCSVSource')
     return ''

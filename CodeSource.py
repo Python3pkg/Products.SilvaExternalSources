@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.10 $
+# $Revision: 1.11 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -81,7 +81,12 @@ class CodeSource(ExternalSource, Folder):
             self._script_id = script_id
             msg += 'Script id changed. '
 
-        if description and description != self._description:
+        # Assume description is in the encoding as specified 
+        # by "management_page_charset". Store it in unicode.
+        description = unicode(
+            description, self.management_page_charset, 'replace')
+
+        if description != self._description:
             self.set_description(description)
             msg += 'Description changed. '
 

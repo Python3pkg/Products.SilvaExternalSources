@@ -3,6 +3,16 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  0.8
+
+    bugs fixed:
+
+      o The description could not be set empty. It can now.
+
+      o The ZMI screens for the ExternalSource objects are now set
+        to be in utf-8. This way we can make save assumption for
+        decoding the user input into unicode.
+
   0.7
 
     Lots of additions and bugfixes, including new CVSSource object.

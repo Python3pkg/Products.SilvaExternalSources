@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.14 $
+# $Revision: 1.15 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -163,7 +163,7 @@ class SQLSource(ExternalSource, Folder):
         description = unicode(
             description, self.management_page_charset, 'replace')
             
-        if description and description != self._description:
+        if description != self._description:
             self.set_description(description)
             msg += 'Description changed. '
 

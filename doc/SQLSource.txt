@@ -1,1 +1,45 @@
-SilvaExternalSource
+Copyright (c) 2002, 2003 Infrae. All rights reserved.
+See also LICENSE.txt
+
+Meta::
+
+  Valid for:  SilvaExternalSources 0.3
+  Author:     Jan-Wijbrand Kolman
+  Email:      jw at infrae.com
+  CVS:        $Revision: 1.2 $
+
+
+SilvaExternalSource - Silva SQL Source
+
+  The "Silva SQL Source" is a replacement for the older "Silva SQL Data
+  Source" asset and "external data" Document element. 
+
+  Essentially it wraps the functionality of a "Z SQL Method" where the
+  resultset of querying the RDBMS is rendered as a table into a Silva
+  Document.
+
+  Adding:
+
+    When adding a new Silva SQL Source one needs to provide for an id and a
+    title. This alone is not enough for having a functioning SQL Source. It
+    needs more editing.
+
+  Editing:
+
+    There are three important parts of a Code Source that need editing:
+
+    1) Basic settings:
+
+      Title, connection id, data encoding, SQL statement, description, 
+      Layout object id, cacheable setting, reset layout rendering, reset
+      parameters form...
+
+    2) Parameters:
+
+      Formulator form...
+
+    3) Contents:
+
+      Data rendering scripts and templates are here...
+
+  View:

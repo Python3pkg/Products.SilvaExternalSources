@@ -26,7 +26,7 @@
           <max_linelength></max_linelength>
           <max_lines></max_lines>
           <required type="int">0</required>
-          <title>Data</title>
+          <title>data</title>
           <unicode type="int">1</unicode>
           <whitespace_preserve type="int">1</whitespace_preserve>
           <width type="int">80</width>

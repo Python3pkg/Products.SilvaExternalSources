@@ -7,7 +7,6 @@
   tal:define="
     view here;
     table options/table | nothing;
-    parameters options/parameters | nothing;
 
     Batch nocall:modules/Products/Silva/batch/Batch;
     b_size python: 10;
@@ -16,10 +15,12 @@
     
     batch python: Batch(table, b_size, int(b_start), orphan=3);
 
+    columnnames options/names | nothing;
+    parameters options/parameters | nothing;
+    
     table_class parameters/table_class | nothing;
     even_style parameters/even_row_style | nothing;
-    odd_style parameters/odd_row_style | nothing;
-    "
+    odd_style parameters/odd_row_style | nothing;"
   >
   
   <metal:block use-macro="here/macro/macros/navigation" />
@@ -33,24 +34,22 @@
       tal:content="here/title"
     />
     <thead tal:condition="parameters/show_column_heading | string:true">
-      <tr tal:define="row python: batch[0]">
-        <tal:block repeat="name row/keys">
+      <tr>
+        <tal:block repeat="name columnnames">
           <th tal:content="name" />
         </tal:block>
       </tr>
     </thead>
     <tbody>
-      <tal:block
-        tal:repeat="row batch">
+      <tal:block tal:repeat="row batch">
         <tr
           tal:define="iterate repeat/row/even;"
           tal:attributes="
             class python: iterate and 'even' or 'odd';
-            style python: iterate and even_style or odd_style;
-            "
+            style python: iterate and even_style or odd_style;"
           >
-          <tal:block repeat="cell row/values">
-            <td tal:content="cell" />
+          <tal:block repeat="name columnnames">
+            <td tal:content="row/?name" />
           </tal:block>
         </tr>
       </tal:block>

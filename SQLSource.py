@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.17 $
+# $Revision: 1.18 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -71,6 +71,7 @@ class SQLSource(ExternalSource, Folder):
         """ render HTML for SQL source
         """
         brains = self._get_data(kw)
+        names = brains.names()
         layout = self[self._layout_id]
         # XXX: we're materializing all data in the resultset here which
         # hurts performance for large sets. Brains 'normally' lazily
@@ -83,7 +84,7 @@ class SQLSource(ExternalSource, Folder):
         # We don't need to pass in the request explicitly (how would I do
         # that anyway) since we're calling the layout (e.g. a ZPT or Python
         # Script) which can get to the request itself.        
-        return layout(table=data, parameters=kw)
+        return layout(table=data, names=names, parameters=kw)
 
     def _get_data(self, args):
         if not self._sql_method:

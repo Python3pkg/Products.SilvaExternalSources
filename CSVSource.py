@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.2 $
+# $Revision: 1.3 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -13,19 +13,21 @@ from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 # Silva
 from Products.Silva.SilvaPermissions import ViewManagementScreens
 from Products.Silva.helpers import add_and_edit
+from Products.Silva.SilvaObject import SilvaObject
+from Products.Silva.interfaces import IAsset
 
 icon="www/codesource.png"
 
 import ASV
 
-class CSVSource(ExternalSource, Folder):
+class CSVSource(ExternalSource, SilvaObject, Folder):
 
     """CSVSource is an ExternalSource which can display tabular data in
     'comma separated values' format.
     """
 
 
-    __implements__ = IExternalSource
+    __implements__ = IExternalSource, IAsset
     
     meta_type = "Silva CSV Source"
 
@@ -55,7 +57,10 @@ class CSVSource(ExternalSource, Folder):
         self._raw_data = None
         self._data = []
         self._has_headings = CSVSource._has_headings
-        self.update_data(file.read())
+        if file is not None:
+            self.update_data(file.read())
+        else:
+            self.update_data("")
         return
 
     # ACCESSORS
@@ -71,7 +76,7 @@ class CSVSource(ExternalSource, Folder):
         """
         layout = self[self._layout_id]
         rows = self._data[:]
-        if self._has_headings:
+        if rows and self._has_headings:
             headings = rows[0]
             rows = rows[1:]
         else:
@@ -103,6 +108,16 @@ class CSVSource(ExternalSource, Folder):
                     r[i] = unicode(value, self._data_encoding, 'replace')
         return rows
 
+    def set_data_encoding (self, encoding):
+        self._data_encoding = encoding
+        self.update_data(self._raw_data)
+        return
+
+    security.declareProtected(ViewManagementScreens, 'set_headings')
+    def set_headings (self, headings):
+        self._has_headings = (not not headings)
+        return
+
     # MANAGERS
 
     security.declareProtected(ViewManagementScreens, 'manage_editCSVSource')
@@ -112,12 +127,22 @@ class CSVSource(ExternalSource, Folder):
         """ Edit CSVSource object
         """
         msg = ''
-        if title and title != self.title:
-            self.title = title
-            msg += 'Title changed. '
         if data_encoding and data_encoding != self._data_encoding:
+            # first check if encoding is known
+            # if not, don't change it and display error message
+            try:
+                unicode('abcd', data_encoding, 'replace')
+            except LookupError:
+                # unknown encoding, return error message
+                msg += "Unknown encoding %s, not changed!. " % data_encoding
+                return self.editCSVSource(manage_tabs_message=msg)
             self.set_data_encoding(data_encoding)
+            if not file:
+                self.update_data(self._raw_data)
             msg += 'Data encoding changed. '
+        if title and title != self.title:
+            self.set_title(title)
+            msg += 'Title changed. '
         if description and description != self._description:
             self.set_description(description)
             msg += 'Description changed. '
@@ -146,8 +171,8 @@ class CSVSource(ExternalSource, Folder):
 
 InitializeClass(CSVSource)
 
-addCSVSource = PageTemplateFile(
-    "www/csvSourceAdd", globals(), __name__='addCSVSource')
+manage_addCSVSourceForm = PageTemplateFile(
+    "www/csvSourceAdd", globals(), __name__='manage_addCSVSourceForm')
 
 import os
 
@@ -167,12 +192,15 @@ def reset_table_layout(sqlsource):
         f.close()
 
 
-def manage_addCSVSource(context, id, title, file, REQUEST=None):
+def manage_addCSVSource(context, id, title, file=None, REQUEST=None):
     """Add a CSVSource object
     """
     cs = CSVSource(id, title, file)
     context._setObject(id, cs)
     cs = context._getOb(id)
     reset_table_layout(cs)
+    frm = ZMIForm('form', 'Empty Form')
+    cs.set_form(frm)
+    cs.set_title(title)
     add_and_edit(context, id, REQUEST, screen='editCSVSource')
     return ''

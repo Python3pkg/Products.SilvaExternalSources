@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.4 $
+# $Revision: 1.5 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -30,6 +30,8 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
     __implements__ = IExternalSource, IAsset
     
     meta_type = "Silva CSV Source"
+
+    management_page_charset = 'utf-8'
 
     security = ClassSecurityInfo()
     
@@ -70,7 +72,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 
     def raw_data (self, encoding=None):
         if encoding is None:
-            return self._raw_data
+            encoding = 'utf-8'
         if type(self._raw_data) != type(u''):
             data = unicode(self._raw_data, self._data_encoding, 'replace')
         else:
@@ -165,21 +167,19 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
                 msg += "Unknown encoding %s, not changed!. " % data_encoding
                 return self.editCSVSource(manage_tabs_message=msg)
             self.set_data_encoding(data_encoding)
-            if not file:
-                self.update_data(self._raw_data)
             msg += 'Data encoding changed. '
         if title and title != self.title:
             # XXX
-            # ZMI is assumed to be in latin1
+            # ZMI is assumed to be in utf-8
             if type(title) == type(''):
-                title = unicode(title, 'latin1', 'replace')
+                title = unicode(title, 'utf-8', 'replace')
             self.set_title(title)
             msg += 'Title changed. '
         if description and description != self._description:
             # XXX
-            # ZMI is assumed to be in latin1
+            # ZMI is assumed to be in utf-8
             if type(description) == type(''):
-                description = unicode(description, 'latin1', 'replace')
+                description = unicode(description, 'utf-8', 'replace')
             self.set_description(description)
             msg += 'Description changed. '
         if not (not not cacheable) is (not not self._is_cacheable):
@@ -238,9 +238,9 @@ def manage_addCSVSource(context, id, title, file=None, REQUEST=None):
     frm = ZMIForm('form', 'Empty Form')
     cs.set_form(frm)
     # XXX
-    # ZMI is assumed to be in latin1
+    # ZMI is assumed to be in utf-8
     if type(title) == type(''):
-        title = unicode(title, 'latin1', 'replace')
+        title = unicode(title, 'utf-8', 'replace')
     cs.set_title(title)
     add_and_edit(context, id, REQUEST, screen='editCSVSource')
     return ''

@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.19 $
+# $Revision: 1.20 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -143,6 +143,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
                     r[i] = unicode(value, self._data_encoding, 'replace')
         return rows
 
+
     def set_data_encoding (self, encoding):
         self._data_encoding = encoding
         self.update_data(self._raw_data)
@@ -176,30 +177,22 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 
     security.declareProtected(ViewManagementScreens, 'manage_editCSVSource')
     def manage_editCSVSource(
-        self, title, character_set,  data_encoding, description=None, cacheable=None,
+        self, title, character_set, description=None, cacheable=None,
         headings=None, file=None):
         """ Edit CSVSource object
         """
         msg = ''
-        if character_set == 'default':
-            if data_encoding != self._data_encoding:
-                charset = data_encoding
-            else:
-                charset = None
-                pass
-        else:
-            charset = character_set
-        if charset is not None:
-            # first check if encoding is known
-            # if not, don't change it and display error message
-            try:
-                unicode('abcd', charset, 'replace')
-            except LookupError:
-                # unknown encoding, return error message
-                msg += "Unknown encoding %s, not changed!. " % charset
-                return self.editCSVSource(manage_tabs_message=msg)
-            self.set_data_encoding(charset)
-            msg += 'Data encoding changed to: %s. ' % charset
+        charset = character_set
+        # first check if encoding is known
+        # if not, don't change it and display error message
+        try:
+            unicode('abcd', charset, 'replace')
+        except LookupError:
+            # unknown encoding, return error message
+            msg += "Unknown encoding %s, not changed!. " % charset
+            return self.editCSVSource(manage_tabs_message=msg)
+        self.set_data_encoding(charset)
+        msg += 'Data encoding changed to: %s. ' % charset
         
         if title and title != self.title:
             # XXX

@@ -37,12 +37,8 @@ else:
 # get file, character encoding from the form
 file = result['object_file']
 character_set = result['object_character_set']
-dataencoding = result['object_dataencoding']
+de = character_set.strip()
 
-if character_set == 'default':
-    de = dataencoding.strip()
-else:
-    de = character_set.strip()
 try:
     unicode('abcd', de, 'replace')
 except LookupError:

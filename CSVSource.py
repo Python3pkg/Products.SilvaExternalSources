@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.10 $
+# $Revision: 1.11 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -69,9 +69,6 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 
     # ACCESSORS
 
-    def has_headings (self):
-        return self._has_headings
-
     def raw_data (self):
         if type(self._raw_data) != type(u''):
             data = unicode(self._raw_data, self._data_encoding, 'replace')
@@ -93,20 +90,17 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             param['csvbatchsize'] = bs
         else:
             param['csvbatchsize'] = 10
-        if param.get('csvheadings'):
-            h = int(param.get('csvheadings'))
+        if param.has_key('csvheadings'):
+            h = int(param.get('csvheadings', 0))
             param['csvheadings'] = h
         else:
-            param['csvheadings'] = 1
-        print 'params 1', str(param)
-        if rows and self._has_headings:
+            param['csvheadings'] = 0
+        if rows and param['csvheadings']:
             headings = rows[0]
             rows = rows[1:]
             param['headings'] = headings
         else:
             param['headings'] = None
-            headings = None
-        print 'params 2', str(param)
         return layout(table=rows, parameters=param)
 
     def get_title (self):
@@ -155,10 +149,10 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         self.update_data(self._raw_data)
         return
 
-    security.declareProtected(ViewManagementScreens, 'set_headings')
-    def set_headings (self, headings):
-        self._has_headings = (not not headings)
-        return
+##     security.declareProtected(ViewManagementScreens, 'set_headings')
+##     def set_headings (self, headings):
+##         self._has_headings = (not not headings)
+##         return
 
     security.declareProtected(ViewManagementScreens, 'set_table_class')
     def set_table_class (self, css_class):

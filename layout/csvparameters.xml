@@ -12,19 +12,21 @@
       <title>Default</title>
       <fields>
 
-      <field><id>csvheadings</id> <type>CheckBoxField</type>
+      <field><id>csvheadings</id> <type>ListField</type>
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>
-          <default type="int">1</default>
           <description></description>
           <external_validator></external_validator>
           <extra></extra>
           <hidden type="int">0</hidden>
+          <default></default>
+          <first_item type="int">1</first_item>
+          <items type="list">[('Yes','1'), ('No','0')]</items>
+          <size type="int">1</size>
           <title>First row is heading</title>
         </values>
         <tales>
-	  <default type="int">python:form.REQUEST.model.get_parameters('cvsheadings')</default>
         </tales>
         <messages>
           <message name="external_validator_failed">The input failed the external validator.</message>
@@ -65,11 +67,11 @@
           <external_validator></external_validator>
           <extra></extra>
           <extra_item></extra_item>
-          <first_item type="int">1</first_item>
           <hidden type="int">0</hidden>
+          <first_item type="int">1</first_item>
           <items type="list">[]</items>
-          <required type="int">0</required>
           <size type="int">1</size>
+          <required type="int">0</required>
           <title>Table style</title>
           <unicode type="int">0</unicode>
           <whitespace_preserve type="int">0</whitespace_preserve>

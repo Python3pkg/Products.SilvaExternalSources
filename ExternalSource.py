@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.21 $
+# $Revision: 1.21.6.1 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -93,7 +93,7 @@ class ExternalSource(Acquisition.Implicit):
     
     parameters = None # Cannot make it 'private'; the form won't work in the ZMI if it was.
 
-    _data_encoding = 'ISO-8859-15'
+    _data_encoding = 'ISO-8859-1'
     _description = ''
     _is_cacheable = 0
 

@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.3 $
+# $Revision: 1.4 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -17,7 +17,7 @@ from Products.Formulator.Errors import ValidationError, FormValidationError
 icon="www/silvaexternalsource.png"
 
 module_security = ModuleSecurityInfo(
-    'Products.SilvaExternalSources.ExternalSource')
+'Products.SilvaExternalSources.ExternalSource')
 
 class _AvailableSources:
     """SINGLETON
@@ -29,7 +29,9 @@ class _AvailableSources:
     def _list(self, context):
         """ Recurse through parents up. 
         
-        Only list id's that can be reached from the context 
+        Returns list of tuples of (id, object)
+        
+        Only lists source's that can be reached from the context 
         through acquisition.
         """
         sources = {}
@@ -37,18 +39,35 @@ class _AvailableSources:
             objs = context.objectValues()
             for obj in objs:
                 if IExternalSource.isImplementedBy(obj):
-                    sources[obj.id] = 1
+                    if not sources.has_key(obj.id):
+                        sources[obj.id] = obj
             if IRoot.isImplementedBy(context):
                 # stop at Silva Root
                 break
             context = context.aq_parent
-        return sources.keys()
+        return sources.items()
 
-    def __call__(self, context): 
+    def __call__(self, context):         
         return self._list(context)
 
 module_security.declarePublic('availableSources')
 availableSources = _AvailableSources()
+
+module_security.declarePublic('getSourceForId')
+def getSourceForId(context, id):
+    """ Look for an Source with given id. Mimic normal aqcuisition, 
+    but skip objects which have given id but do not implement the 
+    ExternalSource interface.
+    """
+    nearest = getattr(context, id, None)
+    if nearest is None:
+        return None
+    if IExternalSource.isImplementedBy(nearest):
+        return nearest    
+    if IRoot.isImplementedBy(context):
+        return None
+    else:
+        return getSourceForId(context.aq_parent, id)    
 
 class ExternalSource(Acquisition.Implicit):
 

@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.25 $
+# $Revision: 1.26 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -16,6 +16,11 @@ from Products.Silva import SilvaPermissions
 from Products.Silva.helpers import add_and_edit
 from Products.Silva.SilvaObject import SilvaObject
 from Products.Silva.interfaces import IAsset
+
+# I18N stuff
+from Products.Silva.i18n import translate as _
+
+
 
 icon="www/csvsource.png"
 addable_priority = 1.8
@@ -196,7 +201,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         headings=None, file=None):
         """ Edit CSVSource object
         """
-        msg = ''
+        msg = u''
         charset = character_set
         # first check if encoding is known
         # if not, don't change it and display error message
@@ -204,10 +209,16 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             unicode('abcd', charset, 'replace')
         except LookupError:
             # unknown encoding, return error message
-            msg += "Unknown encoding %s, not changed!. " % charset
+            m = _("Unknown encoding ${enc}, not changed! ")
+            m.mapping = {"enc":charset}
+            sm = unicode(m)
+            msg += sm #"Unknown encoding %s, not changed!. " % charset
             return self.editCSVSource(manage_tabs_message=msg)
         self.set_data_encoding(charset)
-        msg += 'Data encoding changed to: %s. ' % charset
+        m = _("Data encoding changed to: ${enc}. ")
+        m.mapping = {"enc":charset}
+        sm = unicode(m)
+        msg += sm #'Data encoding changed to: %s. ' % charset
 
         # Assume title is in the encoding as specified 
         # by "management_page_charset". Store it in unicode.
@@ -216,7 +227,9 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         
         if title and title != self.title:
             self.set_title(title)
-            msg += 'Title changed. '
+            m = _("Title changed. ")
+            sm = unicode(m)
+            msg += sm #'Title changed. '
             
         # Assume description is in the encoding as specified 
         # by "management_page_charset". Store it in unicode.
@@ -225,15 +238,21 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             
         if description and description != self._description:
             self.set_description(description)
-            msg += 'Description changed. '
+            m = _("Description changed. ")
+            sm = unicode(m)
+            msg += sm #'Description changed. '
         if not (not not cacheable) is (not not self._is_cacheable):
-            print 'cacheable', str(cacheable), str(self._is_cacheable)
+##             print 'cacheable', str(cacheable), str(self._is_cacheable)
             self.set_is_cacheable(cacheable)
-            msg += 'Cacheability setting changed. '
+            m = _("Cacheability setting changed. ")
+            sm = unicode(m)
+            msg += sm #'Cacheability setting changed. '
         if file:
             data = file.read()
             self.update_data(data)
-            msg += 'Data updated. '
+            m = _("Data updated. ")
+            sm = unicode(m)
+            msg += sm #'Data updated. '
 ##         if not (not not headings) is (not not self._has_headings):
 ##             self._has_headings = (not not headings)
 ##             msg += 'Has headings setting changed. '
@@ -244,10 +263,11 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
     def manage_editDataCSVSource(self, data=None):
         """ Edit CSVSource raw data
         """
-        msg = ''
         if data:
             self.update_data(data)
-            msg += 'Raw data updated. '
+            msg = _('Raw data updated. ')
+        else:
+            msg = u''
         return self.editDataCSVSource(manage_tabs_message=msg)
 
 InitializeClass(CSVSource)

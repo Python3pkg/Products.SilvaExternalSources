@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.15 $
+# $Revision: 1.16 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -18,6 +18,11 @@ from Products.Formulator.XMLToForm import XMLToForm
 from Products.Silva.SilvaPermissions import ViewManagementScreens
 from Products.Silva.helpers import add_and_edit
 from Products.Silva import mangle
+
+
+# I18N stuff
+from Products.Silva.i18n import translate as _
+
 
 icon="www/silvasqldatasource.png"
 
@@ -134,29 +139,40 @@ class SQLSource(ExternalSource, Folder):
         ):
         """ Edit SQLSource object
         """
-        msg = ''
+        msg = u''
 
         if data_encoding and data_encoding != self._data_encoding:
             try:
                 unicode('abcd', data_encoding, 'replace')
             except LookupError:
                 # unknown encoding, return error message
-                msg += "Unknown encoding %s, not changed!. " % data_encoding
+                m = _("Unknown encoding ${enc}, not changed! ")
+                m.mapping = {"enc":charset}
+                sm = unicode(m)
+                msg += sm #"Unknown encoding %s, not changed!. " % data_encoding
                 return self.editSQLSource(manage_tabs_message=msg)
             self.set_data_encoding(data_encoding)
-            msg += 'Data encoding changed. '
+            m = _("Data encoding changed. ")
+            sm = unicode(m)
+            msg += sm #'Data encoding changed. '
 
         if title and title != self.title:
             self.title = title
-            msg += 'Title changed. '
+            m = _("Title changed. ")
+            sm = unicode(m)
+            msg += sm #'Title changed. '
 
         if connection_id and connection_id != self._connection_id:
             self._set_connection_id(connection_id)
-            msg += 'Connection id changed. '
+            m = _("Connection id changed. ")
+            sm = unicode(m)
+            msg += sm #'Connection id changed. '
 
         if statement and statement != self._statement:
             self._set_statement(statement)
-            msg += 'SQL statement changed. '
+            m = _("SQL statement changed. ")
+            sm = unicode(m)
+            msg += sm #'SQL statement changed. '
 
         # Assume description is in the encoding as specified 
         # by "management_page_charset". Store it in unicode.
@@ -165,23 +181,33 @@ class SQLSource(ExternalSource, Folder):
             
         if description != self._description:
             self.set_description(description)
-            msg += 'Description changed. '
+            m = _("Description changed. ")
+            sm = unicode(m)
+            msg += sm #'Description changed. '
 
         if not (not not cacheable) is (not not self._is_cacheable):
             self.set_is_cacheable(cacheable)
-            msg += 'Cacheability setting changed. '
+            m = _("Cacheability setting changed. ")
+            sm = unicode(m)
+            msg += sm #'Cacheability setting changed. '
 
         if layout_id and layout_id != self._layout_id:
             self._layout_id = layout_id
-            msg += 'Layout object id changed. '
+            m = _("Layout object id changed. ")
+            sm = unicode(m)
+            msg += sm #'Layout object id changed. '
 
         if reset_layout:
             reset_table_layout(self)
-            msg += 'Table rendering pagetemplate reset to default layout. '
+            m = _("Table rendering pagetemplate reset to default layout. ")
+            sm = unicode(m)
+            msg += sm #'Table rendering pagetemplate reset to default layout. '
 
         if reset_params:
             reset_parameter_form(self)
-            msg += 'Parameters form reset to default. '
+            m = _("Parameters form reset to default. ")
+            sm = unicode(m)
+            msg += sm #'Parameters form reset to default. '
 
         return self.editSQLSource(manage_tabs_message=msg)
 

@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.11 $
+# $Revision: 1.12 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -61,25 +61,32 @@ class CodeSource(ExternalSource, Folder):
         self, title, script_id, data_encoding, description=None, cacheable=None):
         """ Edit CodeSource object
         """
-        msg = ''
+        msg = u''
 
         if data_encoding and data_encoding != self._data_encoding:
             try:
                 unicode('abcd', data_encoding, 'replace')
             except LookupError:
                 # unknown encoding, return error message
-                msg += "Unknown encoding %s, not changed!. " % data_encoding
+                m = _("Unknown encoding ${enc}, not changed! ")
+                m.mapping = {"enc":charset}
+                sm = unicode(m)
+                msg += sm #"Unknown encoding %s, not changed!. " % data_encoding
                 return self.editCodeSource(manage_tabs_message=msg)
             self.set_data_encoding(data_encoding)
             msg += 'Data encoding changed. '
 
         if title and title != self.title:
             self.title = title
-            msg += 'Title changed. '
+            m = _("Title changed. ")
+            sm = unicode(m)
+            msg += sm #'Title changed. '
 
         if script_id and script_id != self._script_id:
             self._script_id = script_id
-            msg += 'Script id changed. '
+            m = _("Script id changed. ")
+            sm = unicode(m)
+            msg += sm #'Script id changed. '
 
         # Assume description is in the encoding as specified 
         # by "management_page_charset". Store it in unicode.
@@ -88,20 +95,29 @@ class CodeSource(ExternalSource, Folder):
 
         if description != self._description:
             self.set_description(description)
-            msg += 'Description changed. '
+            m = _("Description changed. ")
+            sm = unicode(m)
+            msg += sm #'Description changed. '
 
         if not (not not cacheable) is (not not self._is_cacheable):
             self.set_is_cacheable(cacheable)
-            msg += 'Cacheability setting changed. '
+            m = _("Cacheability setting changed. ")
+            sm = unicode(m)
+            msg += sm #'Cacheability setting changed. '
 
         try:
             script = self[script_id]
         except KeyError:            
-            msg += '<b>Warning</b>: '
+            m = _("<b>Warning</b>: ")
+            sm = unicode(m)
+            msg += sm #'<b>Warning</b>: '
             if not script_id:
-                msg += 'no script id specified! '
+                m = _('no script id specified! ')
             else:
-                msg += 'This code source does not contain an callable object with id "%s"! ' % script_id
+                m = _('This code source does not contain an callable object with id "${id}"! ')
+                m.mapping = {'id': script_id}
+            sm = unicode(m)
+            msg += sm
 
         return self.editCodeSource(manage_tabs_message=msg)
 

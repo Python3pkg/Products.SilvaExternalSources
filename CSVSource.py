@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.17 $
+# $Revision: 1.18 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -75,7 +75,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             data = self._raw_data
         return data
 
-    def to_html(self, REQUEST, **kw):
+    def to_html(self, *args, **kw):
         """ render HTML for CSV source
         """
         layout = self[self._layout_id]
@@ -117,12 +117,15 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         asv = ASV.ASV()
         asv.input(data, ASV.CSV(), has_field_names=0)
         # extracting the raw data out of the asv structure
+        # thereby converting them into plain list-of-lists
+        # containing strings
         rows = []
         for r in asv:
             l = []
             for c in r:
                 l.append(c)
             rows.append(l)
+        # convert the data to unicode
         rows = self._unicode_helper(rows)
         self._data = rows
         self._raw_data = data

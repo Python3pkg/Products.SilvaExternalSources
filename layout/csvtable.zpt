@@ -39,11 +39,10 @@
       </thead>
     <tbody>
       <tal:block repeat="row batch">
-        <tr tal:condition="not:repeat/row/start"
-        tal:define="iterate repeat/row/even;"
-          tal:attributes="
-            class python: iterate and 'even' or 'odd';
-            style python: iterate and even_style or odd_style;
+        <tr tal:define="iterate repeat/row/even;"
+            tal:attributes="
+              class python: iterate and 'even' or 'odd';
+              style python: iterate and even_style or odd_style;
             " >
           <td tal:repeat="cell row" tal:content="cell" />
         </tr>

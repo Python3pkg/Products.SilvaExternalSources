@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.21 $
+# $Revision: 1.22 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -121,6 +121,9 @@ class ExternalSource(Acquisition.Implicit):
             value = None
             if REQUEST.form.has_key(field.id):
                 value = REQUEST.form[field.id]
+            if value is None:
+                # default value (if available)
+                value = field.get_value('default')
             xml.append('<td>%s</td></tr>' % (field.render(ustr(value, 'UTF-8'))))
         xml.append('</table></form>')
         if REQUEST is not None:

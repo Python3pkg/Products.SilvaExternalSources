@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2004 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.17 $
+# $Revision: 1.18 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -110,6 +110,8 @@ class ExternalSource(Acquisition.Implicit):
 
     def get_rendered_form_for_editor(self, REQUEST=None):
         """return the rendered form"""
+        if REQUEST:
+            REQUEST.form['model'] = self
         xml = ['<?xml version="1.0" encoding="UTF-8" ?>\n',
                 '<form action="" method="POST">',
                 '<table width="100%" id="extsourceform" style="display: block" class="plain">']
@@ -118,11 +120,11 @@ class ExternalSource(Acquisition.Implicit):
             value = None
             if REQUEST.form.has_key(field.id):
                 value = REQUEST.form[field.id]
-            xml.append('<td>%s</td></tr>' % (field.render(value)))
+            xml.append('<td>%s</td></tr>' % (field.render(unicode(value, 'UTF-8'))))
         xml.append('</table></form>')
         if REQUEST is not None:
             REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8')
-        return ''.join(xml)
+        return ''.join([l.encode('UTF-8') for l in xml])
 
     def validate_form_to_request(self, REQUEST):
         """validate the form
@@ -133,14 +135,13 @@ class ExternalSource(Acquisition.Implicit):
             message
         """
         form = self.form()
-        print repr(REQUEST.form)
         try:
             result = form.validate_all(REQUEST)
         except FormValidationError, e:
             REQUEST.RESPONSE.setStatus(400, 'Bad Request')
             return '&'.join(['%s=%s' % (e.field['title'], e.error_text) for e in e.errors])
         else:
-            REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml');
+            REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8');
             xml = self._formresult_to_xml(result)
             return xml
 

@@ -5,7 +5,10 @@ from Products.Silva.ExtensionRegistry import extensionRegistry
 from Products.SilvaMetadata.Compatibility import registerTypeForMetadata
 from Products.FileSystemSite.DirectoryView import registerDirectory
 
+
 def initialize(context):
+ 
+    print "calling initialize"
     extensionRegistry.register(
         'SilvaExternalSources', 'Silva External Sources', context,
         [CSVSource],
@@ -31,3 +34,6 @@ def initialize(context):
 
     registerDirectory('views', globals())
     registerTypeForMetadata(CSVSource.CSVSource.meta_type)
+
+    from Products.SilvaExternalSources.silvaxml.xmlexport import initializeXMLExportRegistry
+    initializeXMLExportRegistry()

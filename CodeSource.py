@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.5 $
+# $Revision: 1.6 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -103,5 +103,6 @@ def manage_addCodeSource(context, id, title, script_id=None, REQUEST=None):
     context._setObject(id, cs)
     cs = context._getOb(id)
     cs.set_form(ZMIForm('form', 'Parameters form'))
-
-    add_and_edit(context, id, REQUEST, 'editCodeSource')
+    
+    add_and_edit(context, id, REQUEST, screen='editCodeSource')
+    return ''

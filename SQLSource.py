@@ -1,6 +1,6 @@
 # Copyright (c) 2002 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.6 $
+# $Revision: 1.7 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -87,14 +87,10 @@ class SQLSource(ExternalSource, Folder):
             cells = []
             table['rows'].append(cells)
             for cell in row:
-                if cell is None:
-                    celldata = u''
-                elif type(cell) is type(''):
+                if type(cell) is type(''):
                     celldata = unicode(cell, enc, 'replace')
-                elif type(cell) is type(u''):
-                    celldata = cell
                 else:
-                    celldata = unicode(str(cell), enc, 'replace')
+                    celldata = cell
                 cells.append(celldata)
         return table
 
@@ -217,4 +213,5 @@ def manage_addSQLSource(context, id, title, REQUEST=None):
     reset_parameter_form(datasource)
     # table rendering layout pagetemplate
     reset_table_layout(datasource)
-    add_and_edit(context, id, REQUEST, 'editSQLSource')
+    add_and_edit(context, id, REQUEST, screen='editSQLSource')
+    return ''

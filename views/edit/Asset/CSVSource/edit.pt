@@ -40,7 +40,7 @@
         <tr class="top-controls">
           <td colspan="3">
             <h3 i18n:translate="csv_source_upload">
-              CSV Source upload
+              csv source upload
             </h3>
           </td>
         </tr>
@@ -158,8 +158,8 @@
               type="submit"
               name="rawdata_submit:method"
               value="change data"
-              title="access key: alt-d"
-              accesskey="d"
+              title="access key: alt-c"
+              accesskey="c"
               i18n:attributes="title value"
             />
           </td>

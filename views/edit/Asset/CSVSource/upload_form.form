@@ -15,19 +15,19 @@
         <field><id>csv_character_set</id> <type>ListField</type>
           <values>
             <alternate_name></alternate_name>
-            <css_class></css_class>
+            <css_class>store</css_class>
             <default></default>
-            <description>Character set of the source data.</description>
+            <description>Character coding of the source data.</description>
             <enabled type="int">1</enabled>
             <external_validator></external_validator>
             <extra></extra>
             <extra_item></extra_item>
             <first_item type="int">0</first_item>
             <hidden type="int">0</hidden>
-            <items type="list">[('Use specified character set below.','default'), ('Unicode (UTF-8)', 'utf-8'), ('Western Europe (ISO-8859-1)', 'ISO-8859-1'), ('Western Europe (ISO-8859-15/EURO)', 'ISO-8859-15'), ('Western Europe (ASCII/US)', 'ASCII'), ('Western Europe (Windows-1252/WinLatin 1)', 'cp1252'), ('Western Europe (Apple Macintosh)', 'mac_roman'), ('Cyrillic (ISO-8859-5)', 'ISO-8859-5')]</items>
+            <items type="list">[('Use specified character coding below.','default'), ('Unicode (UTF-8)', 'utf-8'), ('Western Europe (ISO-8859-1)', 'ISO-8859-1'), ('Western Europe (ISO-8859-15/EURO)', 'ISO-8859-15'), ('Western Europe (ASCII/US)', 'ASCII'), ('Western Europe (Windows-1252/WinLatin 1)', 'cp1252'), ('Western Europe (Apple Macintosh)', 'mac_roman'), ('Cyrillic (ISO-8859-5)', 'ISO-8859-5')]</items>
             <required type="int">1</required>
             <size type="int">1</size>
-            <title>character set</title>
+            <title>character coding</title>
             <unicode type="int">0</unicode>
             <whitespace_preserve type="int">0</whitespace_preserve>
           </values>
@@ -42,9 +42,9 @@
         <field><id>csv_dataencoding</id> <type>StringField</type>
         <values>
           <alternate_name></alternate_name>
-          <css_class></css_class>
+          <css_class>store</css_class>
           <default></default>
-          <description>Specify the character set of the source data manually.</description>
+          <description>Specify the character coding of the source data manually.</description>
           <display_maxwidth type="int">80</display_maxwidth>
           <display_width type="int">40</display_width>
           <external_validator></external_validator>
@@ -52,7 +52,7 @@
           <hidden type="int">0</hidden>
           <max_length></max_length>
           <required type="int">0</required>
-          <title>designation of set</title>
+          <title>designation of coding</title>
           <truncate type="int">0</truncate>
           <unicode type="int">0</unicode>
           <whitespace_preserve type="int">0</whitespace_preserve>

@@ -14,7 +14,11 @@ if result.has_key('csv_title'):
     title = result['csv_title'].strip()
     model.set_title(title)
 
-msg = ['Title changed']
+if result.has_key('csv_description'):
+    desc = result['csv_description'].strip()
+    model.set_description(desc)
+
+msg = ['Title and Description changed.']
 msg_type = 'feedback'
 
 return view.tab_edit(message_type=msg_type, message=' '.join(msg))

@@ -27,7 +27,7 @@
             <items type="list">[('ISO-8859-15 (Western Europe - Latin-1/EURO)', 'ISO-8859-15'), ('ISO-8859-1 (Western Europe - Latin-1)', 'ISO-8859-1'), ('Windows-1252 (Western Europe - Latin-1/Windows)', 'cp1252'), ('Mac Roman (Western Europe - Apple Macintosh)', 'mac_roman'), ('UTF-8 (Unicode)', 'utf-8')]</items>
             <required type="int">0</required>
             <size type="int">1</size>
-            <title>character coding</title>
+            <title>coding</title>
             <unicode type="int">0</unicode>
             <whitespace_preserve type="int">0</whitespace_preserve>
           </values>

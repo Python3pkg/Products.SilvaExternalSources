@@ -26,8 +26,8 @@
       </tal:block>
       <tr class="top-controls">
         <td colspan="3">
-          <h3 i18n:translate="csv_character_encoding">
-            character encoding 
+          <h3 i18n:translate="csv_character_coding">
+            character coding 
           </h3>
         </td>
       </tr>
@@ -74,8 +74,8 @@
             type="submit"
             name="charset_submit:method"
             value="set encoding"
-            title="access key: alt-s"
-            accesskey="u"
+            title="access key: alt-e"
+            accesskey="e"
             i18n:attributes="title value"
           />
         </td>

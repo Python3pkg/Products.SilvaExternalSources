@@ -70,6 +70,6 @@ if REQUEST.has_key('add_edit_submit'):
     REQUEST.RESPONSE.redirect(object.absolute_url() + '/edit/tab_edit')
 else:
     m = _('Added ${metatype} ${id}.')
-    m.set_mapping({'metatype':object.metatype, 'id':view.quotify(id)})
+    m.set_mapping({'metatype':object.meta_type, 'id':view.quotify(id)})
     msg = unicode(m)
     return model.edit['tab_edit'](message_type="feedback", message=msg)

@@ -3,6 +3,12 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  To be released:
+
+    Bugs fixed:
+
+      - Fixed typo in add_submit script for CSVSource.
+
   0.10.1
 
     Bugs fixed:

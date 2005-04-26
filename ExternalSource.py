@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.24 $
+# $Revision: 1.25 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -110,7 +110,7 @@ class ExternalSource(Acquisition.Implicit):
 
     def get_rendered_form_for_editor(self, REQUEST=None):
         """return the rendered form"""
-        if REQUEST.has_key('docref'):
+        if REQUEST.has_key('docref') and REQUEST['docref']:
             REQUEST.form['model'] = self.resolve_ref(REQUEST['docref'])
         else:
             # buggy behaviour. but allows backward compatibility

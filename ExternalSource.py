@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.23 $
+# $Revision: 1.24 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -110,7 +110,10 @@ class ExternalSource(Acquisition.Implicit):
 
     def get_rendered_form_for_editor(self, REQUEST=None):
         """return the rendered form"""
-        if REQUEST:
+        if REQUEST.has_key('docref'):
+            REQUEST.form['model'] = self.resolve_ref(REQUEST['docref'])
+        else:
+            # buggy behaviour. but allows backward compatibility
             REQUEST.form['model'] = self
         xml = ['<?xml version="1.0" encoding="UTF-8" ?>\n',
                 '<form action="" method="POST">',
@@ -126,8 +129,7 @@ class ExternalSource(Acquisition.Implicit):
                 value = field.get_value('default')
             xml.append('<td>%s</td></tr>' % (field.render(ustr(value, 'UTF-8'))))
         xml.append('</table></form>')
-        if REQUEST is not None:
-            REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8')
+        REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8')
         return ''.join([l.encode('UTF-8') for l in xml])
 
     def validate_form_to_request(self, REQUEST):

@@ -9,7 +9,7 @@ SilvaExternalSources changes
 
       - Fixed typo in add_submit script for CSVSource.
 
-      - Fixed context problems in Kupu, Kupu code now uses the same code
+      - Fixed issue1257, context problems in Kupu, Kupu code now uses the same code
         to find code sources as the rest of Silva.
 
   0.10.1

@@ -1,5 +1,7 @@
 TODO:
 
+  o Switch to CSV parser from python stdlib.
+
   o Make buttons for reset layout and reset parameters form in SQL Source
 
   o Unit tests

@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.29 $
+# $Revision: 1.30 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -79,6 +79,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 
     # ACCESSORS
 
+    security.declareProtected(SilvaPermissions.AccessContentsInformation, 'raw_data')
     def raw_data (self):
         if type(self._raw_data) != type(u''):
             data = unicode(self._raw_data, self._data_encoding, 'replace')
@@ -86,6 +87,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             data = self._raw_data
         return data
 
+    security.declareProtected(SilvaPermissions.AccessContentsInformation, 'to_html')
     def to_html(self, *args, **kw):
         """ render HTML for CSV source
         """
@@ -106,6 +108,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             param['headings'] = headings
         return layout(table=rows, parameters=param)
 
+    security.declareProtected(SilvaPermissions.AccessContentsInformation, 'get_title')
     def get_title (self):
         """Return meta-data title for this instance
         """
@@ -118,6 +121,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         """Returns css class for table """
         return self._table_class
         
+    security.declareProtected(SilvaPermissions.AccessContentsInformation, 'description')
     def description (self):
         """ Return desc from meta-data system"""
         ms = self.service_metadata

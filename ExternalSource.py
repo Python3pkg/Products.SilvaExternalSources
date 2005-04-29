@@ -1,13 +1,13 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.25 $
+# $Revision: 1.26 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo, ModuleSecurityInfo
 # Silva
-from Products.Silva.SilvaPermissions import ViewManagementScreens
+from Products.Silva.SilvaPermissions import ViewManagementScreens, AccessContentsInformation
 # Interfaces
 from Products.Silva.interfaces import IRoot
 # Formulator
@@ -100,14 +100,22 @@ class ExternalSource(Acquisition.Implicit):
     def __init__(self, id, title):
         self.id = id
         self.title = title
-
+        
+    # XXX title needs to be accessed through get_title, really, so
+    # this security declaration can go once SilvaDocument and kupu
+    # are fixed.
+    security.declareProtected(AccessContentsInformation, 'title')
+    security.declareProtected(AccessContentsInformation, 'id')
+        
     # ACCESSORS
 
+    security.declarePrivate('form')
     def form(self):
         """ get to the parameters form
         """
         return self.parameters
 
+    security.declareProtected(AccessContentsInformation, 'get_rendered_form_for_editor')
     def get_rendered_form_for_editor(self, REQUEST=None):
         """return the rendered form"""
         if REQUEST.has_key('docref') and REQUEST['docref']:
@@ -132,6 +140,7 @@ class ExternalSource(Acquisition.Implicit):
         REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8')
         return ''.join([l.encode('UTF-8') for l in xml])
 
+    security.declareProtected(AccessContentsInformation, 'validate_form_to_request')
     def validate_form_to_request(self, REQUEST):
         """validate the form
         
@@ -170,34 +179,41 @@ class ExternalSource(Acquisition.Implicit):
         input = input.replace("'", '&apos;')
         return input
 
+    security.declareProtected(AccessContentsInformation, 'to_html')
     def to_html(self, REQUEST=None, **kw):
         """ Render the HTML for inclusion in the rendered Silva HTML.
         """
         return ''
 
+    security.declareProtected(AccessContentsInformation, 'to_xml')
     def to_xml(self, REQUEST=None, **kw):
         """ Render the XML for this source.
         """
         return ''
 
+    security.declareProtected(AccessContentsInformation, 'is_cacheable')
     def is_cacheable(self, **kw):
         """ Specify the cacheability.
         """
         return self._is_cacheable
 
+    security.declareProtected(AccessContentsInformation, 'data_encoding')
     def data_encoding(self):
         """ Specify the encoding of source's data.
         """
         return self._data_encoding
 
+    security.declareProtected(AccessContentsInformation, 'description')
     def description(self):
         """ Specify the use of this source.
         """
         return self._description
 
+    security.declareProtected(AccessContentsInformation, 'get_title')
     def get_title (self):
         return self.title
 
+    security.declareProtected(AccessContentsInformation, 'index_html')
     def index_html(self, REQUEST=None, RESPONSE=None, view_method=None):
         """ render HTML with default or other test values in ZMI for
         purposes of testing the ExternalSource.

@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.16 $
+# $Revision: 1.17 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -32,9 +32,6 @@ class CodeSource(ExternalSource, Folder):
         {'label':'Edit', 'action':'editCodeSource'},
         ) + Folder.manage_options
 
-    security.declareProtected(AccessContentsInformation, 'get_rendered_form_for_editor')
-    security.declareProtected(AccessContentsInformation, 'validate_form_to_request')
-
     security.declareProtected(ViewManagementScreens, 'editCodeSource')
     editCodeSource = PageTemplateFile(
         'www/codeSourceEdit', globals(),  __name__='editCodeSource')
@@ -45,9 +42,11 @@ class CodeSource(ExternalSource, Folder):
 
     # ACCESSORS
 
+    security.declareProtected(AccessContentsInformation, 'script_id')
     def script_id(self):
         return self._script_id
 
+    security.declareProtected(AccessContentsInformation, 'to_html')
     def to_html(self, REQUEST, **kw):
         """ render HTML for code source
         """

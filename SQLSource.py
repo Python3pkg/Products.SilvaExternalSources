@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.19 $
+# $Revision: 1.20 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -15,7 +15,7 @@ from Products.PythonScripts.PythonScript import PythonScript
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.XMLToForm import XMLToForm
 # Silva
-from Products.Silva.SilvaPermissions import ViewManagementScreens
+from Products.Silva.SilvaPermissions import ViewManagementScreens, AccessContentsInformation
 from Products.Silva.helpers import add_and_edit
 from Products.Silva import mangle
 
@@ -67,6 +67,7 @@ class SQLSource(ExternalSource, Folder):
     def available_connection_ids(self):
         return SQLConnectionIDs(self)
 
+    security.declareProtected(AccessContentsInformation, 'to_html')
     def to_html(self, REQUEST, **kw):
         """ render HTML for SQL source
         """

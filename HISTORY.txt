@@ -3,6 +3,16 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  Current CVS version
+
+    Bugs fixed:
+
+      - Fixed unicode bug in SQL statement, this didn't support non-ascii
+        characters yet.
+
+      - Fixed conditionals in the layout template, setting 'show_caption' and
+        'show_column_heading' should now have an effect.
+
   0.10.2:
 
     Bugs fixed:

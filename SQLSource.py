@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.20 $
+# $Revision: 1.21 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -128,7 +128,7 @@ class SQLSource(ExternalSource, Folder):
         arguments = '\n'.join(parameters)
         self._sql_method = SQL(
             self._sql_method_id, '', self._connection_id, 
-            arguments.encode('ascii'), self._statement.encode('ascii'))
+            arguments.encode('ascii'), self._statement.encode('UTF-8'))
         self._p_changed = 1
 
     # MANAGERS
@@ -170,11 +170,11 @@ class SQLSource(ExternalSource, Folder):
             sm = unicode(m)
             msg += sm #'Connection id changed. '
 
-        if statement and statement != self._statement:
+        if statement:
+            statement = unicode(statement, 'UTF-8')
             self._set_statement(statement)
             m = _("SQL statement changed. ")
-            sm = unicode(m)
-            msg += sm #'SQL statement changed. '
+            msg += statement #'SQL statement changed. '
 
         # Assume description is in the encoding as specified 
         # by "management_page_charset". Store it in unicode.

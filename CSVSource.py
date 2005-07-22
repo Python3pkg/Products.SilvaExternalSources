@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.30 $
+# $Revision: 1.31 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 # Zope
@@ -31,10 +31,10 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 
     """CSV Source is an asset that displays tabular data from a 
     spreadsheet or database. The format of the uploaded text file
-    should be 'comma separated values'. The asset can be linked
-    directly, or inserted in a document with the External Source
-    element. If necessary, all aspects of the display can be
-    customized in the CSV Source rendering templates.
+    should be &#8216;comma separated values&#8217;. The asset can 
+    be linked directly, or inserted in a document with the External 
+    Source element. If necessary, all aspects of the display can be
+    customized in the rendering templates of the CSV Source.
     """
 
 

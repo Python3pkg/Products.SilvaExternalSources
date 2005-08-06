@@ -33,6 +33,7 @@
           <unicode>1</unicode>
         </values>
         <tales>
+          <extra>string: id="field_${field/id}"</extra>
         </tales>
       </field>
       <field><id>object_title</id> <type>StringField</type>
@@ -52,6 +53,7 @@
           <unicode>1</unicode>
         </values>
         <tales>
+          <extra>string: id="field_${field/id}"</extra>
         </tales>
       </field>
       <field><id>object_character_set</id> <type>ListField</type>
@@ -81,14 +83,14 @@
           <message name="unknown_selection">You selected an item that was not in the list.</message>
         </messages>
       </field>
-      <field><id>object_file</id> <type>FileField</type>
+      <field><id>file</id> <type>FileField</type>
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>
           <default></default>
           <description>File to upload as source data.</description>
           <display_maxwidth></display_maxwidth>
-          <display_width type="int">40</display_width>
+          <display_width type="int">60</display_width>
           <external_validator></external_validator>
           <extra></extra>
           <required type="int">0</required>
@@ -96,6 +98,7 @@
           <title>csv file</title>
         </values>
         <tales>
+          <extra>string: id="field_${field/id}" title="access key: alt-f"</extra>
         </tales>
         <messages>
           <message name="external_validator_failed">The input failed the external validator.</message>

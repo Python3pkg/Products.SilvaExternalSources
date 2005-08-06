@@ -18,7 +18,7 @@
       <field><id>csv_rawdata</id> <type>TextAreaField</type>
         <values>
           <alternate_name></alternate_name>
-          <css_class></css_class>
+          <css_class>store</css_class>
           <default></default>
           <description></description>
           <external_validator></external_validator>

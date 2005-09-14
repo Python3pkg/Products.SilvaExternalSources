@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.27 $
+# $Revision: 1.28 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -98,6 +98,8 @@ class ExternalSource(Acquisition.Implicit):
     _description = ''
     _is_cacheable = 0
 
+    # XXX ExternalSource is never used directly, it serves as BaseClass or
+    # Mixin. As such, I don't think it should have this fairly meanless __init__
     def __init__(self, id, title):
         self.id = id
         self.title = title

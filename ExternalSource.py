@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.28 $
+# $Revision: 1.29 $
 from interfaces import IExternalSource
 # Zope
 import Acquisition
@@ -125,6 +125,8 @@ class ExternalSource(Acquisition.Implicit):
                                 'get_rendered_form_for_editor')
     def get_rendered_form_for_editor(self, REQUEST=None):
         """return the rendered form"""
+        # XXX this is never triggered AFAIK, because kupu sets a 'null'
+        # string, and not a value that resolves to False
         if REQUEST.has_key('docref') and REQUEST['docref']:
             REQUEST.form['model'] = self.resolve_ref(REQUEST['docref'])
         else:

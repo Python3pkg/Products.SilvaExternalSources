@@ -39,7 +39,7 @@ else:
         message=view.get_id_status_text(id))
 
 # get file, character encoding from the form
-file = result['object_file']
+file = result.get('object_file')
 character_set = result['object_character_set']
 de = character_set.strip()
 

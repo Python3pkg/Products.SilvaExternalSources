@@ -22,7 +22,7 @@
           <default></default>
           <description></description>
           <external_validator></external_validator>
-          <extra></extra>
+          <extra>style="font-family:monospace; font-size:1.3em" </extra>
           <height type="int">25</height>
           <hidden type="int">0</hidden>
           <max_length></max_length>

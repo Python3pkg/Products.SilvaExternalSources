@@ -46,6 +46,7 @@
           <alternate_name></alternate_name>
           <hidden type="int">0</hidden>
           <display_width type="int">41</display_width>
+          <height type="int">2</height>
           <unicode type="int">1</unicode>
           <max_length></max_length>
           <external_validator></external_validator>

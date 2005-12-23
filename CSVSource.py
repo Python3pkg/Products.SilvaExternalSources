@@ -1,8 +1,11 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.31 $
+# $Revision: 1.32 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
+
+from zope.interface import implements
+
 # Zope
 from Globals import InitializeClass, package_home
 from AccessControl import ClassSecurityInfo
@@ -38,7 +41,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
     """
 
 
-    __implements__ = IExternalSource, IAsset
+    implements(IExternalSource, IAsset)
     
     meta_type = "Silva CSV Source"
 

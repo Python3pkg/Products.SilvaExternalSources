@@ -1,8 +1,9 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.17 $
+# $Revision: 1.18 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
+from zope.interface import implements
 # Zope
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
@@ -18,7 +19,7 @@ icon="www/codesource.png"
 
 class CodeSource(ExternalSource, Folder):
 
-    __implements__ = IExternalSource
+    implements(IExternalSource)
     
     meta_type = "Silva Code Source"
 

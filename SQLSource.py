@@ -1,8 +1,9 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.21 $
+# $Revision: 1.22 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
+from zope.interface import implements
 # Zope
 from OFS.Folder import Folder
 from Globals import InitializeClass, package_home
@@ -28,7 +29,7 @@ icon="www/silvasqldatasource.png"
 
 class SQLSource(ExternalSource, Folder):
 
-    __implements__ = IExternalSource
+    implements(IExternalSource)
     
     meta_type = "Silva SQL Source"
 

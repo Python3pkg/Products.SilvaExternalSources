@@ -1,7 +1,8 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.29 $
-from interfaces import IExternalSource
+# $Revision: 1.30 $
+
+from zope.interface import implements
 # Zope
 import Acquisition
 from Globals import InitializeClass
@@ -10,6 +11,7 @@ from AccessControl import ClassSecurityInfo, ModuleSecurityInfo
 from Products.Silva import SilvaPermissions
 # Interfaces
 from Products.Silva.interfaces import IRoot
+from Products.SilvaExternalSources.interfaces import IExternalSource
 # Formulator
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.Errors import ValidationError, FormValidationError
@@ -38,10 +40,10 @@ class _AvailableSources:
         while 1:
             objs = context.objectValues()
             for obj in objs:
-                if IExternalSource.isImplementedBy(obj):
+                if IExternalSource.providedBy(obj):
                     if not sources.has_key(obj.id):
                         sources[obj.id] = obj
-            if IRoot.isImplementedBy(context):
+            if IRoot.providedBy(context):
                 # stop at Silva Root
                 break
             context = context.aq_parent
@@ -62,9 +64,9 @@ def getSourceForId(context, id):
     nearest = getattr(context, id, None)
     if nearest is None:
         return None
-    if IExternalSource.isImplementedBy(nearest):
+    if IExternalSource.providedBy(nearest):
         return nearest    
-    if IRoot.isImplementedBy(context):
+    if IRoot.providedBy(context):
         return None
     else:
         return getSourceForId(context.aq_parent, id)    
@@ -83,7 +85,7 @@ def ustr(text, enc='utf-8'):
 
 class ExternalSource(Acquisition.Implicit):
 
-    __implements__ = IExternalSource
+    implements(IExternalSource)
     
     meta_type = "Silva External Source"
 

@@ -1,4 +1,5 @@
-from Interface import Interface
+from zope.interface import Interface
+
 from AccessControl import ModuleSecurityInfo
 
 __allow_access_to_unprotected_subobjects__ = 1

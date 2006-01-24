@@ -20,11 +20,9 @@
           tal:attributes="href python: '%s?%s' % (url , mq( request.form, {batch.b_start_str:p.first} ))">
           &laquo;
           Previous
-          <span tal:content="p/length">n</span> 
-          items
-        </a>
+          <span tal:replace="p/length">n</span> 
+          items</a>
       </span>
-
 
       <!-- Link to first -->
       <span tal:condition="python: 1 not in batch.navlist">
@@ -62,7 +60,7 @@
 
       <!-- Current page -->
       <tal:block condition="batch/navlist">
-        [<span tal:content="batch/pagenumber">Current page number</span>]
+        [<span class="currentpage" tal:content="batch/pagenumber"></span>]
       </tal:block>
     
       <!-- Pagelist with links to next pages for quick navigation -->
@@ -106,10 +104,8 @@
         <a href=""
           tal:attributes="href python: '%s?%s' % (url , mq( request.form, {batch.b_start_str:n.first} ))">
           Next
-          <span tal:content="n/length">n</span> 
-          items
-          &raquo;
-        </a>
+          <span tal:replace="n/length">n</span> 
+          items &raquo;</a>
       </span>
  
     </div>

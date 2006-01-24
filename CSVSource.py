@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.32 $
+# $Revision: 1.33 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 
@@ -296,7 +296,7 @@ def reset_table_layout(cs):
     # Works for Zope object implementing a 'write()" method...
     layout = [
         ('layout', ZopePageTemplate, 'csvtable.zpt'),
-        ('macro', ZopePageTemplate, 'csvmacro.zpt'),
+        ('macro', ZopePageTemplate, 'macro.zpt'),
     ]
 
     for id, klass, file in layout:

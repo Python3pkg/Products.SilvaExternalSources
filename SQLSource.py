@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.22 $
+# $Revision: 1.23 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 from zope.interface import implements
@@ -44,7 +44,7 @@ class SQLSource(ExternalSource, Folder):
         {'label':'Edit', 'action':'editSQLSource'},
         ) + Folder.manage_options
 
-    security.declareProtected(ViewManagementScreens, 'sqlSourceEdit')    
+    security.declareProtected(ViewManagementScreens, 'editSQLSource')    
     editSQLSource = PageTemplateFile(
         'www/sqlSourceEdit', globals(),  __name__='sqlCodeSource')
 

@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.30 $
+# $Revision: 1.31 $
 
 from zope.interface import implements
 # Zope
@@ -105,15 +105,7 @@ class ExternalSource(Acquisition.Implicit):
     def __init__(self, id, title):
         self.id = id
         self.title = title
-        
-    # XXX title needs to be accessed through get_title, really, so
-    # this security declaration can go once SilvaDocument and kupu
-    # are fixed.
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 
-                                'title')
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 
-                                'id')
-        
+
     # ACCESSORS
 
     security.declareProtected(SilvaPermissions.ReadSilvaContent,

@@ -3,6 +3,20 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  under development
+
+    Bugs fixed:
+ 
+      - Fixes to security declarations to stop Zope 2.8.5+ startup warnings.
+
+      - Some HTML template cleanups.
+
+  0.11
+
+    Features added:
+
+      - Silva 1.5 (Zope 2.8) compatibility fixes.
+
   0.10.3
 
     Bugs fixed:

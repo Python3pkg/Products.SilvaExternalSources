@@ -1,6 +1,6 @@
 # Copyright (c) 2002-2005 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.33 $
+# $Revision: 1.34 $
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 
@@ -56,12 +56,12 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         ) + Folder.manage_options
 
     security.declareProtected(
-        SilvaPermissions.ViewManagementScreens, 'csvSourceEdit')    
+        SilvaPermissions.ViewManagementScreens, 'editCSVSource')    
     editCSVSource = PageTemplateFile(
         'www/csvSourceEdit', globals(),  __name__='editCSVSource')
 
     security.declareProtected(
-        SilvaPermissions.ViewManagementScreens, 'csvSourceEditData')    
+        SilvaPermissions.ViewManagementScreens, 'editDataCSVSource')    
     editDataCSVSource = PageTemplateFile(
         'www/csvSourceEditData', globals(),  __name__='editCSVSourceData')
 

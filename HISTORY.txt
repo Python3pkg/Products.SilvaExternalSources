@@ -3,13 +3,15 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
-  under development
+  0.12
 
     Bugs fixed:
  
       - Fixes to security declarations to stop Zope 2.8.5+ startup warnings.
 
       - Some HTML template cleanups.
+
+      - Import registerDirectory from Silva's fssite.
 
   0.11
 

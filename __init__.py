@@ -3,7 +3,7 @@ import CodeSource, SQLSource, CSVSource
 # Silva
 from Products.Silva.ExtensionRegistry import extensionRegistry
 from Products.SilvaMetadata.Compatibility import registerTypeForMetadata
-from Products.FileSystemSite.DirectoryView import registerDirectory
+from Products.Silva.fssite import registerDirectory
 
 def initialize(context):
     extensionRegistry.register(

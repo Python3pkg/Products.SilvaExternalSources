@@ -3,6 +3,13 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  SVN/Unreleased
+
+    Bugs fixed:
+
+      - Fixed unicode bug when using non-ascii chars in field titles (Kupu 
+        specific, port from 0.10 branch).
+
   0.12
 
     Bugs fixed:

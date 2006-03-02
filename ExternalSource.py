@@ -133,7 +133,7 @@ class ExternalSource(Acquisition.Implicit):
                 ('<table width="100%" id="extsourceform" '
                         'style="display: block" class="plain">')]
         for field in self.form().get_fields():
-            xml.append('<tr><td>%s</td>' % field.title())
+            xml.append('<tr><td>%s</td>' % ustr(field.title(), 'UTF-8'))
             value = None
             if REQUEST.form.has_key(field.id):
                 value = REQUEST.form[field.id]

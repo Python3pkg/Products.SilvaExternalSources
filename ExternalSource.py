@@ -133,15 +133,32 @@ class ExternalSource(Acquisition.Implicit):
                 ('<table width="100%" id="extsourceform" '
                         'style="display: block" class="plain">')]
         for field in self.form().get_fields():
+            form = REQUEST.form.copy()
+            # pfff... what's that, not allowed to change a dict during 
+            # iteration?!? ;)
+            formcopy = {} 
+            for k, v in form.iteritems():
+                vtype = 'string'
+                if '__type__' in k:
+                    k, vtype = k.split('__type__')
+                if vtype == 'list':
+                    # XXX evil eval, although Formulator does the same...
+                    formcopy[k] = eval(v)
+                else:
+                    formcopy[k] = v
             xml.append('<tr><td>%s</td>' % ustr(field.title(), 'UTF-8'))
             value = None
-            if REQUEST.form.has_key(field.id):
-                value = REQUEST.form[field.id]
+            if formcopy.has_key(field.id):
+                value = formcopy[field.id]
             if value is None:
                 # default value (if available)
                 value = field.get_value('default')
+            if type(value) == list:
+                value = [ustr(x, 'UTF-8') for x in value]
+            else:
+                value = ustr(value, 'UTF-8')
             xml.append('<td>%s</td></tr>' % 
-                            (field.render(ustr(value, 'UTF-8'))))
+                            (field.render(value)))
         xml.append('</table></form>')
         REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8')
         return ''.join([l.encode('UTF-8') for l in xml])
@@ -174,8 +191,9 @@ class ExternalSource(Acquisition.Implicit):
         """returns a result dictionary as an xml mapping"""
         xml = ['<sourcedata>']
         for key, value in formresult.items():
-            xml.append('<parameter key="%s">%s</parameter>' % 
-                        (self._xml_escape(ustr(key)), 
+            t = type(value).__name__
+            xml.append('<parameter type="%s" key="%s">%s</parameter>' % 
+                        (t, self._xml_escape(ustr(key)), 
                             self._xml_escape(ustr(value))))
         xml.append('</sourcedata>')
         return ''.join(xml)

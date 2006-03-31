@@ -192,6 +192,8 @@ class ExternalSource(Acquisition.Implicit):
         xml = ['<sourcedata>']
         for key, value in formresult.items():
             t = type(value).__name__
+            if t == 'list':
+                value = [x.encode('UTF-8') for x in value]
             xml.append('<parameter type="%s" key="%s">%s</parameter>' % 
                         (t, self._xml_escape(ustr(key)), 
                             self._xml_escape(ustr(value))))

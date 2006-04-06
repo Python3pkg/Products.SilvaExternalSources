@@ -3,7 +3,7 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
-  SVN/Unreleased
+  0.13
 
     Bugs fixed:
 

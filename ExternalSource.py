@@ -110,7 +110,10 @@ class ExternalSource(Acquisition.Implicit):
 
     def get_rendered_form_for_editor(self, REQUEST=None):
         """return the rendered form"""
-        if REQUEST:
+        if REQUEST.has_key('docref') and REQUEST['docref']:
+            REQUEST.form['model'] = self.resolve_ref(REQUEST['docref'])
+        else:
+            # buggy behaviour, but allows backward compatibility
             REQUEST.form['model'] = self
         xml = ['<?xml version="1.0" encoding="UTF-8" ?>\n',
                 '<form action="" method="POST">',

@@ -22,6 +22,6 @@ if result.has_key('csv_rawdata'):
     data = result['csv_rawdata']
     model.update_data(data)
     m = _('Raw data set. ')
-    msg += unicode(m)
+    msg += m
 
 return view.tab_edit(message_type=msg_type, message=msg)

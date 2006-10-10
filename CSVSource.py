@@ -218,14 +218,12 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             # unknown encoding, return error message
             m = _("Unknown encoding ${enc}, not changed! ")
             m.set_mapping({"enc":charset})
-            sm = unicode(m)
-            msg += sm #"Unknown encoding %s, not changed!. " % charset
+            msg += m #"Unknown encoding %s, not changed!. " % charset
             return self.editCSVSource(manage_tabs_message=msg)
         self.set_data_encoding(charset)
         m = _("Data encoding changed to: ${enc}. ")
         m.set_mapping({"enc":charset})
-        sm = unicode(m)
-        msg += sm #'Data encoding changed to: %s. ' % charset
+        msg += m #'Data encoding changed to: %s. ' % charset
 
         # Assume title is in the encoding as specified 
         # by "management_page_charset". Store it in unicode.
@@ -235,8 +233,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         if title and title != self.title:
             self.set_title(title)
             m = _("Title changed. ")
-            sm = unicode(m)
-            msg += sm #'Title changed. '
+            msg += m #'Title changed. '
             
         # Assume description is in the encoding as specified 
         # by "management_page_charset". Store it in unicode.
@@ -246,20 +243,17 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         if description and description != self._description:
             self.set_description(description)
             m = _("Description changed. ")
-            sm = unicode(m)
-            msg += sm #'Description changed. '
+            msg += m #'Description changed. '
         if not (not not cacheable) is (not not self._is_cacheable):
 ##             print 'cacheable', str(cacheable), str(self._is_cacheable)
             self.set_is_cacheable(cacheable)
             m = _("Cacheability setting changed. ")
-            sm = unicode(m)
-            msg += sm #'Cacheability setting changed. '
+            msg += m #'Cacheability setting changed. '
         if file:
             data = file.read()
             self.update_data(data)
             m = _("Data updated. ")
-            sm = unicode(m)
-            msg += sm #'Data updated. '
+            msg += m #'Data updated. '
 ##         if not (not not headings) is (not not self._has_headings):
 ##             self._has_headings = (not not headings)
 ##             msg += 'Has headings setting changed. '
@@ -287,7 +281,7 @@ import os
 def reset_parameter_form(csvsource):
     filename = os.path.join(package_home(globals()), 'layout', 'csvparameters.xml')
     f = open(filename, 'rb')
-    form = ZMIForm('form', 'Parameters form')
+    form = ZMIForm('form', 'Parameters form', unicode_mode=1)
     XMLToForm(f.read(), form)
     f.close()
     csvsource.set_form(form)

@@ -76,23 +76,20 @@ class CodeSource(ExternalSource, Folder):
                 # unknown encoding, return error message
                 m = _("Unknown encoding ${enc}, not changed! ")
                 m.set_mapping({"enc":charset})
-                sm = unicode(m)
                 msg += sm #"Unknown encoding %s, not changed!. " % data_encoding
-                return self.editCodeSource(manage_tabs_message=msg)
+                return self.editCodeSource(manage_tabs_message=m)
             self.set_data_encoding(data_encoding)
             msg += 'Data encoding changed. '
 
         if title and title != self.title:
             self.title = title
             m = _("Title changed. ")
-            sm = unicode(m)
-            msg += sm #'Title changed. '
+            msg += m #'Title changed. '
 
         if script_id and script_id != self._script_id:
             self._script_id = script_id
             m = _("Script id changed. ")
-            sm = unicode(m)
-            msg += sm #'Script id changed. '
+            msg += m #'Script id changed. '
 
         # Assume description is in the encoding as specified 
         # by "management_page_charset". Store it in unicode.
@@ -102,14 +99,12 @@ class CodeSource(ExternalSource, Folder):
         if description != self._description:
             self.set_description(description)
             m = _("Description changed. ")
-            sm = unicode(m)
-            msg += sm #'Description changed. '
+            msg += m #'Description changed. '
 
         if not (not not cacheable) is (not not self._is_cacheable):
             self.set_is_cacheable(cacheable)
             m = _("Cacheability setting changed. ")
-            sm = unicode(m)
-            msg += sm #'Cacheability setting changed. '
+            msg += m #'Cacheability setting changed. '
 
         try:
             script = self[script_id]
@@ -122,8 +117,7 @@ class CodeSource(ExternalSource, Folder):
             else:
                 m = _('This code source does not contain an callable object with id "${id}"! ')
                 m.set_mapping({'id': script_id})
-            sm = unicode(m)
-            msg += sm
+            msg += m
 
         return self.editCodeSource(manage_tabs_message=msg)
 
@@ -138,7 +132,7 @@ def manage_addCodeSource(context, id, title, script_id=None, REQUEST=None):
     cs = CodeSource(id, title, script_id)
     context._setObject(id, cs)
     cs = context._getOb(id)
-    cs.set_form(ZMIForm('form', 'Parameters form'))
+    cs.set_form(ZMIForm('form', 'Parameters form', unicode_mode=1))
     
     add_and_edit(context, id, REQUEST, screen='editCodeSource')
     return ''

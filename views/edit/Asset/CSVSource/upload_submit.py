@@ -23,6 +23,5 @@ if result.has_key('file') and result['file'] is not None:
     if data:
         model.update_data(data)
         m = _('Data uploaded. ')
-        msg= unicode(m)
 
-return view.tab_edit(message_type=msg_type, message=msg)
+return view.tab_edit(message_type=msg_type, message=m)

@@ -151,25 +151,21 @@ class SQLSource(ExternalSource, Folder):
                 # unknown encoding, return error message
                 m = _("Unknown encoding ${enc}, not changed! ")
                 m.set_mapping({"enc":charset})
-                sm = unicode(m)
-                msg += sm #"Unknown encoding %s, not changed!. " % data_encoding
+                msg += m #"Unknown encoding %s, not changed!. " % data_encoding
                 return self.editSQLSource(manage_tabs_message=msg)
             self.set_data_encoding(data_encoding)
             m = _("Data encoding changed. ")
-            sm = unicode(m)
-            msg += sm #'Data encoding changed. '
+            msg += m #'Data encoding changed. '
 
         if title and title != self.title:
             self.title = title
             m = _("Title changed. ")
-            sm = unicode(m)
-            msg += sm #'Title changed. '
+            msg += m #'Title changed. '
 
         if connection_id and connection_id != self._connection_id:
             self._set_connection_id(connection_id)
             m = _("Connection id changed. ")
-            sm = unicode(m)
-            msg += sm #'Connection id changed. '
+            msg += m #'Connection id changed. '
 
         if statement:
             statement = unicode(statement, 'UTF-8')
@@ -185,32 +181,27 @@ class SQLSource(ExternalSource, Folder):
         if description != self._description:
             self.set_description(description)
             m = _("Description changed. ")
-            sm = unicode(m)
-            msg += sm #'Description changed. '
+            msg += m #'Description changed. '
 
         if not (not not cacheable) is (not not self._is_cacheable):
             self.set_is_cacheable(cacheable)
             m = _("Cacheability setting changed. ")
-            sm = unicode(m)
-            msg += sm #'Cacheability setting changed. '
+            msg += m #'Cacheability setting changed. '
 
         if layout_id and layout_id != self._layout_id:
             self._layout_id = layout_id
             m = _("Layout object id changed. ")
-            sm = unicode(m)
-            msg += sm #'Layout object id changed. '
+            msg += m #'Layout object id changed. '
 
         if reset_layout:
             reset_table_layout(self)
             m = _("Table rendering pagetemplate reset to default layout. ")
-            sm = unicode(m)
-            msg += sm #'Table rendering pagetemplate reset to default layout. '
+            msg += m #'Table rendering pagetemplate reset to default layout. '
 
         if reset_params:
             reset_parameter_form(self)
             m = _("Parameters form reset to default. ")
-            sm = unicode(m)
-            msg += sm #'Parameters form reset to default. '
+            msg += m #'Parameters form reset to default. '
 
         return self.editSQLSource(manage_tabs_message=msg)
 
@@ -239,7 +230,7 @@ def reset_table_layout(sqlsource):
 def reset_parameter_form(sqlsource):
     filename = os.path.join(package_home(globals()), 'layout', 'parameters.xml')
     f = open(filename, 'rb')
-    form = ZMIForm('form', 'Parameters form')
+    form = ZMIForm('form', 'Parameters form', unicode_mode=1)
     XMLToForm(f.read(), form)
     f.close()
     sqlsource.set_form(form)

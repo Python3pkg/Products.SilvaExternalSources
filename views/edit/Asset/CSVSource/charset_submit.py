@@ -24,13 +24,12 @@ except LookupError:
     # unknown encoding, return error message
     m = _('Unknown encoding ${enc}. Character encoding not saved! ')
     m.set_mapping({'enc':de})
-    msg = unicode(m)
     msg_type = 'error'
-    return view.tab_edit(message_type=msg_type, message=msg)
+    return view.tab_edit(message_type=msg_type, message=m)
 else:
     model.set_data_encoding(de)
     m = _('Encoding set to: ${enc} ')
     m.set_mapping({'enc':de})
-    msg += unicode(m)
+    msg += m
 
 return view.tab_edit(message_type=msg_type, message=msg)

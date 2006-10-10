@@ -25,8 +25,7 @@ if result.has_key('csv_description'):
     model.set_description(desc)
 
 m = _('Title and Description changed.')
-msg = unicode(m)
 
 msg_type = 'feedback'
 
-return view.tab_edit(message_type=msg_type, message=msg)
+return view.tab_edit(message_type=msg_type, message=m)

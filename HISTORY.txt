@@ -5,7 +5,15 @@ SilvaExternalSources changes
 
   0.13
 
+    Features added:
+
+      - Changed Silva External Sources to use new i18n machinery.
+
+      - Available code sources are sorted on title when presented as a list.
+
     Bugs fixed:
+    
+      - ZMI parameter forms are now utf-8 by default.
 
       - Fixed unicode bug when using non-ascii chars in field titles (Kupu 
         specific, port from 0.10 branch).

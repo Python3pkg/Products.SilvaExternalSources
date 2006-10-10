@@ -3,6 +3,7 @@
 # $Revision: 1.32 $
 
 from zope.interface import implements
+from DocumentTemplate import sequence
 # Zope
 import Acquisition
 from Globals import InitializeClass
@@ -33,7 +34,7 @@ class _AvailableSources:
         
         Returns list of tuples of (id, object)
         
-        Only lists source's that can be reached from the context 
+        Only lists sources that can be reached from the context 
         through acquisition.
         """
         sources = {}
@@ -47,7 +48,7 @@ class _AvailableSources:
                 # stop at Silva Root
                 break
             context = context.aq_parent
-        return sources.items()
+        return sequence.sort(sources.items(), (('title', 'nocase', 'asc'),))
 
     def __call__(self, context):         
         return self._list(context)

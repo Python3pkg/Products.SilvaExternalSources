@@ -147,7 +147,22 @@ class ExternalSource(Acquisition.Implicit):
                     formcopy[k] = eval(v)
                 else:
                     formcopy[k] = v
-            xml.append('<tr><td>%s</td>' % ustr(field.title(), 'UTF-8'))
+
+            fieldDescription = ustr(field.values.get('description',''), 'UTF-8')
+            if fieldDescription:
+                fieldCssClasses = "rollover"
+                fieldDescription = '<span class="tooltip">%s</span>'%fieldDescription
+            else:
+                fieldCssClasses = ""
+            if field.values.get('required',False):               
+                fieldCssClasses += ' requiredfield'
+            if fieldCssClasses:
+                fieldCssClasses = 'class="%s"'%fieldCssClasses.strip()
+				
+            xml.append('<tr><td><a href="#" %s>%s%s</a></td>' % (
+                fieldCssClasses, ustr(field.values['title'], 'UTF-8'), fieldDescription)
+                )
+
             value = None
             if formcopy.has_key(field.id):
                 value = formcopy[field.id]

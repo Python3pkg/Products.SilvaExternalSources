@@ -109,8 +109,9 @@ class ExternalSource(Acquisition.Implicit):
 
     # ACCESSORS
 
-    security.declareProtected(SilvaPermissions.ReadSilvaContent,
-                                'form')
+    
+    security.declareProtected(SilvaPermissions.AccessContentsInformation,'form')
+
     def form(self):
         """ get to the parameters form
         """

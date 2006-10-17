@@ -228,7 +228,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         # Assume title is in the encoding as specified 
         # by "management_page_charset". Store it in unicode.
         title = unicode(
-            title, self.management_page_charset, 'replace')
+            title, self.management_page_charset)
         
         if title and title != self.title:
             self.set_title(title)

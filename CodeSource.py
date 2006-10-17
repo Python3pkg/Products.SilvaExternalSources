@@ -81,6 +81,8 @@ class CodeSource(ExternalSource, Folder):
             self.set_data_encoding(data_encoding)
             msg += 'Data encoding changed. '
 
+        title = unicode(title, self.management_page_charset)
+
         if title and title != self.title:
             self.title = title
             m = _("Title changed. ")
@@ -94,7 +96,7 @@ class CodeSource(ExternalSource, Folder):
         # Assume description is in the encoding as specified 
         # by "management_page_charset". Store it in unicode.
         description = unicode(
-            description, self.management_page_charset, 'replace')
+            description, self.management_page_charset)
 
         if description != self._description:
             self.set_description(description)
@@ -110,15 +112,13 @@ class CodeSource(ExternalSource, Folder):
             script = self[script_id]
         except KeyError:            
             m = _("<b>Warning</b>: ")
-            sm = unicode(m)
-            msg += sm #'<b>Warning</b>: '
+            msg += m #'<b>Warning</b>: '
             if not script_id:
                 m = _('no script id specified! ')
             else:
                 m = _('This code source does not contain an callable object with id "${id}"! ')
                 m.set_mapping({'id': script_id})
             msg += m
-
         return self.editCodeSource(manage_tabs_message=msg)
 
 InitializeClass(CodeSource)

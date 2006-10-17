@@ -157,6 +157,9 @@ class SQLSource(ExternalSource, Folder):
             m = _("Data encoding changed. ")
             msg += m #'Data encoding changed. '
 
+        title = unicode(
+            title, self.management_page_charset)
+
         if title and title != self.title:
             self.title = title
             m = _("Title changed. ")
@@ -176,7 +179,7 @@ class SQLSource(ExternalSource, Folder):
         # Assume description is in the encoding as specified 
         # by "management_page_charset". Store it in unicode.
         description = unicode(
-            description, self.management_page_charset, 'replace')
+            description, self.management_page_charset)
             
         if description != self._description:
             self.set_description(description)

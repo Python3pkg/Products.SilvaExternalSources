@@ -48,8 +48,8 @@ class SQLSource(ExternalSource, Folder):
     editSQLSource = PageTemplateFile(
         'www/sqlSourceEdit', globals(),  __name__='sqlCodeSource')
 
-    def __init__(self, id, title):
-        SQLSource.inheritedAttribute('__init__')(self, id, title)
+    def __init__(self, id):
+        self.id = id
         self._sql_method = None
         self._statement = None
         self._connection_id = None
@@ -241,7 +241,9 @@ def reset_parameter_form(sqlsource):
 def manage_addSQLSource(context, id, title, REQUEST=None):
     """Add a SQLSource object
     """
-    datasource = SQLSource(id, title)
+    datasource = SQLSource(id)
+    title = unicode(title, datasource.management_page_charset)
+    datasource.title = title
     context._setObject(id, datasource)
     datasource = context._getOb(id)
     datasource._set_statement('SELECT <dtml-var columns> FROM <dtml-var table>')

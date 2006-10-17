@@ -70,8 +70,8 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 
     _default_batch_size = 20
 
-    def __init__(self, id, title, file):
-        CSVSource.inheritedAttribute('__init__')(self, id, '')
+    def __init__(self, id, file):
+        self.id = id
         self._raw_data = None
         self._data = []
         if file is not None:
@@ -304,7 +304,9 @@ def reset_table_layout(cs):
 def manage_addCSVSource(context, id, title, file=None, REQUEST=None):
     """Add a CSVSource object
     """
-    cs = CSVSource(id, title, file)
+    cs = CSVSource(id, file)
+    title = unicode(title, cs.management_page_charset)
+    cs.title = title
     context._setObject(id, cs)
     cs = context._getOb(id)
     reset_table_layout(cs)

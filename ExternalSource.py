@@ -17,6 +17,7 @@ from Products.SilvaExternalSources.interfaces import IExternalSource
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.Errors import ValidationError, FormValidationError
 
+
 icon="www/silvaexternalsource.png"
 
 module_security = ModuleSecurityInfo(
@@ -92,20 +93,18 @@ class ExternalSource(Acquisition.Implicit):
 
     security = ClassSecurityInfo()
 
-    management_page_charset = 'utf-8'
+    # XXX was management_page_charset = Converters.default_encoding
+    # that doesn't work, because the add screens DON'T USE THE ZOPE
+    # DEFAULT ENCODING! AAAAAAARGH
+    
+    management_page_charset = 'iso-8859-1'
     
     # Cannot make it 'private'; the form won't work in the ZMI if it was.
     parameters = None 
 
-    _data_encoding = 'ISO-8859-15'
+    _data_encoding = 'UTF-8'
     _description = ''
     _is_cacheable = 0
-
-    # XXX ExternalSource is never used directly, it serves as BaseClass or
-    # Mixin. As such, I don't think it should have this fairly meanless __init__
-    def __init__(self, id, title):
-        self.id = id
-        self.title = title
 
     # ACCESSORS
 

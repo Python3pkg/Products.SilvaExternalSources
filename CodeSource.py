@@ -37,8 +37,8 @@ class CodeSource(ExternalSource, Folder):
     editCodeSource = PageTemplateFile(
         'www/codeSourceEdit', globals(),  __name__='editCodeSource')
 
-    def __init__(self, id, title, script_id=None):
-        CodeSource.inheritedAttribute('__init__')(self, id, title)
+    def __init__(self, id, script_id=None):
+        self.id = id
         self._script_id = script_id
 
     # ACCESSORS
@@ -129,7 +129,9 @@ addCodeSource = PageTemplateFile(
 def manage_addCodeSource(context, id, title, script_id=None, REQUEST=None):
     """Add a CodeSource object
     """
-    cs = CodeSource(id, title, script_id)
+    cs = CodeSource(id, script_id)
+    title = unicode(title, cs.management_page_charset)
+    cs.title = title
     context._setObject(id, cs)
     cs = context._getOb(id)
     cs.set_form(ZMIForm('form', 'Parameters form', unicode_mode=1))

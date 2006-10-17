@@ -12,6 +12,13 @@ SilvaExternalSources changes
       - Available code sources are sorted on title when presented as a list.
 
     Bugs fixed:
+
+      - Titles were not stored as unicode strings. 
+        Moved the setting of the title to *after* the creation
+        of the source, so that we can get an encoding from somewhere
+        and use it to convert to unicode. Unfortunately this somewhere is a
+        hard coded string for now, since Zope 2 doesn't seem to allow 
+        anything else.
     
       - ZMI parameter forms are now utf-8 by default.
 

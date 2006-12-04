@@ -305,7 +305,6 @@ def manage_addCSVSource(context, id, title, file=None, REQUEST=None):
     """Add a CSVSource object
     """
     cs = CSVSource(id, file)
-    title = unicode(title, cs.management_page_charset)
     cs.title = title
     context._setObject(id, cs)
     cs = context._getOb(id)

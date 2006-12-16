@@ -3,6 +3,18 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  1.2
+
+    Features added:
+
+      - Users get confused when adding a Code Source that has no parameters.
+        They have to click the same button twice, once to add, and again to add. 
+        Added a note that informs the user how to proceed. 
+
+  1.1 ?
+
+  0.14 ?
+
   0.13
 
     Features added:

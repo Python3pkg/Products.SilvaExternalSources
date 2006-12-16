@@ -128,11 +128,11 @@ class ExternalSource(Acquisition.Implicit):
             # buggy behaviour. but allows backward compatibility
             REQUEST.form['model'] = self
         xml = ['<?xml version="1.0" encoding="UTF-8" ?>\n',
-                '<form action="" method="POST">',
-                ('<input type="hidden" name="metatype" value="%s" />' % 
+                '<form action="" method="POST">\r',
+                ('<input type="hidden" name="metatype" value="%s" />\n' % 
                         self.meta_type),
                 ('<table width="100%" id="extsourceform" '
-                        'style="display: block" class="plain">')]
+                        'style="display: block" class="plain">\n<tbody>\n')]
         for field in self.form().get_fields():
             form = REQUEST.form.copy()
             # pfff... what's that, not allowed to change a dict during 
@@ -159,7 +159,7 @@ class ExternalSource(Acquisition.Implicit):
             if fieldCssClasses:
                 fieldCssClasses = 'class="%s"'%fieldCssClasses.strip()
 				
-            xml.append('<tr><td><a href="#" %s>%s%s</a></td>' % (
+            xml.append('<tr>\n<td><a href="#" %s>%s%s</a></td>\n' % (
                 fieldCssClasses, ustr(field.values['title'], 'UTF-8'), fieldDescription)
                 )
 
@@ -173,9 +173,15 @@ class ExternalSource(Acquisition.Implicit):
                 value = [ustr(x, 'UTF-8') for x in value]
             else:
                 value = ustr(value, 'UTF-8')
-            xml.append('<td>%s</td></tr>' % 
+            xml.append('<td>%s</td>\n</tr>\n' % 
                             (field.render(value)))
-        xml.append('</table></form>')
+
+        # if a Code Source has no parameters, inform the user how to proceed
+        if len(self.form().get_fields()) == 0:
+            xml.append('<tr>\n<td>This Code Source has no adjustable settings. '
+                + 'Click a button to insert or remove it.</td>\n</tr>\n')
+
+        xml.append('</tbody>\n</table>\n</form>\n')
         REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8')
         return ''.join([l.encode('UTF-8') for l in xml])
 

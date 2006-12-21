@@ -10,6 +10,7 @@ from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo, ModuleSecurityInfo
 # Silva
 from Products.Silva import SilvaPermissions
+from Products.Silva.i18n import translate as _
 # Interfaces
 from Products.Silva.interfaces import IRoot
 from Products.SilvaExternalSources.interfaces import IExternalSource
@@ -178,8 +179,8 @@ class ExternalSource(Acquisition.Implicit):
 
         # if a Code Source has no parameters, inform the user how to proceed
         if len(self.form().get_fields()) == 0:
-            xml.append('<tr>\n<td>This Code Source has no adjustable settings. '
-                + 'Click a button to insert or remove it.</td>\n</tr>\n')
+            no_params = _('This Code Source has no adjustable settings. Click a button to insert or remove it.')
+            xml.append('<tr>\n<td>%s</td>\n</tr>\n')
 
         xml.append('</tbody>\n</table>\n</form>\n')
         REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8')

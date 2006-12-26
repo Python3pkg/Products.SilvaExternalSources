@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2002-2005 Infrae. All rights reserved.
+Copyright (c) 2002-2007 Infrae. All rights reserved.
 See also LICENSE.txt
 Version of this file: $Revision: 1.7 $
 -->
@@ -8,11 +8,27 @@ Version of this file: $Revision: 1.7 $
   define="manage_tabs_message options/manage_tabs_message | nothing"
   replace="structure here/manage_tabs" />
 
-<h2 class="form-help">
+<h3>
   Edit Silva Code Source
-</h2>
+</h3>
 <form action="manage_editCodeSource" method="post">
   <table cellspacing="0" cellpadding="2" border="0">
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-label">
+         Contents 
+        </div>
+      </td>
+      <td align="left" valign="top">
+        <h4 class="form-help">
+          <a 
+            tal:attributes="
+              href string:${here/absolute_url}/manage_main">
+            manage contents
+          </a>
+        </h4>
+      </td>
+    </tr>
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
@@ -20,13 +36,13 @@ Version of this file: $Revision: 1.7 $
         </div>
       </td>
       <td align="left" valign="top">
-        <h3 class="form-help">
+        <h4 class="form-help">
           <a 
             tal:attributes="
               href string:${here/absolute_url}/parameters/manage_main">
-            edit parameters
+            manage parameters
           </a>
-        </h3>
+        </h4>
       </td>
     </tr>
     <tr>

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Silva\n"
-"POT-Creation-Date: Thu Dec  2 10:42:41 2004\n"
+"POT-Creation-Date: Thu Dec 21 19:38:57 2006\n"
 "PO-Revision-Date: 2004-12-02 10:37+0100\n"
 "Last-Translator: Guido Goldstein <gst@infrae.com>\n"
 "Language-Team: Silva i18n team <walco@infrae.com>\n"
@@ -16,61 +16,67 @@ msgstr ""
 "X-Poedit-Language: German\n"
 "X-Poedit-Country: GERMANY\n"
 
-#: /CSVSource.py:212 /CodeSource.py:71 /SQLSource.py:149
+#: /CSVSource.py:219 /CodeSource.py:77 /SQLSource.py:152
 msgid "Unknown encoding ${enc}, not changed! "
 msgstr "Unbekannte Codierung ${enc}, nicht geändert."
 
-#: /CSVSource.py:218
+#: /CSVSource.py:224
 msgid "Data encoding changed to: ${enc}. "
 msgstr "Encoding der Daten geändert zu: ${enc}"
 
-#: /CSVSource.py:230 /CodeSource.py:81 /SQLSource.py:161
+#: /CSVSource.py:235 /CodeSource.py:88 /SQLSource.py:165
 msgid "Title changed. "
 msgstr "Titel geändert."
 
-#: /CSVSource.py:241 /CodeSource.py:98 /SQLSource.py:184
+#: /CSVSource.py:245 /CodeSource.py:103 /SQLSource.py:186
 msgid "Description changed. "
 msgstr "Beschreibung geändert."
 
-#: /CSVSource.py:247 /CodeSource.py:104 /SQLSource.py:190
+#: /CSVSource.py:250 /CodeSource.py:108 /SQLSource.py:191
 msgid "Cacheability setting changed. "
 msgstr ""
 
-#: /CSVSource.py:253
+#: /CSVSource.py:255
 msgid "Data updated. "
 msgstr "Daten geändert."
 
-#: /CSVSource.py:268
+#: /CSVSource.py:269
 msgid "Raw data updated. "
 msgstr "Rohdaten geändert."
 
-#: /CodeSource.py:111
+#: /CodeSource.py:114
 msgid "<b>Warning</b>: "
 msgstr "<b>Warnung</b>:"
 
-#: /CodeSource.py:115
+#: /CodeSource.py:117
 msgid "no script id specified! "
 msgstr "keine Script-Id angegeben!"
 
-#: /CodeSource.py:117
+#: /CodeSource.py:119
 msgid ""
 "This code source does not contain an callable object with id \"${id}\"! "
 msgstr ""
 "Diese CodeSource enthälte kein aufrufbares Objekt mit der Id \"${id}\"!"
 
-#: /CodeSource.py:87
+#: /CodeSource.py:93
 msgid "Script id changed. "
 msgstr "Script-Id geändert."
 
-#: /SQLSource.py:155
+#: /ExternalSource.py:182
+msgid ""
+"This Code Source has no adjustable settings. Click a button to insert or "
+"remove it."
+msgstr ""
+
+#: /SQLSource.py:157
 msgid "Data encoding changed. "
 msgstr "Datenkodierung geändert."
 
-#: /SQLSource.py:167
+#: /SQLSource.py:170
 msgid "Connection id changed. "
 msgstr "Verbindungs-Id geändert."
 
-#: /SQLSource.py:173
+#: /SQLSource.py:176
 msgid "SQL statement changed. "
 msgstr "SQL-Ausdruck geändert."
 
@@ -78,11 +84,11 @@ msgstr "SQL-Ausdruck geändert."
 msgid "Layout object id changed. "
 msgstr "Layoutobjeckt-Id geändert."
 
-#: /SQLSource.py:202
+#: /SQLSource.py:201
 msgid "Table rendering pagetemplate reset to default layout. "
 msgstr "Tabellenanzeigetemplate auf Voreinstellung zurückgesetzt."
 
-#: /SQLSource.py:208
+#: /SQLSource.py:206
 msgid "Parameters form reset to default. "
 msgstr "Parameterformular auf Voreinstellung zurückgesetzt."
 
@@ -90,19 +96,19 @@ msgstr "Parameterformular auf Voreinstellung zurückgesetzt."
 msgid "Unknown encoding ${enc}. CSVSource not added! "
 msgstr "Unbekannte Kodierung ${enc}. CSVSource nicht hinzugefügt!"
 
-#: /views/add/CSVSource/add_submit.py:58
+#: /views/add/CSVSource/add_submit.py:57
 msgid "Problem ${exception}"
 msgstr "Problem: ${exception}"
 
-#: /views/add/CSVSource/add_submit.py:72
+#: /views/add/CSVSource/add_submit.py:71
 msgid "Added ${metatype} ${id}."
 msgstr "Hinzugefügt ${metatype} ${id}."
 
-#: /views/add/CSVSource/form.form:29
+#: /views/add/CSVSource/form.form:49
 msgid "id"
 msgstr ""
 
-#: /views/add/CSVSource/form.form:31
+#: /views/add/CSVSource/form.form:51
 msgid ""
 "No spaces or special characters besides &#8216;_&#8217; or &#8216;-&#8217; "
 "or &#8216;.&#8217;"
@@ -110,32 +116,14 @@ msgstr ""
 "Keine Leer- oder Sonderzeichen ausser &#8216;_&#8217; oder &#8216;-&#8217; "
 "oder &#8216;.&#8217;"
 
-#: /views/add/CSVSource/form.form:49 /views/edit/Asset/CSVSource/form.form:30
-msgid "title"
-msgstr "Titel"
-
-#: /views/add/CSVSource/form.form:50
+#: /views/add/CSVSource/form.form:71
 msgid "The title might be publicly visible."
 msgstr "Der Titel kann für die Öffentlichkeit sichtbar sein."
 
-#: /views/add/CSVSource/form.form:62
 #: /views/edit/Asset/CSVSource/charset_form.form:23
+#: /views/add/CSVSource/form.form:84
 msgid "Character coding of the source data."
 msgstr "Zeichenencoding der CSV Daten."
-
-#: /views/add/CSVSource/form.form:72
-msgid "character coding"
-msgstr "Zeichenencoding"
-
-#: /views/add/CSVSource/form.form:89
-#: /views/edit/Asset/CSVSource/upload_form.form:23
-msgid "File to upload as source data."
-msgstr "Datei mit den CSV Daten."
-
-#: /views/add/CSVSource/form.form:96
-#: /views/edit/Asset/CSVSource/upload_form.form:30
-msgid "csv file"
-msgstr "CSV Datei"
 
 #: /views/edit/Asset/CSVSource/charset_form.form:33
 msgid "coding"
@@ -145,70 +133,73 @@ msgstr "Zeichenencoding"
 msgid "Unknown encoding ${enc}. Character encoding not saved! "
 msgstr "Unbekannte Kodierung ${enc}. Zeichenkodierung nicht gespeichert!"
 
-#: /views/edit/Asset/CSVSource/charset_submit.py:32
+#: /views/edit/Asset/CSVSource/charset_submit.py:31
 msgid "Encoding set to: ${enc} "
 msgstr "Encoding gesetzt zu: ${enc}"
 
-#: /views/edit/Asset/CSVSource/edit.pt:143
+#: /views/edit/Asset/CSVSource/edit.pt:141
 msgid "access key: alt-u"
 msgstr "Kurzwahl: alt-u"
 
-#: /views/edit/Asset/CSVSource/edit.pt:143
+#: /views/edit/Asset/CSVSource/edit.pt:141
 msgid "upload"
 msgstr "Hochladen"
 
-#: /views/edit/Asset/CSVSource/edit.pt:170
+#: /views/edit/Asset/CSVSource/edit.pt:168
 msgid "comma separated value data"
 msgstr "CSV Daten"
 
-#: /views/edit/Asset/CSVSource/edit.pt:206
+#: /views/edit/Asset/CSVSource/edit.pt:204
 msgid "change data"
 msgstr "Daten ändern"
 
-#: /views/edit/Asset/CSVSource/edit.pt:206
+#: /views/edit/Asset/CSVSource/edit.pt:204
 msgid "access key: alt-c"
 msgstr "Kurzwahl: alt-c"
 
-# Default: "character coding"
-#: /views/edit/Asset/CSVSource/edit.pt:29
-msgid "csv_character_coding"
-msgstr "CSV Zeichencodierung"
+#: /views/edit/Asset/CSVSource/edit.pt:29 /views/add/CSVSource/form.form:94
+msgid "character coding"
+msgstr "Zeichenencoding"
 
 #: /views/edit/Asset/CSVSource/edit.pt:37
-#: /views/edit/Asset/CSVSource/edit.pt:107
-#: /views/edit/Asset/CSVSource/edit.pt:178
+#: /views/edit/Asset/CSVSource/edit.pt:106
+#: /views/edit/Asset/CSVSource/edit.pt:176
 msgid "element"
 msgstr "Element"
 
 #: /views/edit/Asset/CSVSource/edit.pt:42
-#: /views/edit/Asset/CSVSource/edit.pt:112
-#: /views/edit/Asset/CSVSource/edit.pt:183
+#: /views/edit/Asset/CSVSource/edit.pt:111
+#: /views/edit/Asset/CSVSource/edit.pt:181
 msgid "content"
 msgstr "Inhalt"
 
 #: /views/edit/Asset/CSVSource/edit.pt:45
-#: /views/edit/Asset/CSVSource/edit.pt:115
+#: /views/edit/Asset/CSVSource/edit.pt:114
 msgid "note"
 msgstr "Anmerkung"
 
-#: /views/edit/Asset/CSVSource/edit.pt:73
+#: /views/edit/Asset/CSVSource/edit.pt:72
 msgid "set encoding"
 msgstr "Encondig setzen"
 
-#: /views/edit/Asset/CSVSource/edit.pt:73
+#: /views/edit/Asset/CSVSource/edit.pt:72
 msgid "access key: alt-e"
 msgstr "Kurzwahl: alt-e"
 
-#: /views/edit/Asset/CSVSource/edit.pt:99
+#: /views/edit/Asset/CSVSource/edit.pt:98
 msgid "csv source upload"
 msgstr "CSV Daten hochladen"
 
+#: /views/edit/Asset/CSVSource/form.form:30 /views/add/CSVSource/form.form:70
+msgid "title"
+msgstr "Titel"
+
 #: /views/edit/Asset/CSVSource/form.form:32
-#: /views/edit/Asset/CSVSource/form.form:58
+#: /views/edit/Asset/CSVSource/form.form:59
 msgid "Optional, but useful."
 msgstr "Wahlweise, aber hilfreich."
 
-#: /views/edit/Asset/CSVSource/form.form:56
+#: /views/edit/Asset/CSVSource/form.form:57
 msgid "description"
 msgstr "Beschreibung"
 
@@ -224,6 +215,31 @@ msgstr "Rohdaten gespeichert."
 msgid "Title and Description changed."
 msgstr "Titel und Beschreibung geändert."
 
+#: /views/edit/Asset/CSVSource/tab_subscriptions.pt:29
+msgid "manage subscriptions for &#xab;${title}&#xbb;"
+msgstr ""
+
+#: /views/edit/Asset/CSVSource/tab_subscriptions.pt:35
+msgid ""
+"This screen doesn&#8217;t have settings, because it&#8217;s not possible to "
+"subscribe to a . Only documents that contain textual content, or folders "
+"that contain them, can be subscribed to."
+msgstr ""
+
+#: /views/edit/Asset/CSVSource/upload_form.form:23
+#: /views/add/CSVSource/form.form:22
+msgid "File to upload as source data."
+msgstr "Datei mit den CSV Daten."
+
+#: /views/edit/Asset/CSVSource/upload_form.form:30
+#: /views/add/CSVSource/form.form:29
+msgid "csv file"
+msgstr "CSV Datei"
+
 #: /views/edit/Asset/CSVSource/upload_submit.py:25
 msgid "Data uploaded. "
 msgstr "Daten hochgeladen."
+
+# Default: "character coding"
+#~ msgid "csv_character_coding"
+#~ msgstr "CSV Zeichencodierung"

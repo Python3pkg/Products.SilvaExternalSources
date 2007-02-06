@@ -75,7 +75,7 @@
             value="set encoding"
             title="access key: alt-e"
             accesskey="e"
-            i18n:attributes="title value"
+            i18n:attributes="title;value"
           />
         </td>
       </tr>
@@ -144,7 +144,7 @@
               value="upload"
               title="access key: alt-u"
               accesskey="u"
-              i18n:attributes="title value"
+              i18n:attributes="title;value"
             />
           </td>
         </tr>
@@ -207,7 +207,7 @@
               value="change data"
               title="access key: alt-c"
               accesskey="c"
-              i18n:attributes="title value"
+              i18n:attributes="title;value"
             />
           </td>
         </tr>

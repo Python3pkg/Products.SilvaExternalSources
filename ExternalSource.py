@@ -1,4 +1,4 @@
-# Copyright (c) 2002-2006 Infrae. All rights reserved.
+# Copyright (c) 2002-2007 Infrae. All rights reserved.
 # See also LICENSE.txt
 # $Revision: 1.32 $
 
@@ -98,7 +98,7 @@ class ExternalSource(Acquisition.Implicit):
     # that doesn't work, because the add screens DON'T USE THE ZOPE
     # DEFAULT ENCODING! AAAAAAARGH
     
-    management_page_charset = 'iso-8859-1'
+    management_page_charset = 'UTF-8'
     
     # Cannot make it 'private'; the form won't work in the ZMI if it was.
     parameters = None 

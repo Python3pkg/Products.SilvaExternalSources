@@ -7,7 +7,7 @@
     title model/get_title_editable;
     vein string:editor;
     "
-  i18n:domain="silva">
+  i18n:domain="silva_external_sources">
 
 <metal:use-macro use-macro="view/macro_asset_edit/macros/editor">
 

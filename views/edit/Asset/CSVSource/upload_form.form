@@ -7,7 +7,7 @@
   <enctype></enctype>
   <method>POST</method>
 
-  <i18n_domain>silva</i18n_domain>
+  <i18n_domain>silva_external_sources</i18n_domain>
   <i18n>default_edit</i18n>
 
   <groups>

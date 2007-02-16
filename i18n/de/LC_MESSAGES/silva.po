@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Silva\n"
 "POT-Creation-Date: Thu Dec 21 19:38:57 2006\n"
-"PO-Revision-Date: 2004-12-02 10:37+0100\n"
+"PO-Revision-Date: 2007-01-09 17:27+0000\n"
 "Last-Translator: Guido Goldstein <gst@infrae.com>\n"
 "Language-Team: Silva i18n team <walco@infrae.com>\n"
 "MIME-Version: 1.0\n"
@@ -15,52 +15,61 @@ msgstr ""
 "Domain: silva\n"
 "X-Poedit-Language: German\n"
 "X-Poedit-Country: GERMANY\n"
+"X-Rosetta-Export-Date: 2007-02-16 15:08+0000\n"
 
-#: /CSVSource.py:219 /CodeSource.py:77 /SQLSource.py:152
+#: /CSVSource.py:219
+#: /CodeSource.py:77
+#: /SQLSource.py:152
 msgid "Unknown encoding ${enc}, not changed! "
-msgstr "Unbekannte Codierung ${enc}, nicht geändert."
+msgstr "Unbekannte Codierung ${enc}, nicht geändert. "
 
 #: /CSVSource.py:224
 msgid "Data encoding changed to: ${enc}. "
-msgstr "Encoding der Daten geändert zu: ${enc}"
+msgstr "Encoding der Daten geändert zu: ${enc} "
 
-#: /CSVSource.py:235 /CodeSource.py:88 /SQLSource.py:165
+#: /CSVSource.py:235
+#: /CodeSource.py:88
+#: /SQLSource.py:165
 msgid "Title changed. "
-msgstr "Titel geändert."
+msgstr "Titel geändert. "
 
-#: /CSVSource.py:245 /CodeSource.py:103 /SQLSource.py:186
+#: /CSVSource.py:245
+#: /CodeSource.py:103
+#: /SQLSource.py:186
 msgid "Description changed. "
-msgstr "Beschreibung geändert."
+msgstr "Beschreibung geändert. "
 
-#: /CSVSource.py:250 /CodeSource.py:108 /SQLSource.py:191
+#: /CSVSource.py:250
+#: /CodeSource.py:108
+#: /SQLSource.py:191
 msgid "Cacheability setting changed. "
 msgstr ""
 
 #: /CSVSource.py:255
 msgid "Data updated. "
-msgstr "Daten geändert."
+msgstr "Daten geändert. "
 
 #: /CSVSource.py:269
 msgid "Raw data updated. "
-msgstr "Rohdaten geändert."
+msgstr "Rohdaten geändert. "
 
 #: /CodeSource.py:114
 msgid "<b>Warning</b>: "
-msgstr "<b>Warnung</b>:"
+msgstr "<b>Warnung</b>: "
 
 #: /CodeSource.py:117
 msgid "no script id specified! "
-msgstr "keine Script-Id angegeben!"
+msgstr "keine Script-Id angegeben! "
 
 #: /CodeSource.py:119
 msgid ""
 "This code source does not contain an callable object with id \"${id}\"! "
 msgstr ""
-"Diese CodeSource enthälte kein aufrufbares Objekt mit der Id \"${id}\"!"
+"Diese CodeSource enthälte kein aufrufbares Objekt mit der Id \"${id}\"! "
 
 #: /CodeSource.py:93
 msgid "Script id changed. "
-msgstr "Script-Id geändert."
+msgstr "Script-Id geändert. "
 
 #: /ExternalSource.py:182
 msgid ""
@@ -70,31 +79,31 @@ msgstr ""
 
 #: /SQLSource.py:157
 msgid "Data encoding changed. "
-msgstr "Datenkodierung geändert."
+msgstr "Datenkodierung geändert. "
 
 #: /SQLSource.py:170
 msgid "Connection id changed. "
-msgstr "Verbindungs-Id geändert."
+msgstr "Verbindungs-Id geändert. "
 
 #: /SQLSource.py:176
 msgid "SQL statement changed. "
-msgstr "SQL-Ausdruck geändert."
+msgstr "SQL-Ausdruck geändert. "
 
 #: /SQLSource.py:196
 msgid "Layout object id changed. "
-msgstr "Layoutobjeckt-Id geändert."
+msgstr "Layoutobjeckt-Id geändert. "
 
 #: /SQLSource.py:201
 msgid "Table rendering pagetemplate reset to default layout. "
-msgstr "Tabellenanzeigetemplate auf Voreinstellung zurückgesetzt."
+msgstr "Tabellenanzeigetemplate auf Voreinstellung zurückgesetzt. "
 
 #: /SQLSource.py:206
 msgid "Parameters form reset to default. "
-msgstr "Parameterformular auf Voreinstellung zurückgesetzt."
+msgstr "Parameterformular auf Voreinstellung zurückgesetzt. "
 
 #: /views/add/CSVSource/add_submit.py:50
 msgid "Unknown encoding ${enc}. CSVSource not added! "
-msgstr "Unbekannte Kodierung ${enc}. CSVSource nicht hinzugefügt!"
+msgstr "Unbekannte Kodierung ${enc}. CSVSource nicht hinzugefügt! "
 
 #: /views/add/CSVSource/add_submit.py:57
 msgid "Problem ${exception}"
@@ -131,11 +140,11 @@ msgstr "Zeichenencoding"
 
 #: /views/edit/Asset/CSVSource/charset_submit.py:25
 msgid "Unknown encoding ${enc}. Character encoding not saved! "
-msgstr "Unbekannte Kodierung ${enc}. Zeichenkodierung nicht gespeichert!"
+msgstr "Unbekannte Kodierung ${enc}. Zeichenkodierung nicht gespeichert! "
 
 #: /views/edit/Asset/CSVSource/charset_submit.py:31
 msgid "Encoding set to: ${enc} "
-msgstr "Encoding gesetzt zu: ${enc}"
+msgstr "Encoding gesetzt zu: ${enc} "
 
 #: /views/edit/Asset/CSVSource/edit.pt:141
 msgid "access key: alt-u"
@@ -157,7 +166,8 @@ msgstr "Daten ändern"
 msgid "access key: alt-c"
 msgstr "Kurzwahl: alt-c"
 
-#: /views/edit/Asset/CSVSource/edit.pt:29 /views/add/CSVSource/form.form:94
+#: /views/edit/Asset/CSVSource/edit.pt:29
+#: /views/add/CSVSource/form.form:94
 msgid "character coding"
 msgstr "Zeichenencoding"
 
@@ -190,7 +200,8 @@ msgstr "Kurzwahl: alt-e"
 msgid "csv source upload"
 msgstr "CSV Daten hochladen"
 
-#: /views/edit/Asset/CSVSource/form.form:30 /views/add/CSVSource/form.form:70
+#: /views/edit/Asset/CSVSource/form.form:30
+#: /views/add/CSVSource/form.form:70
 msgid "title"
 msgstr "Titel"
 
@@ -209,7 +220,7 @@ msgstr "Daten"
 
 #: /views/edit/Asset/CSVSource/rawdata_submit.py:24
 msgid "Raw data set. "
-msgstr "Rohdaten gespeichert."
+msgstr "Rohdaten gespeichert. "
 
 #: /views/edit/Asset/CSVSource/submit.py:27
 msgid "Title and Description changed."
@@ -238,8 +249,7 @@ msgstr "CSV Datei"
 
 #: /views/edit/Asset/CSVSource/upload_submit.py:25
 msgid "Data uploaded. "
-msgstr "Daten hochgeladen."
+msgstr "Daten hochgeladen. "
 
-# Default: "character coding"
 #~ msgid "csv_character_coding"
 #~ msgstr "CSV Zeichencodierung"

@@ -12,7 +12,7 @@ msgstr ""
 "Language-code: fr\n"
 "Language-name: French\n"
 "Preferred-encodings: utf-8 latin1\n"
-"Domain: silva_external_sources\n"
+"Domain: silva\n"
 "X-Rosetta-Export-Date: 2007-02-16 15:08+0000\n"
 
 #: /CSVSource.py:219

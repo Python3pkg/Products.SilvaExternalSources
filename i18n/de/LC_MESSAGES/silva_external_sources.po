@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Silva\n"
 "POT-Creation-Date: Thu Dec 21 19:38:57 2006\n"
-"PO-Revision-Date: 2007-01-09 17:27+0000\n"
-"Last-Translator: Guido Goldstein <gst@infrae.com>\n"
+"PO-Revision-Date: 2007-02-18 22:23+0000\n"
+"Last-Translator: Samuel Schluep <schluep@ethz.ch>\n"
 "Language-Team: Silva i18n team <walco@infrae.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -12,10 +12,10 @@ msgstr ""
 "Language-code: de\n"
 "Language-name: Deutsch\n"
 "Preferred-encodings: utf-8 latin1\n"
-"Domain: silva_external_sources\n"
+"Domain: silva\n"
 "X-Poedit-Language: German\n"
 "X-Poedit-Country: GERMANY\n"
-"X-Rosetta-Export-Date: 2007-02-16 15:08+0000\n"
+"X-Rosetta-Export-Date: 2007-03-07 16:18+0000\n"
 
 #: /CSVSource.py:219
 #: /CodeSource.py:77
@@ -43,7 +43,7 @@ msgstr "Beschreibung geändert. "
 #: /CodeSource.py:108
 #: /SQLSource.py:191
 msgid "Cacheability setting changed. "
-msgstr ""
+msgstr "Cache-Einstellung geändert "
 
 #: /CSVSource.py:255
 msgid "Data updated. "
@@ -76,6 +76,8 @@ msgid ""
 "This Code Source has no adjustable settings. Click a button to insert or "
 "remove it."
 msgstr ""
+"Diese CodeSource hat keine einstellbaren Parameter.  Zum Einfügen oder "
+"Entfernen verwenden Sie den entsprechenden Knopf."
 
 #: /SQLSource.py:157
 msgid "Data encoding changed. "
@@ -115,7 +117,7 @@ msgstr "Hinzugefügt ${metatype} ${id}."
 
 #: /views/add/CSVSource/form.form:49
 msgid "id"
-msgstr ""
+msgstr "Id"
 
 #: /views/add/CSVSource/form.form:51
 msgid ""
@@ -228,7 +230,7 @@ msgstr "Titel und Beschreibung geändert."
 
 #: /views/edit/Asset/CSVSource/tab_subscriptions.pt:29
 msgid "manage subscriptions for &#xab;${title}&#xbb;"
-msgstr ""
+msgstr "Abbonements für &#xab;${title}&#xbb; bearbeiten"
 
 #: /views/edit/Asset/CSVSource/tab_subscriptions.pt:35
 msgid ""
@@ -236,6 +238,9 @@ msgid ""
 "subscribe to a . Only documents that contain textual content, or folders "
 "that contain them, can be subscribed to."
 msgstr ""
+"Dieser Bildschirm hat keine Einstellungen, weil es nicht möglich ist, A zu "
+"subskribieren. Nur Dokumente, die Text beinhalten, oder Ordner, die diesen "
+"beinhalten, können subskribiert werden."
 
 #: /views/edit/Asset/CSVSource/upload_form.form:23
 #: /views/add/CSVSource/form.form:22

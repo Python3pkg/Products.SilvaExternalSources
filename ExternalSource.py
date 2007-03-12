@@ -172,6 +172,8 @@ class ExternalSource(Acquisition.Implicit):
                 value = field.get_value('default')
             if type(value) == list:
                 value = [ustr(x, 'UTF-8') for x in value]
+            elif field.meta_type == "CheckBoxField":
+                value = int(value)
             else:
                 value = ustr(value, 'UTF-8')
             xml.append('<td>%s</td>\n</tr>\n' % 

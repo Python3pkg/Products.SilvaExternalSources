@@ -55,11 +55,28 @@ class CodeSource(ExternalSource, Folder):
             script = self[self._script_id]
         except KeyError:
             return None
+        self._deserialize(kw)
         result = script(**kw)
         if type(result) is unicode:
             return result
         return unicode(result, self.data_encoding(), 'replace')
     
+    def _deserialize(self, kw):
+        fields = self.form().get_fields()
+        for field in fields:
+            kw[field.id] = self._cast_value(kw[field.id], field.meta_type)
+        return kw
+
+    def _cast_value(self, value, field_type):
+        if field_type == 'CheckBoxField':
+            if value == '1':
+                return True
+            return False
+        if field_type == 'IntegerField':
+            return int(value)
+        #XXX More field types? Dates? Selects?
+        return value
+
     # MANAGERS
 
     security.declareProtected(ViewManagementScreens, 'manage_editCodeSource')

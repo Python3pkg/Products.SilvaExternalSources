@@ -7,9 +7,18 @@ SilvaExternalSources changes
 
     Features added:
 
-      - Users get confused when adding a Code Source that has no parameters.
-        They have to click the same button twice, once to add, and again to add. 
-        Added a note that informs the user how to proceed. 
+      - Users get confused when adding a Code Source that has no
+        parameters.  They have to click the same button twice, once to
+        add, and again to add.  Added a note that informs the user how
+        to proceed.
+
+    Bugs fixed:
+
+      - The add form for CSV Sources was broken in that it ignored the
+        file upload field.
+
+      - CheckBox parameters in Code Sources now work as expected.
+        (Thanks Benno!)
 
   1.1 ?
 

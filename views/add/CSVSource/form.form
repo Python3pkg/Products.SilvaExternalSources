@@ -14,7 +14,7 @@
     <group>
       <title>default</title>
       <fields multiple="true">
-      <field><id>file</id> <type>FileField</type>
+      <field><id>object_file</id> <type>FileField</type>
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>

@@ -20,10 +20,6 @@ SilvaExternalSources changes
       - CheckBox parameters in Code Sources now work as expected.
         (Thanks Benno!)
 
-  1.1 ?
-
-  0.14 ?
-
   0.13
 
     Features added:

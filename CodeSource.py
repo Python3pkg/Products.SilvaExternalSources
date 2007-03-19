@@ -64,7 +64,7 @@ class CodeSource(ExternalSource, Folder):
     def _deserialize(self, kw):
         fields = self.form().get_fields()
         for field in fields:
-            kw[field.id] = self._cast_value(kw[field.id], field.meta_type)
+            kw[field.id] = self._cast_value(kw.get(field.id, None), field.meta_type)
         return kw
 
     def _cast_value(self, value, field_type):

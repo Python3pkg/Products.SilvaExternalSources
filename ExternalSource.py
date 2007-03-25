@@ -182,7 +182,7 @@ class ExternalSource(Acquisition.Implicit):
         # if a Code Source has no parameters, inform the user how to proceed
         if len(self.form().get_fields()) == 0:
             no_params = _('This Code Source has no adjustable settings. Click a button to insert or remove it.')
-            xml.append('<tr>\n<td>%s</td>\n</tr>\n')
+            xml.append('<tr>\n<td>%s</td>\n</tr>\n' % no_params)
 
         xml.append('</tbody>\n</table>\n</form>\n')
         REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8')

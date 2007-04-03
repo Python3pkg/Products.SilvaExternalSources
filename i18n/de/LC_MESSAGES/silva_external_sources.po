@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Silva\n"
-"POT-Creation-Date: Thu Dec 21 19:38:57 2006\n"
+"POT-Creation-Date: Tue Apr  3 11:40:24 2007\n"
 "PO-Revision-Date: 2007-02-18 22:23+0000\n"
 "Last-Translator: Samuel Schluep <schluep@ethz.ch>\n"
 "Language-Team: Silva i18n team <walco@infrae.com>\n"
@@ -15,11 +15,9 @@ msgstr ""
 "Domain: silva\n"
 "X-Poedit-Language: German\n"
 "X-Poedit-Country: GERMANY\n"
-"X-Rosetta-Export-Date: 2007-03-07 16:18+0000\n"
+"X-Rosetta-Export-Date: 2007-04-03 09:28:19+0000\n"
 
-#: /CSVSource.py:219
-#: /CodeSource.py:77
-#: /SQLSource.py:152
+#: /CSVSource.py:219 /CodeSource.py:94 /SQLSource.py:152
 msgid "Unknown encoding ${enc}, not changed! "
 msgstr "Unbekannte Codierung ${enc}, nicht geändert. "
 
@@ -27,21 +25,15 @@ msgstr "Unbekannte Codierung ${enc}, nicht geändert. "
 msgid "Data encoding changed to: ${enc}. "
 msgstr "Encoding der Daten geändert zu: ${enc} "
 
-#: /CSVSource.py:235
-#: /CodeSource.py:88
-#: /SQLSource.py:165
+#: /CSVSource.py:235 /CodeSource.py:105 /SQLSource.py:165
 msgid "Title changed. "
 msgstr "Titel geändert. "
 
-#: /CSVSource.py:245
-#: /CodeSource.py:103
-#: /SQLSource.py:186
+#: /CSVSource.py:245 /CodeSource.py:120 /SQLSource.py:186
 msgid "Description changed. "
 msgstr "Beschreibung geändert. "
 
-#: /CSVSource.py:250
-#: /CodeSource.py:108
-#: /SQLSource.py:191
+#: /CSVSource.py:250 /CodeSource.py:125 /SQLSource.py:191
 msgid "Cacheability setting changed. "
 msgstr "Cache-Einstellung geändert "
 
@@ -53,25 +45,25 @@ msgstr "Daten geändert. "
 msgid "Raw data updated. "
 msgstr "Rohdaten geändert. "
 
-#: /CodeSource.py:114
+#: /CodeSource.py:110
+msgid "Script id changed. "
+msgstr "Script-Id geändert. "
+
+#: /CodeSource.py:131
 msgid "<b>Warning</b>: "
 msgstr "<b>Warnung</b>: "
 
-#: /CodeSource.py:117
+#: /CodeSource.py:134
 msgid "no script id specified! "
 msgstr "keine Script-Id angegeben! "
 
-#: /CodeSource.py:119
+#: /CodeSource.py:136
 msgid ""
 "This code source does not contain an callable object with id \"${id}\"! "
 msgstr ""
 "Diese CodeSource enthälte kein aufrufbares Objekt mit der Id \"${id}\"! "
 
-#: /CodeSource.py:93
-msgid "Script id changed. "
-msgstr "Script-Id geändert. "
-
-#: /ExternalSource.py:182
+#: /ExternalSource.py:184
 msgid ""
 "This Code Source has no adjustable settings. Click a button to insert or "
 "remove it."
@@ -168,8 +160,7 @@ msgstr "Daten ändern"
 msgid "access key: alt-c"
 msgstr "Kurzwahl: alt-c"
 
-#: /views/edit/Asset/CSVSource/edit.pt:29
-#: /views/add/CSVSource/form.form:94
+#: /views/edit/Asset/CSVSource/edit.pt:29 /views/add/CSVSource/form.form:94
 msgid "character coding"
 msgstr "Zeichenencoding"
 
@@ -202,8 +193,7 @@ msgstr "Kurzwahl: alt-e"
 msgid "csv source upload"
 msgstr "CSV Daten hochladen"
 
-#: /views/edit/Asset/CSVSource/form.form:30
-#: /views/add/CSVSource/form.form:70
+#: /views/edit/Asset/CSVSource/form.form:30 /views/add/CSVSource/form.form:70
 msgid "title"
 msgstr "Titel"
 

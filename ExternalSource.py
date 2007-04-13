@@ -133,7 +133,7 @@ class ExternalSource(Acquisition.Implicit):
                 ('<input type="hidden" name="metatype" value="%s" />\n' % 
                         self.meta_type),
                 ('<table width="100%" id="extsourceform" '
-                        'style="display: block" class="plain">\n<tbody>\n')]
+                        '>\n<tbody>\n')]
         for field in self.form().get_fields():
             form = REQUEST.form.copy()
             # pfff... what's that, not allowed to change a dict during 
@@ -160,8 +160,8 @@ class ExternalSource(Acquisition.Implicit):
             if fieldCssClasses:
                 fieldCssClasses = 'class="%s"'%fieldCssClasses.strip()
 				
-            xml.append('<tr>\n<td><a href="#" %s>%s%s</a></td>\n' % (
-                fieldCssClasses, ustr(field.values['title'], 'UTF-8'), fieldDescription)
+            xml.append('<tr>\n<td width="7em"><a href="#" %s>%s%s</a></td>\n' % (
+                fieldCssClasses, fieldDescription, ustr(field.values['title'], 'UTF-8'))
                 )
 
             value = None

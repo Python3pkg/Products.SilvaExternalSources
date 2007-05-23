@@ -8,16 +8,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: silva-external-sources\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: Tue Apr  3 11:40:24 2007\n"
+"POT-Creation-Date: 2007-01-09 16:32:32.675893+00:00\n"
 "PO-Revision-Date: 2007-01-10 13:06+0000\n"
 "Last-Translator: thisfred <eric@infrae.com>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Rosetta-Export-Date: 2007-04-03 09:28:19+0000\n"
+"X-Rosetta-Export-Date: 2007-05-21 14:58:20+0000\n"
 
-#: /CSVSource.py:219 /CodeSource.py:94 /SQLSource.py:152
+#: /CSVSource.py:219
+#: /CodeSource.py:94
+#: /SQLSource.py:152
 msgid "Unknown encoding ${enc}, not changed! "
 msgstr "Onbekende encodering ${enc}, niet gewijzigd! "
 
@@ -25,15 +27,21 @@ msgstr "Onbekende encodering ${enc}, niet gewijzigd! "
 msgid "Data encoding changed to: ${enc}. "
 msgstr "Gegevens-encodering gewijzigd naar: ${enc}. "
 
-#: /CSVSource.py:235 /CodeSource.py:105 /SQLSource.py:165
+#: /CSVSource.py:235
+#: /CodeSource.py:105
+#: /SQLSource.py:165
 msgid "Title changed. "
 msgstr "Titel gewijzigd. "
 
-#: /CSVSource.py:245 /CodeSource.py:120 /SQLSource.py:186
+#: /CSVSource.py:245
+#: /CodeSource.py:120
+#: /SQLSource.py:186
 msgid "Description changed. "
 msgstr "Beschrijving gewijzigd. "
 
-#: /CSVSource.py:250 /CodeSource.py:125 /SQLSource.py:191
+#: /CSVSource.py:250
+#: /CodeSource.py:125
+#: /SQLSource.py:191
 msgid "Cacheability setting changed. "
 msgstr "Cache-instelling gewijzigd. "
 
@@ -159,7 +167,8 @@ msgstr "gegevens wijzigen"
 msgid "access key: alt-c"
 msgstr "sneltoets: alt-c"
 
-#: /views/edit/Asset/CSVSource/edit.pt:29 /views/add/CSVSource/form.form:94
+#: /views/edit/Asset/CSVSource/edit.pt:29
+#: /views/add/CSVSource/form.form:94
 msgid "character coding"
 msgstr "teken-encodering"
 
@@ -192,7 +201,8 @@ msgstr "sneltoets: alt-e"
 msgid "csv source upload"
 msgstr "csv source upload"
 
-#: /views/edit/Asset/CSVSource/form.form:30 /views/add/CSVSource/form.form:70
+#: /views/edit/Asset/CSVSource/form.form:30
+#: /views/add/CSVSource/form.form:70
 msgid "title"
 msgstr "titel"
 

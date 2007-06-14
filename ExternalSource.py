@@ -2,6 +2,9 @@
 # See also LICENSE.txt
 # $Revision: 1.32 $
 
+#for the traceback info
+import sys
+
 from zope.interface import implements
 from DocumentTemplate import sequence
 # Zope
@@ -326,5 +329,13 @@ class ExternalSource(Acquisition.Implicit):
         """ set cacheablility of source
         """
         self._is_cacheable = cacheable
+
+    """If the external source errors out, log the traceback to the zope error log.
+       This function allows continues processing"""
+    security.declareProtected(SilvaPermissions.AccessContentsInformation,
+                              'log_traceback')
+    def log_traceback(self):
+        error_log = self.error_log
+        url = error_log.raising( sys.exc_info() )
 
 InitializeClass(ExternalSource)

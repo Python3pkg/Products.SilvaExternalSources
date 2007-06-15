@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Silva\n"
-"POT-Creation-Date: Thu Dec 21 19:38:57 2006\n"
+"POT-Creation-Date: Fri Jun 15 11:37:59 2007\n"
 "PO-Revision-Date: 2007-01-09 17:27+0000\n"
 "Last-Translator: Joaquin Pombar <joaquin.pombar@wanadoo.fr>\n"
 "Language-Team: Silva i18n team <walco@infrae.com>\n"
@@ -15,9 +15,7 @@ msgstr ""
 "Domain: silva\n"
 "X-Rosetta-Export-Date: 2007-05-21 14:58:19+0000\n"
 
-#: /CSVSource.py:219
-#: /CodeSource.py:94
-#: /SQLSource.py:152
+#: /CSVSource.py:219 /CodeSource.py:94 /SQLSource.py:152
 msgid "Unknown encoding ${enc}, not changed! "
 msgstr "encodage inconnu ${enc}, non changé "
 
@@ -25,21 +23,15 @@ msgstr "encodage inconnu ${enc}, non changé "
 msgid "Data encoding changed to: ${enc}. "
 msgstr "Données d'encodage changées a  ${enc}. "
 
-#: /CSVSource.py:235
-#: /CodeSource.py:105
-#: /SQLSource.py:165
+#: /CSVSource.py:235 /CodeSource.py:105 /SQLSource.py:165
 msgid "Title changed. "
 msgstr "Titre changé "
 
-#: /CSVSource.py:245
-#: /CodeSource.py:120
-#: /SQLSource.py:186
+#: /CSVSource.py:245 /CodeSource.py:120 /SQLSource.py:186
 msgid "Description changed. "
 msgstr "Description changée "
 
-#: /CSVSource.py:250
-#: /CodeSource.py:125
-#: /SQLSource.py:191
+#: /CSVSource.py:250 /CodeSource.py:125 /SQLSource.py:191
 msgid "Cacheability setting changed. "
 msgstr "Paramètres de cache modifiés "
 
@@ -68,7 +60,7 @@ msgid ""
 "This code source does not contain an callable object with id \"${id}\"! "
 msgstr "Ce code source ne contient pas d'objet appelable avec id \"${id}\"! "
 
-#: /ExternalSource.py:184
+#: /ExternalSource.py:187
 msgid ""
 "This Code Source has no adjustable settings. Click a button to insert or "
 "remove it."
@@ -163,8 +155,7 @@ msgstr "modifier données"
 msgid "access key: alt-c"
 msgstr "raccourci: alt-c"
 
-#: /views/edit/Asset/CSVSource/edit.pt:29
-#: /views/add/CSVSource/form.form:94
+#: /views/edit/Asset/CSVSource/edit.pt:29 /views/add/CSVSource/form.form:94
 msgid "character coding"
 msgstr "encodage des caractères"
 
@@ -197,8 +188,7 @@ msgstr "raccourci: alt-e"
 msgid "csv source upload"
 msgstr "télécharger source csv"
 
-#: /views/edit/Asset/CSVSource/form.form:30
-#: /views/add/CSVSource/form.form:70
+#: /views/edit/Asset/CSVSource/form.form:30 /views/add/CSVSource/form.form:70
 msgid "title"
 msgstr "titre"
 

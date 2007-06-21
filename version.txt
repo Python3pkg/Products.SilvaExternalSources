@@ -1,1 +1,1 @@
-SilvaExternalSources 1.4 (unreleased)
+SilvaExternalSources 1.4

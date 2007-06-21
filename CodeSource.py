@@ -92,7 +92,7 @@ class CodeSource(ExternalSource, Folder):
             except LookupError:
                 # unknown encoding, return error message
                 m = _(
-                    "Unknown encoding ${enc}, not changed! "
+                    "Unknown encoding ${enc}, not changed! ",
                     mapping={"enc":charset})
                 msg += sm #"Unknown encoding %s, not changed!. " % data_encoding
                 return self.editCodeSource(manage_tabs_message=m)

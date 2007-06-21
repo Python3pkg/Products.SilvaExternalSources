@@ -47,15 +47,17 @@ try:
     unicode('abcd', de, 'replace')
 except LookupError:
     # unknown encoding, return error message
-    m = _('Unknown encoding ${enc}. CSVSource not added! ')
-    m.set_mapping({'enc':de})
+    m = _(
+        'Unknown encoding ${enc}. CSVSource not added! ',
+        mapping={'enc':de})
     return view.add_form(message_type="error", message=m)
 
 try:
     model.manage_addProduct['SilvaExternalSources'].manage_addCSVSource(id, title, file)
 except IOError, e:
-    m = _('Problem ${exception}')
-    m.set_mapping({'exception':e})
+    m = _(
+        'Problem ${exception}',
+        mapping={'exception':e})
     msg = unicode(m)
     return view.add_form(message_type="error", message=msg)
 object = getattr(model, id)
@@ -68,6 +70,7 @@ object.set_data_encoding(de)
 if REQUEST.has_key('add_edit_submit'):
     REQUEST.RESPONSE.redirect(object.absolute_url() + '/edit/tab_edit')
 else:
-    m = _('Added ${metatype} ${id}.')
-    m.set_mapping({'metatype':object.meta_type, 'id':view.quotify(id)})
+    m = _(
+        'Added ${metatype} ${id}.',
+        mapping={'metatype':object.meta_type, 'id':view.quotify(id)})
     return model.edit['tab_edit'](message_type="feedback", message=m)

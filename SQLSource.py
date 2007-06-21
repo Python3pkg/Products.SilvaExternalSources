@@ -149,8 +149,9 @@ class SQLSource(ExternalSource, Folder):
                 unicode('abcd', data_encoding, 'replace')
             except LookupError:
                 # unknown encoding, return error message
-                m = _("Unknown encoding ${enc}, not changed! ")
-                m.set_mapping({"enc":charset})
+                m = _(
+                    "Unknown encoding ${enc}, not changed! ",
+                    mapping={"enc":charset})
                 msg += m #"Unknown encoding %s, not changed!. " % data_encoding
                 return self.editSQLSource(manage_tabs_message=msg)
             self.set_data_encoding(data_encoding)

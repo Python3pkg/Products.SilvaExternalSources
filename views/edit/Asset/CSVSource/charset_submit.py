@@ -22,14 +22,16 @@ try:
     unicode('abcd', de, 'replace')
 except LookupError:
     # unknown encoding, return error message
-    m = _('Unknown encoding ${enc}. Character encoding not saved! ')
-    m.set_mapping({'enc':de})
+    m = _(
+        'Unknown encoding ${enc}. Character encoding not saved! ',
+        mapping={'enc':de})
     msg_type = 'error'
     return view.tab_edit(message_type=msg_type, message=m)
 else:
     model.set_data_encoding(de)
-    m = _('Encoding set to: ${enc} ')
-    m.set_mapping({'enc':de})
+    m = _(
+        'Encoding set to: ${enc} ',
+        _mapping={'enc':de})
     msg += m
 
 return view.tab_edit(message_type=msg_type, message=msg)

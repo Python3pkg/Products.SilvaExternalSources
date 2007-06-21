@@ -216,13 +216,15 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             unicode('abcd', charset, 'replace')
         except LookupError:
             # unknown encoding, return error message
-            m = _("Unknown encoding ${enc}, not changed! ")
-            m.set_mapping({"enc":charset})
+            m = _(
+                "Unknown encoding ${enc}, not changed! ",
+                mapping={"enc":charset})
             msg += m #"Unknown encoding %s, not changed!. " % charset
             return self.editCSVSource(manage_tabs_message=msg)
         self.set_data_encoding(charset)
-        m = _("Data encoding changed to: ${enc}. ")
-        m.set_mapping({"enc":charset})
+        m = _(
+            "Data encoding changed to: ${enc}. ",
+            mapping={"enc":charset})
         msg += m #'Data encoding changed to: %s. ' % charset
 
         # Assume title is in the encoding as specified 

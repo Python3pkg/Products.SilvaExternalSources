@@ -91,8 +91,9 @@ class CodeSource(ExternalSource, Folder):
                 unicode('abcd', data_encoding, 'replace')
             except LookupError:
                 # unknown encoding, return error message
-                m = _("Unknown encoding ${enc}, not changed! ")
-                m.set_mapping({"enc":charset})
+                m = _(
+                    "Unknown encoding ${enc}, not changed! "
+                    mapping={"enc":charset})
                 msg += sm #"Unknown encoding %s, not changed!. " % data_encoding
                 return self.editCodeSource(manage_tabs_message=m)
             self.set_data_encoding(data_encoding)
@@ -133,8 +134,10 @@ class CodeSource(ExternalSource, Folder):
             if not script_id:
                 m = _('no script id specified! ')
             else:
-                m = _('This code source does not contain an callable object with id "${id}"! ')
-                m.set_mapping({'id': script_id})
+                m = _(
+                    'This code source does not contain an callable object with\
+                    id "${id}"! ',
+                    mapping={'id': script_id})
             msg += m
         return self.editCodeSource(manage_tabs_message=msg)
 

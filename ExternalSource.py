@@ -201,6 +201,11 @@ class ExternalSource(Acquisition.Implicit):
             XML mapping, if validation fails return a 400 with the error
             message
         """
+        if REQUEST.has_key('docref') and REQUEST['docref']:
+            model = REQUEST.form['model'] = self.resolve_ref(REQUEST['docref'])
+        else:
+            # buggy behaviour. but allows backward compatibility
+            REQUEST.form['model'] = self
         form = self.form()
         try:
             result = form.validate_all(REQUEST)

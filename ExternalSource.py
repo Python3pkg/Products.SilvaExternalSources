@@ -4,6 +4,7 @@
 
 #for the traceback info
 import sys
+from urllib import quote
 
 from zope.interface import implements
 from DocumentTemplate import sequence
@@ -127,7 +128,9 @@ class ExternalSource(Acquisition.Implicit):
         # XXX this is never triggered AFAIK, because kupu sets a 'null'
         # string, and not a value that resolves to False
         if REQUEST.has_key('docref') and REQUEST['docref']:
-            REQUEST.form['model'] = self.resolve_ref(REQUEST['docref'])
+            # need to quote the docref, as resolve_ref
+            #(actually OFS.CopySupport._cb_decode) unquotes it
+            REQUEST.form['model'] = self.resolve_ref(quote(REQUEST['docref']))
         else:
             # buggy behaviour. but allows backward compatibility
             REQUEST.form['model'] = self

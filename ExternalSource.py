@@ -112,7 +112,6 @@ class ExternalSource(Acquisition.Implicit):
     _is_cacheable = 0
 
     # ACCESSORS
-
     
     security.declareProtected(SilvaPermissions.AccessContentsInformation,'form')
 
@@ -205,7 +204,9 @@ class ExternalSource(Acquisition.Implicit):
             message
         """
         if REQUEST.has_key('docref') and REQUEST['docref']:
-            model = REQUEST.form['model'] = self.resolve_ref(REQUEST['docref'])
+            # need to quote the docref, as resolve_ref
+            #(actually OFS.CopySupport._cb_decode) unquotes it
+            REQUEST.form['model'] = self.resolve_ref(quote(REQUEST['docref']))
         else:
             # buggy behaviour. but allows backward compatibility
             REQUEST.form['model'] = self

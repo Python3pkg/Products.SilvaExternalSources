@@ -3,6 +3,16 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  1.5:
+    
+    Bugs Fixed:
+
+      - the model is available in validate_to_form (when working from kupu)
+
+  1.4
+
+    Features added / bugs fixed: not recorded
+
   1.3 
 
     Features added:

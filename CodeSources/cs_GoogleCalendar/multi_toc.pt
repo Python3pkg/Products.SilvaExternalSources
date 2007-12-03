@@ -1,0 +1,75 @@
+﻿<tal:def define="
+  align options/alignment | nothing;
+  cssclass options/css_class | nothing;
+    classes python:align and cssclass;
+    catclasses python:classes and (align + ' ' + cssclass) or nothing;
+    c1ass python:catclasses and catclasses or (align or cssclass);
+  cssstyle options/css_style | nothing;
+    center python:align == 'align-center' and 'margin-left:auto;;margin-right:auto;;' or nothing;
+    styles python:cssstyle and center;
+    catstyles python:styles and (center + cssstyle) or nothing;
+    style python:catstyles and catstyles or (cssstyle and cssstyle or center);
+  displaytitle options/display_title | nothing;
+  capsuletitle options/capsule_title | nothing;
+  linktitle options/link_title | nothing;
+  types python:[metatype.strip() for metatype in options['filter_meta_types'].split(',')];
+  tocdepth python:int(options['depth']);
+  publiconly options/public | nothing;
+    titlemethod python:test(publiconly == 'yes', 'get_title', 'get_title_editable');
+    appendtourl python:test(publiconly == 'yes', '', '/edit');
+  sorton options/sort_on | nothing;
+  sortorder options/sort_order |nothing;
+  errormessage string:<p><span class='error'>The path of this Multi-TOC is not valid.</span></p>;
+">
+<!-- Multi-TOC codesource 0.4 -->
+<div tal:omit-tag="python:not (c1ass or style)"
+  tal:attributes="
+    class c1ass;
+    style style;
+">
+<h2 tal:condition="capsuletitle"
+  tal:content="capsuletitle">
+  capsule title
+</h2>
+<tal:loop repeat="top python:[path.strip() for path in options['paths'].split(',')]"
+  tal:on-error="structure errormessage">
+<tal:def define="
+  model python:context.restrictedTraverse(top.split('/'));
+  publictree nocall:model/get_public_tree;
+  edittree nocall:model/get_tree;
+  treemethod python:publiconly == 'yes' and publictree or edittree;
+  tree python:treemethod(depth=tocdepth);
+  assets python: model.get_assets() or [];
+  assets python: [(0, asset) for asset in assets];
+  dummy python: tree.extend(assets);
+  tree python: sorton == 'folder_order' and tree or context.sort_tree(tree, sorton);
+  tree python: sortorder == 'reverse' and tree.reverse() or tree;
+">
+<h3 tal:condition="python:displaytitle == 'yes'"
+  tal:attributes="class python:test(repeat['top'].start, 'interheading', nothing)"
+  ><a tal:define="title model/get_title"
+  tal:omit-tag="not:linktitle"
+  tal:attributes="
+    href string:${model/absolute_url}${appendtourl};
+    title string:Go to $title;
+"><span tal:replace="python:title and title or model.id">container title</span></a></h3>
+<tal:loop repeat="obj tree"
+><p class="toc"
+  tal:define="
+    indent python:obj[0]; 
+    item python:obj[1];
+    title python:getattr(obj[1], titlemethod)();
+    url string:${item/absolute_url}${appendtourl};
+    "
+  tal:condition="python:item.meta_type in types"
+  tal:attributes="class string:toc level-$indent">
+<a tal:content="python:title and title or item.id"
+  tal:attributes="href url">
+  item title
+</a>
+</p></tal:loop>
+</tal:def>
+</tal:loop>
+</div>
+<!-- /Multi-TOC -->
+</tal:def>

@@ -21,7 +21,7 @@
           <alternate_name></alternate_name>
           <css_class></css_class>
           <default>@GMail.com</default>
-          <description>Name of your Google Calendar account. eg: mycompany@gmail.com</description>
+          <description>ID of your Google Calendar/Agenda account. eg: mycompany@gmail.com</description>
           <display_maxwidth></display_maxwidth>
           <display_width type="int">20</display_width>
           <enabled type="int">1</enabled>
@@ -52,7 +52,7 @@
           <enabled type="int">1</enabled>
           <external_validator></external_validator>
           <extra_item></extra_item>
-          <first_item type="int">0</first_item>
+          <first_item type="int">1</first_item>
           <hidden type="int">0</hidden>
           <items type="list">[('Month', 'MONTH'), ('Agenda', 'AGENDA')]</items>
           <orientation>vertical</orientation>

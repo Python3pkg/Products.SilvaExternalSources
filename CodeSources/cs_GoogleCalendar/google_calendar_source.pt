@@ -1,0 +1,17 @@
+<tal:block define="
+    g_account options/google_calendar_account | nothing;
+    g_title options/calendar_title | nothing;
+    g_type options/google_calendar_type | nothing;
+    g_background_color options/calendar_background_color | nothing;
+    g_width options/calendar_width | nothing; 
+    g_height options/calendar_height | nothing;
+    ">
+
+<iframe tal:attributes="
+        src string:http://www.google.com/calendar/embed?src=$g_account&amp;title=$g_title&amp;mode=$g_type&amp;bgcolor=%23$g_background_color&amp;;
+        width g_width; height g_height;"
+        frameborder="0"
+        >
+</iframe>
+
+</tal:block>

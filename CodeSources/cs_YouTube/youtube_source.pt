@@ -1,0 +1,12 @@
+<tal:block define="
+  y_width options/youtube_width | nothing; 
+  y_height options/youtube_height | nothing; 
+  y_url options/youtube_url | nothing;
+  ">
+  <object type="application/x-shockwave-flash" data="" 
+    tal:attributes="height y_height; width y_width; data y_url;">
+    <param name="movie" value=""
+      tal:attributes="value y_url;" />
+    <param name="wmode" value="transparent" />
+  </object>
+</tal:block>

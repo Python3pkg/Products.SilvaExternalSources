@@ -8,7 +8,7 @@ using it's unique URL.
 
 Customizing YouTube Code Source
 -------------------------------
-The code in the page template named 'cs_youtube' can be easily adjusted to
+The code in the page template named 'youtube_source' can be easily adjusted to
 your personal requirements. 
 
 
@@ -24,4 +24,3 @@ like this: http://www.youtube.com/watch?v=mfHlA3fmJG0
 
 --
 Improvements and variants are welcome.
-Hard work by eric at infrae com, layout by kitblake at infrae com

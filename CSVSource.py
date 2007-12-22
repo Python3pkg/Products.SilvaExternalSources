@@ -26,7 +26,7 @@ from Products.Silva.i18n import translate as _
 
 
 icon="www/csvsource.png"
-addable_priority = 1.8
+addable_priority = 0.1
 
 import ASV
 

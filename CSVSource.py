@@ -23,11 +23,6 @@ from Products.Silva.interfaces import IAsset
 # I18N stuff
 from Products.Silva.i18n import translate as _
 
-
-
-icon="www/csvsource.png"
-addable_priority = 0.1
-
 import ASV
 
 class CSVSource(ExternalSource, SilvaObject, Folder):
@@ -274,9 +269,6 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         return self.editDataCSVSource(manage_tabs_message=msg)
 
 InitializeClass(CSVSource)
-
-manage_addCSVSourceForm = PageTemplateFile(
-    "www/csvSourceAdd", globals(), __name__='manage_addCSVSourceForm')
 
 import os
 

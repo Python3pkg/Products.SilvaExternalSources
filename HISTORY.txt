@@ -3,6 +3,12 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  1.5.1:
+  
+    Features Added:
+ 
+      - component registration now done using Silva 2.0 zcml directives
+
   1.5:
     
     Bugs Fixed:

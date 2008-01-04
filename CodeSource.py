@@ -15,8 +15,6 @@ from Products.Silva.SilvaPermissions import ViewManagementScreens, AccessContent
 from Products.Silva.helpers import add_and_edit
 from Products.Silva.i18n import translate as _
 
-icon="www/codesource.png"
-
 class CodeSource(ExternalSource, Folder):
 
     implements(IExternalSource)

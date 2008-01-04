@@ -1,9 +1,26 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:silva="http://infrae.com/ns/silvaconf"
+    i18n_domain="silva_external_sources"
     >
 
   <!-- i18n -->
   <i18n:registerTranslations directory="i18n" />
+
+  <silva:extension
+    name="SilvaExternalSources"
+    title="Silva External Sources"
+    depends="Silva"
+    />
+
+  <silva:content
+    extension_name="SilvaExternalSources"
+    content=".CSVSource.CSVSource"
+    icon="www/csvsource.png"
+    priority="0.1" 
+    content_factory=".CSVSource.manage_addCSVSource"
+    />
 
 </configure>

@@ -67,7 +67,7 @@ class CodeSource(ExternalSource, Folder):
 
     def _cast_value(self, value, field_type):
         if field_type == 'CheckBoxField':
-            if value == '1':
+            if int(value)==1:
                 return True
             return False
         if field_type == 'IntegerField':

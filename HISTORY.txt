@@ -9,6 +9,10 @@ SilvaExternalSources changes
  
       - component registration now done using Silva 2.0 zcml directives
 
+    Bugs Fixed:
+
+      - problem with checkboxfields (checked) when rendering a code source
+
   1.5:
     
     Bugs Fixed:

@@ -139,21 +139,20 @@ class ExternalSource(Acquisition.Implicit):
                         self.meta_type),
                 ('<table width="100%" id="extsourceform" '
                         '>\n<tbody>\n')]
-        for field in self.form().get_fields():
-            form = REQUEST.form.copy()
-            # pfff... what's that, not allowed to change a dict during 
-            # iteration?!? ;)
-            formcopy = {} 
-            for k, v in form.iteritems():
-                vtype = 'string'
-                if '__type__' in k:
-                    k, vtype = k.split('__type__')
-                if vtype == 'list':
-                    # XXX evil eval, although Formulator does the same...
-                    formcopy[k] = eval(v)
-                else:
-                    formcopy[k] = v
+        form = REQUEST.form.copy()
+        formcopy = {} 
+        # pfff... what's that, not allowed to change a dict during iteration?!? ;)
+        for k, v in form.iteritems():
+            vtype = 'string'
+            if '__type__' in k:
+                k, vtype = k.split('__type__')
+            if vtype == 'list':
+                # XXX evil eval, although Formulator does the same...
+                formcopy[k] = eval(v)
+            else:
+                formcopy[k] = v
 
+        for field in self.form().get_fields():
             fieldDescription = ustr(field.values.get('description',''), 'UTF-8')
             if fieldDescription:
                 fieldCssClasses = "rollover"
@@ -165,13 +164,15 @@ class ExternalSource(Acquisition.Implicit):
             if fieldCssClasses:
                 fieldCssClasses = 'class="%s"'%fieldCssClasses.strip()
 				
-            xml.append('<tr>\n<td width="7em"><a href="#" %s>%s%s</a></td>\n' % (
+            xml.append('<tr>\n<td width="7em"><a href="#" onclick="return false" %s>%s%s</a></td>\n' % (
                 fieldCssClasses, fieldDescription, ustr(field.values['title'], 'UTF-8'))
                 )
 
             value = None
             if formcopy.has_key(field.id):
                 value = formcopy[field.id]
+            elif formcopy.has_key(field.id.lower()):
+                value = formcopy[field.id.lower()]
             if value is None:
                 # default value (if available)
                 value = field.get_value('default')

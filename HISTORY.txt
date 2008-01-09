@@ -16,6 +16,10 @@ SilvaExternalSources changes
       - #106231 Integer field of Code Sources cannot be empty
         Empty Integer fields now have a value of None
 
+      - #180860 code source parameter ids must be lowercase
+        They can now be mixed case.  However, multiple parameters with
+        ids that differ only in case aren't supported
+
   1.5:
     
     Bugs Fixed:

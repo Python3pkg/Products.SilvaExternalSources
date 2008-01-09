@@ -13,6 +13,9 @@ SilvaExternalSources changes
 
       - problem with checkboxfields (checked) when rendering a code source
 
+      - #106231 Integer field of Code Sources cannot be empty
+        Empty Integer fields now have a value of None
+
   1.5:
     
     Bugs Fixed:

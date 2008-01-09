@@ -71,6 +71,8 @@ class CodeSource(ExternalSource, Folder):
                 return True
             return False
         if field_type == 'IntegerField':
+            if not value: #if value is not set
+                return None
             return int(value)
         #XXX More field types? Dates? Selects?
         return value

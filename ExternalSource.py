@@ -137,7 +137,7 @@ class ExternalSource(Acquisition.Implicit):
                 '<form action="" method="POST">\r',
                 ('<input type="hidden" name="metatype" value="%s" />\n' % 
                         self.meta_type),
-                ('<table width="100%" id="extsourceform" '
+                ('<table width="100%" id="extsourceform" cellpadding="0" cellspacing="0" '
                         '>\n<tbody>\n')]
         form = REQUEST.form.copy()
         formcopy = {} 

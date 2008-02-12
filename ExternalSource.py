@@ -105,7 +105,7 @@ class ExternalSource(Acquisition.Implicit):
     management_page_charset = 'UTF-8'
     
     # Cannot make it 'private'; the form won't work in the ZMI if it was.
-    parameters = None 
+    parameters = None  
 
     _data_encoding = 'UTF-8'
     _description = ''
@@ -139,6 +139,7 @@ class ExternalSource(Acquisition.Implicit):
                         self.meta_type),
                 ('<table width="100%" id="extsourceform" cellpadding="0" cellspacing="0" '
                         '>\n<tbody>\n')]
+
         form = REQUEST.form.copy()
         formcopy = {} 
         # pfff... what's that, not allowed to change a dict during iteration?!? ;)
@@ -169,9 +170,9 @@ class ExternalSource(Acquisition.Implicit):
                 )
 
             value = None
-            if formcopy.has_key(field.id):
-                value = formcopy[field.id]
-            elif formcopy.has_key(field.id.lower()):
+            #the field id is actually _always_ lowercase in formcopy
+            # (see https://bugs.launchpad.net/silva/+bug/180860)
+            if formcopy.has_key(field.id.lower()):
                 value = formcopy[field.id.lower()]
             if value is None:
                 # default value (if available)

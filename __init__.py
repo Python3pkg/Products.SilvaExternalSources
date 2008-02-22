@@ -1,6 +1,7 @@
 import install
 import CodeSource, SQLSource, CSVSource
 # Silva
+from Products.Silva.helpers import makeContainerFilter
 from Products.Silva.ExtensionRegistry import extensionRegistry
 
 def initialize(context):
@@ -10,7 +11,8 @@ def initialize(context):
             CodeSource.addCodeSource,
             CodeSource.manage_addCodeSource
             ),
-        icon = "www/codesource.png"
+        icon = "www/codesource.png",
+        container_filter = makeContainerFilter()
         )
  
     context.registerClass(
@@ -19,7 +21,8 @@ def initialize(context):
             SQLSource.addSQLSource,
             SQLSource.manage_addSQLSource
             ),
-        icon = "www/sqlsource.png"
+        icon = "www/sqlsource.png",
+        container_filter = makeContainerFilter()        
         )
 
     #registerDirectory('views', globals())

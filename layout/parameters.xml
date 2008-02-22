@@ -1,87 +1,112 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0"?>
 
 <form>
   <title>Parameters form</title>
+  <row_length>4</row_length>
   <name>form</name>
   <action></action>
-  <enctype></enctype>
   <method>POST</method>
-
+  <enctype></enctype>
+  <encoding>UTF-8</encoding>
+  <stored_encoding>ISO-8859-1</stored_encoding>
+  <unicode_mode>true</unicode_mode>
+  <i18n_domain></i18n_domain>
   <groups>
     <group>
       <title>Default</title>
       <fields>
 
-        <field><id>table</id> <type>StringField</type>
-          <values>
-            <alternate_name></alternate_name>
-            <css_class></css_class>
-            <default></default>
-            <description></description>
-            <display_maxwidth></display_maxwidth>
-            <display_width type="int">20</display_width>
-            <external_validator></external_validator>
-            <extra></extra>
-            <hidden type="int">0</hidden>
-            <max_length></max_length>
-            <required type="int">1</required>
-            <title>table</title>
-            <truncate type="int">0</truncate>
-            <unicode type="int">0</unicode>
-            <whitespace_preserve type="int">0</whitespace_preserve>
-          </values>
-          <tales>
-          </tales>
-          <messages>
-            <message name="external_validator_failed">The input failed the external validator.</message>
-            <message name="required_not_found">Input is required but no input given.</message>
-            <message name="too_long">Too much input was given.</message>
-          </messages>
-        </field>
-        <field><id>columns</id> <type>StringField</type>
-          <values>
-            <alternate_name></alternate_name>
-            <css_class></css_class>
-            <default></default>
-            <description>Comma seperated list of columns to select</description>
-            <display_maxwidth></display_maxwidth>
-            <display_width type="int">20</display_width>
-            <external_validator></external_validator>
-            <extra></extra>
-            <hidden type="int">0</hidden>
-            <max_length></max_length>
-            <required type="int">1</required>
-            <title>columns</title>
-            <truncate type="int">0</truncate>
-            <unicode type="int">0</unicode>
-            <whitespace_preserve type="int">0</whitespace_preserve>
-          </values>
-          <tales>
-          </tales>
-          <messages>
-            <message name="external_validator_failed">The input failed the external validator.</message>
-            <message name="required_not_found">Input is required but no input given.</message>
-            <message name="too_long">Too much input was given.</message>
-          </messages>
-        </field>
-        <field><id>show_caption</id> <type>CheckBoxField</type>
-          <values>
-            <alternate_name></alternate_name>
-            <css_class></css_class>
-            <default type="int">1</default>
-            <description></description>
-            <external_validator></external_validator>
-            <extra></extra>
-            <hidden type="int">0</hidden>
-            <title>show caption</title>
-          </values>
-          <tales>
-          </tales>
-          <messages>
-            <message name="external_validator_failed">The input failed the external validator.</message>
-          </messages>
-        </field>
-        <field><id>table_class</id> <type>ListField</type>
+      <field><id>table</id> <type>StringField</type>
+        <values>
+          <alternate_name></alternate_name>
+          <css_class></css_class>
+          <default></default>
+          <description></description>
+          <display_maxwidth></display_maxwidth>
+          <display_width type="int">20</display_width>
+          <enabled type="int">1</enabled>
+          <external_validator></external_validator>
+          <extra></extra>
+          <hidden type="int">0</hidden>
+          <max_length></max_length>
+          <required type="int">1</required>
+          <title>table</title>
+          <truncate type="int">0</truncate>
+          <unicode type="int">0</unicode>
+          <whitespace_preserve type="int">0</whitespace_preserve>
+        </values>
+        <tales>
+        </tales>
+        <messages>
+          <message name="external_validator_failed">The input failed the external validator.</message>
+          <message name="required_not_found">Input is required but no input given.</message>
+          <message name="too_long">Too much input was given.</message>
+        </messages>
+      </field>
+      <field><id>columns</id> <type>StringField</type>
+        <values>
+          <alternate_name></alternate_name>
+          <css_class></css_class>
+          <default></default>
+          <description>Comma seperated list of columns to select</description>
+          <display_maxwidth></display_maxwidth>
+          <display_width type="int">20</display_width>
+          <enabled type="int">1</enabled>
+          <external_validator></external_validator>
+          <extra></extra>
+          <hidden type="int">0</hidden>
+          <max_length></max_length>
+          <required type="int">1</required>
+          <title>columns</title>
+          <truncate type="int">0</truncate>
+          <unicode type="int">0</unicode>
+          <whitespace_preserve type="int">0</whitespace_preserve>
+        </values>
+        <tales>
+        </tales>
+        <messages>
+          <message name="external_validator_failed">The input failed the external validator.</message>
+          <message name="required_not_found">Input is required but no input given.</message>
+          <message name="too_long">Too much input was given.</message>
+        </messages>
+      </field>
+      <field><id>show_caption</id> <type>CheckBoxField</type>
+        <values>
+          <alternate_name></alternate_name>
+          <css_class></css_class>
+          <default type="int">1</default>
+          <description>Display the title of the SQL Source as the table's caption.</description>
+          <enabled type="int">1</enabled>
+          <external_validator></external_validator>
+          <extra></extra>
+          <hidden type="int">0</hidden>
+          <title>show caption</title>
+        </values>
+        <tales>
+        </tales>
+        <messages>
+          <message name="external_validator_failed">The input failed the external validator.</message>
+        </messages>
+      </field>
+      <field><id>show_column_heading</id> <type>CheckBoxField</type>
+        <values>
+          <alternate_name></alternate_name>
+          <css_class></css_class>
+          <default type="int">1</default>
+          <description>Display the database table column headings</description>
+          <enabled type="int">1</enabled>
+          <external_validator></external_validator>
+          <extra></extra>
+          <hidden type="int">0</hidden>
+          <title>show column headings</title>
+        </values>
+        <tales>
+        </tales>
+        <messages>
+          <message name="external_validator_failed">The input failed the external validator.</message>
+        </messages>
+      </field>
+      <field><id>table_class</id> <type>ListField</type>
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>
@@ -108,58 +133,6 @@
           <message name="unknown_selection">You selected an item that was not in the list.</message>
         </messages>
       </field>
-      <!-- <field><id>odd_row_style</id> <type>StringField</type>
-          <values>
-            <alternate_name></alternate_name>
-            <css_class></css_class>
-            <default></default>
-            <description></description>
-            <display_maxwidth></display_maxwidth>
-            <display_width type="int">20</display_width>
-            <external_validator></external_validator>
-            <extra></extra>
-            <hidden type="int">0</hidden>
-            <max_length></max_length>
-            <required type="int">0</required>
-            <title>Odd Row CSS Style</title>
-            <truncate type="int">0</truncate>
-            <unicode type="int">0</unicode>
-            <whitespace_preserve type="int">0</whitespace_preserve>
-          </values>
-          <tales>
-          </tales>
-          <messages>
-            <message name="external_validator_failed">The input failed the external validator.</message>
-            <message name="required_not_found">Input is required but no input given.</message>
-            <message name="too_long">Too much input was given.</message>
-          </messages>
-        </field>
-        <field><id>even_row_style</id> <type>StringField</type>
-          <values>
-            <alternate_name></alternate_name>
-            <css_class></css_class>
-            <default></default>
-            <description></description>
-            <display_maxwidth></display_maxwidth>
-            <display_width type="int">20</display_width>
-            <external_validator></external_validator>
-            <extra></extra>
-            <hidden type="int">0</hidden>
-            <max_length></max_length>
-            <required type="int">0</required>
-            <title>Even Row CSS Style</title>
-            <truncate type="int">0</truncate>
-            <unicode type="int">0</unicode>
-            <whitespace_preserve type="int">0</whitespace_preserve>
-          </values>
-          <tales>
-          </tales>
-          <messages>
-            <message name="external_validator_failed">The input failed the external validator.</message>
-            <message name="required_not_found">Input is required but no input given.</message>
-            <message name="too_long">Too much input was given.</message>
-          </messages>
-        </field>-->
       </fields>
     </group>
   </groups>

@@ -11,6 +11,9 @@ SilvaExternalSources changes
 
     Bugs Fixed:
 
+      - fixed sql source "show caption" and "show table column headings"
+        parameters
+
       - problem with checkboxfields (checked) when rendering a code source
 
       - #106231 Integer field of Code Sources cannot be empty

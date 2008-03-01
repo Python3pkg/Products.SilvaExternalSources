@@ -8,6 +8,7 @@ SilvaExternalSources changes
     Features Added:
  
       - component registration now done using Silva 2.0 zcml directives
+        SilvaExternalSources no longer works with Silva 1.6 or lower
 
     Bugs Fixed:
 

@@ -1,32 +1,51 @@
 import install
 import CodeSource, SQLSource, CSVSource
 # Silva
-from Products.Silva.helpers import makeContainerFilter
 from Products.Silva.ExtensionRegistry import extensionRegistry
 
+has_makeContainerFilter = True
+try:
+    from Products.Silva.helpers import makeContainerFilter
+except:
+    has_makeContainerFilter = False
+
 def initialize(context):
-    context.registerClass(
-        CodeSource.CodeSource,
-        constructors = (
+    if has_makeContainerFilter:
+        context.registerClass(
+            CodeSource.CodeSource,
+            constructors = (
             CodeSource.addCodeSource,
             CodeSource.manage_addCodeSource
             ),
-        icon = "www/codesource.png",
-        container_filter = makeContainerFilter()
-        )
- 
-    context.registerClass(
-        SQLSource.SQLSource,
-        constructors = (
+            icon = "www/codesource.png",
+            container_filter = makeContainerFilter()
+            )
+        context.registerClass(
+            SQLSource.SQLSource,
+            constructors = (
             SQLSource.addSQLSource,
             SQLSource.manage_addSQLSource
             ),
-        icon = "www/sqlsource.png",
-        container_filter = makeContainerFilter()        
-        )
-
-    #registerDirectory('views', globals())
-    #registerTypeForMetadata(CSVSource.CSVSource.meta_type)
+            icon = "www/sqlsource.png",
+            container_filter = makeContainerFilter()        
+            )
+    else:
+        context.registerClass(
+            CodeSource.CodeSource,
+            constructors = (
+            CodeSource.addCodeSource,
+            CodeSource.manage_addCodeSource
+            ),
+            icon = "www/codesource.png"
+            )
+        context.registerClass(
+            SQLSource.SQLSource,
+            constructors = (
+            SQLSource.addSQLSource,
+            SQLSource.manage_addSQLSource
+            ),
+            icon = "www/sqlsource.png"
+            )
 
     from Products.SilvaExternalSources.silvaxml.xmlexport import initializeXMLExportRegistry
     initializeXMLExportRegistry()

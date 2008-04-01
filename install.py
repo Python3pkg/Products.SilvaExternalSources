@@ -1,8 +1,24 @@
 """Install for Silva External Sources extension
 """
+# Python
+import os
+import os.path
 
+# Zope
+from Globals import package_home
+from zExceptions import BadRequest
+from Products.Formulator.Form import ZMIForm
+
+# Silva
 from Products.Silva.install import add_fss_directory_view
 from Products.Silva import roleinfo
+from Products.SilvaExternalSources.CodeSources import __configure_cs__
+
+def read_file(filename):
+    f = open(filename, 'rb')
+    text = f.read()
+    f.close()
+    return text
 
 def is_installed(root):
     # Hack to get installed state of this extension
@@ -18,11 +34,20 @@ def install(root):
     setupMetadata(root)
     configureSecurity(root)
     configureAddables(root)
+    # add service_codesources
+    if not hasattr(root, 'service_codesources'):
+        root.manage_addFolder('service_codesources', 'Silva Code Sources')
+    # add core Silva Code Sources
+    cs_fields = __configure_cs__._cs
+    path_join = os.path.join
+    _fs_codesources_path = path_join(package_home(globals()), 'CodeSources')
+    install_code_sources(_fs_codesources_path, root, cs_fields)
 
 def uninstall(root):
     unregisterViews(root.service_view_registry)
     root.service_views.manage_delObjects(['SilvaExternalSources'])
-
+    if hasattr(root, 'service_codesources'):
+        root.manage_delObjects(['service_codesources'])
 
 def registerViews(reg):
     """Register core views on registry.
@@ -68,3 +93,53 @@ def configureAddables(root):
         if a not in new_addables:
             new_addables.append(a)
     root.set_silva_addables_allowed_in_publication(new_addables)
+
+def install_code_sources(cs_path, root, cs_fields):
+    clean_path = cs_path
+    for cs_name, cs_element in cs_fields.items():
+        root.service_codesources.manage_addProduct[
+            'SilvaExternalSources'].manage_addCodeSource(cs_element['id'],
+                                                         cs_element['title'],
+                                                         cs_element['script_id'])
+        cs = getattr(root.service_codesources, cs_element['id'])
+        if cs_element['desc']:
+            cs.set_description(cs_element['desc'])
+        cs_path = os.path.join(cs_path, cs_element['dirname'])            
+        if root.service_codesources.hasObject(cs_element['id']):
+            if cs_element['script']:
+                cs.manage_addProduct['PythonScripts'].manage_addPythonScript(
+                    cs_element['script'])
+                cs_code = getattr(cs, cs_element['script'])
+                script_path = os.path.join(cs_path, cs_element['script'])
+                cs_code.write(read_file(script_path))
+            if cs_element['template']:
+                cs_code = cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(
+                    cs_element['template'])
+                template_path = os.path.join(cs_path, cs_element['template'])
+                cs_code.pt_edit(read_file(template_path), '')
+            if cs_element['form']:
+                form_path = os.path.join(cs_path, cs_element['form'])
+                form = ZMIForm('form', 'Parameters form')
+                form.set_xml(read_file(form_path))
+                cs_code.set_form(form)
+            if cs_element['history']:
+                cs_code = cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(
+                    cs_element['history'])
+                history_path = os.path.join(cs_path, cs_element['history'])
+                cs_code.pt_edit(read_file(history_path), '')
+            if cs_element['license']:
+                cs_code = cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(
+                    cs_element['license'])
+                license_path = os.path.join(cs_path, cs_element['license'])
+                cs_code.pt_edit(read_file(license_path), '')
+            if cs_element['readme']:
+                cs_code = cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(
+                    cs_element['readme'])
+                readme_path = os.path.join(cs_path, cs_element['readme'])
+                cs_code.pt_edit(read_file(readme_path), '')
+            if cs_element['version']:
+                cs_code = cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(
+                    cs_element['version'])
+                version_path = os.path.join(cs_path, cs_element['version'])
+                cs_code.pt_edit(read_file(version_path), '')
+        cs_path = clean_path

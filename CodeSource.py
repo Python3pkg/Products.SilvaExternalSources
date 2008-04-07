@@ -60,7 +60,26 @@ class CodeSource(ExternalSource, Folder):
         html = CodeSource.inheritedAttribute("get_rendered_form_for_editor"
                                              )(self, REQUEST)
         if self.elaborate():
-            html = html.replace('<form ', '<form class="elaborate" ')
+            root_url = self.get_root_url()
+            html = html.replace(
+                '<form ', '<html><head>'
+                '<style media="all" type="text/css" xml:space="preserve">'
+                '@import url(%s);</style>'
+                '<link href="%s" rel="stylesheet" type="text/css" />'
+                '<link href="%s" type="text/css" rel="stylesheet" />'
+                '</head><body><div class="kupu-toolbox-active"><div'
+                ' class="kupu-tooltray"><div '
+                'id="kupu-extsource-formcontainer"><form class="elaborate" '
+                % (root_url + '/globals/silva.css',
+                   root_url + '/globals/silvaContentStyle.css',
+                   'kupustyles.css',))
+            html = html.replace(
+                '</form>', '<input name="update_button" type="button"'
+                ' class="button" value="update"'
+                ' onClick="window.opener.kupu.tools.extsourcetool._form='
+                'window.document.forms[0];window.opener.kupu.tools.'
+                'extsourcetool._validateAndSubmit(true);window.close()">'
+                '</form></div></div><div></body></html>')
         return html
         
     security.declareProtected(AccessContentsInformation, 'to_html')

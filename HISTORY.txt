@@ -3,30 +3,37 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
-  1.5.1:
+  1.6:
   
     Features Added:
- 
-      - component registration now done using Silva 2.0 zcml directives
-        SilvaExternalSources no longer works with Silva 1.6 or lower
+
+      - added support for 'elaborate' code sources, that show their
+        add/edit form in a pop-up instead of in the kupu
+        toolbox. Useful when code sources have a large number of
+        variables.
+
+      - component registration now done using Silva 2.0 zcml
+        directives SilvaExternalSources no longer works with Silva 1.6
+        or lower
 
     Bugs Fixed:
 
-      - SilvaExternalSources now depends on SilvaDocument (in configure.zcml)
-        since attempting to add this product will fail if SilvaDocument
-        isn't installed.
+      - SilvaExternalSources now depends on SilvaDocument (in
+        configure.zcml) since attempting to add this product will fail
+        if SilvaDocument isn't installed.
 
-      - fixed sql source "show caption" and "show table column headings"
-        parameters
+      - fixed sql source "show caption" and "show table column
+        headings" parameters
 
-      - problem with checkboxfields (checked) when rendering a code source
+      - problem with checkboxfields (checked) when rendering a code
+        source
 
-      - #106231 Integer field of Code Sources cannot be empty
-        Empty Integer fields now have a value of None
+      - #106231 Integer field of Code Sources cannot be empty Empty
+        Integer fields now have a value of None
 
-      - #180860 code source parameter ids must be lowercase
-        They can now be mixed case.  However, multiple parameters with
-        ids that differ only in case aren't supported
+      - #180860 code source parameter ids must be lowercase They can
+        now be mixed case.  However, multiple parameters with ids that
+        differ only in case aren't supported
 
   1.5:
     

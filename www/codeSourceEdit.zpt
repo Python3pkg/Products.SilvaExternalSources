@@ -59,7 +59,7 @@ Version of this file: $Revision: 1.7 $
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          Script Id
+          Renderer Id<br /><small>(The id of the script or template that is to render the output of the code source.)</small>
         </div>
       </td>
       <td align="left" valign="top">
@@ -106,6 +106,17 @@ Version of this file: $Revision: 1.7 $
       <td align="left" valign="top">
         <input type="checkbox" name="cacheable" 
           tal:attributes="checked python: here.is_cacheable() and 'checked' or nothing" />
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-label">
+          Source is elaborate
+        </div>
+      </td>
+      <td align="left" valign="top">
+        <input type="checkbox" name="elaborate" 
+          tal:attributes="checked python: here.elaborate() and 'checked' or nothing" />
       </td>
     </tr>
     <tr>

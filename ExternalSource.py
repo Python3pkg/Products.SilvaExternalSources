@@ -105,7 +105,7 @@ class ExternalSource(Acquisition.Implicit):
     management_page_charset = 'UTF-8'
     
     # Cannot make it 'private'; the form won't work in the ZMI if it was.
-    parameters = None  
+    parameters = None
 
     _data_encoding = 'UTF-8'
     _description = ''
@@ -134,7 +134,7 @@ class ExternalSource(Acquisition.Implicit):
             # buggy behaviour. but allows backward compatibility
             REQUEST.form['model'] = self
         xml = ['<?xml version="1.0" encoding="UTF-8" ?>\n',
-                '<form action="" method="POST">\r',
+                '<form id="extsourceform" action="" method="POST">\r',
                 ('<input type="hidden" name="metatype" value="%s" />\n' % 
                         self.meta_type),
                 ('<table width="100%" id="extsourceform" cellpadding="0" cellspacing="0" '

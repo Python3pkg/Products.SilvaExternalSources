@@ -7,7 +7,7 @@
     >
 
   <!-- i18n -->
-  <i18n:registerTranslations directory="i18n" />
+  <!-- <i18n:registerTranslations directory="i18n" /> -->
 
   <silva:extension
     name="SilvaExternalSources"

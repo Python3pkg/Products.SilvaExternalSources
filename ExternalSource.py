@@ -132,7 +132,7 @@ class ExternalSource(Acquisition.Implicit):
             # buggy behaviour. but allows backward compatibility
             REQUEST.form['model'] = self
         xml = ['<?xml version="1.0" encoding="UTF-8" ?>\n',
-                '<form action="" method="POST">\r',
+                '<form id="extsourceform" action="" method="POST">\r',
                 ('<input type="hidden" name="metatype" value="%s" />\n' % 
                         self.meta_type),
                 ('<table width="100%" id="extsourceform" '
@@ -191,6 +191,7 @@ class ExternalSource(Acquisition.Implicit):
         REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8')
         return ''.join([l.encode('UTF-8') for l in xml])
 
+    
     security.declareProtected(SilvaPermissions.AccessContentsInformation, 
                                 'validate_form_to_request')
     def validate_form_to_request(self, REQUEST):

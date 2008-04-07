@@ -12,6 +12,10 @@ SilvaExternalSources changes
 
     Bugs Fixed:
 
+      - SilvaExternalSources now depends on SilvaDocument (in configure.zcml)
+        since attempting to add this product will fail if SilvaDocument
+        isn't installed.
+
       - fixed sql source "show caption" and "show table column headings"
         parameters
 

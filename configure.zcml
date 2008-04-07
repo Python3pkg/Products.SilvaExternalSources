@@ -12,7 +12,7 @@
   <silva:extension
     name="SilvaExternalSources"
     title="Silva External Sources"
-    depends="Silva"
+    depends="SilvaDocument"
     />
 
   <silva:content

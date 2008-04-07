@@ -34,21 +34,11 @@ Version of this file: $Revision: 1.3 $
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          Renderer Id<br /><small>(The id of the script or template that is to render the output of the code source.)</small>
+          Script Id
         </div>
       </td>
       <td align="left" valign="top">
         <input type="text" name="script_id" size="40" value="" />
-      </td>
-    </tr>
-    <tr>
-      <td align="left" valign="top">
-        <div class="form-label">
-          Elaborate
-        </div>
-      </td>
-      <td align="left" valign="top">
-        <input type="checkbox" name="elaborate" />
       </td>
     </tr>
     <tr>

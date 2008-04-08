@@ -8,6 +8,7 @@ import os.path
 from Globals import package_home
 from zExceptions import BadRequest
 from Products.Formulator.Form import ZMIForm
+from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 # Silva
 from Products.Silva.install import add_fss_directory_view

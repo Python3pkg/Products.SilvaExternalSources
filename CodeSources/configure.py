@@ -1,4 +1,4 @@
-_cs = {
+configuration = {
     'cs_YouTube': {
         'id': 'cs_youtube',
         'dirname': 'cs_YouTube',

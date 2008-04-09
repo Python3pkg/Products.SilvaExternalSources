@@ -38,19 +38,15 @@ def install(root):
     configureAddables(root)
     # add service_codesources
     if not hasattr(root, 'service_codesources'):
-        #root.manage_addFolder('service_codesources', 'Code Sources')
         root.manage_addProduct['SilvaExternalSources'].manage_addCodeSourceService(
             'service_codesources', 'Code Sources')
-        # add core Silva Code Sources
+    # add core Silva Code Sources
     cs_fields = configure.configuration
     path_join = os.path.join
     _fs_codesources_path = path_join(package_home(globals()), 'CodeSources')
     install_codesources(_fs_codesources_path, root, cs_fields)
 
 def uninstall(root):
-    # XXX this is isn't going to work, if SilvaExternalSources is uninstalled
-    # with third party codesources installed, then those codesources won't work
-    # check if all codesources are deleted
     cs_fields = configure.configuration
     unregisterViews(root.service_view_registry)
     if not hasattr(root, 'service_codesources'):

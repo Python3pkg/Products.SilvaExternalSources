@@ -8,12 +8,13 @@ import os.path
 from Globals import package_home
 from zExceptions import BadRequest
 from Products.Formulator.Form import ZMIForm
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 # Silva
 from Products.Silva.install import add_fss_directory_view
 from Products.Silva import roleinfo
 from Products.SilvaExternalSources.CodeSources import configure
+
+manage_permission = 'Manage CodeSource Services'
 
 def read_file(filename):
     f = open(filename, 'rb')
@@ -37,7 +38,9 @@ def install(root):
     configureAddables(root)
     # add service_codesources
     if not hasattr(root, 'service_codesources'):
-        root.manage_addFolder('service_codesources', 'Code Sources')
+        #root.manage_addFolder('service_codesources', 'Code Sources')
+        root.manage_addProduct['SilvaExternalSources'].manage_addCodeSourceService(
+            'service_codesources', 'Code Sources')
         # add core Silva Code Sources
     cs_fields = configure.configuration
     path_join = os.path.join
@@ -50,10 +53,13 @@ def uninstall(root):
     # check if all codesources are deleted
     cs_fields = configure.configuration
     unregisterViews(root.service_view_registry)
-    root.service_views.manage_delObjects(['SilvaExternalSources'])
-    for cs_name, cs_element in cs_fields.items():
-        if cs_element['id'] in root.service_codesources.objectIds():
-            root.service_codesources.manage_delObjects([cs_element['id']])
+    if not hasattr(root, 'service_codesources'):
+        root.service_views.manage_delObjects(['SilvaExternalSources'])
+    else:
+        root.service_views.manage_delObjects(['SilvaExternalSources'])
+        for cs_name, cs_element in cs_fields.items():
+            if cs_element['id'] in root.service_codesources.objectIds():
+                root.service_codesources.manage_delObjects([cs_element['id']])
 
 def registerViews(reg):
     """Register core views on registry.
@@ -149,3 +155,4 @@ def install_codesources(cs_path, root, cs_fields, product_name=None):
                 version_path = os.path.join(cs_path, cs_element['version'])
                 cs_code.pt_edit(read_file(version_path), '')
         cs_path = clean_path
+

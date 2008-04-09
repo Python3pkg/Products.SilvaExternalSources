@@ -1,5 +1,5 @@
 import install
-import CodeSource, SQLSource, CSVSource
+import CodeSource, SQLSource, CSVSource, CodeSourceService
 # Silva
 from Products.Silva.ExtensionRegistry import extensionRegistry
 
@@ -46,6 +46,15 @@ def initialize(context):
             ),
             icon = "www/sqlsource.png"
             )
+
+    context.registerClass(
+        CodeSourceService.CodeSourceService,
+        constructors = (
+        CodeSourceService.addCodeSourceService,
+        CodeSourceService.manage_addCodeSourceService
+        ),
+        icon = "www/codesource.png"
+        )
 
     from Products.SilvaExternalSources.silvaxml.xmlexport import initializeXMLExportRegistry
     initializeXMLExportRegistry()

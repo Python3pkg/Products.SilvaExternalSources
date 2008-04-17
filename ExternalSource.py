@@ -124,8 +124,6 @@ class ExternalSource(Acquisition.Implicit):
                                 'get_rendered_form_for_editor')
     def get_rendered_form_for_editor(self, REQUEST=None):
         """return the rendered form"""
-        # XXX this is never triggered AFAIK, because kupu sets a 'null'
-        # string, and not a value that resolves to False
         if REQUEST.has_key('docref') and REQUEST['docref']:
             # need to quote the docref, as resolve_ref
             #(actually OFS.CopySupport._cb_decode) unquotes it

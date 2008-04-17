@@ -59,7 +59,8 @@ Version of this file: $Revision: 1.7 $
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          Renderer Id<br /><small>The id of the script or template that renders<br />the output of the code source.</small>
+          Renderer Id<br /><small>The id of the script or template that renders<br />
+          the output of the code source.</small>
         </div>
       </td>
       <td align="left" valign="top">

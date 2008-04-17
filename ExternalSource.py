@@ -22,7 +22,6 @@ from Products.SilvaExternalSources.interfaces import IExternalSource
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.Errors import ValidationError, FormValidationError
 
-
 icon="www/silvaexternalsource.png"
 
 module_security = ModuleSecurityInfo(
@@ -220,20 +219,26 @@ class ExternalSource(Acquisition.Implicit):
         else:
             REQUEST.RESPONSE.setHeader('Content-Type', 
                                         'text/xml;charset=UTF-8');
-            result['metatype'] = self.meta_type
             xml = self._formresult_to_xml(result)
             return xml
 
     def _formresult_to_xml(self, formresult):
         """returns a result dictionary as an xml mapping"""
-        xml = ['<sourcedata>']
+        xml = ['<sourcedata>','<sourceinfo>']
+        xml.append('<metatype>%s</metatype>'%self.meta_type)
+        xml.append('<source_id>%s</source_id>'%self.id)
+        xml.append('<source_title>%s</source_title>'%self._xml_escape(ustr(self.get_title())))
+        xml.append('<source_desc>%s</source_desc>'%self._xml_escape(ustr(self.description())))
+        xml.append('</sourceinfo>')
+        xml.append('<params>')
         for key, value in formresult.items():
             t = type(value).__name__
             if t == 'list':
                 value = [x.encode('UTF-8') for x in value]
-            xml.append('<parameter type="%s" key="%s">%s</parameter>' % 
+            xml.append('<parameter type="%s" id="%s">%s</parameter>' % 
                         (t, self._xml_escape(ustr(key)), 
                             self._xml_escape(ustr(value))))
+        xml.append('</params>')
         xml.append('</sourcedata>')
         return ''.join(xml)
 

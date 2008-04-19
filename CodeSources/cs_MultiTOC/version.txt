@@ -1,2 +1,1 @@
-MultiTOC 0.4
-
+MultiTOC 0.5

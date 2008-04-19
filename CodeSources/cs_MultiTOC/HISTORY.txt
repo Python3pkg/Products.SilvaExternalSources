@@ -3,6 +3,14 @@ See also LICENSE.txt
 
 Silva Multi-TOC Code Source changes
 
+0.5
+
+  Features added
+
+    - Renamed Code Source id to conform with 'cs_' prefix
+    
+    - Improved public/private field description. 
+
 0.4
 
   Features added

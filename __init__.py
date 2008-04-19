@@ -26,7 +26,7 @@ def initialize(context):
         CodeSourceService.addCodeSourceService,
         CodeSourceService.manage_addCodeSourceService
         ),
-        icon = "www/codesource.png"
+        icon = "www/codesource_service.png"
         )
 
     from Products.SilvaExternalSources.silvaxml.xmlexport import initializeXMLExportRegistry

@@ -30,7 +30,7 @@ function toggleSelect() {
 //-->
 </script>
 
-<!-- Add object widget -->
+<!-- Add object widget
 <br />
 <dtml-if filtered_meta_types>
   <table width="30%" cellspacing="0" cellpadding="0" border="0" style="float: right;">
@@ -62,11 +62,9 @@ function toggleSelect() {
   </tr>
   </table>
 </dtml-if>
+ -->
 
-
-<p>To use a code source copy it to the Silva root</p>
-
-<br clear="all" />
+<p>To use a code source copy it to the Silva root, or deeper in the site.</p>
 
 <form action="&dtml-URL1;/" name="objectItems" method="post">
 <dtml-if objectItems>
@@ -338,5 +336,7 @@ window.parent.update_menu();
 //-->
 </script>
 </dtml-if>
+
+<p>These Code Sources will be refreshed when ExternalSources is refreshed in the extensions service.</p>
 
 <dtml-var manage_page_footer>

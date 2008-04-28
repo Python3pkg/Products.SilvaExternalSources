@@ -108,7 +108,7 @@ def install_codesources(cs_path, root, cs_fields, product_name=None):
         root.service_codesources.manage_addProduct[
             'SilvaExternalSources'].manage_addCodeSource(cs_element['id'],
                                                          cs_element['title'],
-                                                         cs_element['script_id'])
+                                                         cs_element['render_id'])
         cs = getattr(root.service_codesources, cs_element['id'])
         if cs_element['desc']:
             cs.set_description(cs_element['desc'])

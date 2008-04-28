@@ -19,7 +19,7 @@
     extension_name="SilvaExternalSources"
     content=".CSVSource.CSVSource"
     icon="www/csvsource.png"
-    priority="0.1" 
+    priority="1" 
     content_factory=".CSVSource.manage_addCSVSource"
     />
 

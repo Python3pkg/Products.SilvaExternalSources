@@ -3,6 +3,7 @@
 # Python
 import os
 import os.path
+from warnings import warn
 
 # Zope
 from Globals import package_home
@@ -105,10 +106,16 @@ def configureAddables(root):
 def install_codesources(cs_path, root, cs_fields, product_name=None):
     clean_path = cs_path
     for cs_name, cs_element in cs_fields.items():
+        # Backward compatibility, render_id was called before script_id
+        render_id = cs_element.get('render_id', None)
+        if not render_id:
+            render_id = cs_element.get('script_id')
+            warn('Please update your code source to define render_id instead of script_id', DeprecationWarning)
+            
         root.service_codesources.manage_addProduct[
             'SilvaExternalSources'].manage_addCodeSource(cs_element['id'],
                                                          cs_element['title'],
-                                                         cs_element['render_id'])
+                                                         render_id)
         cs = getattr(root.service_codesources, cs_element['id'])
         if cs_element['desc']:
             cs.set_description(cs_element['desc'])

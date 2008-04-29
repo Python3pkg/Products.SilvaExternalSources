@@ -38,15 +38,52 @@ class CodeSource(ExternalSource, Folder):
         'www/codeSourceEdit', globals(),  __name__='editCodeSource')
 
     def __init__(self, id, script_id=None):
+        self._elaborate = False
         self.id = id
         self._script_id = script_id
 
     # ACCESSORS
 
+    security.declareProtected(AccessContentsInformation, 'elaborate')
+    def elaborate(self):
+        elaborate = getattr(self, '_elaborate', None)
+        if elaborate is None:
+            elaborate = self._elaborate = False
+        return elaborate
+    
     security.declareProtected(AccessContentsInformation, 'script_id')
     def script_id(self):
         return self._script_id
 
+    security.declareProtected(AccessContentsInformation, 
+                                'get_rendered_form_for_editor')
+    def get_rendered_form_for_editor(self, REQUEST=None):
+        """non empty docstring"""
+        html = CodeSource.inheritedAttribute("get_rendered_form_for_editor"
+                                             )(self, REQUEST)
+        if self.elaborate():
+            root_url = self.get_root_url()
+            html = html.replace(
+                '<form ', '<html><head>'
+                '<style media="all" type="text/css" xml:space="preserve">'
+                '@import url(%s);</style>'
+                '<link href="%s" rel="stylesheet" type="text/css" />'
+                '<link href="%s" type="text/css" rel="stylesheet" />'
+                '</head><body><div class="kupu-toolbox-active"><div'
+                ' class="kupu-tooltray"><div '
+                'id="kupu-extsource-formcontainer"><form class="elaborate" '
+                % (root_url + '/globals/silva.css',
+                   root_url + '/globals/silvaContentStyle.css',
+                   'kupustyles.css',))
+            html = html.replace(
+                '</form>', '<input name="update_button" type="button"'
+                ' class="button" value="update"'
+                ' onClick="window.opener.kupu.tools.extsourcetool._form='
+                'window.document.forms[0];window.opener.kupu.tools.'
+                'extsourcetool._validateAndSubmit(true);window.close()">'
+                '</form></div></div><div></body></html>')
+        return html
+        
     security.declareProtected(AccessContentsInformation, 'to_html')
     def to_html(self, REQUEST, **kw):
         """ render HTML for code source
@@ -69,19 +106,25 @@ class CodeSource(ExternalSource, Folder):
 
     def _cast_value(self, value, field_type):
         if field_type == 'CheckBoxField':
-            if value == '1':
+            if int(value)==1:
                 return True
             return False
         if field_type == 'IntegerField':
+            if not value: #if value is not set
+                return None
             return int(value)
         #XXX More field types? Dates? Selects?
         return value
 
+    def set_elaborate(self, value):
+        self._elaborate = value
+        
     # MANAGERS
 
     security.declareProtected(ViewManagementScreens, 'manage_editCodeSource')
     def manage_editCodeSource(
-        self, title, script_id, data_encoding, description=None, cacheable=None):
+        self, title, script_id, data_encoding, description=None,
+        cacheable=None, elaborate=None):
         """ Edit CodeSource object
         """
         msg = u''
@@ -94,7 +137,8 @@ class CodeSource(ExternalSource, Folder):
                 m = _(
                     "Unknown encoding ${enc}, not changed! ",
                     mapping={"enc":charset})
-                msg += sm #"Unknown encoding %s, not changed!. " % data_encoding
+                msg += sm #"Unknown encoding %s, not changed!. " %
+                          #data_encoding
                 return self.editCodeSource(manage_tabs_message=m)
             self.set_data_encoding(data_encoding)
             msg += 'Data encoding changed. '
@@ -126,6 +170,12 @@ class CodeSource(ExternalSource, Folder):
             m = _("Cacheability setting changed. ")
             msg += m #'Cacheability setting changed. '
 
+        if not elaborate:
+            if self.elaborate():
+                self.set_elaborate(False)
+        elif not self.elaborate():
+            self.set_elaborate(True)
+            
         try:
             script = self[script_id]
         except KeyError:            

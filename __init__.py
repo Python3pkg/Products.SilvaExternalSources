@@ -1,16 +1,9 @@
 import install
-import CodeSource, SQLSource, CSVSource
+import CodeSource, SQLSource, CSVSource, CodeSourceService
 # Silva
 from Products.Silva.ExtensionRegistry import extensionRegistry
-from Products.SilvaMetadata.Compatibility import registerTypeForMetadata
-from Products.Silva.fssite import registerDirectory
 
 def initialize(context):
-    extensionRegistry.register(
-        'SilvaExternalSources', 'Silva External Sources', context,
-        [CSVSource],
-        install, depends_on='Silva')
-
     context.registerClass(
         CodeSource.CodeSource,
         constructors = (
@@ -19,7 +12,7 @@ def initialize(context):
             ),
         icon = "www/codesource.png"
         )
- 
+
     context.registerClass(
         SQLSource.SQLSource,
         constructors = (
@@ -29,8 +22,14 @@ def initialize(context):
         icon = "www/sqlsource.png"
         )
 
-    registerDirectory('views', globals())
-    registerTypeForMetadata(CSVSource.CSVSource.meta_type)
+    context.registerClass(
+        CodeSourceService.CodeSourceService,
+        constructors = (
+        CodeSourceService.addCodeSourceService,
+        CodeSourceService.manage_addCodeSourceService
+        ),
+        icon = "www/codesource_service.png"
+        )
 
     from Products.SilvaExternalSources.silvaxml.xmlexport import initializeXMLExportRegistry
     initializeXMLExportRegistry()

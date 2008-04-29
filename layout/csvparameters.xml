@@ -15,7 +15,7 @@
       <field><id>csvtableclass</id> <type>ListField</type>
         <values>
           <alternate_name></alternate_name>
-          <css_class></css_class>
+          <css_class>store</css_class>
           <default></default>
           <description>Choose a style of the table which fits your needs.</description>
           <enabled type="int">1</enabled>

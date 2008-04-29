@@ -30,10 +30,10 @@
     tal:attributes="class string:silvatable ${table_class}"
     >
     <caption 
-      tal:condition="python:parameters.has_key('show_caption') and parameters['show_caption'] == 'True'"
+      tal:condition="python:parameters.get('show_caption',None)"
       tal:content="here/title"
     />
-    <thead tal:condition="python:parameters.has_key('show_column_heading') and parameters['show_column_heading'] == 'True'">
+    <thead tal:condition="python:parameters.get('show_column_heading',None)">
       <tr>
         <tal:block repeat="name columnnames">
           <th tal:content="name" />

@@ -22,7 +22,6 @@ from Products.SilvaExternalSources.interfaces import IExternalSource
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.Errors import ValidationError, FormValidationError
 
-
 icon="www/silvaexternalsource.png"
 
 module_security = ModuleSecurityInfo(
@@ -105,7 +104,7 @@ class ExternalSource(Acquisition.Implicit):
     management_page_charset = 'UTF-8'
     
     # Cannot make it 'private'; the form won't work in the ZMI if it was.
-    parameters = None 
+    parameters = None
 
     _data_encoding = 'UTF-8'
     _description = ''
@@ -124,8 +123,6 @@ class ExternalSource(Acquisition.Implicit):
                                 'get_rendered_form_for_editor')
     def get_rendered_form_for_editor(self, REQUEST=None):
         """return the rendered form"""
-        # XXX this is never triggered AFAIK, because kupu sets a 'null'
-        # string, and not a value that resolves to False
         if REQUEST.has_key('docref') and REQUEST['docref']:
             # need to quote the docref, as resolve_ref
             #(actually OFS.CopySupport._cb_decode) unquotes it
@@ -134,26 +131,26 @@ class ExternalSource(Acquisition.Implicit):
             # buggy behaviour. but allows backward compatibility
             REQUEST.form['model'] = self
         xml = ['<?xml version="1.0" encoding="UTF-8" ?>\n',
-                '<form action="" method="POST">\r',
+                '<form id="extsourceform" action="" method="POST">\r',
                 ('<input type="hidden" name="metatype" value="%s" />\n' % 
                         self.meta_type),
-                ('<table width="100%" id="extsourceform" '
+                ('<table width="100%" id="extsourceform" cellpadding="0" cellspacing="0" '
                         '>\n<tbody>\n')]
-        for field in self.form().get_fields():
-            form = REQUEST.form.copy()
-            # pfff... what's that, not allowed to change a dict during 
-            # iteration?!? ;)
-            formcopy = {} 
-            for k, v in form.iteritems():
-                vtype = 'string'
-                if '__type__' in k:
-                    k, vtype = k.split('__type__')
-                if vtype == 'list':
-                    # XXX evil eval, although Formulator does the same...
-                    formcopy[k] = eval(v)
-                else:
-                    formcopy[k] = v
 
+        form = REQUEST.form.copy()
+        formcopy = {} 
+        # pfff... what's that, not allowed to change a dict during iteration?!? ;)
+        for k, v in form.iteritems():
+            vtype = 'string'
+            if '__type__' in k:
+                k, vtype = k.split('__type__')
+            if vtype == 'list':
+                # XXX evil eval, although Formulator does the same...
+                formcopy[k] = eval(v)
+            else:
+                formcopy[k] = v
+
+        for field in self.form().get_fields():
             fieldDescription = ustr(field.values.get('description',''), 'UTF-8')
             if fieldDescription:
                 fieldCssClasses = "rollover"
@@ -165,13 +162,15 @@ class ExternalSource(Acquisition.Implicit):
             if fieldCssClasses:
                 fieldCssClasses = 'class="%s"'%fieldCssClasses.strip()
 				
-            xml.append('<tr>\n<td width="7em"><a href="#" %s>%s%s</a></td>\n' % (
+            xml.append('<tr>\n<td width="7em"><a href="#" onclick="return false" %s>%s%s</a></td>\n' % (
                 fieldCssClasses, fieldDescription, ustr(field.values['title'], 'UTF-8'))
                 )
 
             value = None
-            if formcopy.has_key(field.id):
-                value = formcopy[field.id]
+            #the field id is actually _always_ lowercase in formcopy
+            # (see https://bugs.launchpad.net/silva/+bug/180860)
+            if formcopy.has_key(field.id.lower()):
+                value = formcopy[field.id.lower()]
             if value is None:
                 # default value (if available)
                 value = field.get_value('default')

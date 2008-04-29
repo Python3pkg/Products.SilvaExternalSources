@@ -266,7 +266,7 @@ document.getElementsByName('%(field_id)s')[0].value = path;;
           <alternate_name></alternate_name>
           <css_class></css_class>
           <default>yes</default>
-          <description>Display only  published content and assets.</description>
+          <description>For a listing on a public page, setting to yes will display only published content and assets. To display unpublished documents too, set this to no (the link urls will have /edit appended).</description>
           <enabled type="int">1</enabled>
           <external_validator></external_validator>
           <extra_item></extra_item>

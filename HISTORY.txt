@@ -3,7 +3,7 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
-  1.6:
+  2.0.7:
   
     Features Added:
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: silva-external-sources\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: Fri Jun 15 11:37:59 2007\n"
+"POT-Creation-Date: Wed May  7 14:52:57 2008\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -17,78 +17,80 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Rosetta-Export-Date: 2007-05-21 14:58:19+0000\n"
 
-#: /CSVSource.py:219 /CodeSource.py:94 /SQLSource.py:152
+#: /CSVSource.py:214 /CodeSource.py:135 /SQLSource.py:152
 msgid "Unknown encoding ${enc}, not changed! "
 msgstr ""
 
-#: /CSVSource.py:224
+#: /CSVSource.py:220
 msgid "Data encoding changed to: ${enc}. "
 msgstr ""
 
-#: /CSVSource.py:235 /CodeSource.py:105 /SQLSource.py:165
+#: /CSVSource.py:232 /CodeSource.py:148 /SQLSource.py:166
 msgid "Title changed. "
 msgstr ""
 
-#: /CSVSource.py:245 /CodeSource.py:120 /SQLSource.py:186
+#: /CSVSource.py:242 /CodeSource.py:163 /SQLSource.py:187
 msgid "Description changed. "
 msgstr ""
 
-#: /CSVSource.py:250 /CodeSource.py:125 /SQLSource.py:191
+#: /CSVSource.py:247 /CodeSource.py:168 /SQLSource.py:192
 msgid "Cacheability setting changed. "
 msgstr ""
 
-#: /CSVSource.py:255
+#: /CSVSource.py:252
 msgid "Data updated. "
 msgstr ""
 
-#: /CSVSource.py:269
+#: /CSVSource.py:266
 msgid "Raw data updated. "
 msgstr ""
 
-#: /CodeSource.py:110
+#: /CodeSource.py:153
 msgid "Script id changed. "
 msgstr ""
 
-#: /CodeSource.py:131
+#: /CodeSource.py:180
 msgid "<b>Warning</b>: "
 msgstr ""
 
-#: /CodeSource.py:134
+#: /CodeSource.py:183
 msgid "no script id specified! "
 msgstr ""
 
-#: /CodeSource.py:136
+# Default: "id"
+#: /CodeSource.py:185
 msgid ""
-"This code source does not contain an callable object with id \"${id}\"! "
+"This code source does not contain an callable object with                    "
+"id \"${id}\"! "
 msgstr ""
 
-#: /ExternalSource.py:187
+#: /ExternalSource.py:188
 msgid ""
 "This Code Source has no adjustable settings. Click a button to insert or "
 "remove it."
 msgstr ""
 
-#: /SQLSource.py:157
+#: /SQLSource.py:158
 msgid "Data encoding changed. "
 msgstr ""
 
-#: /SQLSource.py:170
+#: /SQLSource.py:171
 msgid "Connection id changed. "
 msgstr ""
 
-#: /SQLSource.py:176
+#: /SQLSource.py:177
 msgid "SQL statement changed. "
 msgstr ""
 
-#: /SQLSource.py:196
+#: /SQLSource.py:197
 msgid "Layout object id changed. "
 msgstr ""
 
-#: /SQLSource.py:201
+#: /SQLSource.py:202
 msgid "Table rendering pagetemplate reset to default layout. "
 msgstr ""
 
-#: /SQLSource.py:206
+#: /SQLSource.py:207
 msgid "Parameters form reset to default. "
 msgstr ""
 
@@ -96,12 +98,23 @@ msgstr ""
 msgid "Unknown encoding ${enc}. CSVSource not added! "
 msgstr ""
 
-#: /views/add/CSVSource/add_submit.py:57
+#: /views/add/CSVSource/add_submit.py:58
 msgid "Problem ${exception}"
 msgstr ""
 
-#: /views/add/CSVSource/add_submit.py:71
-msgid "Added ${metatype} ${id}."
+# Default: "id"
+#: /views/add/CSVSource/add_submit.py:73
+msgid "metatype"
+msgstr ""
+
+#: /views/add/CSVSource/form.form:22
+#: /views/edit/Asset/CSVSource/upload_form.form:23
+msgid "File to upload as source data."
+msgstr ""
+
+#: /views/add/CSVSource/form.form:29
+#: /views/edit/Asset/CSVSource/upload_form.form:30
+msgid "csv file"
 msgstr ""
 
 #: /views/add/CSVSource/form.form:49
@@ -114,12 +127,12 @@ msgid ""
 "or &#8216;.&#8217;"
 msgstr ""
 
-#: /views/add/CSVSource/form.form:71
-msgid "The title might be publicly visible."
+#: /views/add/CSVSource/form.form:70 /views/edit/Asset/CSVSource/form.form:30
+msgid "title"
 msgstr ""
 
-#: /views/edit/Asset/CSVSource/charset_form.form:23
 #: /views/add/CSVSource/form.form:84
+#: /views/edit/Asset/CSVSource/charset_form.form:23
 msgid "Character coding of the source data."
 msgstr ""
 
@@ -131,7 +144,7 @@ msgstr ""
 msgid "Unknown encoding ${enc}. Character encoding not saved! "
 msgstr ""
 
-#: /views/edit/Asset/CSVSource/charset_submit.py:31
+#: /views/edit/Asset/CSVSource/charset_submit.py:32
 msgid "Encoding set to: ${enc} "
 msgstr ""
 
@@ -188,10 +201,6 @@ msgstr ""
 msgid "csv source upload"
 msgstr ""
 
-#: /views/edit/Asset/CSVSource/form.form:30 /views/add/CSVSource/form.form:70
-msgid "title"
-msgstr ""
-
 #: /views/edit/Asset/CSVSource/form.form:32
 #: /views/edit/Asset/CSVSource/form.form:59
 msgid "Optional, but useful."
@@ -222,16 +231,6 @@ msgid ""
 "This screen doesn&#8217;t have settings, because it&#8217;s not possible to "
 "subscribe to a . Only documents that contain textual content, or folders "
 "that contain them, can be subscribed to."
-msgstr ""
-
-#: /views/edit/Asset/CSVSource/upload_form.form:23
-#: /views/add/CSVSource/form.form:22
-msgid "File to upload as source data."
-msgstr ""
-
-#: /views/edit/Asset/CSVSource/upload_form.form:30
-#: /views/add/CSVSource/form.form:29
-msgid "csv file"
 msgstr ""
 
 #: /views/edit/Asset/CSVSource/upload_submit.py:25

@@ -1,92 +1,96 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Silva\n"
-"POT-Creation-Date: Fri Jun 15 11:37:59 2007\n"
-"PO-Revision-Date: 2007-01-09 17:27+0000\n"
-"Last-Translator: Joaquin Pombar <joaquin.pombar@wanadoo.fr>\n"
+"Report-Msgid-Bugs-To:  \n"
+"POT-Creation-Date: Wed May  7 14:52:57 2008\n"
+"PO-Revision-Date: 2008-03-16 18:06+0000\n"
+"Last-Translator: Sylvain Viollon <sylvain@infrae.com>\n"
 "Language-Team: Silva i18n team <walco@infrae.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: zope/app/translation_files/extract.py\n"
+"X-Launchpad-Export-Date: 2008-05-07 12:48+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 "Language-code: fr\n"
+"Domain: silva\n"
 "Language-name: French\n"
 "Preferred-encodings: utf-8 latin1\n"
-"Domain: silva\n"
-"X-Rosetta-Export-Date: 2007-05-21 14:58:19+0000\n"
+"Generated-By: zope/app/translation_files/extract.py\n"
 
-#: /CSVSource.py:219 /CodeSource.py:94 /SQLSource.py:152
+#: /CSVSource.py:214 /CodeSource.py:135 /SQLSource.py:152
 msgid "Unknown encoding ${enc}, not changed! "
 msgstr "encodage inconnu ${enc}, non changé "
 
-#: /CSVSource.py:224
+#: /CSVSource.py:220
 msgid "Data encoding changed to: ${enc}. "
 msgstr "Données d'encodage changées a  ${enc}. "
 
-#: /CSVSource.py:235 /CodeSource.py:105 /SQLSource.py:165
+#: /CSVSource.py:232 /CodeSource.py:148 /SQLSource.py:166
 msgid "Title changed. "
 msgstr "Titre changé "
 
-#: /CSVSource.py:245 /CodeSource.py:120 /SQLSource.py:186
+#: /CSVSource.py:242 /CodeSource.py:163 /SQLSource.py:187
 msgid "Description changed. "
 msgstr "Description changée "
 
-#: /CSVSource.py:250 /CodeSource.py:125 /SQLSource.py:191
+#: /CSVSource.py:247 /CodeSource.py:168 /SQLSource.py:192
 msgid "Cacheability setting changed. "
 msgstr "Paramètres de cache modifiés "
 
-#: /CSVSource.py:255
+#: /CSVSource.py:252
 msgid "Data updated. "
 msgstr "Données mises à jour "
 
-#: /CSVSource.py:269
+#: /CSVSource.py:266
 msgid "Raw data updated. "
 msgstr "Données brutes mises à jour "
 
-#: /CodeSource.py:110
+#: /CodeSource.py:153
 msgid "Script id changed. "
 msgstr "Script id modifié. "
 
-#: /CodeSource.py:131
+#: /CodeSource.py:180
 msgid "<b>Warning</b>: "
 msgstr "<b>Attentiion</b>: "
 
-#: /CodeSource.py:134
+#: /CodeSource.py:183
 msgid "no script id specified! "
 msgstr "aucun script spécifié ! "
 
-#: /CodeSource.py:136
+# Default: "id"
+#: /CodeSource.py:185
 msgid ""
-"This code source does not contain an callable object with id \"${id}\"! "
-msgstr "Ce code source ne contient pas d'objet appelable avec id \"${id}\"! "
+"This code source does not contain an callable object with                    "
+"id \"${id}\"! "
+msgstr ""
 
-#: /ExternalSource.py:187
+#: /ExternalSource.py:188
 msgid ""
 "This Code Source has no adjustable settings. Click a button to insert or "
 "remove it."
 msgstr ""
 
-#: /SQLSource.py:157
+#: /SQLSource.py:158
 msgid "Data encoding changed. "
 msgstr "Données Encodage modifiées "
 
-#: /SQLSource.py:170
+#: /SQLSource.py:171
 msgid "Connection id changed. "
 msgstr "Connection id modifiée. "
 
-#: /SQLSource.py:176
+#: /SQLSource.py:177
 msgid "SQL statement changed. "
 msgstr "Déclaration SQL modifiée "
 
-#: /SQLSource.py:196
+#: /SQLSource.py:197
 msgid "Layout object id changed. "
 msgstr "iId objet rendu modifiée "
 
-#: /SQLSource.py:201
+#: /SQLSource.py:202
 msgid "Table rendering pagetemplate reset to default layout. "
 msgstr "Modèle de table de rendu remis à rendu par défaut "
 
-#: /SQLSource.py:206
+#: /SQLSource.py:207
 msgid "Parameters form reset to default. "
 msgstr "Formulaire de paramètres remis à par défaut "
 
@@ -94,13 +98,24 @@ msgstr "Formulaire de paramètres remis à par défaut "
 msgid "Unknown encoding ${enc}. CSVSource not added! "
 msgstr "Encodage ${enc} inconnu. CSVSource non ajouté "
 
-#: /views/add/CSVSource/add_submit.py:57
+#: /views/add/CSVSource/add_submit.py:58
 msgid "Problem ${exception}"
 msgstr "Anomalie ${exception}"
 
-#: /views/add/CSVSource/add_submit.py:71
-msgid "Added ${metatype} ${id}."
-msgstr "${metatype} ${id} ajouté"
+# Default: "id"
+#: /views/add/CSVSource/add_submit.py:73
+msgid "metatype"
+msgstr ""
+
+#: /views/add/CSVSource/form.form:22
+#: /views/edit/Asset/CSVSource/upload_form.form:23
+msgid "File to upload as source data."
+msgstr "Fichier à télécharger en tant que source de données"
+
+#: /views/add/CSVSource/form.form:29
+#: /views/edit/Asset/CSVSource/upload_form.form:30
+msgid "csv file"
+msgstr "fichier csv"
 
 #: /views/add/CSVSource/form.form:49
 msgid "id"
@@ -114,12 +129,12 @@ msgstr ""
 "Aucun espace ou caractère spécial autre que &#8216;_&#8217; or &#8216;-"
 "&#8217; or &#8216;.&#8217;"
 
-#: /views/add/CSVSource/form.form:71
-msgid "The title might be publicly visible."
-msgstr "Le titre peut devenir visible au public"
+#: /views/add/CSVSource/form.form:70 /views/edit/Asset/CSVSource/form.form:30
+msgid "title"
+msgstr "titre"
 
-#: /views/edit/Asset/CSVSource/charset_form.form:23
 #: /views/add/CSVSource/form.form:84
+#: /views/edit/Asset/CSVSource/charset_form.form:23
 msgid "Character coding of the source data."
 msgstr "Encodage des caractères de la source des données"
 
@@ -131,7 +146,7 @@ msgstr "en train de coder"
 msgid "Unknown encoding ${enc}. Character encoding not saved! "
 msgstr "Encodage ${enc} inconnu. Encodage des caractères non sauvegardé "
 
-#: /views/edit/Asset/CSVSource/charset_submit.py:31
+#: /views/edit/Asset/CSVSource/charset_submit.py:32
 msgid "Encoding set to: ${enc} "
 msgstr "Codage mis à ${enc} "
 
@@ -141,7 +156,7 @@ msgstr "racoourci: alt-u"
 
 #: /views/edit/Asset/CSVSource/edit.pt:141
 msgid "upload"
-msgstr "charger"
+msgstr "envoyer"
 
 #: /views/edit/Asset/CSVSource/edit.pt:168
 msgid "comma separated value data"
@@ -188,10 +203,6 @@ msgstr "raccourci: alt-e"
 msgid "csv source upload"
 msgstr "télécharger source csv"
 
-#: /views/edit/Asset/CSVSource/form.form:30 /views/add/CSVSource/form.form:70
-msgid "title"
-msgstr "titre"
-
 #: /views/edit/Asset/CSVSource/form.form:32
 #: /views/edit/Asset/CSVSource/form.form:59
 msgid "Optional, but useful."
@@ -224,16 +235,17 @@ msgid ""
 "that contain them, can be subscribed to."
 msgstr ""
 
-#: /views/edit/Asset/CSVSource/upload_form.form:23
-#: /views/add/CSVSource/form.form:22
-msgid "File to upload as source data."
-msgstr "Fichier à télécharger en tant que source de données"
-
-#: /views/edit/Asset/CSVSource/upload_form.form:30
-#: /views/add/CSVSource/form.form:29
-msgid "csv file"
-msgstr "fichier csv"
-
 #: /views/edit/Asset/CSVSource/upload_submit.py:25
 msgid "Data uploaded. "
 msgstr "Données téléchargées "
+
+#~ msgid ""
+#~ "This code source does not contain an callable object with id \"${id}\"! "
+#~ msgstr ""
+#~ "Ce code source ne contient pas d'objet appelable avec id \"${id}\"! "
+
+#~ msgid "Added ${metatype} ${id}."
+#~ msgstr "${metatype} ${id} ajouté"
+
+#~ msgid "The title might be publicly visible."
+#~ msgstr "Le titre peut devenir visible au public"

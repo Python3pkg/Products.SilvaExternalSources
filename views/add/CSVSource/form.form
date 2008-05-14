@@ -21,7 +21,7 @@
           <default></default>
           <description>File to upload as source data.</description>
           <display_maxwidth></display_maxwidth>
-          <display_width type="int">60</display_width>
+          <display_width type="int">54</display_width>
           <external_validator></external_validator>
           <extra></extra>
           <required type="int">0</required>

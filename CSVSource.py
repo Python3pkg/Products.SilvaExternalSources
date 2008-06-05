@@ -17,7 +17,7 @@ from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 # Silva
 from Products.Silva import SilvaPermissions
 from Products.Silva.helpers import add_and_edit
-from Products.Silva.SilvaObject import SilvaObject
+from Products.Silva.Asset import Asset
 from Products.Silva.interfaces import IAsset
 
 # I18N stuff
@@ -25,7 +25,7 @@ from Products.Silva.i18n import translate as _
 
 import ASV
 
-class CSVSource(ExternalSource, SilvaObject, Folder):
+class CSVSource(ExternalSource, Asset, Folder):
 
     """CSV Source is an asset that displays tabular data from a 
     spreadsheet or database. The format of the uploaded text file
@@ -65,19 +65,24 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
 
     _default_batch_size = 20
 
-    def __init__(self, id, file):
-        self.id = id
+    def __init__(self, id):
+        CSVSource.inheritedAttribute('__init__')(self, id)
         self._raw_data = None
         self._data = []
-        if file is not None:
-            self.update_data(file.read())
-        else:
-            self.update_data("")
-        return
 
     # ACCESSORS
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 'raw_data')
+    security.declareProtected(
+        SilvaPermissions.AccessContentsInformation, 'get_file_size')
+    def get_file_size(self):
+        """Get the size of the file as it will be downloaded.
+        """
+        if self._raw_data:
+            return len(self._raw_data)
+        return 0
+
+    security.declareProtected(
+        SilvaPermissions.AccessContentsInformation, 'raw_data')
     def raw_data (self):
         if type(self._raw_data) != type(u''):
             data = unicode(self._raw_data, self._data_encoding, 'replace')
@@ -85,7 +90,8 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             data = self._raw_data
         return data
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 'to_html')
+    security.declareProtected(
+        SilvaPermissions.AccessContentsInformation, 'to_html')
     def to_html(self, *args, **kw):
         """ render HTML for CSV source
         """
@@ -106,7 +112,8 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             param['headings'] = headings
         return layout(table=rows, parameters=param)
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 'get_title')
+    security.declareProtected(
+        SilvaPermissions.AccessContentsInformation, 'get_title')
     def get_title (self):
         """Return meta-data title for this instance
         """
@@ -119,7 +126,8 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         """Returns css class for table """
         return self._table_class
         
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 'description')
+    security.declareProtected(
+        SilvaPermissions.AccessContentsInformation, 'description')
     def description (self):
         """ Return desc from meta-data system"""
         ms = self.service_metadata
@@ -145,7 +153,7 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         rows = self._unicode_helper(rows)
         self._data = rows
         self._raw_data = data
-        return
+        self.update_quota()
 
     def _unicode_helper(self, rows):
         for r in rows:
@@ -173,12 +181,6 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
     def set_table_class (self, css_class):
         self._table_class = css_class
         return 
-
-    security.declareProtected(
-        SilvaPermissions.ChangeSilvaContent, 'set_title')
-    def set_title (self, title):
-        CSVSource.inheritedAttribute('set_title')(self, title)
-        return
 
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'set_description')
@@ -227,10 +229,9 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
         title = unicode(
             title, self.management_page_charset)
         
-        if title and title != self.title:
+        if title and title != self.get_title():
             self.set_title(title)
-            m = _("Title changed. ")
-            msg += m #'Title changed. '
+            msg += _("Title changed. ")
             
         # Assume description is in the encoding as specified 
         # by "management_page_charset". Store it in unicode.
@@ -242,13 +243,11 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
             m = _("Description changed. ")
             msg += m #'Description changed. '
         if not (not not cacheable) is (not not self._is_cacheable):
-##             print 'cacheable', str(cacheable), str(self._is_cacheable)
             self.set_is_cacheable(cacheable)
             m = _("Cacheability setting changed. ")
             msg += m #'Cacheability setting changed. '
         if file:
-            data = file.read()
-            self.update_data(data)
+            self.update_data(data.read())
             m = _("Data updated. ")
             msg += m #'Data updated. '
 ##         if not (not not headings) is (not not self._has_headings):
@@ -261,11 +260,10 @@ class CSVSource(ExternalSource, SilvaObject, Folder):
     def manage_editDataCSVSource(self, data=None):
         """ Edit CSVSource raw data
         """
+        msg = u''
         if data:
             self.update_data(data)
             msg = _('Raw data updated. ')
-        else:
-            msg = u''
         return self.editDataCSVSource(manage_tabs_message=msg)
 
 InitializeClass(CSVSource)
@@ -273,7 +271,9 @@ InitializeClass(CSVSource)
 import os
 
 def reset_parameter_form(csvsource):
-    filename = os.path.join(package_home(globals()), 'layout', 'csvparameters.xml')
+    filename = os.path.join(package_home(globals()), 
+                            'layout', 
+                            'csvparameters.xml')
     f = open(filename, 'rb')
     form = ZMIForm('form', 'Parameters form', unicode_mode=1)
     XMLToForm(f.read(), form)
@@ -298,16 +298,15 @@ def reset_table_layout(cs):
 def manage_addCSVSource(context, id, title, file=None, REQUEST=None):
     """Add a CSVSource object
     """
-    cs = CSVSource(id, file)
-    cs.title = title
+    cs = CSVSource(id)
     context._setObject(id, cs)
     cs = context._getOb(id)
+    if file:
+        cs.update_data(file.read())
+    else:
+        cs.update_data("")      # XXX: This is necessary ??
     reset_table_layout(cs)
     reset_parameter_form(cs)
-    # XXX
-    # ZMI is assumed to be in utf-8
-    if type(title) == type(''):
-        title = unicode(title, 'utf-8', 'replace')
     cs.set_title(title)
     cs.set_description('CSV Source description')
     add_and_edit(context, id, REQUEST, screen='editCSVSource')

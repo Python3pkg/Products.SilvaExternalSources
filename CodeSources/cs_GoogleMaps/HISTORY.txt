@@ -1,0 +1,9 @@
+Copyright (c) 2008 Infrae. All rights reserved.
+See also LICENSE.txt
+
+Google Maps iframe Code Source changes
+
+0.1
+    - Initial public release.
+
+Based on the us-contact-map code source of the University of Coimbra: http://www.uc.pt

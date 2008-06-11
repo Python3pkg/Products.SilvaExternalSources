@@ -58,4 +58,19 @@ configuration = {
         'readme': 'README.txt',
         'version': 'version.txt',
     },
+    'cs_NetworkImage': {
+        'id': 'cs_network_image',
+        'dirname': 'network_image',
+        'title': 'Network Image',
+        'render_id': 'netimage.pt',
+        'desc': 'Insert an image from the network with a link and/or tooltip.',
+        'form': 'parameters.xml',
+        'script': None,
+        'template': 'netimage.pt',
+        'history': 'HISTORY.txt',
+        'license': 'LICENSE.txt',
+        'readme': 'README.txt',
+        'version': 'version.txt',
+    },
+
 }

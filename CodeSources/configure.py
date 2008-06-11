@@ -48,7 +48,7 @@ configuration = {
         'id': 'cs_google_maps',
         'dirname': 'cs_GoogleMaps',
         'title': 'Code Source Google Maps iFrame',
-        'render_id': 'google_maps_source.pt',
+        'render_id': 'google_maps_source',
         'desc': 'Code Source for Google Maps iFrame.',
         'form': 'parameters.xml',
         'script': 'iframe_validator.py',

@@ -44,4 +44,18 @@ configuration = {
         'readme': 'README.txt',
         'version': 'version.txt',
     },
+    'cs_GoogleMaps': {
+        'id': 'cs_google_maps',
+        'dirname': 'cs_GoogleMaps',
+        'title': 'Code Source Google Maps iFrame',
+        'render_id': 'google_maps_source.pt',
+        'desc': 'Code Source for Google Maps iFrame.',
+        'form': 'parameters.xml',
+        'script': 'iframe_validator.py',
+        'template': 'google_maps_source.pt',
+        'history': 'HISTORY.txt',
+        'license': 'LICENSE.txt',
+        'readme': 'README.txt',
+        'version': 'version.txt',
+    },
 }

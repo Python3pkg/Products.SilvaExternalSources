@@ -1,0 +1,7 @@
+<tal:map define="iframe options/iframe | nothing;">
+
+  <div class="googleMaps" tal:content="structure iframe">
+    google map
+  </div>
+
+</tal:map>

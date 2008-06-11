@@ -1,0 +1,8 @@
+HISTORY.txt
+
+Copyright © 2002-2008 Infrae. All rights reserved.
+
+
+Network Image CS 0.3   	07 apr 2007 19:38  	network_image-0.3.zexp
+Network Image CS 0.2 	09 dec 2006 08:31 	network_image158.zexp
+Network Image CS 0.1 	09 dec 2006 08:17 	network_image.zexp

@@ -1,0 +1,21 @@
+HISTORY.txt
+
+Copyright (c) 2005 - 2008 Samuel Schluep, ETH Zurich and Infrae.
+All rights reserved.
+
+Author: Samuel Schluep
+
+Contact: schluep at ethz ch
+
+
+History
+
+  0.3
+    New: Flash file can be also referenced by absolute links 
+
+  0.2
+    New: Reference lookup window
+
+  0.1
+    Initial Release
+

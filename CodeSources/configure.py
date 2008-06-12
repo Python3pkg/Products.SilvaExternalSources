@@ -114,5 +114,21 @@ configuration = {
         'readme': 'README.txt',
         'version': 'version.txt',
     },
+    'cs_RelatedInfo': {
+        'id': 'related_info',
+        'dirname': 'cs_RelatedInfo',
+        'title': 'Related info',
+        'render_id': 'capsule',
+        'desc': 'Provide related info and crosslinks.',
+        'form': 'parameters.xml',
+        'script_id': None,
+        'script_body': None,
+        'template_id': 'capsule',
+        'template_body': 'capsule.pt',
+        'history': 'HISTORY.txt',
+        'license': 'LICENSE.txt',
+        'readme': 'README.txt',
+        'version': 'version.txt',
+    },
 
 }

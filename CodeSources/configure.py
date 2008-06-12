@@ -146,5 +146,21 @@ configuration = {
         'readme': 'README.txt',
         'version': 'version.txt',
     },
+    'cs_Encaptionate': {
+        'id': 'encaptionate',
+        'dirname': 'cs_Encaptionate',
+        'title': 'Encaptionated image',
+        'render_id': 'capsule',
+        'desc': 'Insert an image with title, link, caption, and/or credit.',
+        'form': 'parameters.xml',
+        'script_id': None,
+        'script_body': None,
+        'template_id': 'capsule',
+        'template_body': 'capsule.pt',
+        'history': 'HISTORY.txt',
+        'license': 'LICENSE.txt',
+        'readme': 'README.txt',
+        'version': 'version.txt',
+    },
 
 }

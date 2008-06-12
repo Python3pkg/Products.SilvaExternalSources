@@ -6,7 +6,7 @@ configuration = {
         'id': 'cs_youtube',
         'dirname': 'cs_YouTube',
         'title': 'YouTube video',
-        'render_id': None,
+        'render_id': 'youtube_source',
         'desc': "Code Source to embed YouTube videos",
         'form': 'parameters.xml',
         'script_id': None,

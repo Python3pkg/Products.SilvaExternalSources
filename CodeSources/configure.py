@@ -22,7 +22,7 @@ configuration = {
         'id': 'cs_google_calendar',
         'dirname': 'cs_GoogleCalendar',
         'title': 'Google Calendar',
-        'render_id': None,
+        'render_id': 'google_calendar_source',
         'desc': 'Code Source to embed a public Google Calendar.',
         'form': 'parameters.xml',
         'script_id': None,

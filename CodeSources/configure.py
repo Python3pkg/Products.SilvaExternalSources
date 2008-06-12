@@ -82,5 +82,21 @@ configuration = {
         'readme': 'README.txt',
         'version': 'version.txt',
     },
+    'cs_MsVideo': {
+        'id': 'ms_video',
+        'dirname': 'cs_MsVideo',
+        'title': 'MS Video',
+        'render_id': 'video_script',
+        'desc': 'Embeds a Window Media Player movie.',
+        'form': 'parameters.xml',
+        'script_id': 'video_script',
+        'script_body': 'video_script.py',
+        'template_id': None,
+        'template_body': None,
+        'history': 'HISTORY.txt',
+        'license': 'LICENSE.txt',
+        'readme': 'README.txt',
+        'version': 'version.txt',
+    },
 
 }

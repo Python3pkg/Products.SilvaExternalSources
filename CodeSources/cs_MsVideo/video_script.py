@@ -1,3 +1,4 @@
+##parameters=ref, controller, autoplay, width='', height=''
 # Embeds movies using the Windows Media Player. This Code Source
 # was developped to embed *.avi files - therefore it uses the
 # clsid of the class ID of the Windows Media Player 6 

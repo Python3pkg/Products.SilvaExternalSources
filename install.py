@@ -116,16 +116,16 @@ def install_codesources(cs_path, root, cs_fields, product_name=None):
             cs.set_description(cs_element['desc'])
         cs_path = os.path.join(cs_path, cs_element['dirname'])            
         if root.service_codesources.hasObject(cs_element['id']):
-            if cs_element['script']:
+            if cs_element['script_id']:
                 cs.manage_addProduct['PythonScripts'].manage_addPythonScript(
-                    cs_element['script'])
-                cs_code = getattr(cs, cs_element['script'])
-                script_path = os.path.join(cs_path, cs_element['script'])
+                    cs_element['script_id'])
+                cs_code = getattr(cs, cs_element['script_id'])
+                script_path = os.path.join(cs_path, cs_element['script_body'])
                 cs_code.write(read_file(script_path))
-            if cs_element['template']:
+            if cs_element['template_id']:
                 cs_code = cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(
-                    cs_element['template'])
-                template_path = os.path.join(cs_path, cs_element['template'])
+                    cs_element['template_id'])
+                template_path = os.path.join(cs_path, cs_element['template_body'])
                 cs_code.pt_edit(read_file(template_path), '')
             if cs_element['form']:
                 form_path = os.path.join(cs_path, cs_element['form'])

@@ -22,6 +22,3 @@ arbitrary parameters.
       Improvements include a lookup window launcher for linking
       the image and rollover tooltips in the parameters form.
 
-Author:  Samuel Schluep
-
-Contact: schluep at ethz ch 

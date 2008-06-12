@@ -1,4 +1,6 @@
-# Stupid utilities
+##parameters=iframe, request
+
+# Utilities I don't like
 def notEven((number, value)):
    if number % 2 == 0:
       return True

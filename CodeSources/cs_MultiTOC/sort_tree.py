@@ -1,4 +1,4 @@
-##parameters=list: tree, sort_on
+##parameters=tree, sort_on
 
 tree_list = []
 for obj in tree:

@@ -130,5 +130,21 @@ configuration = {
         'readme': 'README.txt',
         'version': 'version.txt',
     },
+    'cs_Flash': {
+        'id': 'flash',
+        'dirname': 'cs_Flash',
+        'title': 'Flash',
+        'render_id': 'flash_script',
+        'desc': 'Embeds a Flash movie in a page using parameters.',
+        'form': 'parameters.xml',
+        'script_id': 'flash_script',
+        'script_body': 'flash_script.py',
+        'template_id': None,
+        'template_body': None,
+        'history': 'HISTORY.txt',
+        'license': 'LICENSE.txt',
+        'readme': 'README.txt',
+        'version': 'version.txt',
+    },
 
 }

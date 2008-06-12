@@ -98,5 +98,21 @@ configuration = {
         'readme': 'README.txt',
         'version': 'version.txt',
     },
+    'cs_Quicktime': {
+        'id': 'quicktime',
+        'dirname': 'cs_Quicktime',
+        'title': 'Quicktime',
+        'render_id': 'video_script',
+        'desc': 'Embedder for a Quicktime movie with configuration parameters.',
+        'form': 'parameters.xml',
+        'script_id': 'video_script',
+        'script_body': 'video_script.py',
+        'template_id': None,
+        'template_body': None,
+        'history': 'HISTORY.txt',
+        'license': 'LICENSE.txt',
+        'readme': 'README.txt',
+        'version': 'version.txt',
+    },
 
 }

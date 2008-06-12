@@ -57,7 +57,7 @@ configuration = {
         'render_id': 'google_maps_source',
         'desc': 'Code Source for Google Maps iFrame.',
         'form': 'parameters.xml',
-        'script_id': 'iframe_validatory',
+        'script_id': 'iframe_validator',
         'script_body': 'iframe_validator.py',
         'template_id': 'google_maps_source',
         'template_body': 'google_maps_source.pt',

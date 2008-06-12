@@ -25,7 +25,7 @@
 remove all this text and paste here...</default>
           <description></description>
           <enabled type="int">1</enabled>
-          <external_validator type="method">external_validator</external_validator>
+          <external_validator type="method">iframe_validator</external_validator>
           <extra></extra>
           <height type="int">5</height>
           <hidden type="int">0</hidden>

@@ -19,9 +19,9 @@
     appendtourl python:test(publiconly == 'yes', '', '/edit');
   sorton options/sort_on | nothing;
   sortorder options/sort_order |nothing;
-  errormessage string:<p><span class='error'>The path of this Multi-TOC is not valid.</span></p>;
+  errormessage string:<p><span class='error'>The path of this MultiTOC is not valid.</span></p>;
 ">
-<!-- Multi-TOC codesource 0.4 -->
+<!-- MultiTOC codesource 0.5 -->
 <div tal:omit-tag="python:not (c1ass or style)"
   tal:attributes="
     class c1ass;
@@ -71,5 +71,5 @@
 </tal:def>
 </tal:loop>
 </div>
-<!-- /Multi-TOC -->
+<!-- /MultiTOC -->
 </tal:def>

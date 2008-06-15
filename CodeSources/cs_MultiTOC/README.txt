@@ -1,7 +1,7 @@
-﻿README for Multi-TOC Code Source
-================================
+﻿README for MultiTOC Code Source
+===============================
 
-This README should reside inside a Silva Code Source named 'multi-toc'. The
+This README should reside inside a Silva Code Source named 'cs_multitoc'. The
 Code Source allows Authors to place a listing of the contents of a container
 that's located elsewhere in the site. Multiple containers can be listed, one
 after the other. Authors can choose which Silva content types to list, such
@@ -23,9 +23,9 @@ Silva Document, Silva Folder, Silva Image, Silva File
 If you want to list another content type you can always hover over its icon 
 to see its name in the tooltip.
 
-Customizing Multi-TOC
----------------------
-The code in the page template named 'multi-toc' can be easily adjusted to
+Customizing MultiTOC
+--------------------
+The code in the page template named 'multitoc' can be easily adjusted to
 your personal requirements. Change the header size for the title, etc.
 
 Parameters

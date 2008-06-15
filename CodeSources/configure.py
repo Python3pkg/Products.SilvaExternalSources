@@ -83,7 +83,7 @@ configuration = {
         'version': 'version.txt',
     },
     'cs_MsVideo': {
-        'id': 'ms_video',
+        'id': 'cs_ms_video',
         'dirname': 'cs_MsVideo',
         'title': 'MS Video',
         'render_id': 'video_script',
@@ -99,7 +99,7 @@ configuration = {
         'version': 'version.txt',
     },
     'cs_Quicktime': {
-        'id': 'quicktime',
+        'id': 'cs_quicktime',
         'dirname': 'cs_Quicktime',
         'title': 'Quicktime',
         'render_id': 'video_script',
@@ -115,7 +115,7 @@ configuration = {
         'version': 'version.txt',
     },
     'cs_RelatedInfo': {
-        'id': 'related_info',
+        'id': 'cs_related_info',
         'dirname': 'cs_RelatedInfo',
         'title': 'Related info',
         'render_id': 'capsule',
@@ -131,7 +131,7 @@ configuration = {
         'version': 'version.txt',
     },
     'cs_Flash': {
-        'id': 'flash',
+        'id': 'cs_flash',
         'dirname': 'cs_Flash',
         'title': 'Flash',
         'render_id': 'flash_script',
@@ -147,7 +147,7 @@ configuration = {
         'version': 'version.txt',
     },
     'cs_Encaptionate': {
-        'id': 'encaptionate',
+        'id': 'cs_encaptionate',
         'dirname': 'cs_Encaptionate',
         'title': 'Encaptionated image',
         'render_id': 'capsule',

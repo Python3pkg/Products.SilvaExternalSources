@@ -25,7 +25,7 @@ to see its name in the tooltip.
 
 Customizing MultiTOC
 --------------------
-The code in the page template named 'multitoc' can be easily adjusted to
+The code in the page template named 'multi_toc' can be easily adjusted to
 your personal requirements. Change the header size for the title, etc.
 
 Parameters
@@ -60,12 +60,12 @@ Error handling
 --------------
 There is a tal:on-error in the loop so that authors who somehow typo the 
 path don't get an "External source is broken" message when (pre)viewing 
-the rendered document. Thanks to Irene at WU Wien for the tip. You can 
-edit the error message on line 22 of multi_toc. You can also have it fail 
-silently by making the errormessage nothing.
+the rendered document. Thanks to Irene Fellner at WU Wien for the tip. 
 
-Not that if you change other code and cause an error the message will 
-remain the same, even though the path may be valid.
+You can edit the error message on line 22 of multi_toc. You can also have
+it fail silently by making the errormessage nothing. Note that if you
+change other code and cause an error the message will remain the same,
+even though the path may be valid.
 
 --
 Improvements and variants are welcome.

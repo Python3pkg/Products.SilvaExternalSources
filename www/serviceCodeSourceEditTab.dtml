@@ -64,7 +64,7 @@ function toggleSelect() {
 </dtml-if>
  -->
 
-<p>To use a code source copy it to the Silva root, or deeper in the site.</p>
+<p>To use a Code Source copy it to the Silva root, or deeper in the site.</p>
 
 <form action="&dtml-URL1;/" name="objectItems" method="post">
 <dtml-if objectItems>
@@ -338,5 +338,6 @@ window.parent.update_menu();
 </dtml-if>
 
 <p>These Code Sources will be refreshed when ExternalSources is refreshed in the extensions service.</p>
+<p>Developers can add their own Code Sources to this service. Unlisted (unknown) Code Sources are preserved when refreshing ExternalSources.</p>
 
 <dtml-var manage_page_footer>

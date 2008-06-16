@@ -163,7 +163,7 @@ configuration = {
         'version': 'version.txt',
     },
     'cs_JavaApplet': {
-        'id': 'java_applet',
+        'id': 'cs_java_applet',
         'dirname': 'cs_JavaApplet',
         'title': 'Java Applet',
         'render_id': 'java_script',
@@ -179,7 +179,7 @@ configuration = {
         'version': 'version.txt',
     },
     'cs_JavaPlugin': {
-        'id': 'java_plugin',
+        'id': 'cs_java_plugin',
         'dirname': 'cs_JavaPlugin',
         'title': 'Java Plugin',
         'render_id': 'java_script',

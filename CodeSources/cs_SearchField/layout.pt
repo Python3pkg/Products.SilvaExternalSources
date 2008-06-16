@@ -1,0 +1,18 @@
+
+<div class="searchfield"
+  tal:define="
+    default_text options/default_text;
+    find_obj python:here.restrictedTraverse(str(options['find_object']));
+    width options/width">
+  <form tal:attributes="action find_obj/absolute_url"
+    name="searchform">
+    <input name="fulltext"
+      id="fulltextleft"
+      type="text"
+      tal:attributes="
+        value default_text;
+        size width;
+        onclick python:'if (this.value == \'' + default_text + '\'){this.value=\'\'};;this.style.color=\'black\';;'"
+      onkeyup="if (event.keyCode == 13){this.form.submit()};" />
+  </form>
+</div>

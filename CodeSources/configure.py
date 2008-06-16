@@ -194,5 +194,21 @@ configuration = {
         'readme': 'README.txt',
         'version': 'version.txt',
     },
+    'cs_SearchField': {
+        'id': 'cs_search_field',
+        'dirname': 'cs_SearchField',
+        'title': 'Search Field',
+        'render_id': 'layout',
+        'desc': 'Inserts a search field in a document. Requires SilvaFind.',
+        'form': 'parameters.xml',
+        'script_id': None,
+        'script_body': None,
+        'template_id': 'layout',
+        'template_body': 'layout.pt',
+        'history': 'HISTORY.txt',
+        'license': 'LICENSE.txt',
+        'readme': 'README.txt',
+        'version': 'version.txt',
+    },
 
 }

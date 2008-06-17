@@ -2,15 +2,14 @@
 See also LICENSE.txt
 
 Portlet Element Code Source changes
-
-
+===================================
 
 0.2
 
   Features added:
 
-    - Changed the id, some field titles and descriptions. Added a README for
-      initial public release.
+    - Changed the id, added alignment, style, and an optional title, edited 
+      field descriptions. 
 
 0.1
 

@@ -254,5 +254,23 @@ configuration = {
         'readme': 'README.txt',
         'version': 'version.txt',
     },
+    'cs_PortletElement': {
+        'id': 'cs_portlet_element',
+        'dirname': 'cs_PortletElement',
+        'title': 'Portlet Element',
+        'render_id': 'portlet_element',
+        'desc': 'Code Source to include Silva Documents within other Silva Documents.',
+        'form': 'parameters.xml',
+        'script_id': 'get_portlet_content',
+        'script_body': 'get_portlet_content.py',
+        'file_id': None,
+        'file_body': None,
+        'template_id': 'portlet_element',
+        'template_body': 'portlet_element.pt',
+        'history': 'HISTORY.txt',
+        'license': 'LICENSE.txt',
+        'readme': 'README.txt',
+        'version': 'version.txt',
+    },
 
 }

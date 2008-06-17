@@ -1,0 +1,122 @@
+<tal:def define="
+  url       options/url;
+  alignment options/alignment | nothing;
+  width     options/width | nothing;
+  height    options/height | nothing;
+  quality   options/quality | nothing;
+  loop      options/loop | nothing;
+  bgcolor   options/bgcolor | nothing;
+">
+<tal:if condition="python: options.get('type', None) == 'swf'">
+<!-- Flash source -->
+<div tal:omit-tag="not:alignment"
+  tal:attributes="class alignment">
+<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+  codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"
+  tal:attributes="
+    id url;
+    width width;
+    height height">
+<param name="movie"
+  tal:attributes="value url" />
+<param name="quality"
+  tal:condition="quality"
+  tal:attributes="value quality" />
+<param name="loop"
+  tal:condition="loop"
+  tal:attributes="value loop" />
+<param name="bgcolor"
+  tal:condition="bgcolor"
+  tal:attributes="value bgcolor" />
+<embed type="application/x-shockwave-flash" 
+  pluginspage="http://www.macromedia.com/go/getflashplayer"
+  tal:attributes="
+    src url;
+    name url;
+    width width;
+    height height;
+    quality quality;
+    loop loop;
+    bgcolor bgcolor;
+    " />
+</object>
+</div>
+<!-- /Flash source -->
+</tal:if>
+
+<tal:if condition="python: options.get('type', None) == 'flv'">
+<!-- Flash source -->
+<div tal:omit-tag="not:alignment"
+  tal:attributes="class alignment">
+<script type="text/javascript">
+function MM_CheckFlashVersion(reqVerStr,msg){
+  with(navigator){
+    var isIE  = (appVersion.indexOf("MSIE") != -1 && userAgent.indexOf("Opera") == -1);
+    var isWin = (appVersion.toLowerCase().indexOf("win") != -1);
+    if (!isIE || !isWin){  
+      var flashVer = -1;
+      if (plugins && plugins.length > 0){
+        var desc = plugins["Shockwave Flash"] ? plugins["Shockwave Flash"].description : "";
+        desc = plugins["Shockwave Flash 2.0"] ? plugins["Shockwave Flash 2.0"].description : desc;
+        if (desc == "") flashVer = -1;
+        else{
+          var descArr = desc.split(" ");
+          var tempArrMajor = descArr[2].split(".");
+          var verMajor = tempArrMajor[0];
+          var tempArrMinor = (descArr[3] != "") ? descArr[3].split("r") : descArr[4].split("r");
+          var verMinor = (tempArrMinor[1] > 0) ? tempArrMinor[1] : 0;
+          flashVer =  parseFloat(verMajor + "." + verMinor);
+        }
+      }
+      // WebTV has Flash Player 4 or lower -- too low for video
+      else if (userAgent.toLowerCase().indexOf("webtv") != -1) flashVer = 4.0;
+
+      var verArr = reqVerStr.split(",");
+      var reqVer = parseFloat(verArr[0] + "." + verArr[2]);
+  
+      if (flashVer < reqVer){
+        if (confirm(msg))
+          window.location = "http://www.macromedia.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash";
+      }
+    }
+  } 
+}
+</script>
+<script type="text/javascript"
+  tal:attributes="src context/AC_RunActiveContent.js/absolute_url"></script>
+<script type="text/javascript">
+AC_FL_RunContent( 'codebase','http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0','width','320','height','240','id','FLVPlayer','src','FLVPlayer_Progressive','flashvars','&MM_ComponentVersion=1&skinName=Corona_Skin_1&autoPlay=false&autoRewind=true','quality','high','scale','noscale','name','FLVPlayer','salign','lt','pluginspage','http://www.macromedia.com/go/getflashplayer','movie','FLVPlayer_Progressive' ); //end AC code
+</script>
+<noscript>
+<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="320" height="240" id="FLVPlayer">
+<param name="movie"
+  tal:attributes="value url" />
+<param name="quality"
+  tal:condition="quality"
+  tal:attributes="value quality" />
+<param name="loop"
+  tal:condition="loop"
+  tal:attributes="value loop" />
+<param name="bgcolor"
+  tal:condition="bgcolor"
+  tal:attributes="value bgcolor" />
+<param name="salign" value="lt" />
+<param name="FlashVars" value="&MM_ComponentVersion=1&skinName=Corona_Skin_1&autoPlay=false&autoRewind=true" />
+<embed type="application/x-shockwave-flash" 
+  flashvars="&MM_ComponentVersion=1&skinName=Corona_Skin_1&autoPlay=false&autoRewind=true"
+  pluginspage="http://www.macromedia.com/go/getflashplayer"
+  name="FLVPlayer" salign="LT" type="application/x-shockwave-flash"
+  tal:attributes="
+  src url;
+  name url;
+  width width;
+  height height;
+  loop loop;
+  quality quality;
+  " />
+</object>
+</noscript>
+</div>
+<!-- /Flash source -->
+</tal:if>
+</tal:def>

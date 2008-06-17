@@ -1,0 +1,28 @@
+Copyright (c) 2002-2008 Infrae. All rights reserved.
+See also LICENSE.txt
+
+Flash Source Code Source changes
+
+0.3
+
+  Features added:
+
+    - Added a radio field for a loop parameter.
+
+    - Re-ordered the fields with narrowing focus.
+
+    - Included AC_RunActiveContent.js in the code source.
+
+    - Consolidated all the calls to options in the embedder pt so they only 
+      occur once.
+
+0.2
+
+  Features added:
+
+    - Added lookup field for locating the Flash file with proper syntax.
+
+0.1
+
+    - Initial public release.
+

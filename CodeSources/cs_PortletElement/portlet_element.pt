@@ -1,0 +1,25 @@
+<tal:def define="
+  alignment options/alignment_selector | nothing;
+  capsulestyle options/capsule_style | nothing;
+  capsuletitle options/capsule_title | nothing;
+  show_doc_title options/show_title | nothing;
+  document options/document | nothing;
+">
+<!-- Start portlet element -->
+<div tal:omit-tag="not:alignment"
+  tal:attributes="
+  class alignment;
+  style capsulestyle;
+">
+<h2 class="heading"
+  tal:condition="capsuletitle"
+  tal:content="structure capsuletitle">
+    title....
+</h2>
+<p class="portlet"
+  tal:content="structure python:here.get_portlet_content(show_doc_title,document)">
+  document
+</p>
+</div>
+<!-- End portlet element -->
+</tal:def>

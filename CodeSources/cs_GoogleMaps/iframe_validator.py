@@ -20,14 +20,14 @@ def clean(value):
 def removeXmlData(value):
    xml = False
    cleaned = ''
-   for pos in range(len(value)):
-      if value[pos] == '<':
+   for letter in value:
+      if letter == '<':
          xml = True
-      elif value[pos] == '>':
+      elif letter == '>':
          xml = False
       elif not xml:
          continue
-      cleaned += value[pos]
+      cleaned += letter
 
    return cleaned
 

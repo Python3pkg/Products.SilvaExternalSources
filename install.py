@@ -45,7 +45,8 @@ def install(root):
     cs_fields = configure.configuration
     path_join = os.path.join
     _fs_codesources_path = path_join(package_home(globals()), 'CodeSources')
-    install_codesources(_fs_codesources_path, root, cs_fields)
+    #install_codesources(_fs_codesources_path, root, cs_fields)
+    install_codesources2(_fs_codesources_path, root, cs_fields)
 
 def uninstall(root):
     cs_fields = configure.configuration
@@ -103,6 +104,48 @@ def configureAddables(root):
             new_addables.append(a)
     root.set_silva_addables_allowed_in_publication(new_addables)
 
+def
+
+def install_codesources2(cs_path, root, cs_fields, product_name=None):
+    clean_path = cs_path
+    codesources = os.listdir(clean_path)
+    cs_paths = []
+    cs_files = []
+
+    for cs_name, cs_element in cs_fields.items():
+        root.service_codesources.manage_addProduct[
+            'SilvaExternalSources'].manage_addCodeSource(cs_element['id'],
+                                                         cs_element['title'],
+                                                         cs_element['render_id'])
+        
+        cs = getattr(root.service_codesources, cs_element['id'])
+        if cs_element['desc']:
+            cs.set_description(cs_element['desc'])
+    
+        for cs in codesources:
+            cs_path = os.path.join(clean_path, cs)
+            cs_paths.append(cs_path)
+
+            def visitor(context, path, files):
+                if files:
+                    templates = [f for f in files if f.endswith('.pt')]
+                    templates_path = [os.path.join(path, t) for t in templates]
+                    
+            
+            os.walk(cs_path, visitor, None)
+            
+            for path in cs_paths:
+                os.chdir(path)
+                path = os.getcwd()
+                cs_files.append(os.listdir(path))
+            for cs_list in cs_files:
+                for cs_file in cs_list:
+                    if cs_file.endswith('.pt'):
+                        print cs_file
+                        #import pdb; pdb.set_trace()
+
+    cs_path = clean_path
+
 def install_codesources(cs_path, root, cs_fields, product_name=None):
     clean_path = cs_path
     for cs_name, cs_element in cs_fields.items():
@@ -116,12 +159,14 @@ def install_codesources(cs_path, root, cs_fields, product_name=None):
             cs.set_description(cs_element['desc'])
         cs_path = os.path.join(cs_path, cs_element['dirname'])            
         if root.service_codesources.hasObject(cs_element['id']):
-            if cs_element['script_id']:
-                cs.manage_addProduct['PythonScripts'].manage_addPythonScript(
-                    cs_element['script_id'])
-                cs_code = getattr(cs, cs_element['script_id'])
-                script_path = os.path.join(cs_path, cs_element['script_body'])
-                cs_code.write(read_file(script_path))
+            if cs_element['scripts']['script_id']:
+                for script_id in cs_element['scripts']['script_id']:
+                    index = cs_element['scripts']['script_id'].index(script_id)
+                    script_body = cs_element['scripts']['script_body'][index]
+                    cs.manage_addProduct['PythonScripts'].manage_addPythonScript(script_id)
+                    cs_code = getattr(cs, script_id)
+                    script_path = os.path.join(cs_path, script_body)
+                    cs_code.write(read_file(script_path))
             if cs_element['file_id']:
 		js_filename = os.path.join(cs_path, cs_element['file_body'])
                 cs.manage_addProduct['OFSP'].manage_addDTMLMethod(
@@ -157,4 +202,3 @@ def install_codesources(cs_path, root, cs_fields, product_name=None):
                 version_path = os.path.join(cs_path, cs_element['version'])
                 cs_code.pt_edit(read_file(version_path), '')
         cs_path = clean_path
-

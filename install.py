@@ -95,7 +95,6 @@ def setupMetadata(root):
         )
     mapping.editMappings(default, tm)
 
-
 def configureAddables(root):
     addables = ['Silva CSV Source']
     new_addables = root.get_silva_addables_allowed_in_publication()
@@ -104,7 +103,6 @@ def configureAddables(root):
             new_addables.append(a)
     root.set_silva_addables_allowed_in_publication(new_addables)
 
-def
 
 def install_codesources2(cs_path, root, cs_fields, product_name=None):
     clean_path = cs_path

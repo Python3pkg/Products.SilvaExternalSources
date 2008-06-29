@@ -29,7 +29,7 @@
           <title>csv file</title>
         </values>
         <tales>
-          <extra>string: id="field_${field/id}" title="access key: alt-f"</extra>
+          <extra>string:id="${field/id}" title="access key: alt-f"</extra>
         </tales>
         <messages>
           <message name="external_validator_failed">The input failed the external validator.</message>
@@ -53,7 +53,7 @@
           <unicode>1</unicode>
         </values>
         <tales>
-          <extra>string: id="field_${field/id}"</extra>
+          <extra>string:id="${field/id}"</extra>
         </tales>
       </field>
       <field><id>object_title</id> <type>StringField</type>
@@ -73,7 +73,7 @@
           <unicode>1</unicode>
         </values>
         <tales>
-          <extra>string: id="field_${field/id}"</extra>
+          <extra>string:id="${field/id}"</extra>
         </tales>
       </field>
       <field><id>object_character_set</id> <type>ListField</type>
@@ -96,6 +96,7 @@
           <whitespace_preserve type="int">0</whitespace_preserve>
         </values>
         <tales>
+          <extra>string:id="${field/id}"</extra>
         </tales>
         <messages>
           <message name="external_validator_failed">The input failed the external validator.</message>

@@ -1,15 +1,15 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html tal:omit-tag=""
-  tal:define="
-    view here;
-    model request/model;    
-    mangle modules/Products/Silva/mangle;
-    root_url model/get_root_url;
-    title model/get_title_editable;
-    vein string:editor;
-    "
-  i18n:domain="silva_external_sources">
-
-<metal:use-macro use-macro="view/macro_asset_edit/macros/editor">
+  lang="en"
+  xml:lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  xmlns:notal="http://www.infrae.com/silva/notal"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  i18n:domain="silva"
+>
+<metal:use-macro use-macro="here/macro_asset_edit/macros/editor">
 
 <metal:fill-slot fill-slot="additional_tools">
 
@@ -25,7 +25,7 @@
         ______________ top controls row ______________
       </tal:block>
       <tr class="top-controls">
-        <td colspan="3">
+        <td colspan="2">
           <h3 i18n:translate="">
             character coding 
           </h3>
@@ -34,32 +34,29 @@
     </thead>
     <tbody tal:define="fields view/charset_form/get_fields">
       <tr>
-        <th class="align-right"
-          width="12%"
+        <th width="33%"
           i18n:translate="">
-          element
+          aspect
         </th>
         <th i18n:translate="">
           content
-        </th>
-        <th width="40%" i18n:translate="">
-          note
         </th>
       </tr>
       <tal:repeat repeat="field fields">
         <tal:define define="iterate repeat/field/odd">
           <tr tal:attributes="class python:iterate and 'odd' or 'even'">
-            <td class="field-title">
-              <tal:block tal:content="structure field/title">"
-              </tal:block><span class="warning"
-                tal:condition="field/is_required">*</span>
+            <td class="designator">
+              <label tal:content="structure field/title"
+                tal:attributes="for field/id">
+                title
+              </label><span class="warning" tal:condition="field/is_required">*</span>
+              <p tal:content="structure python:field.get_value('description')"
+                i18n:translate="">
+                description
+              </p>
             </td>
-            <td>
+            <td class="field">
               <input tal:replace="structure python:field.render_from_request(request)" />
-            </td>
-            <td>
-              <tal:block i18n:translate="" tal:content="structure python:field.get_value('description')">
-              </tal:block>
             </td>
           </tr>
         </tal:define>
@@ -68,7 +65,7 @@
     <tfoot>
       <tr class="controls">
         <td class="align-right"
-          colspan="3">
+          colspan="2">
           <input class="button"
             type="submit"
             name="charset_submit:method"
@@ -82,6 +79,7 @@
     </tfoot>
   </table>
 </form>
+
   <!-- UPLOAD FORM -->
   
   <form method="POST"
@@ -94,7 +92,7 @@
           ______________ top controls row ______________
         </tal:block>
         <tr class="top-controls">
-          <td colspan="3">
+          <td colspan="2">
             <h3 i18n:translate="">
               csv source upload
             </h3>
@@ -103,32 +101,29 @@
       </thead>
       <tbody tal:define="fields view/upload_form/get_fields">
         <tr>
-          <th class="align-right"
-            width="12%"
+          <th width="33%"
             i18n:translate="">
-            element
+            aspect
           </th>
           <th i18n:translate="">
             content
-          </th>
-          <th width="40%" i18n:translate="">
-            note
           </th>
         </tr>
         <tal:repeat repeat="field fields">
           <tal:define define="iterate repeat/field/odd">
             <tr tal:attributes="class python:iterate and 'odd' or 'even'">
-              <td class="field-title">
-              <tal:block tal:content="structure field/title">
-              </tal:block><span class="warning"
-                tal:condition="field/is_required">*</span>
+              <td class="designator">
+              <label tal:content="structure field/title"
+                tal:attributes="for field/id">
+                title
+              </label><span class="warning" tal:condition="field/is_required">*</span>
+              <p tal:content="structure python:field.get_value('description')"
+                i18n:translate="">
+                description
+              </p>
               </td>
-              <td>
+              <td class="field">
                 <input tal:replace="structure python:field.render_from_request(request)" />
-              </td>
-              <td>
-                <tal:block i18n:translate="" tal:content="structure python:field.get_value('description')">
-                </tal:block>
               </td>
             </tr>
           </tal:define>
@@ -137,7 +132,7 @@
       <tfoot>
         <tr class="controls">
           <td class="align-right"
-            colspan="3">
+            colspan="2">
             <input class="button"
               type="submit"
               name="upload_submit:method"
@@ -172,35 +167,25 @@
         </tr>
       </thead>
       <tbody tal:define="fields view/rawdata_form/get_fields">
+        <tal:repeat repeat="field fields">
+        <tal:define define="iterate repeat/field/odd">
         <tr>
-          <th class="align-right"
-            width="5%"
+          <th tal:content="structure field/title"
             i18n:translate="">
-            element
-          </th>
-          <th i18n:translate="">
-            content
+            title
           </th>
         </tr>
-        <tal:repeat repeat="field fields">
-          <tal:define define="iterate repeat/field/odd">
-            <tr tal:attributes="class python:iterate and 'odd' or 'even'">
-              <td class="field-title">
-                <tal:block tal:content="structure field/title">
-                </tal:block><span class="warning"
-                  tal:condition="field/is_required">*</span>
-              </td>
-              <td>
-                <input tal:replace="structure python:field.render_from_request(request)" />
-              </td>
-            </tr>
-          </tal:define>
+        <tr tal:attributes="class python:iterate and 'odd' or 'even'">
+          <td class="field">
+            <input tal:replace="structure python:field.render_from_request(request)" />
+          </td>
+        </tr>
+        </tal:define>
         </tal:repeat>
       </tbody>
       <tfoot>
         <tr class="controls">
-          <td class="align-right"
-            colspan="2">
+          <td class="align-right">
             <input class="button"
               type="submit"
               name="rawdata_submit:method"

@@ -4,6 +4,12 @@ See also LICENSE.txt
 Portlet Element Code Source changes
 ===================================
 
+0.3
+
+  Features added:
+
+    - Making it possible to set css classes and id's.
+
 0.2
 
   Features added:

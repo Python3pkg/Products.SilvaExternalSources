@@ -150,24 +150,25 @@ def install_codesources(cs_path, root, cs_fields, product_name=None):
             cs.set_description(cs_element['desc'])
         cs_path = os.path.join(cs_path, cs_element['dirname'])            
         if root.service_codesources.hasObject(cs_element['id']):
-            if cs_element['scripts']['script_id']:
-                for script_id in cs_element['scripts']['script_id']:
-                    index = cs_element['scripts']['script_id'].index(script_id)
-                    script_body = cs_element['scripts']['script_body'][index]
-                    cs.manage_addProduct['PythonScripts'].manage_addPythonScript(script_id)
-                    cs_code = getattr(cs, script_id)
-                    script_path = os.path.join(cs_path, script_body)
-                    cs_code.write(read_file(script_path))
-            if cs_element['file_id']:
+            if cs_element['script_id']:
+		cs.manage_addProduct['PythonScripts'].manage_addPythonScript(
+                    cs_element['script_id'])
+                cs_code = getattr(cs, cs_element['script_id'])
+                script_path = os.path.join(cs_path, cs_element['script_body'])
+                cs_code.write(read_file(script_path))
+            
+            # adding js file
+	    if cs_element['file_id']:
 		js_filename = os.path.join(cs_path, cs_element['file_body'])
                 cs.manage_addProduct['OFSP'].manage_addDTMLMethod(
                     cs_element['file_id'], cs_element['file_body'], open(js_filename).read())
-            if cs_element['template_id']:
+            
+	    if cs_element['template_id']:
                 cs_code = cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(
                     cs_element['template_id'])
                 template_path = os.path.join(cs_path, cs_element['template_body'])
                 cs_code.pt_edit(read_file(template_path), '')
-            if cs_element['form']:
+	    if cs_element['form']:
                 form_path = os.path.join(cs_path, cs_element['form'])
                 form = ZMIForm('form', 'Parameters form')
                 form.set_xml(read_file(form_path))

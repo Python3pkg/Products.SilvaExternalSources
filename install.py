@@ -103,46 +103,42 @@ def configureAddables(root):
             new_addables.append(a)
     root.set_silva_addables_allowed_in_publication(new_addables)
 
+<<<<<<< .mine
+#def install_codesources2(cs_path, root, cs_fields, product_name=None):
+#    cs_paths = []
+#    cs_files = []
+#    clean_path = cs_path
+#    codesources = os.listdir(clean_path)
+=======
+>>>>>>> .r29502
 
-def install_codesources2(cs_path, root, cs_fields, product_name=None):
-    clean_path = cs_path
-    codesources = os.listdir(clean_path)
-    cs_paths = []
-    cs_files = []
-
-    for cs_name, cs_element in cs_fields.items():
-        root.service_codesources.manage_addProduct[
-            'SilvaExternalSources'].manage_addCodeSource(cs_element['id'],
-                                                         cs_element['title'],
-                                                         cs_element['render_id'])
-        
-        cs = getattr(root.service_codesources, cs_element['id'])
-        if cs_element['desc']:
-            cs.set_description(cs_element['desc'])
-    
-        for cs in codesources:
-            cs_path = os.path.join(clean_path, cs)
-            cs_paths.append(cs_path)
-
-            def visitor(context, path, files):
-                if files:
-                    templates = [f for f in files if f.endswith('.pt')]
-                    templates_path = [os.path.join(path, t) for t in templates]
-                    
-            
-            os.walk(cs_path, visitor, None)
-            
-            for path in cs_paths:
-                os.chdir(path)
-                path = os.getcwd()
-                cs_files.append(os.listdir(path))
-            for cs_list in cs_files:
-                for cs_file in cs_list:
-                    if cs_file.endswith('.pt'):
-                        print cs_file
-                        #import pdb; pdb.set_trace()
-
-    cs_path = clean_path
+#    for cs_name, cs_element in cs_fields.items():
+#        root.service_codesources.manage_addProduct[
+#            'SilvaExternalSources'].manage_addCodeSource(cs_element['id'],
+#                                                         cs_element['title'],
+#                                                         cs_element['render_id'])
+#        
+#        cs = getattr(root.service_codesources, cs_element['id'])
+#        if cs_element['desc']:
+#            cs.set_description(cs_element['desc'])
+#        
+#        for cs in codesources:
+#            cs_path = os.path.join(clean_path, cs)
+#            cs_paths.append(cs_path)
+#
+#            for path, files, dirs in os.walk(cs_path, None, None):
+#                pass
+#            
+#            #for path in cs_paths:
+#            #    os.chdir(path)
+#            #    path = os.getcwd()
+#            #    cs_files.append(os.listdir(path))
+#            #for cs_list in cs_files:
+#            #    for cs_file in cs_list:
+#            #        if cs_file.endswith('.pt'):
+#            #            print cs_file
+#
+#    cs_path = clean_path
 
 def install_codesources(cs_path, root, cs_fields, product_name=None):
     clean_path = cs_path

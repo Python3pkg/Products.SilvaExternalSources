@@ -103,15 +103,12 @@ def configureAddables(root):
             new_addables.append(a)
     root.set_silva_addables_allowed_in_publication(new_addables)
 
-<<<<<<< .mine
 #def install_codesources2(cs_path, root, cs_fields, product_name=None):
 #    cs_paths = []
 #    cs_files = []
 #    clean_path = cs_path
 #    codesources = os.listdir(clean_path)
-=======
->>>>>>> .r29502
-
+#
 #    for cs_name, cs_element in cs_fields.items():
 #        root.service_codesources.manage_addProduct[
 #            'SilvaExternalSources'].manage_addCodeSource(cs_element['id'],

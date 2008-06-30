@@ -3,6 +3,10 @@ from Products.Silva.tests.SilvaTestCase import SilvaFunctionalTestCase
 from Products.Silva.tests.SilvaBrowser import SilvaBrowser
 
 
+CODE_SOURCES = {'cs_google_calendar': {'name': 'Google Calendar', 'script_id': 'google_calendar'},
+                'cs_youtube': {},
+                'cs_multitoc': {},}
+
 class ManagerCodeSourcesTest(SilvaFunctionalTestCase):
     """ test the install_code_sources method
     """
@@ -22,26 +26,25 @@ class ManagerCodeSourcesTest(SilvaFunctionalTestCase):
         sb.click_href_labeled('service_extensions (Silva Product and Extension Configuration)')
         self.failUnless('Configure Silva Extension Products' in sb.browser.contents)
         # install Silva External Sources
-        form = sb.browser.getForm(index=2)
-        form.getControl(name='install:method').click()
+        form = sb.browser.getForm(name="SilvaExternalSources")
+        form.getControl('activate').click()
         self.failUnless('SilvaExternalSources installed' in sb.browser.contents)
         sb.go('http://nohost/root/manage_services')
-        self.failUnless('Silva Code Sources' in sb.browser.contents)
-        sb.click_href_labeled('service_codesources (Silva Code Sources)')
+        self.failUnless('Code Sources' in sb.browser.contents)
+        sb.click_href_labeled('service_codesources (Code Sources)')
         # test existence of core silva codesources
-        self.failUnless('cs_google_calendar' in sb.browser.contents)
-        self.failUnless('cs_youtube' in sb.browser.contents)
-        self.failUnless('multi_toc' in sb.browser.contents)
+        for cs in CODE_SOURCES.keys():
+            self.failUnless(cs in sb.browser.contents)
         # test the cs_google_calendar codesource
         sb.click_href_labeled('cs_google_calendar')
-        self.failUnless('Google Calendar Code Source' in sb.browser.contents)
+        self.failUnless('Google Calendar' in sb.browser.contents)
         script_id = sb.browser.getControl(name='script_id')
-        self.assertEquals(script_id.value, '')
+        self.assertEquals(script_id.value, 'google_calendar_source')
         sb.click_href_labeled('manage contents')
         self.failUnless('HISTORY.txt' in sb.browser.contents)
         self.failUnless('LICENSE.txt' in sb.browser.contents)
         self.failUnless('README.txt' in sb.browser.contents)
-        self.failUnless('google_calendar_source.pt' in sb.browser.contents)
+        self.failUnless('google_calendar_source' in sb.browser.contents)
         self.failUnless('version.txt' in sb.browser.contents)
         sb.browser.goBack()
         sb.click_href_labeled('manage parameters')
@@ -55,14 +58,14 @@ class ManagerCodeSourcesTest(SilvaFunctionalTestCase):
         sb.go('http://nohost/root/service_codesources/manage_main')
         # test the cs_youtube codesource
         sb.click_href_labeled('cs_youtube')
-        self.failUnless('YouTube Code Source' in sb.browser.contents)
+        self.failUnless('YouTube video' in sb.browser.contents)
         script_id = sb.browser.getControl(name='script_id')
-        self.assertEquals(script_id.value, '')
+        self.assertEquals(script_id.value, 'youtube_source')
         sb.click_href_labeled('manage contents')
         self.failUnless('HISTORY.txt' in sb.browser.contents)
         self.failUnless('LICENSE.txt' in sb.browser.contents)
         self.failUnless('README.txt' in sb.browser.contents)
-        self.failUnless('youtube_source.pt' in sb.browser.contents)
+        self.failUnless('youtube_source' in sb.browser.contents)
         self.failUnless('version.txt' in sb.browser.contents)
         sb.browser.goBack()
         sb.click_href_labeled('manage parameters')
@@ -72,16 +75,16 @@ class ManagerCodeSourcesTest(SilvaFunctionalTestCase):
         sb.browser.goBack()
         sb.go('http://nohost/root/service_codesources/manage_main')
         # test the multitoc codesource
-        sb.click_href_labeled('multi_toc')
-        self.failUnless('Multi-TOC' in sb.browser.contents)
+        sb.click_href_labeled('cs_multitoc')
+        self.failUnless('MultiTOC' in sb.browser.contents)
         script_id = sb.browser.getControl(name='script_id')
         self.assertEquals(script_id.value, 'multi_toc')
         sb.click_href_labeled('manage contents')
         self.failUnless('HISTORY.txt' in sb.browser.contents)
         self.failUnless('LICENSE.txt' in sb.browser.contents)
         self.failUnless('README.txt' in sb.browser.contents)
-        self.failUnless('multi_toc.pt' in sb.browser.contents)
-        self.failUnless('sort_tree.py' in sb.browser.contents)
+        self.failUnless('multi_toc' in sb.browser.contents)
+        self.failUnless('sort_tree' in sb.browser.contents)
         self.failUnless('version.txt' in sb.browser.contents)
         sb.browser.goBack()
         sb.click_href_labeled('manage parameters')
@@ -99,8 +102,8 @@ class ManagerCodeSourcesTest(SilvaFunctionalTestCase):
         self.failUnless('sort_order' in sb.browser.contents)
         sb.go('http://nohost/root/service_extensions/manage_editForm')
         # uninstall Silva External Sources
-        form = sb.browser.getForm(index=2)
-        form.getControl(name='uninstall:method').click()
+        form = sb.browser.getForm(name='SilvaExternalSources')
+        form.getControl('deactivate').click()
         self.failUnless('SilvaExternalSources uninstalled' in sb.browser.contents)
         sb.go('http://nohost/root/manage_workspace')
         # click into the Silva instance

@@ -45,8 +45,8 @@ def install(root):
     cs_fields = configure.configuration
     path_join = os.path.join
     _fs_codesources_path = path_join(package_home(globals()), 'CodeSources')
-    #install_codesources(_fs_codesources_path, root, cs_fields)
-    install_codesources2(_fs_codesources_path, root, cs_fields)
+    install_codesources(_fs_codesources_path, root, cs_fields)
+    #install_codesources2(_fs_codesources_path, root, cs_fields)
 
 def uninstall(root):
     cs_fields = configure.configuration

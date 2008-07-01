@@ -1,11 +1,76 @@
+
 import unittest
 from Products.Silva.tests.SilvaTestCase import SilvaFunctionalTestCase
 from Products.Silva.tests.SilvaBrowser import SilvaBrowser
 
 
-CODE_SOURCES = {'cs_google_calendar': {'name': 'Google Calendar', 'script_id': 'google_calendar'},
-                'cs_youtube': {},
-                'cs_multitoc': {},}
+CODE_SOURCES = {'cs_encaptionate':{'name': 'Encaptionated image', 'script_id': 'capsule',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'capsule'],
+                                  'parameters': ['alignment_selector', 'alt_text', 'capsule_style', 'capsule_title', 'caption_text', 'credit_link', 'credit_prefix', 'credit_text', 'creditlink_tooltip', 'image_link', 'image_path', 'link_tooltip', 'link_url']
+                                  },
+                'cs_flash':{'name': 'Flash', 'script_id': 'flash_script',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'flash_script'],
+                                  'parameters': ['params', 'play', 'quality', 'ref', 'width']
+                                  },
+                'cs_flash_source':{'name': 'Flash Source', 'script_id': 'embedder',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'AC_RunActiveContent', 'embedder'],
+                                  'parameters': ['bgcolor', 'height', 'loop', 'quality', 'type', 'url', 'width']
+                                  },
+                'cs_google_calendar': {'name': 'Google Calendar', 'script_id': 'google_calendar_source',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'google_calendar_source'],
+                                  'parameters': ['calendar_height', 'calendar_title', 'calendar_width', 'google_calendar_account', 'google_calendar_type']
+                                  },
+                'cs_google_maps':{'name': 'Code Source Google Maps iFrame', 'script_id': 'google_maps_source',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'google_maps_source', 'iframe_validator'],
+                                  'parameters': ['iframe']
+                                  },
+                'cs_java_applet':{'name': 'Java Applet', 'script_id': 'java_script',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'java_script'],
+                                  'parameters': ['code', 'codebase', 'height', 'params', 'width']
+                                  },
+                'cs_java_plugin':{'name': 'Java Plugin', 'script_id': 'java_script',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'java_script'],
+                                  'parameters': ['archive', 'code', 'codebase', 'height', 'params', 'width']
+                                  },
+                'cs_ms_video':{'name': 'MS Video', 'script_id': 'video_script',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'video_script'],
+                                  'parameters': ['autoplay', 'controller', 'height', 'ref', 'width']
+                                  },
+                'cs_multitoc': {'name': 'MultiTOC', 'script_id': 'multi_toc',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'multi_toc', 'sort_tree'],
+                                  'parameters': ['capsule_title', 'css_class', 'css_style', 'depth', 'display_title', 'filter_meta_types', 'link_title', 'paths', 'public', 'sort_on', 'sort_order']
+                                  },
+                'cs_network_image':{'name': 'Network Image', 'script_id': 'netimage',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'netimage'],
+                                  'parameters': ['alignment_selector', 'alt_text', 'image_height', 'image_location', 'image_width', 'link_tooltip', 'link_url']
+                                  },
+                'cs_portlet_element':{'name': 'Portlet Element', 'script_id': 'portlet_element',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'get_portlet_content', 'portlet_element'],
+                                  'parameters': ['alignment_selector', 'capsule_class', 'capsule_id', 'capsule_style', 'capsule_title', 'document', 'show_title']
+                                  },
+                'cs_quicktime':{'name': 'Quicktime', 'script_id': 'video_script',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'video_script'],
+                                  'parameters': ['autoplay', 'controller', 'height', 'params', 'ref', 'width']
+                                  },
+                'cs_related_info':{'name': 'Related info', 'script_id': 'capsule',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'capsule'],
+                                  'parameters': ['alignment', 'capsule_body', 'capsule_title', 'css_class', 'css_style', 'link_text', 'link_url']
+                                  },
+                'cs_search_field':{'name': 'Search Field', 'script_id': 'layout',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'layout'],
+                                  'parameters': ['default_text', 'find_object', 'width']
+                                  },
+                'cs_youtube': {'name': 'YouTube video', 'script_id': 'youtube_source',
+                                  'contents': ['HISTORY.txt',  'LICENSE.txt',  'README.txt', 'version.txt', 'youtube_source'],
+                                  'parameters': ['youtube_height', 'youtube_url', 'youtube_width']
+                                  }
+                }
+                
+                
+                
+
+
+
 
 class ManagerCodeSourcesTest(SilvaFunctionalTestCase):
     """ test the install_code_sources method
@@ -32,74 +97,39 @@ class ManagerCodeSourcesTest(SilvaFunctionalTestCase):
         sb.go('http://nohost/root/manage_services')
         self.failUnless('Code Sources' in sb.browser.contents)
         sb.click_href_labeled('service_codesources (Code Sources)')
+        self.failUnless('Silva Code Source Service' in sb.browser.contents)
+        
         # test existence of core silva codesources
-        for cs in CODE_SOURCES.keys():
+        
+        for cs in CODE_SOURCES:
+            
             self.failUnless(cs in sb.browser.contents)
-        # test the cs_google_calendar codesource
-        sb.click_href_labeled('cs_google_calendar')
-        self.failUnless('Google Calendar' in sb.browser.contents)
-        script_id = sb.browser.getControl(name='script_id')
-        self.assertEquals(script_id.value, 'google_calendar_source')
-        sb.click_href_labeled('manage contents')
-        self.failUnless('HISTORY.txt' in sb.browser.contents)
-        self.failUnless('LICENSE.txt' in sb.browser.contents)
-        self.failUnless('README.txt' in sb.browser.contents)
-        self.failUnless('google_calendar_source' in sb.browser.contents)
-        self.failUnless('version.txt' in sb.browser.contents)
-        sb.browser.goBack()
-        sb.click_href_labeled('manage parameters')
-        self.failUnless('calendar_background_color' in sb.browser.contents)
-        self.failUnless('calendar_height' in sb.browser.contents)
-        self.failUnless('calendar_title' in sb.browser.contents)
-        self.failUnless('calendar_width' in sb.browser.contents)
-        self.failUnless('google_calendar_account' in sb.browser.contents)
-        self.failUnless('google_calendar_type' in sb.browser.contents)
-        sb.browser.goBack()
-        sb.go('http://nohost/root/service_codesources/manage_main')
-        # test the cs_youtube codesource
-        sb.click_href_labeled('cs_youtube')
-        self.failUnless('YouTube video' in sb.browser.contents)
-        script_id = sb.browser.getControl(name='script_id')
-        self.assertEquals(script_id.value, 'youtube_source')
-        sb.click_href_labeled('manage contents')
-        self.failUnless('HISTORY.txt' in sb.browser.contents)
-        self.failUnless('LICENSE.txt' in sb.browser.contents)
-        self.failUnless('README.txt' in sb.browser.contents)
-        self.failUnless('youtube_source' in sb.browser.contents)
-        self.failUnless('version.txt' in sb.browser.contents)
-        sb.browser.goBack()
-        sb.click_href_labeled('manage parameters')
-        self.failUnless('youtube_height' in sb.browser.contents)
-        self.failUnless('youtube_url' in sb.browser.contents)
-        self.failUnless('youtube_width' in sb.browser.contents)
-        sb.browser.goBack()
-        sb.go('http://nohost/root/service_codesources/manage_main')
-        # test the multitoc codesource
-        sb.click_href_labeled('cs_multitoc')
-        self.failUnless('MultiTOC' in sb.browser.contents)
-        script_id = sb.browser.getControl(name='script_id')
-        self.assertEquals(script_id.value, 'multi_toc')
-        sb.click_href_labeled('manage contents')
-        self.failUnless('HISTORY.txt' in sb.browser.contents)
-        self.failUnless('LICENSE.txt' in sb.browser.contents)
-        self.failUnless('README.txt' in sb.browser.contents)
-        self.failUnless('multi_toc' in sb.browser.contents)
-        self.failUnless('sort_tree' in sb.browser.contents)
-        self.failUnless('version.txt' in sb.browser.contents)
-        sb.browser.goBack()
-        sb.click_href_labeled('manage parameters')
-        self.failUnless('alignment' in sb.browser.contents)
-        self.failUnless('capsule_title' in sb.browser.contents)
-        self.failUnless('css_class' in sb.browser.contents)
-        self.failUnless('css_style' in sb.browser.contents)
-        self.failUnless('depth' in sb.browser.contents)
-        self.failUnless('display_title' in sb.browser.contents)
-        self.failUnless('filter_meta_types' in sb.browser.contents)
-        self.failUnless('link_title' in sb.browser.contents)
-        self.failUnless('paths' in sb.browser.contents)
-        self.failUnless('public' in sb.browser.contents)
-        self.failUnless('sort_on' in sb.browser.contents)
-        self.failUnless('sort_order' in sb.browser.contents)
+            
+            sb.click_href_labeled(cs)
+            
+            cs_script_id = sb.browser.getControl(name='script_id')
+            self.assertEquals(cs_script_id.value, CODE_SOURCES[cs]['script_id'])
+            
+            cs_name = sb.browser.getControl(name='title')
+            self.assertEquals(cs_name.value, CODE_SOURCES[cs]['name'])
+            
+            sb.go('http://nohost/root/service_codesources/%s/parameters/manage_main' % (cs))
+            self.failUnless('Formulator Form' in sb.browser.contents)
+            for parameter in CODE_SOURCES[cs]['parameters']:
+                self.failUnless(parameter in sb.browser.contents)
+            sb.browser.goBack()
+            
+            sb.go('http://nohost/root/service_codesources/%s/manage_main' % (cs))
+            self.failUnless('Silva Code Source' in sb.browser.contents)
+            for content in CODE_SOURCES[cs]['contents']:
+                self.failUnless(content in sb.browser.contents)
+            sb.browser.goBack()
+            
+            
+            sb.browser.goBack()
+            
+            
+        
         sb.go('http://nohost/root/service_extensions/manage_editForm')
         # uninstall Silva External Sources
         form = sb.browser.getForm(name='SilvaExternalSources')
@@ -112,8 +142,27 @@ class ManagerCodeSourcesTest(SilvaFunctionalTestCase):
         # logout
         status, url = sb.click_href_labeled('logout')
         self.assertEquals(status, 401)
-        
+
+
+
+
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ManagerCodeSourcesTest))
     return suite
+
+
+
+
+
+
+
+
+
+
+
+
+
+

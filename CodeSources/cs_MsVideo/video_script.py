@@ -34,20 +34,37 @@ if controller == 'true':
 else:
     embed_controller = '0'
 
-if autoplay== 'true':
+if autoplay == 'true':
     embed_autoplay = '1'
 else:
     embed_autoplay = '0'
 
 return """
 <p class="p">
-<object %s%s classid="clsid:05589FA1-C356-11CE-BF01-00AA0055595A">
-  <param name="src" value="%s" />
-  <param name="autostart" value="%s" />
-  <param name="showcontrols" value="%s" />
-  <embed %s%ssrc="%s"
-    type="application/x-mplayer2" autostart="%s" showcontrols="%s" />
+<object %(width_attr)s%(height_attr)s classid="clsid:05589FA1-C356-11CE-BF01-00AA0055595A">
+  <param name="src" value="%(video_url)s" />
+  <param name="autostart" value="%(embed_autoplay)s" />
+  <param name="showcontrols" value="%(embed_controller)s" />
+  <embed %(width_attr)s%(height_attr)ssrc="%(video_url)s"
+    type="application/x-mplayer2" autostart="%(autoplay)s" showcontrols="%(controller)s" />
 </object>
 </p>
-""" % (width_attr, height_attr, video_url, autoplay, controller,
-       width_attr, height_attr, video_url, embed_autoplay, embed_controller)
+""" % {"width_attr":width_attr, "height_attr":height_attr, "video_url":video_url,
+       "embed_autoplay":embed_autoplay, "embed_controller":embed_controller, "autoplay":autoplay, "controller":controller}
+
+
+#original
+#return """
+#<p class="p">
+#<object %s%s classid="clsid:05589FA1-C356-11CE-BF01-00AA0055595A">
+  #<param name="src" value="%s" />
+  #<param name="autostart" value="%s" />
+  #<param name="showcontrols" value="%s" />
+  #<embed %s%ssrc="%s"
+    #type="application/x-mplayer2" autostart="%s" showcontrols="%s" />
+#</object>
+#</p>
+#""" % (width_attr, height_attr, video_url, embed_autoplay, embed_controller,
+       #width_attr, height_attr, video_url, autoplay, controller)
+
+

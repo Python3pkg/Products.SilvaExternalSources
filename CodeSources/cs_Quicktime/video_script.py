@@ -18,6 +18,17 @@ if height == '':
 else:
     height_attr = 'height="%s" ' % height
 
+if controller == 'True':
+    embed_controller = '1'
+else:
+    embed_controller = '0'
+
+if autoplay== 'True':
+    embed_autoplay = '1'
+else:
+    embed_autoplay = '0'
+
+
 param_tags = ''
 param_attrs = ''
 if params != '':
@@ -51,11 +62,11 @@ return """
   <param name="autoplay" value="%s" />
   <param name="controller" value="%s" />%s
   <comment>
-  <embed %s%sautoplay="%s" controller="%s"
+  <embed %s%s autoplay="%s" controller="%s"
     src="%s"
     pluginspage="http://www.apple.com/quicktime/download/"%s />
   </comment>
 </object>
 </p>
-""" % (width_attr, height_attr, video_url, autoplay, controller, param_tags,
+""" % (width_attr, height_attr, video_url, embed_autoplay, embed_controller, param_tags,
        width_attr, height_attr, autoplay, controller, video_url, param_attrs)

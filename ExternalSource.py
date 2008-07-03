@@ -86,6 +86,9 @@ def ustr(text, enc='utf-8'):
         return unicode(text, enc, 'replace')
     elif type(text) == type(u''):
         return text
+    elif type(text) == type([]):
+        return unicode(
+            str(text).replace("u\'","\'").replace('u\"', '\"'),'utf-8')
     else:
         return unicode(str(text), enc, 'replace')
 
@@ -144,11 +147,7 @@ class ExternalSource(Acquisition.Implicit):
             vtype = 'string'
             if '__type__' in k:
                 k, vtype = k.split('__type__')
-            if vtype == 'list':
-                # XXX evil eval, although Formulator does the same...
-                formcopy[k] = eval(v)
-            else:
-                formcopy[k] = v
+            formcopy[k] = v
 
         for field in self.form().get_fields():
             fieldDescription = ustr(field.values.get('description',''), 'UTF-8')
@@ -228,8 +227,6 @@ class ExternalSource(Acquisition.Implicit):
         xml = ['<sourcedata>']
         for key, value in formresult.items():
             t = type(value).__name__
-            if t == 'list':
-                value = [x.encode('UTF-8') for x in value]
             xml.append('<parameter type="%s" key="%s">%s</parameter>' % 
                         (t, self._xml_escape(ustr(key)), 
                             self._xml_escape(ustr(value))))
@@ -241,8 +238,6 @@ class ExternalSource(Acquisition.Implicit):
         input = input.replace('&', '&amp;')
         input = input.replace('<', '&lt;')
         input = input.replace('>', '&gt;')
-        input = input.replace('"', '&quot;')
-        input = input.replace("'", '&apos;')
         return input
 
     security.declareProtected(SilvaPermissions.AccessContentsInformation, 

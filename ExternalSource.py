@@ -79,6 +79,12 @@ def getSourceForId(context, id):
 
 # helper function copied from 
 # SilvaDocument/widgets/element/doc_element/source/mode_edit/save_helper.py
+def urepr(l):
+    l = repr(l)
+    if l[0] == 'u':
+        l = l[1:]
+    return l
+
 def ustr(text, enc='utf-8'):
     if text is None:
         return u''
@@ -87,8 +93,7 @@ def ustr(text, enc='utf-8'):
     elif type(text) == type(u''):
         return text
     elif type(text) == type([]):
-        return unicode(
-            str(text).replace("u\'","\'").replace('u\"', '\"'),'utf-8')
+        return u"[%s]" % u', '.join([urepr(l) for l in text])
     else:
         return unicode(str(text), enc, 'replace')
 

@@ -79,6 +79,12 @@ def getSourceForId(context, id):
 
 # helper function copied from 
 # SilvaDocument/widgets/element/doc_element/source/mode_edit/save_helper.py
+def urepr(l):
+    l = repr(l)
+    if l[0] == 'u':
+        l = l[1:]
+    return l
+
 def ustr(text, enc='utf-8'):
     if text is None:
         return u''
@@ -86,6 +92,8 @@ def ustr(text, enc='utf-8'):
         return unicode(text, enc, 'replace')
     elif type(text) == type(u''):
         return text
+    elif type(text) == type([]):
+        return u"[%s]" % u', '.join([urepr(l) for l in text])
     else:
         return unicode(str(text), enc, 'replace')
 
@@ -190,11 +198,7 @@ class ExternalSource(Acquisition.Implicit):
             vtype = 'string'
             if '__type__' in k:
                 k, vtype = k.split('__type__')
-            if vtype == 'list':
-                # XXX evil eval, although Formulator does the same...
-                formcopy[k] = eval(v)
-            else:
-                formcopy[k] = v
+            formcopy[k] = v
         
         
         if len(self.form().get_groups()) > 1 and elaborate == True:
@@ -269,8 +273,6 @@ class ExternalSource(Acquisition.Implicit):
         xml.append('<params>')
         for key, value in formresult.items():
             t = type(value).__name__
-            if t == 'list':
-                value = [x.encode('UTF-8') for x in value]
             xml.append('<parameter type="%s" id="%s">%s</parameter>' % 
                         (t, self._xml_escape(ustr(key)), 
                             self._xml_escape(ustr(value))))
@@ -283,8 +285,6 @@ class ExternalSource(Acquisition.Implicit):
         input = input.replace('&', '&amp;')
         input = input.replace('<', '&lt;')
         input = input.replace('>', '&gt;')
-        input = input.replace('"', '&quot;')
-        input = input.replace("'", '&apos;')
         return input
 
     security.declareProtected(SilvaPermissions.AccessContentsInformation, 

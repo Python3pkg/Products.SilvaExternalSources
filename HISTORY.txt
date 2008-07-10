@@ -6,7 +6,9 @@ SilvaExternalSources changes
   1.6:
   
     Features Added:
-
+      - added install_codesources function to install codesources
+        from the file system.
+        
       - added support for 'elaborate' code sources, that show their
         add/edit form in a pop-up instead of in the kupu
         toolbox. Useful when code sources have a large number of

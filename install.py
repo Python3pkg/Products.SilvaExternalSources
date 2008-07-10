@@ -103,61 +103,60 @@ def configureAddables(root):
             new_addables.append(a)
     root.set_silva_addables_allowed_in_publication(new_addables)
 
+def install_pt(path, cs_file, cs):
+    id = cs_file.split('.')[0]
+    cs_code = cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(id)
+    template_path = os.path.join(path, cs_file)
+    cs_code.pt_edit(read_file(template_path), '')
+
+def install_py(path, cs_file, cs):
+    id = cs_file.split('.')[0]
+    cs_code = cs.manage_addProduct['PythonScripts'].manage_addPythonScript(id)
+    cs_code = getattr(cs, id)
+    script_path = os.path.join(path, cs_file)
+    cs_code.write(read_file(script_path))
+
+def install_xml(path, cs_file, cs):
+    form_path = os.path.join(path, cs_file)
+    form = ZMIForm('form', 'Parameters form')
+    form.set_xml(read_file(form_path))
+    cs.set_form(form)
+
+def install_dtml(path, cs_file, cs):
+    id = cs_file.split('.')[0]
+    dtml_path = os.path.join(path, cs_file)
+    cs.manage_addProduct['OFSP'].manage_addDTMLMethod(id, '', open(dtml_path).read())
+
+def install_txt(path, cs_file, cs):
+    id = cs_file.split('.')[0]
+    text_path = os.path.join(path, cs_file)
+    cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(id, '', open(text_path).read())
+
 def install_codesources(cs_path, root, cs_fields, product_name=None):
-    clean_path = cs_path
+    cs_paths = []
+    cs_files = []
     for cs_name, cs_element in cs_fields.items():
         root.service_codesources.manage_addProduct[
             'SilvaExternalSources'].manage_addCodeSource(cs_element['id'],
                                                          cs_element['title'],
                                                          cs_element['render_id'])
-        
         cs = getattr(root.service_codesources, cs_element['id'])
         if cs_element['desc']:
             cs.set_description(cs_element['desc'])
-        cs_path = os.path.join(cs_path, cs_element['dirname'])            
-        if root.service_codesources.hasObject(cs_element['id']):
-            if cs_element['script_id']:
-		cs.manage_addProduct['PythonScripts'].manage_addPythonScript(
-                    cs_element['script_id'])
-                cs_code = getattr(cs, cs_element['script_id'])
-                script_path = os.path.join(cs_path, cs_element['script_body'])
-                cs_code.write(read_file(script_path))
-            
-            # adding js file
-	    if cs_element['file_id']:
-		js_filename = os.path.join(cs_path, cs_element['file_body'])
-                cs.manage_addProduct['OFSP'].manage_addDTMLMethod(
-                    cs_element['file_id'], cs_element['file_body'], open(js_filename).read())
-            
-	    if cs_element['template_id']:
-                cs_code = cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(
-                    cs_element['template_id'])
-                template_path = os.path.join(cs_path, cs_element['template_body'])
-                cs_code.pt_edit(read_file(template_path), '')
-	    if cs_element['form']:
-                form_path = os.path.join(cs_path, cs_element['form'])
-                form = ZMIForm('form', 'Parameters form')
-                form.set_xml(read_file(form_path))
-                cs_code.set_form(form)
-            if cs_element['history']:
-                cs_code = cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(
-                    cs_element['history'])
-                history_path = os.path.join(cs_path, cs_element['history'])
-                cs_code.pt_edit(read_file(history_path), '')
-            if cs_element['license']:
-                cs_code = cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(
-                    cs_element['license'])
-                license_path = os.path.join(cs_path, cs_element['license'])
-                cs_code.pt_edit(read_file(license_path), '')
-            if cs_element['readme']:
-                cs_code = cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(
-                    cs_element['readme'])
-                readme_path = os.path.join(cs_path, cs_element['readme'])
-                cs_code.pt_edit(read_file(readme_path), '')
-            if cs_element['version']:
-                cs_code = cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(
-                    cs_element['version'])
-                version_path = os.path.join(cs_path, cs_element['version'])
-                cs_code.pt_edit(read_file(version_path), '')
-        cs_path = clean_path
-
+        if cs_element['cacheable']:
+            cs.set_is_cacheable(True)
+        if cs_element['elaborate']:
+            cs.set_elaborate(True)
+        path = os.path.join(cs_path, cs_element['id'])
+        cs_files = os.listdir(path)
+        for cs_file in cs_files:
+            if cs_file.endswith('.pt'):
+                install_pt(path, cs_file, cs)
+            if cs_file.endswith('.py'):
+                install_py(path, cs_file, cs)
+            if cs_file.endswith('.xml'):
+                install_xml(path, cs_file, cs)
+            if cs_file.endswith('.js'):
+                install_dtml(path, cs_file, cs)
+            if cs_file.endswith('.txt'):
+                install_txt(path, cs_file, cs)

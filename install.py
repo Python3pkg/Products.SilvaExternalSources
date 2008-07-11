@@ -30,7 +30,8 @@ def is_installed(root):
 def install(root):
     # Hack - refresh SilvaDocument to make it pick up this extension
     root.service_extensions.refresh('SilvaDocument')
-    add_fss_directory_view(root.service_views, 'SilvaExternalSources', __file__, 'views')
+    add_fss_directory_view(
+        root.service_views, 'SilvaExternalSources', __file__, 'views')
     # also register views
     registerViews(root.service_view_registry)
     # metadata registration
@@ -39,7 +40,8 @@ def install(root):
     configureAddables(root)
     # add service_codesources
     if not hasattr(root, 'service_codesources'):
-        root.manage_addProduct['SilvaExternalSources'].manage_addCodeSourceService(
+        root.manage_addProduct[
+            'SilvaExternalSources'].manage_addCodeSourceService(
             'service_codesources', 'Code Sources')
     # add core Silva Code Sources
     cs_fields = configure.configuration

@@ -13,7 +13,7 @@ from Products.Formulator.Form import ZMIForm
 # Silva
 from Products.Silva.install import add_fss_directory_view
 from Products.Silva import roleinfo
-from Products.SilvaExternalSources.CodeSources import configure
+from Products.SilvaExternalSources.codesources import configure
 
 manage_permission = 'Manage CodeSource Services'
 
@@ -30,8 +30,7 @@ def is_installed(root):
 def install(root):
     # Hack - refresh SilvaDocument to make it pick up this extension
     root.service_extensions.refresh('SilvaDocument')
-    add_fss_directory_view(
-        root.service_views, 'SilvaExternalSources', __file__, 'views')
+    add_fss_directory_view(root.service_views, 'SilvaExternalSources', __file__, 'views')
     # also register views
     registerViews(root.service_view_registry)
     # metadata registration
@@ -40,13 +39,12 @@ def install(root):
     configureAddables(root)
     # add service_codesources
     if not hasattr(root, 'service_codesources'):
-        root.manage_addProduct[
-            'SilvaExternalSources'].manage_addCodeSourceService(
+        root.manage_addProduct['SilvaExternalSources'].manage_addCodeSourceService(
             'service_codesources', 'Code Sources')
     # add core Silva Code Sources
     cs_fields = configure.configuration
     path_join = os.path.join
-    _fs_codesources_path = path_join(package_home(globals()), 'CodeSources')
+    _fs_codesources_path = path_join(package_home(globals()), 'codesources')
     install_codesources(_fs_codesources_path, root, cs_fields)
 
 def uninstall(root):

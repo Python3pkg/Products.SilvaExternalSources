@@ -3,6 +3,9 @@ See also LICENSE.txt
 
 Google Maps iframe Code Source changes
 
+0.3
+    - updated validation to not include specific .domain
+
 0.2
     - Added validation for Google maps.
 

@@ -45,7 +45,7 @@ if stdigest != wanted_stdigest:
 # Check that all urls link to maps.google.com
 for key, value in zip(keys, values):
     if key.endswith('src=') or key.endswith('href='):
-        if not (value.startswith('http://maps.google.com/') or value.startswith('http://www.google.com/maps')):
+        if not (value.startswith('http://maps.google.') or value.startswith('http://www.google.')):
             return False
 
 return True

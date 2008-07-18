@@ -1,6 +1,3 @@
-# XXX this conf needs settings for "Source is cachable" and "Source is elaborate".
-# Both cs_YouTube and cs_GoogleCalendar are cachable.
-
 configuration = {
     'cs_you_tube': {
         'id': 'cs_you_tube',

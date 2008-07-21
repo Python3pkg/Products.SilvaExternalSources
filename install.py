@@ -134,28 +134,28 @@ def install_txt(path, cs_file, cs):
 def install_codesources(cs_path, root, cs_fields, product_name=None):
      cs_paths = []
      cs_files = []
-    for cs_name, cs_element in cs_fields.items():
-        root.service_codesources.manage_addProduct[
-            'SilvaExternalSources'].manage_addCodeSource(cs_element['id'],
-                                                         cs_element['title'],
-                                                         cs_element['render_id'])
-        cs = getattr(root.service_codesources, cs_element['id'])
-        if cs_element['desc']:
-            cs.set_description(cs_element['desc'])
-        if cs_element['cacheable']:
-            cs.set_is_cacheable(True)
-        if cs_element['elaborate']:
-            cs.set_elaborate(True)
-        path = os.path.join(cs_path, cs_element['id'])
-        cs_files = os.listdir(path)
-        for cs_file in cs_files:
-            if cs_file.endswith('.pt'):
-                install_pt(path, cs_file, cs)
-            if cs_file.endswith('.py'):
-                install_py(path, cs_file, cs)
-            if cs_file.endswith('.xml'):
-                install_xml(path, cs_file, cs)
-            if cs_file.endswith('.js'):
-                install_dtml(path, cs_file, cs)
-            if cs_file.endswith('.txt'):
-                install_txt(path, cs_file, cs)
+     for cs_name, cs_element in cs_fields.items():
+         root.service_codesources.manage_addProduct[
+             'SilvaExternalSources'].manage_addCodeSource(cs_element['id'],
+                                                          cs_element['title'],
+                                                          cs_element['render_id'])
+         cs = getattr(root.service_codesources, cs_element['id'])
+         if cs_element['desc']:
+             cs.set_description(cs_element['desc'])
+         if cs_element['cacheable']:
+             cs.set_is_cacheable(True)
+         if cs_element['elaborate']:
+             cs.set_elaborate(True)
+         path = os.path.join(cs_path, cs_element['id'])
+         cs_files = os.listdir(path)
+         for cs_file in cs_files:
+             if cs_file.endswith('.pt'):
+                 install_pt(path, cs_file, cs)
+             if cs_file.endswith('.py'):
+                 install_py(path, cs_file, cs)
+             if cs_file.endswith('.xml'):
+                 install_xml(path, cs_file, cs)
+             if cs_file.endswith('.js'):
+                 install_dtml(path, cs_file, cs)
+             if cs_file.endswith('.txt'):
+                 install_txt(path, cs_file, cs)

@@ -1,4 +1,4 @@
-# Dutch translation for silva-external-sources
+# Russian translation for silva-external-sources
 # Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
 # This file is distributed under the same license as the silva-external-sources package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: silva-external-sources\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: Tue Jul 29 12:00:30 2008\n"
-"PO-Revision-Date: 2007-01-10 13:06+0000\n"
-"Last-Translator: thisfred <eric@infrae.com>\n"
-"Language-Team: Dutch <nl@li.org>\n"
+"PO-Revision-Date: 2007-11-10 12:55+0000\n"
+"Last-Translator: Sergei Zivukov <Unknown>\n"
+"Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,43 +19,43 @@ msgstr ""
 
 #: /CSVSource.py:216 /CodeSource.py:135 /SQLSource.py:152
 msgid "Unknown encoding ${enc}, not changed! "
-msgstr "Onbekende encodering ${enc}, niet gewijzigd! "
+msgstr "Неизвестное шифрование ${enc}, не изменено! "
 
 #: /CSVSource.py:222
 msgid "Data encoding changed to: ${enc}. "
-msgstr "Gegevens-encodering gewijzigd naar: ${enc}. "
+msgstr "Шифрование данных изменено на: ${enc}. "
 
 #: /CSVSource.py:234 /CodeSource.py:148 /SQLSource.py:166
 msgid "Title changed. "
-msgstr "Titel gewijzigd. "
+msgstr "Заголовок изменен. "
 
 #: /CSVSource.py:243 /CodeSource.py:163 /SQLSource.py:187
 msgid "Description changed. "
-msgstr "Beschrijving gewijzigd. "
+msgstr "Описание изменено. "
 
 #: /CSVSource.py:247 /CodeSource.py:168 /SQLSource.py:192
 msgid "Cacheability setting changed. "
-msgstr "Cache-instelling gewijzigd. "
+msgstr ""
 
 #: /CSVSource.py:251
 msgid "Data updated. "
-msgstr "Gegevens bijgewerkt. "
+msgstr "Данные обновлены. "
 
 #: /CSVSource.py:266
 msgid "Raw data updated. "
-msgstr "Ruwe gegevens bijgewerkt. "
+msgstr "Сырые данные обновлены. "
 
 #: /CodeSource.py:153
 msgid "Script id changed. "
-msgstr "Script id gewijzigd. "
+msgstr "Индификатор скрипта изменен. "
 
 #: /CodeSource.py:180
 msgid "<b>Warning</b>: "
-msgstr "<b>Waarschuwing</b>: "
+msgstr "<b>Внимание</b>: "
 
 #: /CodeSource.py:183
 msgid "no script id specified! "
-msgstr "geen script id opgegeven! "
+msgstr "индификатор скрипта не определен! "
 
 #: /CodeSource.py:185
 msgid ""
@@ -68,40 +68,38 @@ msgid ""
 "This Code Source has no adjustable settings. Click a button to insert or "
 "remove it."
 msgstr ""
-"Deze Code Source heeft geen wijzigbare instellingen. Klik een knop om in te "
-"voegen of te verwijderen."
 
 #: /SQLSource.py:158
 msgid "Data encoding changed. "
-msgstr "Gegevens-encodering gewijzigd. "
+msgstr ""
 
 #: /SQLSource.py:171
 msgid "Connection id changed. "
-msgstr "Connection id gewijzigd. "
+msgstr ""
 
 #: /SQLSource.py:177
 msgid "SQL statement changed. "
-msgstr "SQL statement gewijzigd. "
+msgstr ""
 
 #: /SQLSource.py:197
 msgid "Layout object id changed. "
-msgstr "Layout object id gewijzigd. "
+msgstr ""
 
 #: /SQLSource.py:202
 msgid "Table rendering pagetemplate reset to default layout. "
-msgstr "Tabelweergave pagetemplate teruggezet op standaard layout. "
+msgstr ""
 
 #: /SQLSource.py:207
 msgid "Parameters form reset to default. "
-msgstr "Parameters formulier teruggezet op standaardwaarde. "
+msgstr ""
 
 #: /views/add/CSVSource/add_submit.py:50
 msgid "Unknown encoding ${enc}. CSVSource not added! "
-msgstr "Obekende encodering ${enc}. CSVSource niet toegevoegd! "
+msgstr ""
 
 #: /views/add/CSVSource/add_submit.py:58
 msgid "Problem ${exception}"
-msgstr "Probleem ${exception}"
+msgstr ""
 
 #: /views/add/CSVSource/add_submit.py:73
 msgid "metatype"
@@ -110,74 +108,74 @@ msgstr ""
 #: /views/add/CSVSource/form.form:22
 #: /views/edit/Asset/CSVSource/upload_form.form:23
 msgid "File to upload as source data."
-msgstr "Bestand om als brongegevens te uploaden."
+msgstr "Файл загружен как источник данных."
 
 #: /views/add/CSVSource/form.form:29
 #: /views/edit/Asset/CSVSource/upload_form.form:30
 msgid "csv file"
-msgstr "csv bestand"
+msgstr "csv-файл"
 
 #: /views/add/CSVSource/form.form:49
 msgid "id"
-msgstr "id"
+msgstr "идентификатор"
 
 #: /views/add/CSVSource/form.form:51
 msgid ""
 "No spaces or special characters besides &#8216;_&#8217; or &#8216;-&#8217; "
 "or &#8216;.&#8217;"
 msgstr ""
-"Geen spaties of speciale tekens behalve &#8216;_&#8217; of &#8216;-&#8217; "
-"of &#8216;.&#8217;"
+"Без пробелов и специальных символов кроме &#8216;_&#8217; или &#8216;-"
+"&#8217; или &#8216;.&#8217;"
 
 #: /views/add/CSVSource/form.form:70 /views/edit/Asset/CSVSource/form.form:30
 msgid "title"
-msgstr "titel"
+msgstr "заголовок"
 
 #: /views/add/CSVSource/form.form:84
 #: /views/edit/Asset/CSVSource/charset_form.form:23
 msgid "Character coding of the source data."
-msgstr "Teken-encodering van de brongegevens."
+msgstr "Кодирование знаков исходных данных."
 
 #: /views/add/CSVSource/form.form:94
 msgid "character coding"
-msgstr "teken-encodering"
+msgstr "кодирование знаков"
 
 #: /views/edit/Asset/CSVSource/charset_form.form:33
 msgid "coding"
-msgstr "encodering"
+msgstr "кодирование"
 
 #: /views/edit/Asset/CSVSource/charset_submit.py:25
 msgid "Unknown encoding ${enc}. Character encoding not saved! "
-msgstr "Onbekende encodering ${enc}. Teken-encodering niet opgeslagen! "
+msgstr "Неизвестное шифрование ${enc}. Зашифровка знаков не сохранена! "
 
 #: /views/edit/Asset/CSVSource/charset_submit.py:32
 msgid "Encoding set to: ${enc} "
-msgstr "Encodering ingesteld op: ${enc} "
+msgstr "Расшифровка установлена на: ${enc} "
 
 #: /views/edit/Asset/CSVSource/form.form:32
 #: /views/edit/Asset/CSVSource/form.form:59
 msgid "Optional, but useful."
-msgstr "Optioneel, maar nuttig."
+msgstr "Опционально"
 
 #: /views/edit/Asset/CSVSource/form.form:57
 msgid "description"
-msgstr "beschrijving"
+msgstr "описание"
 
 #: /views/edit/Asset/CSVSource/rawdata_form.form:32
 msgid "data"
-msgstr "gegevens"
+msgstr "данные"
 
 #: /views/edit/Asset/CSVSource/rawdata_submit.py:24
 msgid "Raw data set. "
-msgstr "Ruwe gegevens ingesteld. "
+msgstr "Сырые данные установлены. "
 
 #: /views/edit/Asset/CSVSource/submit.py:27
 msgid "Title and Description changed."
-msgstr "Titel en beschrijving gewijzigd."
+msgstr "Заголовок и описание изменены."
 
 #: /views/edit/Asset/CSVSource/tab_subscriptions.pt:29
 msgid "manage subscriptions for &#xab;${title}&#xbb;"
-msgstr "abonnementen voor &#xab;${title}&#xbb beheren;"
+msgstr "менеджер подписок для &#xab;${title}&#xbb;"
 
 #: /views/edit/Asset/CSVSource/tab_subscriptions.pt:35
 msgid ""
@@ -185,53 +183,40 @@ msgid ""
 "subscribe to a . Only documents that contain textual content, or folders "
 "that contain them, can be subscribed to."
 msgstr ""
-"Dit scherm heeft geen instellingen, want het is niet mogelijk een abonnement "
-"te nemen op een . Alleen op documenten met tekstuele inhoud, of de mappen "
-"die hen bevatten, kan een abonnement worden genomen."
+"Этот экран не имеет настроек, потому что невозможно подписаться на . Только "
+"документы, которые содержат текстовые данные, или папки, содержащие их, "
+"могут быть подписаны."
 
 #: /views/edit/Asset/CSVSource/upload_submit.py:25
 msgid "Data uploaded. "
-msgstr "Gegevens ge-upload. "
-
-#~ msgid ""
-#~ "This code source does not contain an callable object with id \"${id}\"! "
-#~ msgstr "Deze code source bevat geen aanroepbaar object met id \"${id}\"! "
-
-#~ msgid "Added ${metatype} ${id}."
-#~ msgstr "${metatype} ${id} toegevoegd."
-
-#~ msgid "The title might be publicly visible."
-#~ msgstr "De titel zou publiek getoond kunnen worden."
+msgstr "Данные загружены. "
 
 #~ msgid "access key: alt-u"
-#~ msgstr "sneltoets: alt-u"
+#~ msgstr "ключ доступа: alt-u"
 
 #~ msgid "upload"
-#~ msgstr "uploaden"
+#~ msgstr "загрузить"
 
 #~ msgid "comma separated value data"
-#~ msgstr "komma gescheiden waarde-gegevens"
-
-#~ msgid "change data"
-#~ msgstr "gegevens wijzigen"
+#~ msgstr "значения, разделяемые данные запятыми"
 
 #~ msgid "access key: alt-c"
-#~ msgstr "sneltoets: alt-c"
+#~ msgstr "ключ доступа: alt-c"
 
 #~ msgid "element"
-#~ msgstr "element"
+#~ msgstr "элемент"
 
 #~ msgid "content"
-#~ msgstr "inhoud"
+#~ msgstr "содержимое"
 
 #~ msgid "note"
-#~ msgstr "notitie"
+#~ msgstr "Замечание"
 
 #~ msgid "set encoding"
-#~ msgstr "encodering instellen"
+#~ msgstr "настройки шифрования"
 
 #~ msgid "access key: alt-e"
-#~ msgstr "sneltoets: alt-e"
+#~ msgstr "ключ доступа: alt-e"
 
 #~ msgid "csv source upload"
-#~ msgstr "csv source upload"
+#~ msgstr "Источник CSV загружен"

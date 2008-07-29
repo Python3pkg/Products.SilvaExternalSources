@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Silva\n"
 "Report-Msgid-Bugs-To:  \n"
-"POT-Creation-Date: Tue Jul 29 11:24:03 2008\n"
-"PO-Revision-Date: 2008-03-16 18:06+0000\n"
+"POT-Creation-Date: Tue Jul 29 12:00:30 2008\n"
+"PO-Revision-Date: 2008-06-05 12:26+0000\n"
 "Last-Translator: Sylvain Viollon <sylvain@infrae.com>\n"
 "Language-Team: Silva i18n team <walco@infrae.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-05-07 12:48+0000\n"
+"X-Launchpad-Export-Date: 2008-07-29 09:32+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 "Language-code: fr\n"
 "Domain: silva\n"
@@ -57,7 +57,6 @@ msgstr "<b>Attentiion</b>: "
 msgid "no script id specified! "
 msgstr "aucun script spécifié ! "
 
-# Default: "id"
 #: /CodeSource.py:185
 msgid ""
 "This code source does not contain an callable object with                    "
@@ -69,22 +68,23 @@ msgid ""
 "This Code Source has no adjustable settings. Click a button to insert or "
 "remove it."
 msgstr ""
+"Ce code source n'est pas configurable. Cliquez pour l'ajouter ou l'enlever."
 
 #: /SQLSource.py:158
 msgid "Data encoding changed. "
-msgstr "Données Encodage modifiées "
+msgstr "Données d'encodage modifiées "
 
 #: /SQLSource.py:171
 msgid "Connection id changed. "
-msgstr "Connection id modifiée. "
+msgstr "Identifiant de connexion modifié. "
 
 #: /SQLSource.py:177
 msgid "SQL statement changed. "
-msgstr "Déclaration SQL modifiée "
+msgstr "Déclaration SQL modifiée. "
 
 #: /SQLSource.py:197
 msgid "Layout object id changed. "
-msgstr "iId objet rendu modifiée "
+msgstr "Identifiant de l'objet de rendu modifié. "
 
 #: /SQLSource.py:202
 msgid "Table rendering pagetemplate reset to default layout. "
@@ -102,7 +102,6 @@ msgstr "Encodage ${enc} inconnu. CSVSource non ajouté "
 msgid "Problem ${exception}"
 msgstr "Anomalie ${exception}"
 
-# Default: "id"
 #: /views/add/CSVSource/add_submit.py:73
 msgid "metatype"
 msgstr ""
@@ -144,7 +143,7 @@ msgstr "encodage des caractères"
 
 #: /views/edit/Asset/CSVSource/charset_form.form:33
 msgid "coding"
-msgstr "en train de coder"
+msgstr "encodage"
 
 #: /views/edit/Asset/CSVSource/charset_submit.py:25
 msgid "Unknown encoding ${enc}. Character encoding not saved! "
@@ -190,6 +189,17 @@ msgstr ""
 msgid "Data uploaded. "
 msgstr "Données téléchargées "
 
+#~ msgid ""
+#~ "This code source does not contain an callable object with id \"${id}\"! "
+#~ msgstr ""
+#~ "Ce code source ne contient pas d'objet appelable avec id \"${id}\"! "
+
+#~ msgid "Added ${metatype} ${id}."
+#~ msgstr "${metatype} ${id} ajouté"
+
+#~ msgid "The title might be publicly visible."
+#~ msgstr "Le titre peut devenir visible au public"
+
 #~ msgid "access key: alt-u"
 #~ msgstr "racoourci: alt-u"
 
@@ -222,14 +232,3 @@ msgstr "Données téléchargées "
 
 #~ msgid "csv source upload"
 #~ msgstr "télécharger source csv"
-
-#~ msgid ""
-#~ "This code source does not contain an callable object with id \"${id}\"! "
-#~ msgstr ""
-#~ "Ce code source ne contient pas d'objet appelable avec id \"${id}\"! "
-
-#~ msgid "Added ${metatype} ${id}."
-#~ msgstr "${metatype} ${id} ajouté"
-
-#~ msgid "The title might be publicly visible."
-#~ msgstr "Le titre peut devenir visible au public"

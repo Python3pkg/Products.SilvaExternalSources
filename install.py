@@ -44,11 +44,11 @@ def install(root):
     # add core Silva Code Sources
     cs_fields = configure.configuration
     path_join = os.path.join
-    _fs_codesources_path = path_join(package_home(globals()), 'CodeSources')
+    _fs_codesources_path = path_join(package_home(globals()), 'codesources')
     install_codesources(_fs_codesources_path, root, cs_fields)
 
 def uninstall(root):
-    cs_fields = configure.configuration
+    g1 = configure.configuration
     unregisterViews(root.service_view_registry)
     if not hasattr(root, 'service_codesources'):
         root.service_views.manage_delObjects(['SilvaExternalSources'])
@@ -147,6 +147,7 @@ def install_codesources(cs_path, root, cs_fields, product_name=None):
          if cs_element['elaborate']:
              cs.set_elaborate(True)
          path = os.path.join(cs_path, cs_element['id'])
+         import pdb; pdb.set_trace()
          cs_files = os.listdir(path)
          for cs_file in cs_files:
              if cs_file.endswith('.pt'):

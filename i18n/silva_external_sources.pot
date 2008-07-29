@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: SilvaExternalSources trunk"
-"POT-Creation-Date: Wed May  7 14:52:57 2008\n"
+"POT-Creation-Date: Tue Jul 29 11:24:03 2008\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Silva Translators <eric+i18n@infrae.com>\n"
@@ -10,25 +10,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generated-By: zope/app/translation_files/extract.py\n"
 
-#: /CSVSource.py:214
+#: /CSVSource.py:216
 #: /CodeSource.py:135
 #: /SQLSource.py:152
 # Default: "enc"
 msgid "Unknown encoding ${enc}, not changed! "
 msgstr ""
 
-#: /CSVSource.py:220
+#: /CSVSource.py:222
 # Default: "enc"
 msgid "Data encoding changed to: ${enc}. "
 msgstr ""
 
-#: /CSVSource.py:232
+#: /CSVSource.py:234
 #: /CodeSource.py:148
 #: /SQLSource.py:166
 msgid "Title changed. "
 msgstr ""
 
-#: /CSVSource.py:242
+#: /CSVSource.py:243
 #: /CodeSource.py:163
 #: /SQLSource.py:187
 msgid "Description changed. "
@@ -40,7 +40,7 @@ msgstr ""
 msgid "Cacheability setting changed. "
 msgstr ""
 
-#: /CSVSource.py:252
+#: /CSVSource.py:251
 msgid "Data updated. "
 msgstr ""
 
@@ -65,7 +65,8 @@ msgstr ""
 msgid "This code source does not contain an callable object with                    id \"${id}\"! "
 msgstr ""
 
-#: /ExternalSource.py:188
+#: /ExternalSource.py:212
+#: /ExternalSource.py:224
 msgid "This Code Source has no adjustable settings. Click a button to insert or remove it."
 msgstr ""
 
@@ -136,6 +137,10 @@ msgstr ""
 msgid "Character coding of the source data."
 msgstr ""
 
+#: /views/add/CSVSource/form.form:94
+msgid "character coding"
+msgstr ""
+
 #: /views/edit/Asset/CSVSource/charset_form.form:33
 msgid "coding"
 msgstr ""
@@ -148,60 +153,6 @@ msgstr ""
 #: /views/edit/Asset/CSVSource/charset_submit.py:32
 # Default: "enc"
 msgid "Encoding set to: ${enc} "
-msgstr ""
-
-#: /views/edit/Asset/CSVSource/edit.pt:141
-msgid "access key: alt-u"
-msgstr ""
-
-#: /views/edit/Asset/CSVSource/edit.pt:141
-msgid "upload"
-msgstr ""
-
-#: /views/edit/Asset/CSVSource/edit.pt:168
-msgid "comma separated value data"
-msgstr ""
-
-#: /views/edit/Asset/CSVSource/edit.pt:204
-msgid "change data"
-msgstr ""
-
-#: /views/edit/Asset/CSVSource/edit.pt:204
-msgid "access key: alt-c"
-msgstr ""
-
-#: /views/edit/Asset/CSVSource/edit.pt:29
-#: /views/add/CSVSource/form.form:94
-msgid "character coding"
-msgstr ""
-
-#: /views/edit/Asset/CSVSource/edit.pt:37
-#: /views/edit/Asset/CSVSource/edit.pt:106
-#: /views/edit/Asset/CSVSource/edit.pt:176
-msgid "element"
-msgstr ""
-
-#: /views/edit/Asset/CSVSource/edit.pt:42
-#: /views/edit/Asset/CSVSource/edit.pt:111
-#: /views/edit/Asset/CSVSource/edit.pt:181
-msgid "content"
-msgstr ""
-
-#: /views/edit/Asset/CSVSource/edit.pt:45
-#: /views/edit/Asset/CSVSource/edit.pt:114
-msgid "note"
-msgstr ""
-
-#: /views/edit/Asset/CSVSource/edit.pt:72
-msgid "set encoding"
-msgstr ""
-
-#: /views/edit/Asset/CSVSource/edit.pt:72
-msgid "access key: alt-e"
-msgstr ""
-
-#: /views/edit/Asset/CSVSource/edit.pt:98
-msgid "csv source upload"
 msgstr ""
 
 #: /views/edit/Asset/CSVSource/form.form:32

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Silva\n"
 "Report-Msgid-Bugs-To:  \n"
-"POT-Creation-Date: Wed May  7 14:52:57 2008\n"
+"POT-Creation-Date: Tue Jul 29 11:24:03 2008\n"
 "PO-Revision-Date: 2008-03-16 18:06+0000\n"
 "Last-Translator: Sylvain Viollon <sylvain@infrae.com>\n"
 "Language-Team: Silva i18n team <walco@infrae.com>\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Preferred-encodings: utf-8 latin1\n"
 "Generated-By: zope/app/translation_files/extract.py\n"
 
-#: /CSVSource.py:214 /CodeSource.py:135 /SQLSource.py:152
+#: /CSVSource.py:216 /CodeSource.py:135 /SQLSource.py:152
 msgid "Unknown encoding ${enc}, not changed! "
 msgstr "encodage inconnu ${enc}, non changé "
 
-#: /CSVSource.py:220
+#: /CSVSource.py:222
 msgid "Data encoding changed to: ${enc}. "
 msgstr "Données d'encodage changées a  ${enc}. "
 
-#: /CSVSource.py:232 /CodeSource.py:148 /SQLSource.py:166
+#: /CSVSource.py:234 /CodeSource.py:148 /SQLSource.py:166
 msgid "Title changed. "
 msgstr "Titre changé "
 
-#: /CSVSource.py:242 /CodeSource.py:163 /SQLSource.py:187
+#: /CSVSource.py:243 /CodeSource.py:163 /SQLSource.py:187
 msgid "Description changed. "
 msgstr "Description changée "
 
@@ -37,7 +37,7 @@ msgstr "Description changée "
 msgid "Cacheability setting changed. "
 msgstr "Paramètres de cache modifiés "
 
-#: /CSVSource.py:252
+#: /CSVSource.py:251
 msgid "Data updated. "
 msgstr "Données mises à jour "
 
@@ -64,7 +64,7 @@ msgid ""
 "id \"${id}\"! "
 msgstr ""
 
-#: /ExternalSource.py:188
+#: /ExternalSource.py:212 /ExternalSource.py:224
 msgid ""
 "This Code Source has no adjustable settings. Click a button to insert or "
 "remove it."
@@ -138,6 +138,10 @@ msgstr "titre"
 msgid "Character coding of the source data."
 msgstr "Encodage des caractères de la source des données"
 
+#: /views/add/CSVSource/form.form:94
+msgid "character coding"
+msgstr "encodage des caractères"
+
 #: /views/edit/Asset/CSVSource/charset_form.form:33
 msgid "coding"
 msgstr "en train de coder"
@@ -149,59 +153,6 @@ msgstr "Encodage ${enc} inconnu. Encodage des caractères non sauvegardé "
 #: /views/edit/Asset/CSVSource/charset_submit.py:32
 msgid "Encoding set to: ${enc} "
 msgstr "Codage mis à ${enc} "
-
-#: /views/edit/Asset/CSVSource/edit.pt:141
-msgid "access key: alt-u"
-msgstr "racoourci: alt-u"
-
-#: /views/edit/Asset/CSVSource/edit.pt:141
-msgid "upload"
-msgstr "envoyer"
-
-#: /views/edit/Asset/CSVSource/edit.pt:168
-msgid "comma separated value data"
-msgstr "valeurs données séparées par virgule"
-
-#: /views/edit/Asset/CSVSource/edit.pt:204
-msgid "change data"
-msgstr "modifier données"
-
-#: /views/edit/Asset/CSVSource/edit.pt:204
-msgid "access key: alt-c"
-msgstr "raccourci: alt-c"
-
-#: /views/edit/Asset/CSVSource/edit.pt:29 /views/add/CSVSource/form.form:94
-msgid "character coding"
-msgstr "encodage des caractères"
-
-#: /views/edit/Asset/CSVSource/edit.pt:37
-#: /views/edit/Asset/CSVSource/edit.pt:106
-#: /views/edit/Asset/CSVSource/edit.pt:176
-msgid "element"
-msgstr "élément"
-
-#: /views/edit/Asset/CSVSource/edit.pt:42
-#: /views/edit/Asset/CSVSource/edit.pt:111
-#: /views/edit/Asset/CSVSource/edit.pt:181
-msgid "content"
-msgstr "contenus"
-
-#: /views/edit/Asset/CSVSource/edit.pt:45
-#: /views/edit/Asset/CSVSource/edit.pt:114
-msgid "note"
-msgstr "note"
-
-#: /views/edit/Asset/CSVSource/edit.pt:72
-msgid "set encoding"
-msgstr "entrez codage"
-
-#: /views/edit/Asset/CSVSource/edit.pt:72
-msgid "access key: alt-e"
-msgstr "raccourci: alt-e"
-
-#: /views/edit/Asset/CSVSource/edit.pt:98
-msgid "csv source upload"
-msgstr "télécharger source csv"
 
 #: /views/edit/Asset/CSVSource/form.form:32
 #: /views/edit/Asset/CSVSource/form.form:59
@@ -238,6 +189,39 @@ msgstr ""
 #: /views/edit/Asset/CSVSource/upload_submit.py:25
 msgid "Data uploaded. "
 msgstr "Données téléchargées "
+
+#~ msgid "access key: alt-u"
+#~ msgstr "racoourci: alt-u"
+
+#~ msgid "upload"
+#~ msgstr "envoyer"
+
+#~ msgid "comma separated value data"
+#~ msgstr "valeurs données séparées par virgule"
+
+#~ msgid "change data"
+#~ msgstr "modifier données"
+
+#~ msgid "access key: alt-c"
+#~ msgstr "raccourci: alt-c"
+
+#~ msgid "element"
+#~ msgstr "élément"
+
+#~ msgid "content"
+#~ msgstr "contenus"
+
+#~ msgid "note"
+#~ msgstr "note"
+
+#~ msgid "set encoding"
+#~ msgstr "entrez codage"
+
+#~ msgid "access key: alt-e"
+#~ msgstr "raccourci: alt-e"
+
+#~ msgid "csv source upload"
+#~ msgstr "télécharger source csv"
 
 #~ msgid ""
 #~ "This code source does not contain an callable object with id \"${id}\"! "

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: silva-external-sources\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: Wed May  7 14:52:57 2008\n"
+"POT-Creation-Date: Tue Jul 29 11:24:03 2008\n"
 "PO-Revision-Date: 2007-01-10 13:06+0000\n"
 "Last-Translator: thisfred <eric@infrae.com>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -17,19 +17,19 @@ msgstr ""
 "X-Launchpad-Export-Date: 2008-05-07 12:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: /CSVSource.py:214 /CodeSource.py:135 /SQLSource.py:152
+#: /CSVSource.py:216 /CodeSource.py:135 /SQLSource.py:152
 msgid "Unknown encoding ${enc}, not changed! "
 msgstr "Onbekende encodering ${enc}, niet gewijzigd! "
 
-#: /CSVSource.py:220
+#: /CSVSource.py:222
 msgid "Data encoding changed to: ${enc}. "
 msgstr "Gegevens-encodering gewijzigd naar: ${enc}. "
 
-#: /CSVSource.py:232 /CodeSource.py:148 /SQLSource.py:166
+#: /CSVSource.py:234 /CodeSource.py:148 /SQLSource.py:166
 msgid "Title changed. "
 msgstr "Titel gewijzigd. "
 
-#: /CSVSource.py:242 /CodeSource.py:163 /SQLSource.py:187
+#: /CSVSource.py:243 /CodeSource.py:163 /SQLSource.py:187
 msgid "Description changed. "
 msgstr "Beschrijving gewijzigd. "
 
@@ -37,7 +37,7 @@ msgstr "Beschrijving gewijzigd. "
 msgid "Cacheability setting changed. "
 msgstr "Cache-instelling gewijzigd. "
 
-#: /CSVSource.py:252
+#: /CSVSource.py:251
 msgid "Data updated. "
 msgstr "Gegevens bijgewerkt. "
 
@@ -64,7 +64,7 @@ msgid ""
 "id \"${id}\"! "
 msgstr ""
 
-#: /ExternalSource.py:188
+#: /ExternalSource.py:212 /ExternalSource.py:224
 msgid ""
 "This Code Source has no adjustable settings. Click a button to insert or "
 "remove it."
@@ -140,6 +140,10 @@ msgstr "titel"
 msgid "Character coding of the source data."
 msgstr "Teken-encodering van de brongegevens."
 
+#: /views/add/CSVSource/form.form:94
+msgid "character coding"
+msgstr "teken-encodering"
+
 #: /views/edit/Asset/CSVSource/charset_form.form:33
 msgid "coding"
 msgstr "encodering"
@@ -151,59 +155,6 @@ msgstr "Onbekende encodering ${enc}. Teken-encodering niet opgeslagen! "
 #: /views/edit/Asset/CSVSource/charset_submit.py:32
 msgid "Encoding set to: ${enc} "
 msgstr "Encodering ingesteld op: ${enc} "
-
-#: /views/edit/Asset/CSVSource/edit.pt:141
-msgid "access key: alt-u"
-msgstr "sneltoets: alt-u"
-
-#: /views/edit/Asset/CSVSource/edit.pt:141
-msgid "upload"
-msgstr "uploaden"
-
-#: /views/edit/Asset/CSVSource/edit.pt:168
-msgid "comma separated value data"
-msgstr "komma gescheiden waarde-gegevens"
-
-#: /views/edit/Asset/CSVSource/edit.pt:204
-msgid "change data"
-msgstr "gegevens wijzigen"
-
-#: /views/edit/Asset/CSVSource/edit.pt:204
-msgid "access key: alt-c"
-msgstr "sneltoets: alt-c"
-
-#: /views/edit/Asset/CSVSource/edit.pt:29 /views/add/CSVSource/form.form:94
-msgid "character coding"
-msgstr "teken-encodering"
-
-#: /views/edit/Asset/CSVSource/edit.pt:37
-#: /views/edit/Asset/CSVSource/edit.pt:106
-#: /views/edit/Asset/CSVSource/edit.pt:176
-msgid "element"
-msgstr "element"
-
-#: /views/edit/Asset/CSVSource/edit.pt:42
-#: /views/edit/Asset/CSVSource/edit.pt:111
-#: /views/edit/Asset/CSVSource/edit.pt:181
-msgid "content"
-msgstr "inhoud"
-
-#: /views/edit/Asset/CSVSource/edit.pt:45
-#: /views/edit/Asset/CSVSource/edit.pt:114
-msgid "note"
-msgstr "notitie"
-
-#: /views/edit/Asset/CSVSource/edit.pt:72
-msgid "set encoding"
-msgstr "encodering instellen"
-
-#: /views/edit/Asset/CSVSource/edit.pt:72
-msgid "access key: alt-e"
-msgstr "sneltoets: alt-e"
-
-#: /views/edit/Asset/CSVSource/edit.pt:98
-msgid "csv source upload"
-msgstr "csv source upload"
 
 #: /views/edit/Asset/CSVSource/form.form:32
 #: /views/edit/Asset/CSVSource/form.form:59
@@ -243,6 +194,39 @@ msgstr ""
 #: /views/edit/Asset/CSVSource/upload_submit.py:25
 msgid "Data uploaded. "
 msgstr "Gegevens ge-upload. "
+
+#~ msgid "access key: alt-u"
+#~ msgstr "sneltoets: alt-u"
+
+#~ msgid "upload"
+#~ msgstr "uploaden"
+
+#~ msgid "comma separated value data"
+#~ msgstr "komma gescheiden waarde-gegevens"
+
+#~ msgid "change data"
+#~ msgstr "gegevens wijzigen"
+
+#~ msgid "access key: alt-c"
+#~ msgstr "sneltoets: alt-c"
+
+#~ msgid "element"
+#~ msgstr "element"
+
+#~ msgid "content"
+#~ msgstr "inhoud"
+
+#~ msgid "note"
+#~ msgstr "notitie"
+
+#~ msgid "set encoding"
+#~ msgstr "encodering instellen"
+
+#~ msgid "access key: alt-e"
+#~ msgstr "sneltoets: alt-e"
+
+#~ msgid "csv source upload"
+#~ msgstr "csv source upload"
 
 #~ msgid ""
 #~ "This code source does not contain an callable object with id \"${id}\"! "

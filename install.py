@@ -147,7 +147,6 @@ def install_codesources(cs_path, root, cs_fields, product_name=None):
          if cs_element['elaborate']:
              cs.set_elaborate(True)
          path = os.path.join(cs_path, cs_element['id'])
-         import pdb; pdb.set_trace()
          cs_files = os.listdir(path)
          for cs_file in cs_files:
              if cs_file.endswith('.pt'):

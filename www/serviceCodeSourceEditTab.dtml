@@ -338,6 +338,6 @@ window.parent.update_menu();
 </dtml-if>
 
 <p>These Code Sources will be refreshed when ExternalSources is refreshed in the extensions service.</p>
-<p>Developers can add their own Code Sources to this service. Unknown Code Sources not listed in the config file are preserved when refreshing ExternalSources.</p>
+<p>Developers can add their own Code Sources to this service. When refreshing ExternalSources any unknown Code Sources (i.e. not listed in the config file) are preserved.</p>
 
 <dtml-var manage_page_footer>

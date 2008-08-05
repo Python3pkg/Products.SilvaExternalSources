@@ -1,16 +1,16 @@
 <tal:def define="
-  alignment options/alignment_selector | nothing;
+  alignment python: options['alignment_selector'] or '';
   capsulestyle options/capsule_style | nothing;
-  capsuleid options/capsule_id | nothing;
-  capsuleclass options/capsule_class | nothing;
+  capsuleid python: options['capsule_id'] or '';
+  capsuleclass python: options['capsule_class'] or '';
   capsuletitle options/capsule_title | nothing;
   show_doc_title options/show_title | nothing;
   document options/document | nothing;
 ">
 <!-- Start portlet element -->
-<div tal:omit-tag="not:alignment"
+<div 
   tal:attributes="
-  class python:alignment+' '+capsuleclass;
+  class python:alignment + ' ' + capsuleclass;
   id capsuleid;
   style capsulestyle; 
 ">

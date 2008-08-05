@@ -4,6 +4,12 @@ See also LICENSE.txt
 Portlet Element Code Source changes
 ===================================
 
+0.4
+
+  Fixes:
+
+    - Fixed wrong title for css class and wrong spacing in the description.
+
 0.3
 
   Features added:

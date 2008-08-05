@@ -103,7 +103,7 @@
 						<alternate_name></alternate_name>
 						<css_class>store</css_class>
 						<default></default>
-						<description>Enter unique css id for the portlet .</description>
+						<description>Enter unique css id for the portlet.</description>
 						<display_maxwidth></display_maxwidth>
 						<display_width type="int">20</display_width>
 						<enabled type="int">1</enabled>
@@ -130,7 +130,7 @@
 						<alternate_name></alternate_name>
 						<css_class>store</css_class>
 						<default></default>
-						<description>Enter css class(es) for the portlet .</description>
+						<description>Enter css class(es) for the portlet.</description>
 						<display_maxwidth></display_maxwidth>
 						<display_width type="int">20</display_width>
 						<enabled type="int">1</enabled>
@@ -139,7 +139,7 @@
 						<hidden type="int">0</hidden>
 						<max_length></max_length>
 						<required type="int">0</required>
-						<title>capsule css id</title>
+						<title>capsule css class</title>
 						<truncate type="int">0</truncate>
 						<unicode type="int">0</unicode>
 						<whitespace_preserve type="int">0</whitespace_preserve>

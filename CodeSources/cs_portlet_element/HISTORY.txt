@@ -4,6 +4,13 @@ See also LICENSE.txt
 Portlet Element Code Source changes
 ===================================
 
+0.5
+
+  Fixes:
+
+    - Fixed unicode error if one of the parameters is empty.
+    - Fix for lookup window (get reference).
+
 0.4
 
   Fixes:

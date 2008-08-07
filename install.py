@@ -105,16 +105,17 @@ def configureAddables(root):
 
 def install_pt(path, cs_file, cs):
     id = cs_file.split('.')[0]
-    cs_code = cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(id)
-    template_path = os.path.join(path, cs_file)
-    cs_code.pt_edit(read_file(template_path), '')
+    cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(id)
+    page_template = getattr(cs, id)
+    fs_path = os.path.join(path, cs_file)
+    page_template.pt_edit(read_file(fs_path), '')
 
 def install_py(path, cs_file, cs):
     id = cs_file.split('.')[0]
-    cs_code = cs.manage_addProduct['PythonScripts'].manage_addPythonScript(id)
-    cs_code = getattr(cs, id)
+    cs.manage_addProduct['PythonScripts'].manage_addPythonScript(id)
+    script = getattr(cs, id)
     script_path = os.path.join(path, cs_file)
-    cs_code.write(read_file(script_path))
+    script.write(read_file(script_path))
 
 def install_xml(path, cs_file, cs):
     form_path = os.path.join(path, cs_file)

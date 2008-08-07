@@ -1,13 +1,15 @@
 
 import Globals
 from OFS.Folder import Folder
+from Products.Silva.BaseService import SilvaService
 
 from AccessControl import ClassSecurityInfo
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.Silva.helpers import add_and_edit
 from Products.Silva.SilvaPermissions import ViewManagementScreens
+from Products.Silva import conf as silvaconf
 
-class CodeSourceService(Folder):
+class CodeSourceService(Folder, SilvaService):
     
     security = ClassSecurityInfo()
     meta_type = 'Silva Code Source Service'
@@ -15,18 +17,19 @@ class CodeSourceService(Folder):
     security.declareProtected(ViewManagementScreens, 'manage_main')
     manage_main = Globals.DTMLFile('www/serviceCodeSourceEditTab', globals())
 
+    silvaconf.icon('www/codesource_service.png')
+    silvaconf.factory('manage_addCodeSourceServiceForm')
+    silvaconf.factory('manage_addCodeSourceService')
 
     def __init__(self, id, title):
         self.id = id
         self.title = title
 
-
 Globals.InitializeClass(CodeSourceService)
 
-addCodeSourceService = PageTemplateFile(
+manage_addCodeSourceServiceForm = PageTemplateFile(
     'www/serviceCodeSourceAdd', globals(),
     __name__ = 'manage_addCodeSourcesServiceForm')
-
 
 def manage_addCodeSourceService(container, id, title, REQUEST=None):
     """Add a CodeSourceService object

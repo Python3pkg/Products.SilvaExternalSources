@@ -94,7 +94,7 @@ class ManagerCodeSourcesTest(SilvaFunctionalTestCase):
         # test existence of core silva codesources
         
         for cs in CODE_SOURCES:
-            
+            #import pdb; pdb.set_trace()
             self.failUnless(cs in sb.browser.contents)
             
             sb.click_href_labeled(cs)

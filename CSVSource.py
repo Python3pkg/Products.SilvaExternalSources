@@ -23,6 +23,8 @@ from Products.Silva.interfaces import IAsset
 # I18N stuff
 from Products.Silva.i18n import translate as _
 
+from Products.Silva import conf as silvaconf
+
 import ASV
 
 class CSVSource(ExternalSource, Asset, Folder):
@@ -34,7 +36,6 @@ class CSVSource(ExternalSource, Asset, Folder):
     Source element. If necessary, all aspects of the display can be
     customized in the rendering templates of the CSV Source.
     """
-
 
     implements(IExternalSource, IAsset)
     
@@ -60,10 +61,14 @@ class CSVSource(ExternalSource, Asset, Folder):
     editDataCSVSource = PageTemplateFile(
         'www/csvSourceEditData', globals(),  __name__='editCSVSourceData')
 
-
     _layout_id = 'layout'
 
     _default_batch_size = 20
+
+    # register priority, icon and factory
+    silvaconf.priority(1)
+    silvaconf.icon('www/csvsource.png')
+    silvaconf.factory('manage_addCSVSource')
 
     def __init__(self, id):
         CSVSource.inheritedAttribute('__init__')(self, id)

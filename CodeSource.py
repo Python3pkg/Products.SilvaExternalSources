@@ -14,8 +14,10 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.Silva.SilvaPermissions import ViewManagementScreens, AccessContentsInformation
 from Products.Silva.helpers import add_and_edit
 from Products.Silva.i18n import translate as _
+from Products.Silva import conf as silvaconf
+from Products.Silva.BaseService import ZMIObject
 
-class CodeSource(ExternalSource, Folder):
+class CodeSource(ExternalSource, Folder, ZMIObject):
 
     implements(IExternalSource)
     
@@ -35,6 +37,11 @@ class CodeSource(ExternalSource, Folder):
     editCodeSource = PageTemplateFile(
         'www/codeSourceEdit', globals(),  __name__='editCodeSource')
 
+    # register icon and factories
+    silvaconf.icon('www/codesource.png')
+    silvaconf.factory('manage_addCodeSourceForm')
+    silvaconf.factory('manage_addCodeSource')
+    
     def __init__(self, id, script_id=None):
         self._elaborate = False
         self.id = id
@@ -191,8 +198,9 @@ class CodeSource(ExternalSource, Folder):
 
 InitializeClass(CodeSource)
 
-addCodeSource = PageTemplateFile(
-    "www/codeSourceAdd", globals(), __name__='addCodeSource')
+manage_addCodeSourceForm = PageTemplateFile(
+    "www/codeSourceAdd", globals(),
+    __name__='manage_addCodeSourceForm')
 
 def manage_addCodeSource(context, id, title, script_id=None, REQUEST=None):
     """Add a CodeSource object

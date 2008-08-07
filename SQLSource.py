@@ -19,6 +19,8 @@ from Products.Formulator.XMLToForm import XMLToForm
 from Products.Silva.SilvaPermissions import ViewManagementScreens, AccessContentsInformation
 from Products.Silva.helpers import add_and_edit
 from Products.Silva import mangle
+from Products.Silva import conf as silvaconf
+from Products.Silva.BaseService import ZMIObject
 
 
 # I18N stuff
@@ -27,7 +29,7 @@ from Products.Silva.i18n import translate as _
 
 icon="www/silvasqldatasource.png"
 
-class SQLSource(ExternalSource, Folder):
+class SQLSource(ZMIObject, ExternalSource, Folder):
 
     implements(IExternalSource)
     
@@ -47,6 +49,11 @@ class SQLSource(ExternalSource, Folder):
     security.declareProtected(ViewManagementScreens, 'editSQLSource')    
     editSQLSource = PageTemplateFile(
         'www/sqlSourceEdit', globals(),  __name__='sqlCodeSource')
+
+    # register icon and factories
+    silvaconf.icon('www/sqlsource.png')
+    silvaconf.factory('manage_addSQLSourceForm')
+    silvaconf.factory('manage_addSQLSource')
 
     def __init__(self, id):
         self.id = id
@@ -211,8 +218,8 @@ class SQLSource(ExternalSource, Folder):
 
 InitializeClass(SQLSource)
 
-addSQLSource = PageTemplateFile(
-    "www/sqlSourceAdd", globals(), __name__='addSQLSource')
+manage_addSQLSourceForm = PageTemplateFile(
+    "www/sqlSourceAdd", globals(), __name__='manage_addSQLSourceForm')
 
 import os
 

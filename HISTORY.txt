@@ -3,6 +3,13 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  2.0.8:
+
+    Bugs Fixed:
+
+      - lines fields in code sources now work with quotes and unicode
+        characters in the values.
+
   2.0.7:
   
     Features Added:

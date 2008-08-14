@@ -31,7 +31,7 @@ else:
 
 param_tags = ''
 param_attrs = ''
-if params != '':
+if params:
     start = 0
     param_list = []
     while start < len(params):

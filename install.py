@@ -48,7 +48,7 @@ def install(root):
     install_codesources(_fs_codesources_path, root, cs_fields)
 
 def uninstall(root):
-    g1 = configure.configuration
+    cs_fields = configure.configuration
     unregisterViews(root.service_view_registry)
     if not hasattr(root, 'service_codesources'):
         root.service_views.manage_delObjects(['SilvaExternalSources'])

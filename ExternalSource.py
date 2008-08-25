@@ -187,7 +187,7 @@ class ExternalSource(Acquisition.Implicit):
             else:
                 value = ustr(value, 'UTF-8')
             xml.append('<td>%s</td>\n</tr>\n' % 
-                            (field.render(value)))
+                            (field.render(self._xml_unescape(value))))
 
         # if a Code Source has no parameters, inform the user how to proceed
         if len(self.form().get_fields()) == 0:
@@ -251,6 +251,13 @@ class ExternalSource(Acquisition.Implicit):
         input = input.replace('&', '&amp;')
         input = input.replace('<', '&lt;')
         input = input.replace('>', '&gt;')
+        return input
+
+    def _xml_unescape(self, input):
+        """entitize illegal chars in xml"""
+        input = input.replace('&amp;', '&')
+        input = input.replace('&lt;', '<')
+        input = input.replace('&gt;', '>')
         return input
 
     security.declareProtected(SilvaPermissions.AccessContentsInformation, 

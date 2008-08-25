@@ -94,6 +94,8 @@ def ustr(text, enc='utf-8'):
         return text
     elif type(text) == type([]):
         return u"[%s]" % u', '.join([urepr(l) for l in text])
+    elif type(text) == type(True):
+        return text and '1' or '0'
     else:
         return unicode(str(text), enc, 'replace')
 
@@ -129,42 +131,6 @@ class ExternalSource(Acquisition.Implicit):
 
     security.declareProtected(SilvaPermissions.AccessContentsInformation, 
                                 'get_rendered_form_for_editor')
-    
-    
-    def generate_form(self, formcopy):
-            fieldDescription = ustr(self.field.values.get('description',''), 'UTF-8')
-            if fieldDescription:
-                fieldCssClasses = "rollover"
-                fieldDescription = '<span class="tooltip">%s</span>'%fieldDescription
-            else:
-                fieldCssClasses = ""
-            if self.field.values.get('required',False):               
-                fieldCssClasses += ' requiredfield'
-            if fieldCssClasses:
-                fieldCssClasses = 'class="%s"'%fieldCssClasses.strip()
-                                    
-            self.xml.append('<tr>\n<td width="7em"><a href="#" onclick="return false" %s>%s%s</a></td>\n' % (
-                fieldCssClasses, fieldDescription, ustr(self.field.values['title'], 'UTF-8'))
-                )
-                
-            value = None
-            #the field id is actually _always_ lowercase in formcopy
-            # (see https://bugs.launchpad.net/silva/+bug/180860)
-            if formcopy.has_key(self.field.id.lower()):
-                value = formcopy[self.field.id.lower()]
-            if value is None:
-                # default value (if available)
-                value = self.field.get_value('default')
-            if type(value) == list:
-                value = [ustr(x, 'UTF-8') for x in value]
-            elif self.field.meta_type == "CheckBoxField":
-                value = int(value)
-            else:
-                value = ustr(value, 'UTF-8')
-            self.xml.append('<td>%s</td>\n</tr>\n' % 
-                            (self.field.render(value)))
-        
-    
     def get_rendered_form_for_editor(self, REQUEST=None):
         """return the rendered form"""
         if REQUEST.has_key('docref') and REQUEST['docref']:
@@ -174,22 +140,12 @@ class ExternalSource(Acquisition.Implicit):
         else:
             # buggy behaviour. but allows backward compatibility
             REQUEST.form['model'] = self
-        
-        
-        elaborate = getattr(self, '_elaborate', None)
-        
-        if len(self.form().get_groups()) > 1 and elaborate == True:
-            self.xml = ['<?xml version="1.0" encoding="UTF-8" ?>\n',
-                    '<form id="extsourceform" class="elaborate" action="" method="POST">\r',
-                    ('<input type="hidden" name="metatype" value="%s" />\n' % 
-                            self.meta_type)]
-        else:
-            self.xml = ['<?xml version="1.0" encoding="UTF-8" ?>\n',
-                    '<form id="extsourceform" action="" method="POST">\r',
-                    ('<input type="hidden" name="metatype" value="%s" />\n' % 
-                            self.meta_type),
-                    ('<table width="100%" id="extsourceform" cellpadding="0" cellspacing="0" '
-                            '>\n<tbody>\n')]
+        xml = ['<?xml version="1.0" encoding="UTF-8" ?>\n',
+                '<form id="extsourceform" action="" method="POST">\r',
+                ('<input type="hidden" name="metatype" value="%s" />\n' % 
+                        self.meta_type),
+                ('<table width="100%" id="extsourceform" cellpadding="0" cellspacing="0" '
+                        '>\n<tbody>\n')]
 
         form = REQUEST.form.copy()
         formcopy = {} 
@@ -199,38 +155,48 @@ class ExternalSource(Acquisition.Implicit):
             if '__type__' in k:
                 k, vtype = k.split('__type__')
             formcopy[k] = v
-        
-        
-        if len(self.form().get_groups()) > 1 and elaborate == True:
-            for group in self.form().get_groups():
-                self.xml.append('<fieldset><legend>%s</legend><table cellpadding="0" cellspacing="0">\n<tbody>\n'%(group))
-                for self.field in self.form().get_fields_in_group(group):
-                    self.generate_form(formcopy)
-            
-                # if a Code Source has no parameters, inform the user how to proceed
-                if len(self.form().get_fields()) == 0:
-                    no_params = _('This Code Source has no adjustable settings. Click a button to insert or remove it.')
-                    self.xml.append('<tr>\n<td>%s</td>\n</tr>\n' % no_params)
-                self.xml.append('</tbody>\n</table></fieldset>')
-            
 
-            self.xml.append('\n</form><br clear="all"/>\n')
-        else:
-            for self.field in self.form().get_fields():
-                self.generate_form(formcopy)
-        
-            # if a Code Source has no parameters, inform the user how to proceed
-            if len(self.form().get_fields()) == 0:
-                no_params = _('This Code Source has no adjustable settings. Click a button to insert or remove it.')
-                self.xml.append('<tr>\n<td>%s</td>\n</tr>\n' % no_params)
+        for field in self.form().get_fields():
+            fieldDescription = ustr(field.values.get('description',''), 'UTF-8')
+            if fieldDescription:
+                fieldCssClasses = "rollover"
+                fieldDescription = '<span class="tooltip">%s</span>'%fieldDescription
+            else:
+                fieldCssClasses = ""
+            if field.values.get('required',False):               
+                fieldCssClasses += ' requiredfield'
+            if fieldCssClasses:
+                fieldCssClasses = 'class="%s"'%fieldCssClasses.strip()
+				
+            xml.append('<tr>\n<td width="7em"><a href="#" onclick="return false" %s>%s%s</a></td>\n' % (
+                fieldCssClasses, fieldDescription, ustr(field.values['title'], 'UTF-8'))
+                )
 
-            self.xml.append('</tbody>\n</table>\n</form><br clear="all"/>\n')
-        
-        
-        
-        
+            value = None
+            #the field id is actually _always_ lowercase in formcopy
+            # (see https://bugs.launchpad.net/silva/+bug/180860)
+            if formcopy.has_key(field.id.lower()):
+                value = formcopy[field.id.lower()]
+            if value is None:
+                # default value (if available)
+                value = field.get_value('default')
+            if type(value) == list:
+                value = [ustr(x, 'UTF-8') for x in value]
+            elif field.meta_type == "CheckBoxField":
+                value = int(value)
+            else:
+                value = ustr(value, 'UTF-8')
+            xml.append('<td>%s</td>\n</tr>\n' % 
+                            (field.render(self._xml_unescape(value))))
+
+        # if a Code Source has no parameters, inform the user how to proceed
+        if len(self.form().get_fields()) == 0:
+            no_params = _('This Code Source has no adjustable settings. Click a button to insert or remove it.')
+            xml.append('<tr>\n<td>%s</td>\n</tr>\n' % no_params)
+
+        xml.append('</tbody>\n</table>\n</form>\n')
         REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8')
-        return ''.join([l.encode('UTF-8') for l in self.xml])
+        return ''.join([l.encode('UTF-8') for l in xml])
 
     security.declareProtected(SilvaPermissions.AccessContentsInformation, 
                                 'validate_form_to_request')
@@ -285,6 +251,13 @@ class ExternalSource(Acquisition.Implicit):
         input = input.replace('&', '&amp;')
         input = input.replace('<', '&lt;')
         input = input.replace('>', '&gt;')
+        return input
+
+    def _xml_unescape(self, input):
+        """entitize illegal chars in xml"""
+        input = input.replace('&amp;', '&')
+        input = input.replace('&lt;', '<')
+        input = input.replace('&gt;', '>')
         return input
 
     security.declareProtected(SilvaPermissions.AccessContentsInformation, 

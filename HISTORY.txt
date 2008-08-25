@@ -10,6 +10,13 @@ SilvaExternalSources changes
       - added install_codesources function to install codesources
         from the file system.
 
+  2.0.9:
+
+    Bugs Fixed:
+
+      - html entered into parameters is no lounger doubly escaped on saving
+        the document.  
+  
   2.0.7:
   
     Features Added:

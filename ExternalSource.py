@@ -246,7 +246,7 @@ class ExternalSource(Acquisition.Implicit):
         return input
 
     def _xml_unescape(self, input):
-        """entitize illegal chars in xml"""
+        """de-entitize illegal chars in xml"""
         input = input.replace('&amp;', '&')
         input = input.replace('&lt;', '<')
         input = input.replace('&gt;', '>')

@@ -1,4 +1,4 @@
-# Copyright (c) 2002-2007 Infrae. All rights reserved.
+# Copyright (c) 2002-2008 Infrae. All rights reserved.
 # See also LICENSE.txt
 # $Revision: 1.32 $
 
@@ -94,6 +94,8 @@ def ustr(text, enc='utf-8'):
         return text
     elif type(text) == type([]):
         return u"[%s]" % u', '.join([urepr(l) for l in text])
+    elif type(text) == type(True):
+        return text and '1' or '0'
     else:
         return unicode(str(text), enc, 'replace')
 
@@ -179,13 +181,13 @@ class ExternalSource(Acquisition.Implicit):
                 # default value (if available)
                 value = field.get_value('default')
             if type(value) == list:
-                value = [ustr(x, 'UTF-8') for x in value]
+                value = [ustr(self._xml_unescape(x), 'UTF-8') for x in value]
             elif field.meta_type == "CheckBoxField":
                 value = int(value)
             else:
-                value = ustr(value, 'UTF-8')
+                value = ustr(self._xml_unescape(value), 'UTF-8')
             xml.append('<td>%s</td>\n</tr>\n' % 
-                            (field.render(self._xml_unescape(value))))
+                            (field.render(value)))
 
         # if a Code Source has no parameters, inform the user how to proceed
         if len(self.form().get_fields()) == 0:

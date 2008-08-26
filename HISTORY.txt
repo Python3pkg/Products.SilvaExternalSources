@@ -3,11 +3,27 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
-  1.6:
-  
+  2.1:
+
     Features Added:
+
       - added install_codesources function to install codesources
         from the file system.
+
+    Bugs Fixed:
+
+      - english 'translation' was missing.
+
+  2.0.9:
+
+    Bugs Fixed:
+
+      - html entered into parameters is no lounger doubly escaped on
+        saving the document.
+  
+  2.0.7:
+  
+    Features Added:
         
       - added support for 'elaborate' code sources, that show their
         add/edit form in a pop-up instead of in the kupu

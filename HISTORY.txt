@@ -3,6 +3,13 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  2.0.9:
+
+    Bugs Fixed:
+
+      - html in external source parameter values is no longer doubly
+        escaped.
+
   2.0.8:
 
     Bugs Fixed:

@@ -1,6 +1,6 @@
 README.txt
 
-Copyright (c) 2005 - 2008 Samuel Schluep, ETH Zurich and Infrae.
+Copyright (c) 2005-2008 Samuel Schluep, ETH Zurich and Infrae.
 All rights reserved. See also LICENSE.txt
 
 MS Video

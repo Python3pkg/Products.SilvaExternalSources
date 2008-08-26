@@ -1,4 +1,4 @@
-# Copyright (c) 2006-2007 Infrae
+# Copyright (c) 2006-2008 Infrae
 # All rights reserved. See also LICENSE.txt
 
 # Python

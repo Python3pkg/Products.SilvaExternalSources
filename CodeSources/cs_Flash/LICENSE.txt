@@ -1,6 +1,6 @@
 LICENSE.txt
 
-Copyright (c) 2005-2008 - 2008 Samuel Schluep, ETH Zurich and Infrae.
+Copyright (c) 2005 - 2008 Samuel Schluep, ETH Zurich and Infrae.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

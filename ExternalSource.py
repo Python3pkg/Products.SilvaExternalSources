@@ -181,13 +181,13 @@ class ExternalSource(Acquisition.Implicit):
                 # default value (if available)
                 value = field.get_value('default')
             if type(value) == list:
-                value = [ustr(x, 'UTF-8') for x in value]
+                value = [ustr(self._xml_unescape(x), 'UTF-8') for x in value]
             elif field.meta_type == "CheckBoxField":
                 value = int(value)
             else:
-                value = ustr(value, 'UTF-8')
+                value = ustr(self._xml_unescape(value), 'UTF-8')
             xml.append('<td>%s</td>\n</tr>\n' % 
-                            (field.render(self._xml_unescape(value))))
+                            (field.render(value)))
 
         # if a Code Source has no parameters, inform the user how to proceed
         if len(self.form().get_fields()) == 0:

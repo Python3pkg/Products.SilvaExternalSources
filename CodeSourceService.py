@@ -29,7 +29,7 @@ Globals.InitializeClass(CodeSourceService)
 
 manage_addCodeSourceServiceForm = PageTemplateFile(
     'www/serviceCodeSourceAdd', globals(),
-    __name__ = 'manage_addCodeSourcesServiceForm')
+    __name__ = 'manage_addCodeSourceServiceForm')
 
 def manage_addCodeSourceService(container, id, title, REQUEST=None):
     """Add a CodeSourceService object
@@ -37,6 +37,6 @@ def manage_addCodeSourceService(container, id, title, REQUEST=None):
     if not title:
         title = id
     service = CodeSourceService(id, title)
-    container._setObject(id, service)    
+    container._setObject(id, service)
     add_and_edit(container, id, REQUEST)
     return ''

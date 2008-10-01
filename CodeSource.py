@@ -1,6 +1,7 @@
 # Copyright (c) 2002-2008 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.19 $
+# $Id$
+
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 from zope.interface import implements
@@ -14,8 +15,9 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.Silva.SilvaPermissions import ViewManagementScreens, AccessContentsInformation
 from Products.Silva.helpers import add_and_edit
 from Products.Silva.i18n import translate as _
-from Products.Silva import conf as silvaconf
 from Products.Silva.BaseService import ZMIObject
+
+from silva.core import conf as silvaconf
 
 class CodeSource(ExternalSource, Folder, ZMIObject):
 

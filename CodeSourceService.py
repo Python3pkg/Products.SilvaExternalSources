@@ -1,3 +1,6 @@
+# Copyright (c) 2002-2008 Infrae. All rights reserved.
+# See also LICENSE.txt
+# $Id$
 
 import Globals
 from OFS.Folder import Folder
@@ -7,7 +10,8 @@ from AccessControl import ClassSecurityInfo
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.Silva.helpers import add_and_edit
 from Products.Silva.SilvaPermissions import ViewManagementScreens
-from Products.Silva import conf as silvaconf
+
+from silva.core import conf as silvaconf
 
 class CodeSourceService(Folder, SilvaService):
     

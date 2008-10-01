@@ -1,6 +1,7 @@
 # Copyright (c) 2002-2008 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision: 1.35 $
+# $Id$
+
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 
@@ -23,7 +24,7 @@ from Products.Silva.interfaces import IAsset
 # I18N stuff
 from Products.Silva.i18n import translate as _
 
-from Products.Silva import conf as silvaconf
+from silva.core import conf as silvaconf
 
 import ASV
 

@@ -1,0 +1,6 @@
+<iframe frameborder="0"
+        tal:attributes="src options/url;
+                        width options/width;
+                        height options/height;
+                        scrolling options/scrolling">
+</iframe>

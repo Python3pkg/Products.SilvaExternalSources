@@ -3,6 +3,13 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  2.1.1:
+  
+    Bugs Fixed:
+    
+      - Code Sources: MultiListField values were being passed to the    
+        rendering script as strings instead of lists
+
   2.1:
 
     Features Added:

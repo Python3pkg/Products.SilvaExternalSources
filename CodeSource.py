@@ -107,10 +107,14 @@ class CodeSource(ExternalSource, Folder):
             if int(value)==1:
                 return True
             return False
-        if field_type == 'IntegerField':
+        elif field_type == 'IntegerField':
             if not value: #if value is not set
                 return None
             return int(value)
+        elif field_type == 'MultiListField':
+            if not value:
+                return []
+            return eval(value)
         #XXX More field types? Dates? Selects?
         return value
 

@@ -15,7 +15,17 @@ configuration = {
         'cacheable': True,
         'elaborate': False,
     },
-    'cs_multitoc': {
+    #cs_toc should eventually replace cs_multitoc, since it is unified
+    # with the toc_rendering adapter, and will replace the TOC element
+    'cs_toc': {
+        'id': 'cs_toc',
+        'title': 'TOC',
+        'render_id': 'toc',
+        'desc': 'Displays a listing of items contained in folders and/or publications. (replaces the TOC element)',
+        'cacheable': False,
+        'elaborate': False,
+    },
+   'cs_multitoc': {
         'id': 'cs_multitoc',
         'title': 'MultiTOC',
         'render_id': 'multi_toc',

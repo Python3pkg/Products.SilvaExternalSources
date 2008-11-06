@@ -5,6 +5,12 @@ SilvaExternalSources changes
 
   2.2:
 
+    Features Added:
+
+      - Added a Table of Contents code source to the code source service
+        this cs is intended to eventually replace to "Table of Contents"
+        document element
+
     Bugs Fixed:
 
       - Code Sources: MultiListField values were being passed to the    

@@ -3,7 +3,7 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
-  2.2:
+  2.2 (unreleased):
 
     Features Added:
 
@@ -15,6 +15,9 @@ SilvaExternalSources changes
 
       - Code Sources: MultiListField values were being passed to the    
         rendering script as strings instead of lists
+
+      - Remove all ``view`` in templates and use ``here`` or ``context``
+        instead.
 
   2.1:
 

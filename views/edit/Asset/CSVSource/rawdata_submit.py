@@ -7,12 +7,11 @@ from Products.Silva.i18n import translate as _
 ###
 
 model = context.REQUEST.model
-view = context
 
 try:
-    result = view.rawdata_form.validate_all(context.REQUEST)
+    result = context.rawdata_form.validate_all(context.REQUEST)
 except FormValidationError, e:
-    return view.tab_edit(message_type="error", message=context.render_form_errors(e))
+    return context.tab_edit(message_type="error", message=context.render_form_errors(e))
 
 msg_type = 'feedback'
 
@@ -24,4 +23,4 @@ if result.has_key('csv_rawdata'):
     m = _('Raw data set. ')
     msg += m
 
-return view.tab_edit(message_type=msg_type, message=msg)
+return context.tab_edit(message_type=msg_type, message=msg)

@@ -7,12 +7,11 @@ from Products.Silva.i18n import translate as _
 ###
 
 model = context.REQUEST.model
-view = context
 
 try:
-    result = view.upload_form.validate_all(context.REQUEST)
+    result = context.upload_form.validate_all(context.REQUEST)
 except FormValidationError, e:
-    return view.tab_edit(message_type="error", message=context.render_form_errors(e))
+    return context.tab_edit(message_type="error", message=context.render_form_errors(e))
 
 msg_type = 'feedback'
 msg = u''
@@ -24,4 +23,4 @@ if result.has_key('file') and result['file'] is not None:
         model.update_data(data)
         m = _('Data uploaded. ')
 
-return view.tab_edit(message_type=msg_type, message=m)
+return context.tab_edit(message_type=msg_type, message=m)

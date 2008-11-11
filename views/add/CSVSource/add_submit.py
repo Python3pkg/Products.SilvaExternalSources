@@ -5,7 +5,6 @@ from Products.Silva.i18n import translate as _
 
 
 model = context.REQUEST.model
-view = context
 REQUEST = context.REQUEST
 
 # if we cancelled, then go back to edit tab
@@ -15,11 +14,11 @@ if REQUEST.has_key('add_cancel'):
 # validate form
 from Products.Formulator.Errors import ValidationError, FormValidationError
 try:
-    result = view.form.validate_all(REQUEST)
+    result = context.form.validate_all(REQUEST)
 except FormValidationError, e:
     # in case of errors go back to add page and re-render form
-    return view.add_form(message_type="error",
-        message=view.render_form_errors(e))
+    return context.add_form(message_type="error",
+        message=context.render_form_errors(e))
 
 # get id and set up the mangler
 id = mangle.Id(model, result['object_id'])
@@ -35,8 +34,8 @@ id_check = id.validate()
 if id_check == id.OK:
     id = str(id)
 else:
-    return view.add_form(message_type="error",
-        message=view.get_id_status_text(id))
+    return context.add_form(message_type="error",
+        message=context.get_id_status_text(id))
 
 # get file, character encoding from the form
 file = result.get('object_file')
@@ -50,7 +49,7 @@ except LookupError:
     m = _(
         'Unknown encoding ${enc}. CSVSource not added! ',
         mapping={'enc':de})
-    return view.add_form(message_type="error", message=m)
+    return context.add_form(message_type="error", message=m)
 
 try:
     model.manage_addProduct['SilvaExternalSources'].manage_addCSVSource(id, title, file)
@@ -59,7 +58,7 @@ except IOError, e:
         'Problem ${exception}',
         mapping={'exception':e})
     msg = unicode(m)
-    return view.add_form(message_type="error", message=msg)
+    return context.add_form(message_type="error", message=msg)
 object = getattr(model, id)
 
 # update last author info in new object
@@ -72,5 +71,5 @@ if REQUEST.has_key('add_edit_submit'):
 else:
     m = _(
         'Added ${metatype} ${id}.',
-        mapping={'metatype':object.meta_type, 'id':view.quotify(id)})
+        mapping={'metatype':object.meta_type, 'id':context.quotify(id)})
     return model.edit['tab_edit'](message_type="feedback", message=m)

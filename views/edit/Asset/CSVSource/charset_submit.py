@@ -7,12 +7,11 @@ from Products.Silva.i18n import translate as _
 ###
 
 model = context.REQUEST.model
-view = context
 
 try:
-    result = view.charset_form.validate_all(context.REQUEST)
+    result = context.charset_form.validate_all(context.REQUEST)
 except FormValidationError, e:
-    return view.tab_edit(message_type="error", message=context.render_form_errors(e))
+    return context.tab_edit(message_type="error", message=context.render_form_errors(e))
 
 msg_type = 'feedback'
 msg = u''
@@ -26,7 +25,7 @@ except LookupError:
         'Unknown encoding ${enc}. Character encoding not saved! ',
         mapping={'enc':de})
     msg_type = 'error'
-    return view.tab_edit(message_type=msg_type, message=m)
+    return context.tab_edit(message_type=msg_type, message=m)
 else:
     model.set_data_encoding(de)
     m = _(
@@ -34,4 +33,4 @@ else:
         _mapping={'enc':de})
     msg += m
 
-return view.tab_edit(message_type=msg_type, message=msg)
+return context.tab_edit(message_type=msg_type, message=msg)

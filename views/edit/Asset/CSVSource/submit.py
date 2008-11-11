@@ -7,12 +7,11 @@ from Products.Silva.i18n import translate as _
 ###
 
 model = context.REQUEST.model
-view = context
 
 try:
-    result = view.form.validate_all(context.REQUEST)
+    result = context.form.validate_all(context.REQUEST)
 except FormValidationError, e:
-    return view.tab_edit(message_type="error", message=context.render_form_errors(e))
+    return context.tab_edit(message_type="error", message=context.render_form_errors(e))
 
 model.sec_update_last_author_info()
 
@@ -28,4 +27,4 @@ m = _('Title and Description changed.')
 
 msg_type = 'feedback'
 
-return view.tab_edit(message_type=msg_type, message=m)
+return context.tab_edit(message_type=msg_type, message=m)

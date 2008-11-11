@@ -27,12 +27,12 @@
       <tr class="top-controls">
         <td colspan="2">
           <h3 i18n:translate="">
-            character coding 
+            character coding
           </h3>
         </td>
       </tr>
     </thead>
-    <tbody tal:define="fields view/charset_form/get_fields">
+    <tbody tal:define="fields here/charset_form/get_fields">
       <tr>
         <th width="33%"
           i18n:translate="">
@@ -81,7 +81,7 @@
 </form>
 
   <!-- UPLOAD FORM -->
-  
+
   <form method="POST"
     name="form"
     action="."
@@ -99,7 +99,7 @@
           </td>
         </tr>
       </thead>
-      <tbody tal:define="fields view/upload_form/get_fields">
+      <tbody tal:define="fields here/upload_form/get_fields">
         <tr>
           <th width="33%"
             i18n:translate="">
@@ -166,7 +166,7 @@
           </td>
         </tr>
       </thead>
-      <tbody tal:define="fields view/rawdata_form/get_fields">
+      <tbody tal:define="fields here/rawdata_form/get_fields">
         <tal:repeat repeat="field fields">
         <tal:define define="iterate repeat/field/odd">
         <tr>

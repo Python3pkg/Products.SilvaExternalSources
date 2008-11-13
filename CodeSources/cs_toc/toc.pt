@@ -14,7 +14,6 @@
   show_icon options/show_icon;
   display_headings options/display_headings | nothing;
   link_headings options/link_headings | nothing;
-  public_view context/public_or_preview;
   errormessage string:<p><span class='error'>The path of this MultiTOC is not valid.</span></p>;
   toc_adapter python:modules['Products.Silva.adapters.tocrendering'].getTOCRenderingAdapter;
   ">
@@ -45,7 +44,7 @@
     title string:Go to $title;
 "
   tal:content="python:title and title or model.id" /></h3>
-  <span tal:replace="structure python:adapter.render_tree(public=public_view,toc_depth=depth,display_desc_flag=show_desc,sort_order=sort_order,show_types=toc_types,show_icon=show_icon)" />
+  <span tal:replace="structure python:adapter.render_tree(toc_depth=depth,display_desc_flag=show_desc,sort_order=sort_order,show_types=toc_types,show_icon=show_icon)" />
  </tal:def>
 
 </tal:loop>

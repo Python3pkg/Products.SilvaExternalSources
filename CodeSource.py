@@ -2,6 +2,7 @@
 # See also LICENSE.txt
 # $Id$
 
+from types import ListType
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 from zope.interface import implements
@@ -123,7 +124,9 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
         elif field_type == 'MultiListField':
             if not value:
                 return []
-            return eval(value)
+            if not isinstance(value,ListType):
+                return eval(value)
+            return value
         #XXX More field types? Dates? Selects?
         return value
 

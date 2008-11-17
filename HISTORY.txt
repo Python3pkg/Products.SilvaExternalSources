@@ -1,221 +1,267 @@
-Copyright (c) 2003-2008 Infrae. All rights reserved.
-See also LICENSE.txt
-
 SilvaExternalSources changes
+============================
 
-  2.2 (unreleased):
+2.2a1 (2008-11-17)
+------------------
 
-    Features Added:
+Features Added
+~~~~~~~~~~~~~~
 
-      - Added a Table of Contents code source to the code source service
-        this cs is intended to eventually replace to "Table of Contents"
-        document element
+- Added a Table of Contents code source to the code source service
+  this cs is intended to eventually replace to "Table of Contents"
+  document element.
 
-    Bugs Fixed:
+- The configuration of the product have been reviewed to use Grok.
 
-      - Code Sources: MultiListField values were being passed to the    
-        rendering script as strings instead of lists
+Bugs Fixed
+~~~~~~~~~~
 
-      - Remove all ``view`` in templates and use ``here`` or ``context``
-        instead.
+- Code Sources: MultiListField values were being passed to the
+  rendering script as strings instead of lists
 
-  2.1:
+- Remove all ``view`` in templates and use ``here`` or ``context``
+  instead.
 
-    Features Added:
+2.1
+---
 
-      - added install_codesources function to install codesources
-        from the file system.
+Features Added
+~~~~~~~~~~~~~~
 
-  2.0.9:
+- Added ``install_codesources`` function to install codesources
+  from the file system.
 
-    Bugs Fixed:
+2.0.9
+-----
 
-      - html entered into parameters is no lounger doubly escaped on saving
-        the document.  
-  
-  2.0.7:
-  
-    Features Added:
-        
-      - added support for 'elaborate' code sources, that show their
-        add/edit form in a pop-up instead of in the kupu
-        toolbox. Useful when code sources have a large number of
-        variables.
+Bugs Fixed
+~~~~~~~~~~
 
-      - component registration now done using Silva 2.0 zcml
-        directives SilvaExternalSources no longer works with Silva 1.6
-        or lower
+- html entered into parameters is no lounger doubly escaped on saving
+  the document.
 
-    Bugs Fixed:
+2.0.7
+-----
 
-      - SilvaExternalSources now depends on SilvaDocument (in
-        configure.zcml) since attempting to add this product will fail
-        if SilvaDocument isn't installed.
+Features Added
+~~~~~~~~~~~~~~
 
-      - fixed sql source "show caption" and "show table column
-        headings" parameters
+- added support for 'elaborate' code sources, that show their
+  add/edit form in a pop-up instead of in the kupu
+  toolbox. Useful when code sources have a large number of
+  variables.
 
-      - problem with checkboxfields (checked) when rendering a code
-        source
+- component registration now done using Silva 2.0 zcml
+  directives SilvaExternalSources no longer works with Silva 1.6
+  or lower.
 
-      - #106231 Integer field of Code Sources cannot be empty Empty
-        Integer fields now have a value of None
+Bugs Fixed
+~~~~~~~~~~
 
-      - #180860 code source parameter ids must be lowercase They can
-        now be mixed case.  However, multiple parameters with ids that
-        differ only in case aren't supported
+- SilvaExternalSources now depends on SilvaDocument (in
+  configure.zcml) since attempting to add this product will fail
+  if SilvaDocument isn't installed.
 
-  1.5:
-    
-    Bugs Fixed:
+- fixed sql source "show caption" and "show table column
+  headings" parameters.
 
-      - the model is available in validate_to_form (when working from kupu)
+- problem with checkboxfields (checked) when rendering a code
+  source.
 
-  1.4
+- #106231 Integer field of Code Sources cannot be empty Empty
+  Integer fields now have a value of None.
 
-    Features added / bugs fixed: not recorded
+- #180860 code source parameter ids must be lowercase They can
+  now be mixed case.  However, multiple parameters with ids that
+  differ only in case aren't supported.
 
-  1.3 
+1.5
+---
 
-    Features added:
+Bugs Fixed
+~~~~~~~~~~
 
-      - Updated to work with Zope 2.10
+- The model is available in ``validate_to_form`` (when working from
+  kupu).
 
-  1.2
+1.4
+---
 
-    Features added:
+Features added / bugs fixed: not recorded
 
-      - Users get confused when adding a Code Source that has no
-        parameters.  They have to click the same button twice, once to
-        add, and again to add.  Added a note that informs the user how
-        to proceed.
+1.3
+---
 
-    Bugs fixed:
+Features added
+~~~~~~~~~~~~~~
 
-      - The add form for CSV Sources was broken in that it ignored the
-        file upload field.
+- Updated to work with Zope 2.10.
 
-      - CheckBox parameters in Code Sources now work as expected.
-        (Thanks Benno!)
+1.2
+---
 
-  0.13
+Features added
+~~~~~~~~~~~~~~
 
-    Features added:
+- Users get confused when adding a Code Source that has no
+  parameters.  They have to click the same button twice, once to
+  add, and again to add.  Added a note that informs the user how
+  to proceed.
 
-      - Changed Silva External Sources to use new i18n machinery.
+Bugs fixed
+~~~~~~~~~~
 
-      - Available code sources are sorted on title when presented as a list.
+- The add form for CSV Sources was broken in that it ignored the
+  file upload field.
 
-    Bugs fixed:
+- CheckBox parameters in Code Sources now work as expected.
+  (Thanks Benno!)
 
-      - Titles were not stored as unicode strings. 
-        Moved the setting of the title to *after* the creation
-        of the source, so that we can get an encoding from somewhere
-        and use it to convert to unicode. Unfortunately this somewhere is a
-        hard coded string for now, since Zope 2 doesn't seem to allow 
-        anything else.
-    
-      - ZMI parameter forms are now utf-8 by default.
+0.13
+----
 
-      - Fixed unicode bug when using non-ascii chars in field titles (Kupu 
-        specific, port from 0.10 branch).
+Features added
+~~~~~~~~~~~~~~
 
-  0.12
+- Changed Silva External Sources to use new i18n machinery.
 
-    Bugs fixed:
- 
-      - Fixes to security declarations to stop Zope 2.8.5+ startup warnings.
+- Available code sources are sorted on title when presented as a list.
 
-      - Some HTML template cleanups.
+Bugs fixed
+~~~~~~~~~~
 
-      - Import registerDirectory from Silva's fssite.
+- Titles were not stored as unicode strings.
+  Moved the setting of the title to *after* the creation
+  of the source, so that we can get an encoding from somewhere
+  and use it to convert to unicode. Unfortunately this somewhere is a
+  hard coded string for now, since Zope 2 doesn't seem to allow
+  anything else.
 
-  0.11
+- ZMI parameter forms are now utf-8 by default.
 
-    Features added:
+- Fixed unicode bug when using non-ascii chars in field titles (Kupu
+  specific, port from 0.10 branch).
 
-      - Silva 1.5 (Zope 2.8) compatibility fixes.
+0.12
+----
 
-  0.10.3
+Bugs fixed
+~~~~~~~~~~
 
-    Bugs fixed:
+- Fixes to security declarations to stop Zope 2.8.5+ startup warnings.
 
-      - Fixed unicode bug in SQL statement, this didn't support non-ascii
-        characters yet.
+- Some HTML template cleanups.
 
-      - Fixed conditionals in the layout template, setting 'show_caption' and
-        'show_column_heading' should now have an effect.
+- Import registerDirectory from Silva's fssite.
 
-  0.10.2:
+0.11
+----
 
-    Bugs fixed:
+Features added
+~~~~~~~~~~~~~~
 
-      - Fixed typo in add_submit script for CSVSource.
+- Silva 1.5 (Zope 2.8) compatibility fixes.
 
-      - Fixed issue1257, context problems in Kupu, Kupu code now uses the same code
-        to find code sources as the rest of Silva.
+0.10.3
+------
 
-  0.10.1
+Bugs fixed
+~~~~~~~~~~
 
-    Bugs fixed:
+- Fixed unicode bug in SQL statement, this didn't support non-ascii
+  characters yet.
 
-     o Fixed missing import for Silva.i18n.translate
+- Fixed conditionals in the layout template, setting ``show_caption`` and
+  ``show_column_heading`` should now have an effect.
 
-  0.10
+0.10.2
+------
 
-    Features added:
+Bugs fixed
+~~~~~~~~~~
 
-     o i18n, German translation.
+- Fixed typo in add_submit script for CSVSource.
 
-    Bugs fixed:
+- Fixed issue1257, context problems in Kupu, Kupu code now uses the same code
+  to find code sources as the rest of Silva.
 
-     o The layout pagetemplate for rendering the SQL result set now
-       gets more information about the columns names and their
-       order. The pagetemplates of existing SQL Source instances need
-       to be updated to make use of this information.
+0.10.1
+------
 
-  0.9.1
+Bugs fixed
+~~~~~~~~~~
 
-    Features added:
+- Fixed missing import for Silva.i18n.translate
 
-     o Silva 1.1 compatibility.
+0.10
+----
 
-    Bugs fixed:
+Features added
+~~~~~~~~~~~~~~
 
-     o Added support for default values in the Kupu editor tool.
+- i18n, German translation.
 
-  0.9
+Bugs fixed
+~~~~~~~~~~
 
-    Features added:
+- The layout pagetemplate for rendering the SQL result set now
+  gets more information about the columns names and their
+  order. The pagetemplates of existing SQL Source instances need
+  to be updated to make use of this information.
 
-      o XML exporter for external source-based data in
-        documents. Needed to support Silva's XSLT rendering.
+0.9.1
+-----
 
-  0.8
+Features added
+~~~~~~~~~~~~~~
 
-    Bugs fixed:
+- Silva 1.1 compatibility.
 
-      o Configure the correct "add" permissions (esp. for
-        CSV Sources)
+Bugs fixed
+~~~~~~~~~~
 
-  0.8b1
+- Added support for default values in the Kupu editor tool.
 
-    Features added:
-     
-      o Kupu support.
+0.9
+---
 
-    Bugs fixed:
+Features added
+~~~~~~~~~~~~~~
 
-      o The description could not be set empty. It can now.
+- XML exporter for external source-based data in documents. Needed to
+  support Silva's XSLT rendering.
 
-      o The ZMI screens for the ExternalSource objects are now set
-        to be in utf-8. This way we can make save assumption for
-        decoding the user input into unicode.
+0.8
+---
 
-  0.7
+Bugs fixed
+~~~~~~~~~~
 
-    Lots of additions and bugfixes, including new CVSSource object.
- 
-  0.2 
- 
-    Initial public release.
+- Configure the correct "add" permissions (esp. for CSV Sources)
+
+0.8b1
+-----
+
+Features added
+~~~~~~~~~~~~~~
+
+- Kupu support.
+
+Bugs fixed
+~~~~~~~~~~
+
+- The description could not be set empty. It can now.
+
+- The ZMI screens for the ExternalSource objects are now set
+  to be in utf-8. This way we can make save assumption for
+  decoding the user input into unicode.
+
+0.7
+---
+
+Lots of additions and bugfixes, including new CVSSource object.
+
+0.2
+---
+
+Initial public release.

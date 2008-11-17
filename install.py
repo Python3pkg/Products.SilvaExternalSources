@@ -165,3 +165,10 @@ def install_codesources(cs_path, root, cs_fields, product_name=None):
                 install_dtml(path, cs_file, cs)
             if cs_file.endswith('.txt'):
                 install_txt(path, cs_file, cs)
+    
+    #if cs_toc isn't already at the root, put it there
+    if not hasattr(root.aq_explicit, 'cs_toc') and hasattr(root.service_codesources.aq_explicit, 'cs_toc'):
+        toc = root.service_codesources.manage_copyObjects(['cs_toc',])
+        root.manage_pasteObjects(toc)
+    
+    

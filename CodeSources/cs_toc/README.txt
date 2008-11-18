@@ -21,7 +21,7 @@ Authors can configure what sort of content types to list. Simply select the
 desired content types in the "Content Types" property.  You need to select 
 container types in order to have a depth > 0.
 
-Customizing MultiTOC
+Customizing TOC
 --------------------
 The code in the page template named 'toc' can be easily adjusted to
 your personal requirements. Change the header size for the title, etc.
@@ -60,7 +60,7 @@ There is a tal:on-error in the loop so that authors who somehow typo the
 path don't get an "External source is broken" message when (pre)viewing 
 the rendered document. Thanks to Irene Fellner at WU Wien for the tip. 
 
-You can edit the error message on line 22 of multi_toc. You can also have
+You can edit the error message on line 17 of toc. You can also have
 it fail silently by making the errormessage nothing. Note that if you
 change other code and cause an error the message will remain the same,
 even though the path may be valid.

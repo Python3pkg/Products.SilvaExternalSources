@@ -11,6 +11,9 @@ Features Added
   this cs is intended to eventually replace to "Table of Contents"
   document element.
 
+- Removed the Multi Table of Contents, which is superceded by the
+  new "cs_toc" table of contents code source.
+
 - The configuration of the product have been reviewed to use Grok.
 
 Bugs Fixed

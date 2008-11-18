@@ -14,7 +14,7 @@
   show_icon options/show_icon;
   display_headings options/display_headings | nothing;
   link_headings options/link_headings | nothing;
-  errormessage string:<p><span class='error'>The path of this MultiTOC is not valid.</span></p>;
+  errormessage string:<p><span class='error'>The path of this TOC is not valid.</span></p>;
   toc_adapter python:modules['Products.Silva.adapters.tocrendering'].getTOCRenderingAdapter;
   ">
 

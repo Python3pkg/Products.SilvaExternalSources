@@ -25,14 +25,6 @@ configuration = {
         'cacheable': False,
         'elaborate': False,
     },
-   'cs_multitoc': {
-        'id': 'cs_multitoc',
-        'title': 'MultiTOC',
-        'render_id': 'multi_toc',
-        'desc': 'Displays a listing of items contained in folders and/or publications.',
-        'cacheable': False,
-        'elaborate': False,
-    },
     'cs_google_maps': {
         'id': 'cs_google_maps',
         'title': 'Code Source Google Maps iFrame',

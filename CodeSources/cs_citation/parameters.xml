@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+
+<form>
+  <title>Parameters form</title>
+  <row_length>4</row_length>
+  <name>form</name>
+  <action></action>
+  <method>POST</method>
+  <enctype></enctype>
+  <encoding>UTF-8</encoding>
+  <stored_encoding>ISO-8859-1</stored_encoding>
+  <unicode_mode>true</unicode_mode>
+  <i18n_domain></i18n_domain>
+  <groups>
+    <group>
+      <title>Default</title>
+      <fields>
+
+      <field><id>citation</id> <type>KupuPopupWindowField</type>
+        <values>
+          <alternate_name></alternate_name>
+          <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button']</buttons>
+          <css_class>store</css_class>
+          <default></default>
+          <description>citation body</description>
+          <enabled type="int">1</enabled>
+          <external_validator></external_validator>
+          <hidden type="int">0</hidden>
+          <max_length></max_length>
+          <required type="int">1</required>
+          <textstyles type="list">[u'P|normal', u'P|lead', u'P|annotation']</textstyles>
+          <title>citation</title>
+          <toolboxes type="list">[u'kupu-toolbox-links', u'kupu-toolbox-indexes', u'kupu-toolbox-abbr', u'kupu-toolbox-cleanupexpressions', u'kupu-toolbox-typochars', u'kupu-toolbox-save']</toolboxes>
+          <truncate type="int">0</truncate>
+          <unicode type="int">1</unicode>
+          <whitespace_preserve type="int">1</whitespace_preserve>
+        </values>
+        <tales>
+        </tales>
+        <messages>
+          <message name="external_validator_failed">The input failed the external validator.</message>
+          <message name="required_not_found">Input is required but no input given.</message>
+          <message name="too_long">Too much input was given.</message>
+        </messages>
+      </field>
+      <field><id>author</id> <type>KupuPopupWindowField</type>
+        <values>
+          <alternate_name></alternate_name>
+          <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button', u'kupu-source-button']</buttons>
+          <css_class>store</css_class>
+          <default></default>
+          <description>author of citation</description>
+          <display_maxwidth></display_maxwidth>
+          <display_width type="int">20</display_width>
+          <enabled type="int">1</enabled>
+          <external_validator></external_validator>
+          <extra></extra>
+          <hidden type="int">0</hidden>
+          <max_length></max_length>
+          <required type="int">1</required>
+          <textstyles type="list">[u'P|normal', u'P|lead', u'P|annotation']</textstyles>
+          <title>author</title>
+          <toolboxes type="list">[u'kupu-toolbox-links', u'kupu-toolbox-indexes', u'kupu-toolbox-abbr', u'kupu-toolbox-cleanupexpressions', u'kupu-toolbox-typochars', u'kupu-toolbox-save']</toolboxes>
+          <truncate type="int">0</truncate>
+          <unicode type="int">1</unicode>
+          <whitespace_preserve type="int">1</whitespace_preserve>
+        </values>
+        <tales>
+        </tales>
+        <messages>
+          <message name="external_validator_failed">The input failed the external validator.</message>
+          <message name="required_not_found">Input is required but no input given.</message>
+          <message name="too_long">Too much input was given.</message>
+        </messages>
+      </field>
+      <field><id>source</id> <type>KupuPopupWindowField</type>
+        <values>
+          <alternate_name></alternate_name>
+          <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button']</buttons>
+          <css_class>store</css_class>
+          <default></default>
+          <description>source of citation</description>
+          <enabled type="int">1</enabled>
+          <external_validator></external_validator>
+          <hidden type="int">0</hidden>
+          <max_length></max_length>
+          <required type="int">1</required>
+          <textstyles type="list">[u'P|normal', u'P|lead', u'P|annotation']</textstyles>
+          <title>source</title>
+          <toolboxes type="list">[u'kupu-toolbox-links', u'kupu-toolbox-indexes', u'kupu-toolbox-abbr', u'kupu-toolbox-cleanupexpressions', u'kupu-toolbox-typochars', u'kupu-toolbox-save']</toolboxes>
+          <truncate type="int">0</truncate>
+          <unicode type="int">1</unicode>
+          <whitespace_preserve type="int">1</whitespace_preserve>
+        </values>
+        <tales>
+        </tales>
+        <messages>
+          <message name="external_validator_failed">The input failed the external validator.</message>
+          <message name="required_not_found">Input is required but no input given.</message>
+          <message name="too_long">Too much input was given.</message>
+        </messages>
+      </field>
+      </fields>
+    </group>
+  </groups>
+</form>

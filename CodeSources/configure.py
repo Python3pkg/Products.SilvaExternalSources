@@ -15,14 +15,20 @@ configuration = {
         'cacheable': True,
         'elaborate': False,
     },
-    #cs_toc should eventually replace cs_multitoc, since it is unified
-    # with the toc_rendering adapter, and will replace the TOC element
     'cs_toc': {
         'id': 'cs_toc',
         'title': 'TOC',
         'render_id': 'toc',
         'desc': 'Displays a listing of items contained in folders and/or publications. (replaces the TOC element)',
         'cacheable': False,
+        'elaborate': False,
+    },
+    'cs_citation': {
+        'id': 'cs_citation',
+        'title': 'citation',
+        'render_id': 'render_citation',
+        'desc': 'A citation allows authors to include a reference, citing an author and a source.',
+        'cacheable': True,
         'elaborate': False,
     },
     'cs_google_maps': {

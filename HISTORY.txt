@@ -1,6 +1,16 @@
 SilvaExternalSources changes
 ============================
 
+2.2a2 (unreleased)
+------------------
+
+Features Added
+~~~~~~~~~~~~~~
+
+- Added a citation external source, to replace the citation element.
+  This source uses a reduced kupu popup window to provide wysiwyg
+  editing of the parameters
+
 2.2a1 (2008-11-17)
 ------------------
 

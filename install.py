@@ -101,11 +101,11 @@ def setupMetadata(root):
 
 def configureAddables(root):
     addables = ['Silva CSV Source']
-    new_addables = root.get_silva_addables_allowed_in_publication()
+    new_addables = root.get_silva_addables_allowed_in_container()
     for a in addables:
         if a not in new_addables:
             new_addables.append(a)
-    root.set_silva_addables_allowed_in_publication(new_addables)
+    root.set_silva_addables_allowed_in_container(new_addables)
 
 def install_pt(path, cs_file, cs):
     id = cs_file.split('.')[0]

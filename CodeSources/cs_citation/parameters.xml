@@ -19,7 +19,7 @@
       <field><id>citation</id> <type>KupuPopupWindowField</type>
         <values>
           <alternate_name></alternate_name>
-          <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button']</buttons>
+          <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button', u'kupu-subscript-button', u'kupu-superscript-button', u'kupu-source-button']</buttons>
           <css_class>store</css_class>
           <default></default>
           <description>citation body</description>
@@ -46,7 +46,7 @@
       <field><id>author</id> <type>KupuPopupWindowField</type>
         <values>
           <alternate_name></alternate_name>
-          <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button', u'kupu-source-button']</buttons>
+          <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button', u'kupu-subscript-button', u'kupu-superscript-button', u'kupu-source-button']</buttons>
           <css_class>store</css_class>
           <default></default>
           <description>author of citation</description>
@@ -76,7 +76,7 @@
       <field><id>source</id> <type>KupuPopupWindowField</type>
         <values>
           <alternate_name></alternate_name>
-          <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button']</buttons>
+          <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button', u'kupu-subscript-button', u'kupu-superscript-button', u'kupu-source-button']</buttons>
           <css_class>store</css_class>
           <default></default>
           <description>source of citation</description>

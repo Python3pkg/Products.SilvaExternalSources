@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2002-2008 Infrae. All rights reserverd.
+# See also LICENSE.txt
+# $Id$
+
 import unittest
 from Products.Silva.tests.SilvaTestCase import SilvaFunctionalTestCase
 from Products.Silva.tests.SilvaBrowser import SilvaBrowser
@@ -114,7 +119,7 @@ CODE_SOURCES = {'cs_encaptionate':{
                     'parameters': ['youtube_height', 'youtube_url',
                                    'youtube_width']}
                 }
-                
+
 class ManagerCodeSourcesTest(SilvaFunctionalTestCase):
     """ test the install_code_sources method
     """
@@ -141,36 +146,35 @@ class ManagerCodeSourcesTest(SilvaFunctionalTestCase):
         self.failUnless('Code Sources' in sb.browser.contents)
         sb.click_href_labeled('service_codesources (Code Sources)')
         self.failUnless('Silva Code Source Service' in sb.browser.contents)
-        
+
         # test existence of core silva codesources
-        
+
         for cs in CODE_SOURCES:
-            #import pdb; pdb.set_trace()
             self.failUnless(cs in sb.browser.contents)
-            
+
             sb.click_href_labeled(cs)
-            
+
             cs_script_id = sb.browser.getControl(name='script_id')
             self.assertEquals(cs_script_id.value, CODE_SOURCES[cs]['script_id'])
-            
+
             cs_name = sb.browser.getControl(name='title')
             self.assertEquals(cs_name.value, CODE_SOURCES[cs]['name'])
-            
+
             sb.go('http://nohost/root/service_codesources/%s/parameters/manage_main' % (cs))
             self.failUnless('Formulator Form' in sb.browser.contents)
             for parameter in CODE_SOURCES[cs]['parameters']:
                 self.failUnless(parameter in sb.browser.contents)
             sb.browser.goBack()
-            
+
             sb.go('http://nohost/root/service_codesources/%s/manage_main' % (cs))
             self.failUnless('Silva Code Source' in sb.browser.contents)
             for content in CODE_SOURCES[cs]['contents']:
                 self.failUnless(content in sb.browser.contents)
             sb.browser.goBack()
-            
+
             sb.browser.goBack()
-        
-        sb.go('http://nohost/root/service_extensions/manage_editForm')
+
+        sb.go('http://nohost/root/service_extensions/manage_extensions')
         # uninstall Silva External Sources
         form = sb.browser.getForm(name='SilvaExternalSources')
         form.getControl('deactivate').click()

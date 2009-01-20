@@ -12,8 +12,8 @@
   sort_order python:context.toc_sort_on(options['sort_on'],options['order']);
   show_desc options/show_desc;
   show_icon options/show_icon;
-  display_headings options/display_headings | nothing;
-  link_headings options/link_headings | nothing;
+  display_headings options/display_headings | python:0;
+  link_headings options/link_headings | python:0;
   errormessage string:<p><span class='error'>The path of this TOC is not valid.</span></p>;
   toc_adapter python:modules['Products.Silva.adapters.tocrendering'].getTOCRenderingAdapter;
   ">
@@ -35,10 +35,10 @@
    model python:context.restrictedTraverse(top.split('/'));
    adapter python:toc_adapter(model);
    ">
-<h3 tal:condition="display_headings"
+<h3 tal:condition="python:display_headings==1"
   tal:attributes="class python:test(repeat['top'].start, 'interheading', nothing)"
   ><a tal:define="title model/get_title"
-  tal:omit-tag="not:link_headings"
+  tal:omit-tag="python:link_headings!=1"
   tal:attributes="
     href model/absolute_url;
     title string:Go to $title;

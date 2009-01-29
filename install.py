@@ -170,5 +170,9 @@ def install_codesources(cs_path, root, cs_fields, product_name=None):
     if not hasattr(root.aq_explicit, 'cs_toc') and hasattr(root.service_codesources.aq_explicit, 'cs_toc'):
         toc = root.service_codesources.manage_copyObjects(['cs_toc',])
         root.manage_pasteObjects(toc)
+    #if cs_citation isn't already at the root, put it there
+    if not hasattr(root.aq_explicit, 'cs_citation') and hasattr(root.service_codesources.aq_explicit, 'cs_citation'):
+        toc = root.service_codesources.manage_copyObjects(['cs_citation',])
+        root.manage_pasteObjects(toc)
     
     

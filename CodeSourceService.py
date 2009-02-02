@@ -53,5 +53,5 @@ def manage_addCodeSourceService(self, id, title, REQUEST=None):
     return ''
 
 @silvaconf.subscribe(ICodeSourceService, IObjectWillBeRemovedEvent)
-def unregisterCustomizationService(service, event):
+def unregisterCodeSourceService(service, event):
     unregister_service(service, ICodeSourceService)

@@ -3,6 +3,12 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  2.0.11 (unreleased):
+
+    Bugs Fixed:
+
+      - support DateTimeFields as parameters
+
   2.0.9:
 
     Bugs Fixed:

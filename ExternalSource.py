@@ -12,6 +12,7 @@ from DocumentTemplate import sequence
 import Acquisition
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo, ModuleSecurityInfo
+from DateTime import DateTime
 # Silva
 from Products.Silva import SilvaPermissions
 from Products.Silva.i18n import translate as _
@@ -184,6 +185,8 @@ class ExternalSource(Acquisition.Implicit):
                 value = [ustr(self._xml_unescape(x), 'UTF-8') for x in value]
             elif field.meta_type == "CheckBoxField":
                 value = int(value)
+            elif field.meta_type == "DateTimeField":
+                value = DateTime(value)
             else:
                 value = ustr(self._xml_unescape(value), 'UTF-8')
             xml.append('<td>%s</td>\n</tr>\n' % 

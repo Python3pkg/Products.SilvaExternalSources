@@ -19,7 +19,7 @@ from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Products.Silva import SilvaPermissions
 from Products.Silva.helpers import add_and_edit
 from Products.Silva.Asset import Asset
-from Products.Silva.interfaces import IAsset
+from silva.core.interfaces import IAsset
 
 # I18N stuff
 from Products.Silva.i18n import translate as _

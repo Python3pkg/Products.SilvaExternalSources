@@ -2,7 +2,7 @@
 # See also LICENSE.txt
 # $Id$
 
-from Products.Silva.interfaces import ISilvaService
+from silva.core.interfaces import ISilvaService
 from zope.interface import Interface
 
 # FIXME: I think it's useless

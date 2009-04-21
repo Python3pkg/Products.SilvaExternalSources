@@ -17,7 +17,7 @@ from DateTime import DateTime
 from Products.Silva import SilvaPermissions
 from Products.Silva.i18n import translate as _
 # Interfaces
-from Products.Silva.interfaces import IRoot
+from silva.core.interfaces import IRoot
 from Products.SilvaExternalSources.interfaces import IExternalSource
 # Formulator
 from Products.Formulator.Form import ZMIForm

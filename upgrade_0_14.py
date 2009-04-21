@@ -6,7 +6,7 @@ import logging
 # Zope
 from zope.interface import implements
 # Silva
-from Products.Silva.interfaces import IUpgrader
+from silva.core.interfaces import IUpgrader
 from Products.Silva import upgrade
 
 _extsources_version = '1.5.8'

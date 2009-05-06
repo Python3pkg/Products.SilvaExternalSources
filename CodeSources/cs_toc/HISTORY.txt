@@ -3,6 +3,13 @@ See also LICENSE.txt
 
 Silva TOC Code Source changes
 
+0.1
+
+    - correct the items call syntax
+    - use the tocrendering adapters compute_default_types
+      call for the default items, rather than a hard-coded
+      list
+
 0.1a
 
     - Initial development.

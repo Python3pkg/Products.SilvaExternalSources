@@ -5,6 +5,7 @@ SilvaExternalSources changes
 ------------------
 
 - Support DateTimeFields as parameters
+- update cs_toc
 
 2.2a2 (2009-01-12)
 ------------------

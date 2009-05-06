@@ -66,8 +66,8 @@ document.getElementsByName('%(field_id)s')[0].value = path;;
           <view_separator>&lt;br /&gt;</view_separator>
         </values>
         <tales>
-          <default>python:['Silva Folder','Silva Publication','Silva Document']</default>
-          <items>request/model/get_silva_addables_allowed_in_publication</items>
+        <default>python:modules['Products.Silva.adapters.tocrendering'].compute_default_show_types()</default>
+          <items>request/model/get_silva_addables_allowed_in_container</items>
         </tales>
         <messages>
           <message name="external_validator_failed">The input failed the external validator.</message>

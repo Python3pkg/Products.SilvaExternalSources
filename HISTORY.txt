@@ -3,6 +3,11 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
+  2.1.2 (unreleased):
+
+    Bugs fixed:
+
+
   2.1.1 (08/05/2009):
   
     Bugs Fixed:

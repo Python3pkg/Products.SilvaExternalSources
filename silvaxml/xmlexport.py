@@ -4,7 +4,7 @@ from Products.ParsedXML.DOM.Core import Node
 from Products.SilvaExternalSources import ExternalSource
 from Products.SilvaExternalSources.ExternalSource import getSourceForId
 
-SilvaDocumentNS = 'http://infrae.com/ns/silva_document'
+SilvaDocumentNS = 'http://infrae.com/namespace/silva-document'
 
 def initializeXMLExportRegistry():
     """Here the actual content types are registered.

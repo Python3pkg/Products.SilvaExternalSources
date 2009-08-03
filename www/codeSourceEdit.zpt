@@ -48,41 +48,41 @@ Version of this file: $Revision: 1.7 $
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          Title
+          <label for="title">Title</label>
         </div>
       </td>
       <td align="left" valign="top">
-        <input type="text" name="title" size="40" value=""
+        <input type="text" name="title" size="40" value="" id="title"
           tal:attributes="value here/title" />
       </td>
     </tr>
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          Renderer Id<br /><small>The id of the script or template that renders<br />
+          <label for="script_id">Renderer Id</label><br /><small>The id of the script or template that renders<br />
           the output of the code source.</small>
         </div>
       </td>
       <td align="left" valign="top">
-        <input type="text" name="script_id" size="40" value=""
+        <input type="text" name="script_id" id="script_id" size="40" value=""
           tal:attributes="value here/script_id" />
       </td>
     </tr>
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          Data encoding
+          <label for="data_encoding">Data encoding</label>
         </div>
       </td>
       <td align="left" valign="top">
-        <input type="text" name="data_encoding" size="40" value=""
+        <input type="text" name="data_encoding" size="40" id="data_encoding" value=""
           tal:attributes="value here/data_encoding" />
       </td>
     </tr>
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          Description<br /><small>This will visible in inserted code sources.<small>
+          <label for="description">Description</label><br /><small>This will visible in inserted code sources.</small>
         </div>
       </td>
       <td align="left" valign="top">
@@ -94,6 +94,7 @@ Version of this file: $Revision: 1.7 $
           wrap="soft"
           value=""
           name="description" 
+          id="description"
           tal:content="here/description"
         />
       </td>
@@ -101,22 +102,22 @@ Version of this file: $Revision: 1.7 $
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          Source is cacheable
+          <label for="cacheable">Source is cacheable</label>
         </div>
       </td>
       <td align="left" valign="top">
-        <input type="checkbox" name="cacheable" 
+        <input type="checkbox" name="cacheable" id="cacheable"
           tal:attributes="checked python: here.is_cacheable() and 'checked' or nothing" />
       </td>
     </tr>
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          Source is elaborate
+          <label for="elaborate">Source is elaborate</label><br /><small>When editing in kupu, the external source<br /> will open in a popup window.</small>
         </div>
       </td>
       <td align="left" valign="top">
-        <input type="checkbox" name="elaborate" 
+        <input type="checkbox" name="elaborate" id="elaborate"
           tal:attributes="checked python: here.elaborate() and 'checked' or nothing" />
       </td>
     </tr>

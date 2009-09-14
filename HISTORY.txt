@@ -8,6 +8,8 @@ SilvaExternalSources changes
     Bugs fixed:
 
      - Support DateTimeFields as parameters (ported from r34104 in trunk)
+     - Improve DateTimeField as parameter support by not defaulting
+       to 'now' if no value is present (ported from r36662 in trunk)
 
   2.1.1 (08/05/2009):
   

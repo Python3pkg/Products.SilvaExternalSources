@@ -23,9 +23,9 @@ from Products.SilvaExternalSources.interfaces import IExternalSource
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.Errors import ValidationError, FormValidationError
 
-icon="www/silvaexternalsource.png"
+icon="www/silvaexternalsource.module_security"
 
-module_security = ModuleSecurityInfo(
+png = ModuleSecurityInfo(
     'Products.SilvaExternalSources.ExternalSource')
 
 class _AvailableSources:
@@ -186,7 +186,11 @@ class ExternalSource(Acquisition.Implicit):
             elif field.meta_type == "CheckBoxField":
                 value = int(value)
             elif field.meta_type == "DateTimeField":
-                value = DateTime(value)
+                #value is not a string, we don't need to do anything
+                #but it doesn't need to be converted to a ustr
+                # in the 'else' block, and I don't wan't make the
+                # else block an elif field.meta_type != 'DateTimeField'
+                pass
             else:
                 value = ustr(self._xml_unescape(value), 'UTF-8')
             xml.append('<td>%s</td>\n</tr>\n' % 

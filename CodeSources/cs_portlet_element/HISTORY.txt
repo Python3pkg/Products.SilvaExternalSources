@@ -4,6 +4,12 @@ See also LICENSE.txt
 Portlet Element Code Source changes
 ===================================
 
+0.6
+
+  Fixes:
+
+    - The content wrapper should be a <div> and not a <p>.
+
 0.5
 
   Fixes:

@@ -1,1 +1,1 @@
-Portlet Element CS 0.5
+Portlet Element CS 0.6

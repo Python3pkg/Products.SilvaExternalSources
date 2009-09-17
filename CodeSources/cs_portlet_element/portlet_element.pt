@@ -19,10 +19,10 @@
   tal:content="structure capsuletitle">
     title....
 </h2>
-<p class="portlet"
+<div class="portlet"
   tal:content="structure python:here.get_portlet_content(show_doc_title,document)">
   document
-</p>
+</div>
 </div>
 <!-- End portlet element -->
 </tal:def>

@@ -1,6 +1,8 @@
 # Copyright (c) 2002-2008 Infrae. All rights reserved.
 # See also LICENSE.txt
 # $Revision: 1.19 $
+from types import ListType
+
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 from zope.interface import implements
@@ -114,7 +116,8 @@ class CodeSource(ExternalSource, Folder):
         elif field_type == 'MultiListField':
             if not value:
                 return []
-            return eval(value)
+            if not isinstance(value,ListType):
+                return eval(value)
         #XXX More field types? Dates? Selects?
         return value
 

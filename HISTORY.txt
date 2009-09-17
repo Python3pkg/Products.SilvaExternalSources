@@ -7,7 +7,7 @@ SilvaExternalSources changes
   
     Bugs Fixed:
      
-     - back-port fix in CodeSource._case_value for MultiListFields from trunk
+     - back-port fix in CodeSource._cast_value for MultiListFields from trunk
 
   2.1.2 (09/14/2009):
 

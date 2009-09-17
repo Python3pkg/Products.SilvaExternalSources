@@ -23,9 +23,9 @@ from Products.SilvaExternalSources.interfaces import IExternalSource
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.Errors import ValidationError, FormValidationError
 
-icon="www/silvaexternalsource.module_security"
+icon="www/silvaexternalsource.png"
 
-png = ModuleSecurityInfo(
+module_security = ModuleSecurityInfo(
     'Products.SilvaExternalSources.ExternalSource')
 
 class _AvailableSources:
@@ -36,11 +36,11 @@ class _AvailableSources:
     """
 
     def _list(self, context):
-        """ Recurse through parents up. 
-        
+        """ Recurse through parents up.
+
         Returns list of tuples of (id, object)
-        
-        Only lists sources that can be reached from the context 
+
+        Only lists sources that can be reached from the context
         through acquisition.
         """
         sources = {}
@@ -56,7 +56,7 @@ class _AvailableSources:
             context = context.aq_parent
         return sequence.sort(sources.items(), (('title', 'nocase', 'asc'),))
 
-    def __call__(self, context):         
+    def __call__(self, context):
         return self._list(context)
 
 module_security.declarePublic('availableSources')
@@ -64,21 +64,21 @@ availableSources = _AvailableSources()
 
 module_security.declarePublic('getSourceForId')
 def getSourceForId(context, id):
-    """ Look for an Source with given id. Mimic normal aqcuisition, 
-    but skip objects which have given id but do not implement the 
+    """ Look for an Source with given id. Mimic normal aqcuisition,
+    but skip objects which have given id but do not implement the
     ExternalSource interface.
     """
     nearest = getattr(context, id, None)
     if nearest is None:
         return None
     if IExternalSource.providedBy(nearest):
-        return nearest    
+        return nearest
     if IRoot.providedBy(context):
         return None
     else:
-        return getSourceForId(context.aq_parent, id)    
+        return getSourceForId(context.aq_parent, id)
 
-# helper function copied from 
+# helper function copied from
 # SilvaDocument/widgets/element/doc_element/source/mode_edit/save_helper.py
 def urepr(l):
     l = repr(l)
@@ -103,7 +103,7 @@ def ustr(text, enc='utf-8'):
 class ExternalSource(Acquisition.Implicit):
 
     implements(IExternalSource)
-    
+
     meta_type = "Silva External Source"
 
     security = ClassSecurityInfo()
@@ -111,9 +111,9 @@ class ExternalSource(Acquisition.Implicit):
     # XXX was management_page_charset = Converters.default_encoding
     # that doesn't work, because the add screens DON'T USE THE ZOPE
     # DEFAULT ENCODING! AAAAAAARGH
-    
+
     management_page_charset = 'UTF-8'
-    
+
     # Cannot make it 'private'; the form won't work in the ZMI if it was.
     parameters = None
 
@@ -122,7 +122,7 @@ class ExternalSource(Acquisition.Implicit):
     _is_cacheable = 0
 
     # ACCESSORS
-    
+
     security.declareProtected(SilvaPermissions.AccessContentsInformation,'form')
 
     def form(self):
@@ -130,7 +130,7 @@ class ExternalSource(Acquisition.Implicit):
         """
         return self.parameters
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 
+    security.declareProtected(SilvaPermissions.AccessContentsInformation,
                                 'get_rendered_form_for_editor')
     def get_rendered_form_for_editor(self, REQUEST=None):
         """return the rendered form"""
@@ -143,13 +143,13 @@ class ExternalSource(Acquisition.Implicit):
             REQUEST.form['model'] = self
         xml = ['<?xml version="1.0" encoding="UTF-8" ?>\n',
                 '<form id="extsourceform" action="" method="POST">\r',
-                ('<input type="hidden" name="metatype" value="%s" />\n' % 
+                ('<input type="hidden" name="metatype" value="%s" />\n' %
                         self.meta_type),
                 ('<table width="100%" id="extsourceform" cellpadding="0" cellspacing="0" '
                         '>\n<tbody>\n')]
 
         form = REQUEST.form.copy()
-        formcopy = {} 
+        formcopy = {}
         # pfff... what's that, not allowed to change a dict during iteration?!? ;)
         for k, v in form.iteritems():
             vtype = 'string'
@@ -164,11 +164,11 @@ class ExternalSource(Acquisition.Implicit):
                 fieldDescription = '<span class="tooltip">%s</span>'%fieldDescription
             else:
                 fieldCssClasses = ""
-            if field.values.get('required',False):               
+            if field.values.get('required',False):
                 fieldCssClasses += ' requiredfield'
             if fieldCssClasses:
                 fieldCssClasses = 'class="%s"'%fieldCssClasses.strip()
-				
+
             xml.append('<tr>\n<td width="7em" style="vertical-align: top"><a href="#" onclick="return false" %s>%s%s</a></td>\n' % (
                 fieldCssClasses, fieldDescription, ustr(field.values['title'], 'UTF-8'))
                 )
@@ -193,7 +193,7 @@ class ExternalSource(Acquisition.Implicit):
                 pass
             else:
                 value = ustr(self._xml_unescape(value), 'UTF-8')
-            xml.append('<td>%s</td>\n</tr>\n' % 
+            xml.append('<td>%s</td>\n</tr>\n' %
                             (field.render(value)))
 
         # if a Code Source has no parameters, inform the user how to proceed
@@ -205,11 +205,11 @@ class ExternalSource(Acquisition.Implicit):
         REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8')
         return ''.join([l.encode('UTF-8') for l in xml])
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 
+    security.declareProtected(SilvaPermissions.AccessContentsInformation,
                                 'validate_form_to_request')
     def validate_form_to_request(self, REQUEST):
         """validate the form
-        
+
             when validation succeeds return a 200 with the keys and values
             to set on the external source element in the document as an
             XML mapping, if validation fails return a 400 with the error
@@ -227,10 +227,10 @@ class ExternalSource(Acquisition.Implicit):
             result = form.validate_all(REQUEST)
         except FormValidationError, e:
             REQUEST.RESPONSE.setStatus(400, 'Bad Request')
-            return '&'.join(['%s=%s' % (e.field['title'], e.error_text) 
+            return '&'.join(['%s=%s' % (e.field['title'], e.error_text)
                                 for e in e.errors])
         else:
-            REQUEST.RESPONSE.setHeader('Content-Type', 
+            REQUEST.RESPONSE.setHeader('Content-Type',
                                         'text/xml;charset=UTF-8');
             xml = self._formresult_to_xml(result)
             return xml
@@ -246,8 +246,8 @@ class ExternalSource(Acquisition.Implicit):
         xml.append('<params>')
         for key, value in formresult.items():
             t = type(value).__name__
-            xml.append('<parameter type="%s" id="%s">%s</parameter>' % 
-                        (t, self._xml_escape(ustr(key)), 
+            xml.append('<parameter type="%s" id="%s">%s</parameter>' %
+                        (t, self._xml_escape(ustr(key)),
                             self._xml_escape(ustr(value))))
         xml.append('</params>')
         xml.append('</sourcedata>')
@@ -267,47 +267,47 @@ class ExternalSource(Acquisition.Implicit):
         input = input.replace('&gt;', '>')
         return input
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 
+    security.declareProtected(SilvaPermissions.AccessContentsInformation,
                                 'to_html')
     def to_html(self, REQUEST=None, **kw):
         """ Render the HTML for inclusion in the rendered Silva HTML.
         """
         return ''
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 
+    security.declareProtected(SilvaPermissions.AccessContentsInformation,
                                 'to_xml')
     def to_xml(self, REQUEST=None, **kw):
         """ Render the XML for this source.
         """
         return ''
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 
+    security.declareProtected(SilvaPermissions.AccessContentsInformation,
                                 'is_cacheable')
     def is_cacheable(self, **kw):
         """ Specify the cacheability.
         """
         return self._is_cacheable
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 
+    security.declareProtected(SilvaPermissions.AccessContentsInformation,
                                 'data_encoding')
     def data_encoding(self):
         """ Specify the encoding of source's data.
         """
         return self._data_encoding
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 
+    security.declareProtected(SilvaPermissions.AccessContentsInformation,
                                 'description')
     def description(self):
         """ Specify the use of this source.
         """
         return self._description
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 
+    security.declareProtected(SilvaPermissions.AccessContentsInformation,
                                 'get_title')
     def get_title (self):
         return self.title
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 
+    security.declareProtected(SilvaPermissions.AccessContentsInformation,
                                 'index_html')
     def index_html(self, REQUEST=None, RESPONSE=None, view_method=None):
         """ render HTML with default or other test values in ZMI for
@@ -320,7 +320,7 @@ class ExternalSource(Acquisition.Implicit):
             try:
                 kw = form.validate_all(REQUEST)
             except (FormValidationError, ValidationError), err:
-                # If we cannot validate (e.g. due to required parameters), 
+                # If we cannot validate (e.g. due to required parameters),
                 # return a form.
                 # FIXME: How to get some feedback in the rendered page? E.g.
                 # in case of validation errors.
@@ -332,28 +332,28 @@ class ExternalSource(Acquisition.Implicit):
 
     # MODIFIERS
 
-    security.declareProtected(SilvaPermissions.ViewManagementScreens, 
+    security.declareProtected(SilvaPermissions.ViewManagementScreens,
                                 'set_form')
     def set_form(self, form):
         """ Set Formulator parameters form
         """
         self.parameters = form
 
-    security.declareProtected(SilvaPermissions.ViewManagementScreens, 
+    security.declareProtected(SilvaPermissions.ViewManagementScreens,
                                 'set_data_encoding')
     def set_data_encoding(self, encoding):
         """ set encoding of data
         """
         self._data_encoding = encoding
 
-    security.declareProtected(SilvaPermissions.ViewManagementScreens, 
+    security.declareProtected(SilvaPermissions.ViewManagementScreens,
                                 'set_description')
     def set_description(self, desc):
         """ set description of external source's use
         """
         self._description = desc
 
-    security.declareProtected(SilvaPermissions.ViewManagementScreens, 
+    security.declareProtected(SilvaPermissions.ViewManagementScreens,
                                 'set_is_cacheable')
     def set_is_cacheable(self, cacheable):
         """ set cacheablility of source

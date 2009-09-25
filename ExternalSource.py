@@ -188,6 +188,8 @@ class ExternalSource(Acquisition.Implicit):
             elif field.meta_type == "DateTimeField":
                 if value:
                     value = DateTime(value)
+                else: # it needs to be None, rather than ''
+                    value = None
             else:
                 value = ustr(self._xml_unescape(value), 'UTF-8')
             xml.append('<td>%s</td>\n</tr>\n' %

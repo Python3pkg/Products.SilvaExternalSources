@@ -19,8 +19,8 @@ from Products.Formulator.XMLToForm import XMLToForm
 from Products.Silva.SilvaPermissions import ViewManagementScreens, AccessContentsInformation
 from Products.Silva.helpers import add_and_edit
 from Products.Silva import mangle
-from Products.Silva.BaseService import ZMIObject
 
+from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf
 
 # I18N stuff

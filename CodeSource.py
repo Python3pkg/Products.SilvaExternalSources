@@ -16,8 +16,8 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.Silva.SilvaPermissions import ViewManagementScreens, AccessContentsInformation
 from Products.Silva.helpers import add_and_edit
 from Products.Silva.i18n import translate as _
-from Products.Silva.BaseService import ZMIObject
 
+from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf
 
 class CodeSource(ExternalSource, Folder, ZMIObject):

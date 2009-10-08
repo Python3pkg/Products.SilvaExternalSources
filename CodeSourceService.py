@@ -10,12 +10,12 @@ from OFS.interfaces import IObjectWillBeRemovedEvent
 from AccessControl import ClassSecurityInfo
 
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from Products.Silva.BaseService import SilvaService
 from Products.Silva.helpers import add_and_edit, \
     register_service, unregister_service
 from Products.Silva.SilvaPermissions import ViewManagementScreens
 from Products.SilvaExternalSources.interfaces import ICodeSourceService
 
+from silva.core.services.base import SilvaService
 from silva.core import conf as silvaconf
 
 class CodeSourceService(Folder, SilvaService):

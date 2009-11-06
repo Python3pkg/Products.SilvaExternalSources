@@ -1,5 +1,6 @@
 # Copyright (c) 2006-2009 Infrae
 # All rights reserved. See also LICENSE.txt
+# $Id$
 
 # Python
 import logging
@@ -7,7 +8,7 @@ import logging
 from zope.interface import implements
 # Silva
 from silva.core.interfaces import IUpgrader
-from Products.Silva import upgrade
+from silva.core.upgrade import upgrade
 
 _extsources_version = '1.5.8'
 
@@ -30,14 +31,15 @@ extSourcesUpgradeRegistry.registerUpgrader(
 extSourcesUpgradeRegistry.registerUpgrader(
     SourceTitleUpgrader(), _extsources_version, 'Silva SQL Source')
 
-    
+
 def upgrade_extsources(container=None):
     if not container:
         return "No silva object provided"
 
     silva_root = container.get_root()
     if not silva_root:
-        return "No Silva root found for Silva External Sources upgrade %s" % _extsources_version
+        msg = "No Silva root found for Silva External Sources upgrade %s"
+        return msg  % _extsources_version
 
     extSourcesUpgradeRegistry.upgradeTree(silva_root, _extsources_version)
     return 'done'

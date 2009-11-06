@@ -10,7 +10,11 @@ from zope.interface import implements
 from DocumentTemplate import sequence
 # Zope
 import Acquisition
-from Globals import InitializeClass
+try:
+    from App.class_init import InitializeClass # Zope 2.12
+except ImportError:
+    from Globals import InitializeClass # Zope < 2.12
+
 from AccessControl import ClassSecurityInfo, ModuleSecurityInfo
 from DateTime import DateTime
 # Silva

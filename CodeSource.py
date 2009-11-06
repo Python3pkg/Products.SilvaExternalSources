@@ -7,7 +7,11 @@ from interfaces import IExternalSource
 from ExternalSource import ExternalSource
 from zope.interface import implements
 # Zope
-from Globals import InitializeClass
+try:
+    from App.class_init import InitializeClass # Zope 2.12
+except ImportError:
+    from Globals import InitializeClass # Zope < 2.12
+
 from AccessControl import ClassSecurityInfo
 from OFS.Folder import Folder
 from Products.Formulator.Form import ZMIForm

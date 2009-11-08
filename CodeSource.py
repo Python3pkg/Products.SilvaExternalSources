@@ -118,7 +118,7 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
 
     def _cast_value(self, value, field_type):
         if field_type == 'CheckBoxField':
-            if int(value)==1:
+            if value is not None and int(value)==1:
                 return True
             return False
         elif field_type == 'IntegerField':
@@ -142,7 +142,7 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
     security.declareProtected(ViewManagementScreens, 'manage_editCodeSource')
     def manage_editCodeSource(
         self, title, script_id, data_encoding, description=None,
-        cacheable=None, elaborate=None):
+        cacheable=None, elaborate=None, previewable=None):
         """ Edit CodeSource object
         """
         msg = u''
@@ -187,6 +187,11 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
             self.set_is_cacheable(cacheable)
             m = _("Cacheability setting changed. ")
             msg += m #'Cacheability setting changed. '
+
+        if not (not not previewable) is (not not self.is_previewable()):
+            self.set_is_previewable(previewable)
+            m = _("Previewable setting changed.")
+            msg += m #'Previewable setting changed.'
 
         if not elaborate:
             if self.elaborate():

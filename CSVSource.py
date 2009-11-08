@@ -208,7 +208,7 @@ class CSVSource(ExternalSource, Asset, Folder):
         SilvaPermissions.ViewManagementScreens, 'manage_editCSVSource')
     def manage_editCSVSource(
         self, title, character_set, description=None, cacheable=None,
-        headings=None, file=None):
+        headings=None, file=None, previewable=None):
         """ Edit CSVSource object
         """
         msg = u''
@@ -252,6 +252,10 @@ class CSVSource(ExternalSource, Asset, Folder):
             self.set_is_cacheable(cacheable)
             m = _("Cacheability setting changed. ")
             msg += m #'Cacheability setting changed. '
+        if not (not not previewable) is (not not self.is_previewable()):
+            self.set_is_previewable(previewable)
+            m = _("Previewable setting changed. ")
+            msg += m #'Previewable setting changed. '
         if file:
             self.update_data(data.read())
             m = _("Data updated. ")

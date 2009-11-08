@@ -124,6 +124,9 @@ class ExternalSource(Acquisition.Implicit):
     _data_encoding = 'UTF-8'
     _description = ''
     _is_cacheable = 0
+    # if true, the rendered source is displayed in kupu, given
+    # the parameters specified in the doc.
+    _is_previewable = True
 
     # ACCESSORS
 
@@ -292,6 +295,16 @@ class ExternalSource(Acquisition.Implicit):
         return self._is_cacheable
 
     security.declareProtected(SilvaPermissions.AccessContentsInformation,
+                                 'is_previewable')
+    def is_previewable(self, **kw):
+        """ Specify the previewability (in kupu) of the source
+        """
+        if not hasattr(self, '_is_previewable'):
+            self._is_previewable = True
+        return self._is_previewable
+                 
+
+    security.declareProtected(SilvaPermissions.AccessContentsInformation, 
                                 'data_encoding')
     def data_encoding(self):
         """ Specify the encoding of source's data.
@@ -362,6 +375,13 @@ class ExternalSource(Acquisition.Implicit):
         """ set cacheablility of source
         """
         self._is_cacheable = cacheable
+
+    security.declareProtected(SilvaPermissions.ViewManagementScreens,
+                                 'set_is_cacheable')
+    def set_is_previewable(self, previewable):
+        """ set previewablility (in kupu) of source
+        """
+        self._is_previewable = not not previewable
 
     """If the external source errors out, log the traceback to the zope error log.
        This function allows continues processing"""

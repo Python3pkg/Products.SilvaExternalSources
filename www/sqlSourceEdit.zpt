@@ -132,6 +132,17 @@ Version of this file: $Revision: 1.8 $
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
+          Source is previewable in kupu
+        </div>
+      </td>
+      <td align="left" valign="top">
+        <input type="checkbox" name="previewable" 
+          tal:attributes="checked python: here.is_previewable() and 'checked' or nothing" />
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-label">
           Reset table rendering pagetemplate<br />
           to default layout
         </div>

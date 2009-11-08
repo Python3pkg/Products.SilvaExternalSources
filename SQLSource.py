@@ -145,7 +145,7 @@ class SQLSource(ZMIObject, ExternalSource, Folder):
     def manage_editSQLSource(
         self, title, connection_id, data_encoding, statement, 
         description=None, cacheable=None, layout_id=None, reset_layout=None,
-        reset_params=None
+        reset_params=None, previewable=None
         ):
         """ Edit SQLSource object
         """
@@ -198,6 +198,11 @@ class SQLSource(ZMIObject, ExternalSource, Folder):
             self.set_is_cacheable(cacheable)
             m = _("Cacheability setting changed. ")
             msg += m #'Cacheability setting changed. '
+
+        if not (not not previewable) is (not not self.is_previewable()):
+            self.set_is_previewable(previewable)
+            m = _("Previewable setting changed. ")
+            msg += m #'Previewable setting changed. '
 
         if layout_id and layout_id != self._layout_id:
             self._layout_id = layout_id

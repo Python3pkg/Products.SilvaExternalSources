@@ -12,10 +12,9 @@ Features Added
 - update cs_toc
 
 - an 'is previewable in kupu' setting was added to external
-  sources.  If this is true (default), then in the kupu
-  supporting previewable external sources, the rendered
-  external source will replace the "Silva Code Source <<title>>"
-  div (which may or may not display parameters) in kupu.
+  sources.  This defaults to true.  If true, then kupu
+  will show the rendered external source, replacing the yellow
+  "External Source <<title>>" div.
 
 2.2a2 (2009-01-12)
 ------------------

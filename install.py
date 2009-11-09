@@ -10,7 +10,8 @@ import os.path
 from warnings import warn
 
 # Zope
-from Globals import package_home
+from App.Common import package_home
+
 from zExceptions import BadRequest
 from Products.Formulator.Form import ZMIForm
 

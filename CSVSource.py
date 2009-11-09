@@ -8,7 +8,9 @@ from ExternalSource import ExternalSource
 from zope.interface import implements
 
 # Zope
-from Globals import InitializeClass, package_home
+from Globals import InitializeClass
+from App.Common import package_home
+
 from AccessControl import ClassSecurityInfo
 from OFS.Folder import Folder
 from Products.Formulator.Form import ZMIForm

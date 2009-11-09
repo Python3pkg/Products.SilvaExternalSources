@@ -6,7 +6,9 @@ from ExternalSource import ExternalSource
 from zope.interface import implements
 # Zope
 from OFS.Folder import Folder
-from Globals import InitializeClass, package_home
+from Globals import InitializeClass
+from App.Common import package_home
+
 from AccessControl import ClassSecurityInfo
 from Products.ZSQLMethods.SQL import SQLConnectionIDs, SQL
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile

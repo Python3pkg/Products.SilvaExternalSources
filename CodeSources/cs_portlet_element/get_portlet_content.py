@@ -5,4 +5,10 @@ view_method='view'
 if show_title=='no':
   request.set('suppress_title','yes')
 
-return getattr(context.restrictedTraverse(str(document), None), view_method)()
+model = request['model']
+html getattr(context.restrictedTraverse(str(document), None), view_method)()
+
+request.model = model
+request['model'] = model
+
+return html

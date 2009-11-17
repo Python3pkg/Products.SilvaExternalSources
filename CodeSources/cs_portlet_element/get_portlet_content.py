@@ -8,7 +8,7 @@ if show_title=='no':
 model = request['model']
 html = getattr(model.restrictedTraverse(str(document), None), view_method)()
 
-request.model = model
+#request.model = model
 request.other['model'] = model
 
 return html

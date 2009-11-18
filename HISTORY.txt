@@ -3,20 +3,23 @@ See also LICENSE.txt
 
 SilvaExternalSources changes
 
-  2.1.5 (unreleased):
-   
+  2.1.5 (11/18/2009):
+
     Bugs Fixed:
 
+     - fix cs_portlet_element when used multiple times (restore
+       request/model correctly).
+
   2.1.4 (09/25/2009):
-  
+
     Bugs Fixed:
-    
+
      - fix DateTimeField as parameter support
 
   2.1.3 (09/17/2009):
-  
+
     Bugs Fixed:
-     
+
      - back-port fix in CodeSource._cast_value for MultiListFields from trunk
 
   2.1.2 (09/14/2009):
@@ -28,10 +31,10 @@ SilvaExternalSources changes
        to 'now' if no value is present (ported from r36662 in trunk)
 
   2.1.1 (08/05/2009):
-  
+
     Bugs Fixed:
-    
-      - Code Sources: MultiListField values were being passed to the    
+
+      - Code Sources: MultiListField values were being passed to the
         rendering script as strings instead of lists
 
   2.1:
@@ -51,11 +54,11 @@ SilvaExternalSources changes
 
       - html entered into parameters is no lounger doubly escaped on
         saving the document.
-  
+
   2.0.7:
-  
+
     Features Added:
-        
+
       - added support for 'elaborate' code sources, that show their
         add/edit form in a pop-up instead of in the kupu
         toolbox. Useful when code sources have a large number of
@@ -85,7 +88,7 @@ SilvaExternalSources changes
         differ only in case aren't supported
 
   1.5:
-    
+
     Bugs Fixed:
 
       - the model is available in validate_to_form (when working from kupu)
@@ -94,7 +97,7 @@ SilvaExternalSources changes
 
     Features added / bugs fixed: not recorded
 
-  1.3 
+  1.3
 
     Features added:
 
@@ -127,22 +130,22 @@ SilvaExternalSources changes
 
     Bugs fixed:
 
-      - Titles were not stored as unicode strings. 
+      - Titles were not stored as unicode strings.
         Moved the setting of the title to *after* the creation
         of the source, so that we can get an encoding from somewhere
         and use it to convert to unicode. Unfortunately this somewhere is a
-        hard coded string for now, since Zope 2 doesn't seem to allow 
+        hard coded string for now, since Zope 2 doesn't seem to allow
         anything else.
-    
+
       - ZMI parameter forms are now utf-8 by default.
 
-      - Fixed unicode bug when using non-ascii chars in field titles (Kupu 
+      - Fixed unicode bug when using non-ascii chars in field titles (Kupu
         specific, port from 0.10 branch).
 
   0.12
 
     Bugs fixed:
- 
+
       - Fixes to security declarations to stop Zope 2.8.5+ startup warnings.
 
       - Some HTML template cleanups.
@@ -220,7 +223,7 @@ SilvaExternalSources changes
   0.8b1
 
     Features added:
-     
+
       o Kupu support.
 
     Bugs fixed:
@@ -234,7 +237,7 @@ SilvaExternalSources changes
   0.7
 
     Lots of additions and bugfixes, including new CVSSource object.
- 
-  0.2 
- 
+
+  0.2
+
     Initial public release.

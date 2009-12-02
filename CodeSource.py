@@ -1,7 +1,7 @@
 # Copyright (c) 2002-2008 Infrae. All rights reserved.
 # See also LICENSE.txt
 # $Revision: 1.19 $
-from types import ListType
+from types import ListType, IntType
 
 from interfaces import IExternalSource
 from ExternalSource import ExternalSource
@@ -110,7 +110,7 @@ class CodeSource(ExternalSource, Folder):
                 return True
             return False
         elif field_type == 'IntegerField':
-            if not value: #if value is not set
+            if type(value) is not IntType and not value:
                 return None
             return int(value)
         elif field_type == 'MultiListField':

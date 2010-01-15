@@ -6,7 +6,7 @@ Meta::
   Valid for:  SilvaExternalSources 0.13
   Author:     Martijn Faassen, Guido Goldstein
   Email:      faasen at infrae.com, gst at infrae.com
-  CVS:        $Revision: 1.8 $
+  CVS:        $Revision$
 
 SilvaExternalSources is a Silva extension. This version requires Silva
 1.0. Extensive documentation can be accessed by installing a Silva

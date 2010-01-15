@@ -6,7 +6,7 @@ Meta::
   Valid for:  SilvaExternalSources
   Author:     Jan-Wijbrand Kolman
   Email:      jw@infrae.com
-  CVS:        $Revision: 1.6 $
+  CVS:        $Revision$
 
 SilvaExternalSources is developed by Infrae (http://www.infrae.com).
 

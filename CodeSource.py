@@ -3,38 +3,39 @@
 # $Id$
 
 from types import ListType
-from interfaces import IExternalSource
-from ExternalSource import ExternalSource
 from zope.interface import implements
-# Zope
-try:
-    from App.class_init import InitializeClass # Zope 2.12
-except ImportError:
-    from Globals import InitializeClass # Zope < 2.12
 
+# Zope
+from App.class_init import InitializeClass
 from AccessControl import ClassSecurityInfo
 from OFS.Folder import Folder
-from Products.Formulator.Form import ZMIForm
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+
+from Products.Formulator.Form import ZMIForm
+from Products.SilvaExternalSources.interfaces import IExternalSource
+from Products.SilvaExternalSources.ExternalSource import ExternalSource
+
 # Silva
-from Products.Silva.SilvaPermissions import ViewManagementScreens, AccessContentsInformation
+from Products.Silva.SilvaPermissions import ViewManagementScreens, \
+    AccessContentsInformation
 from Products.Silva.helpers import add_and_edit
-from Products.Silva.i18n import translate as _
 
 from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf
+from silva.translations import translate as _
+
 
 class CodeSource(ExternalSource, Folder, ZMIObject):
 
     implements(IExternalSource)
-    
+
     meta_type = "Silva Code Source"
 
     security = ClassSecurityInfo()
 
     # UTF as UI is in UTF-8
     _data_encoding = 'UTF-8'
-        
+
     # ZMI Tabs
     manage_options = (
         {'label':'Edit', 'action':'editCodeSource'},
@@ -48,7 +49,7 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
     silvaconf.icon('www/codesource.png')
     silvaconf.factory('manage_addCodeSourceForm')
     silvaconf.factory('manage_addCodeSource')
-    
+
     def __init__(self, id, script_id=None):
         self._elaborate = False
         self.id = id
@@ -62,12 +63,12 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
         if elaborate is None:
             elaborate = self._elaborate = False
         return elaborate
-    
+
     security.declareProtected(AccessContentsInformation, 'script_id')
     def script_id(self):
         return self._script_id
 
-    security.declareProtected(AccessContentsInformation, 
+    security.declareProtected(AccessContentsInformation,
                                 'get_rendered_form_for_editor')
     def get_rendered_form_for_editor(self, REQUEST=None):
         """non empty docstring"""
@@ -95,7 +96,7 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
                 'extsourcetool._validateAndSubmit(true);window.close()">'
                 '</form></div></div><div></body></html>')
         return html
-        
+
     security.declareProtected(AccessContentsInformation, 'to_html')
     def to_html(self, REQUEST, **kw):
         """ render HTML for code source
@@ -109,7 +110,7 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
         if type(result) is unicode:
             return result
         return unicode(result, self.data_encoding(), 'replace')
-    
+
     def _deserialize(self, kw):
         fields = self.form().get_fields()
         for field in fields:
@@ -136,7 +137,7 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
 
     def set_elaborate(self, value):
         self._elaborate = value
-        
+
     # MANAGERS
 
     security.declareProtected(ViewManagementScreens, 'manage_editCodeSource')
@@ -173,7 +174,7 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
             m = _("Script id changed. ")
             msg += m #'Script id changed. '
 
-        # Assume description is in the encoding as specified 
+        # Assume description is in the encoding as specified
         # by "management_page_charset". Store it in unicode.
         description = unicode(
             description, self.management_page_charset)
@@ -198,10 +199,10 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
                 self.set_elaborate(False)
         elif not self.elaborate():
             self.set_elaborate(True)
-            
+
         try:
             script = self[script_id]
-        except KeyError:            
+        except KeyError:
             m = _("<b>Warning</b>: ")
             msg += m #'<b>Warning</b>: '
             if not script_id:
@@ -229,6 +230,6 @@ def manage_addCodeSource(context, id, title, script_id=None, REQUEST=None):
     context._setObject(id, cs)
     cs = context._getOb(id)
     cs.set_form(ZMIForm('form', 'Parameters form', unicode_mode=1))
-    
+
     add_and_edit(context, id, REQUEST, screen='editCodeSource')
     return ''

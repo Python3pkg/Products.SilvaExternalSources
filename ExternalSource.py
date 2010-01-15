@@ -2,30 +2,28 @@
 # See also LICENSE.txt
 # $Id$
 
-#for the traceback info
+# Python
 import sys
 from urllib import quote
 
 from zope.interface import implements
 from DocumentTemplate import sequence
-# Zope
-import Acquisition
-try:
-    from App.class_init import InitializeClass # Zope 2.12
-except ImportError:
-    from Globals import InitializeClass # Zope < 2.12
 
+# Zope
 from AccessControl import ClassSecurityInfo, ModuleSecurityInfo
+from App.class_init import InitializeClass
 from DateTime import DateTime
+import Acquisition
+
 # Silva
 from Products.Silva import SilvaPermissions
-from Products.Silva.i18n import translate as _
-# Interfaces
-from silva.core.interfaces import IRoot
 from Products.SilvaExternalSources.interfaces import IExternalSource
-# Formulator
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.Errors import ValidationError, FormValidationError
+
+from silva.core.interfaces import IRoot
+from silva.translations import translate as _
+
 
 icon="www/silvaexternalsource.png"
 

@@ -1,15 +1,17 @@
 # Copyright (c) 2002-2010 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Revision$
-from interfaces import IExternalSource
-from ExternalSource import ExternalSource
-from zope.interface import implements
-# Zope
-from OFS.Folder import Folder
-from Globals import InitializeClass
-from App.Common import package_home
+# $Id$
 
+from Products.SilvaExternalSources.interfaces import IExternalSource
+from Products.SilvaExternalSources.ExternalSource import ExternalSource
+from zope.interface import implements
+
+# Zope
 from AccessControl import ClassSecurityInfo
+from App.Common import package_home
+from Globals import InitializeClass
+from OFS.Folder import Folder
+
 from Products.ZSQLMethods.SQL import SQLConnectionIDs, SQL
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
@@ -18,15 +20,14 @@ from Products.PythonScripts.PythonScript import PythonScript
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.XMLToForm import XMLToForm
 # Silva
-from Products.Silva.SilvaPermissions import ViewManagementScreens, AccessContentsInformation
+from Products.Silva.SilvaPermissions import ViewManagementScreens, \
+    AccessContentsInformation
 from Products.Silva.helpers import add_and_edit
 from Products.Silva import mangle
 
 from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf
-
-# I18N stuff
-from Products.Silva.i18n import translate as _
+from silva.translations import translate as _
 
 
 icon="www/silvasqldatasource.png"

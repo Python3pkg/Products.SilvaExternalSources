@@ -2,52 +2,52 @@
 # See also LICENSE.txt
 # $Id$
 
-from interfaces import IExternalSource
-from ExternalSource import ExternalSource
+from Products.SilvaExternalSources.interfaces import IExternalSource
+from Products.SilvaExternalSources.ExternalSource import ExternalSource
+from Products.SilvaExternalSources import ASV
 
 from zope.interface import implements
 
 # Zope
-from Globals import InitializeClass
-from App.Common import package_home
-
 from AccessControl import ClassSecurityInfo
+from App.Common import package_home
+from Globals import InitializeClass
 from OFS.Folder import Folder
+
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.XMLToForm import XMLToForm
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
+
 # Silva
 from Products.Silva import SilvaPermissions
 from Products.Silva.helpers import add_and_edit
 from Products.Silva.Asset import Asset
-from silva.core.interfaces import IAsset
-
-# I18N stuff
-from Products.Silva.i18n import translate as _
 
 from silva.core import conf as silvaconf
+from silva.core.interfaces import IAsset
+from silva.translations import translate as _
 
-import ASV
+
 
 class CSVSource(ExternalSource, Asset, Folder):
 
-    """CSV Source is an asset that displays tabular data from a 
+    """CSV Source is an asset that displays tabular data from a
     spreadsheet or database. The format of the uploaded text file
-    should be &#8216;comma separated values&#8217;. The asset can 
-    be linked directly, or inserted in a document with the External 
+    should be &#8216;comma separated values&#8217;. The asset can
+    be linked directly, or inserted in a document with the External
     Source element. If necessary, all aspects of the display can be
     customized in the rendering templates of the CSV Source.
     """
 
     implements(IExternalSource, IAsset)
-    
+
     meta_type = "Silva CSV Source"
 
     management_page_charset = 'utf-8'
 
     security = ClassSecurityInfo()
-    
+
     # ZMI Tabs
     manage_options = (
         {'label':'Edit', 'action':'editCSVSource'},
@@ -55,12 +55,12 @@ class CSVSource(ExternalSource, Asset, Folder):
         ) + Folder.manage_options
 
     security.declareProtected(
-        SilvaPermissions.ViewManagementScreens, 'editCSVSource')    
+        SilvaPermissions.ViewManagementScreens, 'editCSVSource')
     editCSVSource = PageTemplateFile(
         'www/csvSourceEdit', globals(),  __name__='editCSVSource')
 
     security.declareProtected(
-        SilvaPermissions.ViewManagementScreens, 'editDataCSVSource')    
+        SilvaPermissions.ViewManagementScreens, 'editDataCSVSource')
     editDataCSVSource = PageTemplateFile(
         'www/csvSourceEditData', globals(),  __name__='editCSVSourceData')
 
@@ -133,7 +133,7 @@ class CSVSource(ExternalSource, Asset, Folder):
     def get_table_class (self):
         """Returns css class for table """
         return self._table_class
-        
+
     security.declareProtected(
         SilvaPermissions.AccessContentsInformation, 'description')
     def description (self):
@@ -188,7 +188,7 @@ class CSVSource(ExternalSource, Asset, Folder):
         SilvaPermissions.ChangeSilvaContent, 'set_table_class')
     def set_table_class (self, css_class):
         self._table_class = css_class
-        return 
+        return
 
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'set_description')
@@ -232,20 +232,20 @@ class CSVSource(ExternalSource, Asset, Folder):
             mapping={"enc":charset})
         msg += m #'Data encoding changed to: %s. ' % charset
 
-        # Assume title is in the encoding as specified 
+        # Assume title is in the encoding as specified
         # by "management_page_charset". Store it in unicode.
         title = unicode(
             title, self.management_page_charset)
-        
+
         if title and title != self.get_title():
             self.set_title(title)
             msg += _("Title changed. ")
-            
-        # Assume description is in the encoding as specified 
+
+        # Assume description is in the encoding as specified
         # by "management_page_charset". Store it in unicode.
         description = unicode(
             description, self.management_page_charset, 'replace')
-            
+
         if description and description != self._description:
             self.set_description(description)
             m = _("Description changed. ")
@@ -283,8 +283,8 @@ InitializeClass(CSVSource)
 import os
 
 def reset_parameter_form(csvsource):
-    filename = os.path.join(package_home(globals()), 
-                            'layout', 
+    filename = os.path.join(package_home(globals()),
+                            'layout',
                             'csvparameters.xml')
     f = open(filename, 'rb')
     form = ZMIForm('form', 'Parameters form', unicode_mode=1)

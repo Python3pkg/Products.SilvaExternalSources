@@ -1,6 +1,6 @@
 README.txt
 
-Copyright (c) 2005-2009 Samuel Schluep, ETH Zurich and Infrae.
+Copyright (c) 2005-2010 Samuel Schluep, ETH Zurich and Infrae.
 All rights reserved. See also LICENSE.txt
 
 Quicktime

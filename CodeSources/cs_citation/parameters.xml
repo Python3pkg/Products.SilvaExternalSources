@@ -22,7 +22,7 @@
           <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button', u'kupu-subscript-button', u'kupu-superscript-button', u'kupu-source-button']</buttons>
           <css_class>store</css_class>
           <default></default>
-          <description>citation body</description>
+          <description>Text of the citation (can be rich text).</description>
           <enabled type="int">1</enabled>
           <external_validator></external_validator>
           <hidden type="int">0</hidden>
@@ -49,7 +49,7 @@
           <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button', u'kupu-subscript-button', u'kupu-superscript-button', u'kupu-source-button']</buttons>
           <css_class>store</css_class>
           <default></default>
-          <description>author of citation</description>
+          <description>Author of citation (can be rich text).</description>
           <display_maxwidth></display_maxwidth>
           <display_width type="int">20</display_width>
           <enabled type="int">1</enabled>
@@ -57,7 +57,7 @@
           <extra></extra>
           <hidden type="int">0</hidden>
           <max_length></max_length>
-          <required type="int">1</required>
+          <required type="int">0</required>
           <textstyles type="list">[u'P|normal', u'P|lead', u'P|annotation']</textstyles>
           <title>author</title>
           <toolboxes type="list">[u'kupu-toolbox-links', u'kupu-toolbox-indexes', u'kupu-toolbox-abbr', u'kupu-toolbox-cleanupexpressions', u'kupu-toolbox-typochars', u'kupu-toolbox-save']</toolboxes>
@@ -79,12 +79,12 @@
           <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button', u'kupu-subscript-button', u'kupu-superscript-button', u'kupu-source-button']</buttons>
           <css_class>store</css_class>
           <default></default>
-          <description>source of citation</description>
+          <description>Source of citation (can be rich text).</description>
           <enabled type="int">1</enabled>
           <external_validator></external_validator>
           <hidden type="int">0</hidden>
           <max_length></max_length>
-          <required type="int">1</required>
+          <required type="int">0</required>
           <textstyles type="list">[u'P|normal', u'P|lead', u'P|annotation']</textstyles>
           <title>source</title>
           <toolboxes type="list">[u'kupu-toolbox-links', u'kupu-toolbox-indexes', u'kupu-toolbox-abbr', u'kupu-toolbox-cleanupexpressions', u'kupu-toolbox-typochars', u'kupu-toolbox-save']</toolboxes>

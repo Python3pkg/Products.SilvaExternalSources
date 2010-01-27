@@ -4,6 +4,13 @@ SilvaExternalSources changes
 2.2b1 (unreleased)
 ------------------
 
+Bugs fixed
+~~~~~~~~~~
+
+- fix for codesources to keep the .js extension in the id of a
+  javascript resource
+
+
 Features Added
 ~~~~~~~~~~~~~~
 

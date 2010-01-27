@@ -122,8 +122,11 @@ def install_xml(path, cs_file, cs):
     form.set_xml(read_file(form_path))
     cs.set_form(form)
 
-def install_dtml(path, cs_file, cs):
-    id = cs_file.split('.')[0]
+def install_dtml(path, cs_file, cs, keep_extension=False):
+    if not keep_extension:
+        id = cs_file.split('.')[0]
+    else:
+        id = cs_file
     dtml_path = os.path.join(path, cs_file)
     cs.manage_addProduct['OFSP'].manage_addDTMLMethod(id, '', open(dtml_path).read())
 
@@ -157,6 +160,6 @@ def install_codesources(cs_path, root, cs_fields, product_name=None):
             if cs_file.endswith('.xml'):
                 install_xml(path, cs_file, cs)
             if cs_file.endswith('.js'):
-                install_dtml(path, cs_file, cs)
+                install_dtml(path, cs_file, cs, keep_extension=True)
             if cs_file.endswith('.txt'):
                 install_txt(path, cs_file, cs)

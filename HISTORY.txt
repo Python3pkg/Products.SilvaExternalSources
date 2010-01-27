@@ -7,6 +7,9 @@ SilvaExternalSources changes
 
     Bugs Fixed:
 
+     - fix for codesources to keep the .js extension in the id of a
+       javascript resource
+
   2.1.5 (11/18/2009):
 
     Bugs Fixed:

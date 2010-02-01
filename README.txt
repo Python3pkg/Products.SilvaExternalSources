@@ -2,8 +2,6 @@
 SilvaExternalSources
 ====================
 
-.. contents::
-
 The SilvaExternalSources extension adds the possibility to include
 data from non-Silva sources in Silva Documents. These non-Silva or
 external sources can for example be a relational database or the

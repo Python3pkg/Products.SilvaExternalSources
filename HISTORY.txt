@@ -1,7 +1,7 @@
 SilvaExternalSources changes
 ============================
 
-2.2b1 (unreleased)
+2.2b1 (2010-02-01)
 ------------------
 
 Bugs fixed

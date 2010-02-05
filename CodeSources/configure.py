@@ -6,6 +6,7 @@ configuration = {
         'desc': "Code Source to embed YouTube videos",
         'cacheable': True,
         'elaborate': False,
+        'previewable': True,
     },
     'cs_google_calendar': {
         'id': 'cs_google_calendar',
@@ -14,6 +15,7 @@ configuration = {
         'desc': 'Code Source to embed a public Google Calendar.',
         'cacheable': True,
         'elaborate': False,
+        'previewable': True,
     },
     'cs_toc': {
         'id': 'cs_toc',
@@ -22,6 +24,7 @@ configuration = {
         'desc': 'Displays a listing of items contained in folders and/or publications. (replaces the TOC element)',
         'cacheable': False,
         'elaborate': False,
+        'previewable': True,
     },
     'cs_citation': {
         'id': 'cs_citation',
@@ -30,6 +33,7 @@ configuration = {
         'desc': 'A citation allows authors to include a reference, citing an author and a source.',
         'cacheable': True,
         'elaborate': False,
+        'previewable': True,
     },
     'cs_google_maps': {
         'id': 'cs_google_maps',
@@ -38,6 +42,7 @@ configuration = {
         'desc': 'Code Source for Google Maps iFrame.',
         'cacheable': True,
         'elaborate': False,
+        'previewable': True,
     },
     'cs_network_image': {
         'id': 'cs_network_image',
@@ -46,6 +51,7 @@ configuration = {
         'desc': 'Insert an image from the network with a link and/or tooltip.',
         'cacheable': True,
         'elaborate': False,
+        'previewable': True,
     },
     'cs_ms_video': {
         'id': 'cs_ms_video',
@@ -54,6 +60,7 @@ configuration = {
         'desc': 'Embeds a Window Media Player movie.',
         'cacheable': True,
         'elaborate': False,
+        'previewable': True,
     },
     'cs_quicktime': {
         'id': 'cs_quicktime',
@@ -62,6 +69,7 @@ configuration = {
         'desc': 'Embedder for a Quicktime movie with configuration parameters.',
         'cacheable': True,
         'elaborate': False,
+        'previewable': True,
     },
     'cs_related_info': {
         'id': 'cs_related_info',
@@ -70,6 +78,7 @@ configuration = {
         'desc': 'Provide related info and crosslinks.',
         'cacheable': True,
         'elaborate': False,
+        'previewable': True,
     },
     'cs_flash': {
         'id': 'cs_flash',
@@ -78,6 +87,7 @@ configuration = {
         'desc': 'Embeds a Flash movie in a page using parameters.',
         'cacheable': False,
         'elaborate': False,
+        'previewable': False,
     },
     'cs_encaptionate': {
         'id': 'cs_encaptionate',
@@ -86,6 +96,7 @@ configuration = {
         'desc': 'Insert an image with title, link, caption, and/or credit.',
         'cacheable': True,
         'elaborate': False,
+        'previewable': True,
     },
     'cs_java_applet': {
         'id': 'cs_java_applet',
@@ -94,6 +105,7 @@ configuration = {
         'desc': 'Embeds a Java applet with parameters using the HTML applet tag.',
         'cacheable': True,
         'elaborate': False,
+        'previewable': False,
     },
     'cs_java_plugin': {
         'id': 'cs_java_plugin',
@@ -102,6 +114,7 @@ configuration = {
         'desc': 'Embeds a Java applet with the Java plug-in mechanism.',
         'cacheable': True,
         'elaborate': False,
+        'previewable': False,
     },
     'cs_search_field': {
         'id': 'cs_search_field',
@@ -110,6 +123,7 @@ configuration = {
         'desc': 'Inserts a search field in a document. Requires SilvaFind.',
         'cacheable': True,
         'elaborate': False,
+        'previewable': True,
     },
     'cs_flash_source': {
         'id': 'cs_flash_source',
@@ -118,6 +132,7 @@ configuration = {
         'desc': 'This Code Source embeds a Flash file (swf or flv) in a page and provides a form for easy parameter configuration.',
         'cacheable': True,
         'elaborate': False,
+        'previewable': False,
     },
     'cs_portlet_element': {
         'id': 'cs_portlet_element',
@@ -126,5 +141,6 @@ configuration = {
         'desc': 'Code Source to include Silva Documents within other Silva Documents.',
         'cacheable': True,
         'elaborate': False,
+        'previewable': True,
     },
 }

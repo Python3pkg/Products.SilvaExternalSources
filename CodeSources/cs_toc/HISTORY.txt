@@ -3,6 +3,12 @@ See also LICENSE.txt
 
 Silva TOC Code Source changes
 
+0.2
+    - update the 'paths' parameter to use
+      the new features of the lookup window
+      field (e.g. multiple references, new
+      javascript onclick code)
+
 0.1
 
     - correct the items call syntax

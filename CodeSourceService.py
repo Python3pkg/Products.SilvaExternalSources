@@ -4,12 +4,13 @@
 
 from zope.interface import implements
 
-import Globals
+from AccessControl import ClassSecurityInfo
+from App.class_init import InitializeClass
+from App.special_dtml import DTMLFile
 from OFS.Folder import Folder
 from OFS.interfaces import IObjectWillBeRemovedEvent
-from AccessControl import ClassSecurityInfo
-
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+
 from Products.Silva.helpers import add_and_edit, \
     register_service, unregister_service
 from Products.Silva.SilvaPermissions import ViewManagementScreens
@@ -18,13 +19,14 @@ from Products.SilvaExternalSources.interfaces import ICodeSourceService
 from silva.core.services.base import SilvaService
 from silva.core import conf as silvaconf
 
+
 class CodeSourceService(Folder, SilvaService):
 
     security = ClassSecurityInfo()
     meta_type = 'Silva Code Source Service'
 
     security.declareProtected(ViewManagementScreens, 'manage_main')
-    manage_main = Globals.DTMLFile('www/serviceCodeSourceEditTab', globals())
+    manage_main = DTMLFile('www/serviceCodeSourceEditTab', globals())
 
     silvaconf.icon('www/codesource_service.png')
     silvaconf.factory('manage_addCodeSourceServiceForm')
@@ -36,7 +38,7 @@ class CodeSourceService(Folder, SilvaService):
         self.id = id
         self.title = title
 
-Globals.InitializeClass(CodeSourceService)
+InitializeClass(CodeSourceService)
 
 manage_addCodeSourceServiceForm = PageTemplateFile(
     'www/serviceCodeSourceAdd', globals(),

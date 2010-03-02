@@ -9,7 +9,7 @@ from zope.interface import implements
 # Zope
 from AccessControl import ClassSecurityInfo
 from App.Common import package_home
-from Globals import InitializeClass
+from App.class_init import InitializeClass
 from OFS.Folder import Folder
 
 from Products.ZSQLMethods.SQL import SQLConnectionIDs, SQL
@@ -35,7 +35,7 @@ icon="www/silvasqldatasource.png"
 class SQLSource(ZMIObject, ExternalSource, Folder):
 
     implements(IExternalSource)
-    
+
     meta_type = "Silva SQL Source"
 
     security = ClassSecurityInfo()
@@ -49,7 +49,7 @@ class SQLSource(ZMIObject, ExternalSource, Folder):
         {'label':'Edit', 'action':'editSQLSource'},
         ) + Folder.manage_options
 
-    security.declareProtected(ViewManagementScreens, 'editSQLSource')    
+    security.declareProtected(ViewManagementScreens, 'editSQLSource')
     editSQLSource = PageTemplateFile(
         'www/sqlSourceEdit', globals(),  __name__='sqlCodeSource')
 
@@ -71,7 +71,7 @@ class SQLSource(ZMIObject, ExternalSource, Folder):
 
     def connection_id(self):
         return self._connection_id
-    
+
     def statement(self):
         return self._statement
 
@@ -95,7 +95,7 @@ class SQLSource(ZMIObject, ExternalSource, Folder):
         data = [self._decode_dict_helper(d) for d in brains.dictionaries()]
         # We don't need to pass in the request explicitly (how would I do
         # that anyway) since we're calling the layout (e.g. a ZPT or Python
-        # Script) which can get to the request itself.        
+        # Script) which can get to the request itself.
         return layout(table=data, names=names, parameters=kw)
 
     def _get_data(self, args):
@@ -112,7 +112,7 @@ class SQLSource(ZMIObject, ExternalSource, Folder):
                 dictionary[key] = unicode(
                     value, self._data_encoding, 'replace')
         return dictionary
-    
+
     def _encode_dict_helper(self, dictionary):
         for key, value in dictionary.items():
             if type(value) is type(u''):
@@ -133,12 +133,12 @@ class SQLSource(ZMIObject, ExternalSource, Folder):
         #invalidate sql method
         self._sql_method = None
         self._p_changed = 1
-        
+
     def _set_sql_method(self):
         self._v_cached_parameters = parameters = self.form().get_field_ids()
         arguments = '\n'.join(parameters)
         self._sql_method = SQL(
-            self._sql_method_id, '', self._connection_id, 
+            self._sql_method_id, '', self._connection_id,
             arguments.encode('ascii'), self._statement.encode('UTF-8'))
         self._p_changed = 1
 
@@ -146,7 +146,7 @@ class SQLSource(ZMIObject, ExternalSource, Folder):
 
     security.declareProtected(ViewManagementScreens, 'manage_editSQLSource')
     def manage_editSQLSource(
-        self, title, connection_id, data_encoding, statement, 
+        self, title, connection_id, data_encoding, statement,
         description=None, cacheable=None, layout_id=None, reset_layout=None,
         reset_params=None, previewable=None
         ):
@@ -187,11 +187,11 @@ class SQLSource(ZMIObject, ExternalSource, Folder):
             m = _("SQL statement changed. ")
             msg += statement #'SQL statement changed. '
 
-        # Assume description is in the encoding as specified 
+        # Assume description is in the encoding as specified
         # by "management_page_charset". Store it in unicode.
         description = unicode(
             description, self.management_page_charset)
-            
+
         if description != self._description:
             self.set_description(description)
             m = _("Description changed. ")

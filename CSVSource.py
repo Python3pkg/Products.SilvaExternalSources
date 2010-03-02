@@ -11,7 +11,7 @@ from zope.interface import implements
 # Zope
 from AccessControl import ClassSecurityInfo
 from App.Common import package_home
-from Globals import InitializeClass
+from App.class_init import InitializeClass
 from OFS.Folder import Folder
 
 from Products.Formulator.Form import ZMIForm
@@ -27,7 +27,6 @@ from Products.Silva.Asset import Asset
 from silva.core import conf as silvaconf
 from silva.core.interfaces import IAsset
 from silva.translations import translate as _
-
 
 
 class CSVSource(ExternalSource, Asset, Folder):

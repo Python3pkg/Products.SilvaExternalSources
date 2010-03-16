@@ -5,15 +5,14 @@
 """Install for Silva External Sources extension
 """
 # Python
-import os
-import os.path
 from warnings import warn
+import logging
+import os
 
 # Zope
 from App.Common import package_home
-
-from zExceptions import BadRequest
 from Products.Formulator.Form import ZMIForm
+from zExceptions import BadRequest
 
 # Silva
 from Products.Silva.install import add_fss_directory_view
@@ -21,36 +20,42 @@ from Products.Silva import roleinfo
 from Products.SilvaExternalSources.codesources import configure
 
 manage_permission = 'Manage CodeSource Services'
+logger = logging.getLogger('silvaexternalsources')
 
-def read_file(filename):
-    f = open(filename, 'rb')
-    text = f.read()
-    f.close()
-    return text
 
 def is_installed(root):
     # Hack to get installed state of this extension
     return hasattr(root.service_views, 'SilvaExternalSources')
 
+
 def install(root):
-    # Hack - refresh SilvaDocument to make it pick up this extension
-    root.service_extensions.refresh('SilvaDocument')
-    add_fss_directory_view(root.service_views, 'SilvaExternalSources', __file__, 'views')
+    add_fss_directory_view(
+        root.service_views, 'SilvaExternalSources', __file__, 'views')
     # also register views
     registerViews(root.service_view_registry)
     # metadata registration
     setupMetadata(root)
     configureSecurity(root)
     configureAddables(root)
+
     # add service_codesources
-    if not hasattr(root, 'service_codesources'):
-        root.manage_addProduct['SilvaExternalSources'].manage_addCodeSourceService(
+    if not hasattr(root.aq_explicit, 'service_codesources'):
+        factory = root.manage_addProduct['SilvaExternalSources']
+        factory.manage_addCodeSourceService(
             'service_codesources', 'Code Sources')
+
     # add core Silva Code Sources
-    cs_fields = configure.configuration
-    path_join = os.path.join
-    _fs_codesources_path = path_join(package_home(globals()), 'codesources')
-    install_codesources(_fs_codesources_path, root, cs_fields)
+    codesources_path = os.path.join(package_home(globals()), 'codesources')
+    install_codesources(root, codesources_path, configure.configuration)
+
+    # install by default cs_toc and cs_citation
+    for source_id in ['cs_toc', 'cs_citation',]:
+        if not hasattr(root.aq_explicit, source_id) and \
+                hasattr(root.service_codesources.aq_explicit, source_id):
+            token = root.service_codesources.manage_copyObjects([source_id,])
+            root.manage_pasteObjects(token)
+
+
 
 def uninstall(root):
     cs_fields = configure.configuration
@@ -63,6 +68,7 @@ def uninstall(root):
             if cs_element['id'] in root.service_codesources.objectIds():
                 root.service_codesources.manage_delObjects([cs_element['id']])
 
+
 def registerViews(reg):
     """Register core views on registry.
     """
@@ -73,6 +79,7 @@ def registerViews(reg):
     # public
     reg.register('public', 'Silva CSV Source', ['public', 'CSVSource'])
 
+
 def unregisterViews(reg):
     """Unregister core views on registry.
     """
@@ -81,8 +88,9 @@ def unregisterViews(reg):
     # edit
     reg.unregister('edit', 'Silva CSV Source')
     # public
-    
+
     reg.unregister('public', 'Silva CSV Source')
+
 
 def configureSecurity(root):
     """Update the security tab settings to the Silva defaults.
@@ -90,13 +98,12 @@ def configureSecurity(root):
     add_permissions = ('Add Silva CSV Sources',)
     for add_permission in add_permissions:
         root.manage_permission(add_permission, roleinfo.AUTHOR_ROLES)
-    
+
+
 def setupMetadata(root):
     mapping = root.service_metadata.getTypeMapping()
     default = ''
-    tm = (
-            {'type': 'Silva CSV Source', 'chain': 'silva-content, silva-extra'},
-        )
+    tm = ({'type': 'Silva CSV Source', 'chain': 'silva-content, silva-extra'},)
     mapping.editMappings(default, tm)
 
 
@@ -108,75 +115,75 @@ def configureAddables(root):
             new_addables.append(a)
     root.set_silva_addables_allowed_in_container(new_addables)
 
-def install_pt(path, cs_file, cs):
-    id = cs_file.split('.')[0]
-    cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(id)
-    page_template = getattr(cs, id)
-    fs_path = os.path.join(path, cs_file)
-    page_template.pt_edit(read_file(fs_path), '')
 
-def install_py(path, cs_file, cs):
-    id = cs_file.split('.')[0]
-    cs.manage_addProduct['PythonScripts'].manage_addPythonScript(id)
-    script = getattr(cs, id)
-    script_path = os.path.join(path, cs_file)
-    script.write(read_file(script_path))
+# All the code following are default helper to help you to install
+# your code-soruces packaged on the file system.
 
-def install_xml(path, cs_file, cs):
-    form_path = os.path.join(path, cs_file)
+def install_pt(context, data, id):
+    """Install a page template.
+    """
+    factory = context.manage_addProduct['PageTemplates']
+    factory.manage_addPageTemplate(id, '', data.read())
+
+
+def install_py(context, data, id):
+    """Install a Python script.
+    """
+    factory = context.manage_addProduct['PythonScripts']
+    factory.manage_addPythonScript(id)
+    script = getattr(context, id)
+    script.write(data.read())
+
+
+def install_xml(context, data, id):
+    """Install an XML file.
+    """
     form = ZMIForm('form', 'Parameters form')
-    form.set_xml(read_file(form_path))
-    cs.set_form(form)
+    form.set_xml(data.read())
+    context.set_form(form)
 
-def install_dtml(path, cs_file, cs, keep_extension=False):
-    if not keep_extension:
-        id = cs_file.split('.')[0]
-    else:
-        id = cs_file
-    dtml_path = os.path.join(path, cs_file)
-    cs.manage_addProduct['OFSP'].manage_addDTMLMethod(id, '', open(dtml_path).read())
 
-def install_txt(path, cs_file, cs):
-    id = cs_file.split('.')[0]
-    text_path = os.path.join(path, cs_file)
-    cs.manage_addProduct['PageTemplates'].manage_addPageTemplate(id, '', open(text_path).read())
+def install_js(context, data, id):
+    """Install a JS script as a dtml file.
+    """
+    factory = context.manage_addProduct['OFSP']
+    factory.manage_addDTMLMethod(id + '.js', '', data.read())
 
-def install_codesources(cs_path, root, cs_fields, product_name=None):
-    cs_paths = []
-    cs_files = []
-    for cs_name, cs_element in cs_fields.items():
-        root.service_codesources.manage_addProduct[
-            'SilvaExternalSources'].manage_addCodeSource(cs_element['id'],
-                                                         cs_element['title'],
-                                                         cs_element['render_id'])
-        cs = getattr(root.service_codesources, cs_element['id'])
-        if cs_element['desc']:
-            cs.set_description(cs_element['desc'])
-        if cs_element['cacheable']:
-            cs.set_is_cacheable(True)
-        if cs_element['elaborate']:
-            cs.set_elaborate(True)
-        path = os.path.join(cs_path, cs_element['id'])
-        cs_files = os.listdir(path)
-        for cs_file in cs_files:
-            if cs_file.endswith('.pt'):
-                install_pt(path, cs_file, cs)
-            if cs_file.endswith('.py'):
-                install_py(path, cs_file, cs)
-            if cs_file.endswith('.xml'):
-                install_xml(path, cs_file, cs)
-            if cs_file.endswith('.js'):
-                install_dtml(path, cs_file, cs, keep_extension=True)
-            if cs_file.endswith('.txt'):
-                install_txt(path, cs_file, cs)
-    
-    #if cs_toc isn't already at the root, put it there
-    if not hasattr(root.aq_explicit, 'cs_toc') and hasattr(root.service_codesources.aq_explicit, 'cs_toc'):
-        toc = root.service_codesources.manage_copyObjects(['cs_toc',])
-        root.manage_pasteObjects(toc)
-    #if cs_citation isn't already at the root, put it there
-    if not hasattr(root.aq_explicit, 'cs_citation') and hasattr(root.service_codesources.aq_explicit, 'cs_citation'):
-        toc = root.service_codesources.manage_copyObjects(['cs_citation',])
-        root.manage_pasteObjects(toc)
-    
-    
+
+INSTALLERS = {
+    '.pt': install_pt,
+    '.py': install_py,
+    '.xml': install_xml,
+    '.js': install_js,
+    '.txt': install_pt}
+
+
+def install_codesources(root, path, sources, product_name=None):
+    """Install a set of file-system code sources.
+    """
+    factory = root.service_codesources.manage_addProduct['SilvaExternalSources']
+    for name, info in sources.items():
+        factory.manage_addCodeSource(
+            info['id'], info['title'], info['render_id'])
+        source = getattr(root.service_codesources, info['id'])
+        if info['desc']:
+            source.set_description(info['desc'])
+        if info['cacheable']:
+            source.set_is_cacheable(True)
+        if info['elaborate']:
+            source.set_elaborate(True)
+
+        codesource_path = os.path.join(path, info['id'])
+        for filename in os.listdir(codesource_path):
+            name, extension = os.path.splitext(filename)
+            installer = INSTALLERS.get(extension, None)
+            if installer is None:
+                logger.info(
+                    u"don't know how to install file %s for code source %s" % (
+                        filename, info['id']))
+                continue
+            with open(os.path.join(codesource_path, filename), 'rb') as data:
+                installer(source, data, name)
+
+
+

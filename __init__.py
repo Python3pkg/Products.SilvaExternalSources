@@ -13,7 +13,6 @@ from silva.core import conf as silvaconf
 
 silvaconf.extensionName('SilvaExternalSources')
 silvaconf.extensionTitle('Silva External Sources')
-silvaconf.extensionDepends('SilvaDocument')
 
 
 def initialize(context):

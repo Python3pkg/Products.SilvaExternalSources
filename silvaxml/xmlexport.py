@@ -9,7 +9,6 @@ SilvaDocumentNS = 'http://infrae.com/namespace/silva-document'
 def initializeXMLExportRegistry():
     """Here the actual content types are registered.
     """
-    from Products.SilvaDocument.Document import Document, DocumentVersion
     exporter = theXMLExporter
     exporter.registerNamespace('doc', SilvaDocumentNS)
     exporter.registerProducer(ExternalSource, ExternalSourceProducer)

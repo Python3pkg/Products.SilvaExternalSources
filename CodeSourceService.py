@@ -11,12 +11,12 @@ from OFS.Folder import Folder
 from OFS.interfaces import IObjectWillBeRemovedEvent
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-from Products.Silva.helpers import add_and_edit, \
-    register_service, unregister_service
+from Products.Silva.helpers import add_and_edit
 from Products.Silva.SilvaPermissions import ViewManagementScreens
 from Products.SilvaExternalSources.interfaces import ICodeSourceService
 
 from silva.core.services.base import SilvaService
+from silva.core.conf.utils import registerService, unregisterService
 from silva.core import conf as silvaconf
 
 
@@ -50,10 +50,10 @@ def manage_addCodeSourceService(self, id, title, REQUEST=None):
     if not title:
         title = id
     service = CodeSourceService(id, title)
-    register_service(self, id, service, ICodeSourceService)
+    registerService(self, id, service, ICodeSourceService)
     add_and_edit(self, id, REQUEST)
     return ''
 
 @silvaconf.subscribe(ICodeSourceService, IObjectWillBeRemovedEvent)
 def unregisterCodeSourceService(service, event):
-    unregister_service(service, ICodeSourceService)
+    unregisterService(service, ICodeSourceService)

@@ -123,25 +123,12 @@ CODE_SOURCES = {'cs_encaptionate':{
 class ManagerCodeSourcesTest(SilvaFunctionalTestCase):
     """ test the install_code_sources method
     """
+
     def test_manager_codesources(self):
         sb = SilvaBrowser()
         status, url = sb.login('manager', 'secret', sb.smi_url())
         self.failUnless(status, 200)
-        sb.go('http://nohost/manage_main')
-        self.failUnless('Control_Panel (Control Panel)' in sb.browser.contents)
-        # click Silva root
-        sb.go('http://nohost/root/manage_workspace')
-        self.failUnless('Silva /edit...' in sb.browser.contents)
-        # click services tab
-        sb.click_href_labeled('Services')
-        self.failUnless('service_extensions (Silva Product and Extension Configuration)' in sb.browser.contents)
-        # click service_extensions
-        sb.click_href_labeled('service_extensions (Silva Product and Extension Configuration)')
-        self.failUnless('Configure Silva Extension Products' in sb.browser.contents)
-        # install Silva External Sources
-        form = sb.browser.getForm(name="SilvaExternalSources")
-        form.getControl('activate').click()
-        self.failUnless('SilvaExternalSources installed' in sb.browser.contents)
+
         sb.go('http://nohost/root/manage_services')
         self.failUnless('Code Sources' in sb.browser.contents)
         sb.click_href_labeled('service_codesources (Code Sources)')

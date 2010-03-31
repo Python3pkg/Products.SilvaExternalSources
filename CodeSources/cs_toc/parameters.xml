@@ -19,9 +19,10 @@
       <field><id>paths</id> <type>LookupWindowField</type>
         <values>
           <alternate_name></alternate_name>
+          <button_label>get reference...</button_label>
           <css_class>store</css_class>
           <default></default>
-          <description>A comma-separated list of paths for which to list the contents. Paths can be relative or full (starting with a slash from the site root).</description>
+          <description>A list of paths for which to list the contents. Paths can be relative or full (starting with a slash from the site root).</description>
           <display_maxwidth></display_maxwidth>
           <display_width type="int">20</display_width>
           <enabled type="int">1</enabled>
@@ -29,11 +30,17 @@
           <extra></extra>
           <hidden type="int">0</hidden>
           <max_length></max_length>
-          <onclick>reference.getReference(
+          <max_rows type="int">10</max_rows>
+          <onclick>{
+var myid = this.getAttribute('id').replace(/^button/,'input');
+reference.getReference(
 function(path, id, title) {
-document.getElementsByName('%(field_id)s')[0].value = path;;
-}, '%(url)s', 'Container', true)</onclick>
+document.getElementById(myid).value = path;;
+}, '%(url)s', 'Container', true, '%(selected_path)s')}</onclick>
           <required type="int">1</required>
+          <required_rows type="int">1</required_rows>
+          <show_add_remove type="int">1</show_add_remove>
+          <show_edit_button type="int">0</show_edit_button>
           <title>paths</title>
           <truncate type="int">0</truncate>
           <unicode type="int">0</unicode>
@@ -44,7 +51,8 @@ document.getElementsByName('%(field_id)s')[0].value = path;;
         <messages>
           <message name="external_validator_failed">The input failed the external validator.</message>
           <message name="required_not_found">Input is required but no input given.</message>
-          <message name="too_long">Too much input was given.</message>
+          <message name="exceeded_maxrows">Too many references.</message>
+          <message name="required_not_met">Not enough references.</message>
         </messages>
       </field>
       <field><id>toc_types</id> <type>MultiListField</type>
@@ -66,7 +74,7 @@ document.getElementsByName('%(field_id)s')[0].value = path;;
           <view_separator>&lt;br /&gt;</view_separator>
         </values>
         <tales>
-        <default>python:modules['Products.Silva.adapters.tocrendering'].compute_default_show_types()</default>
+          <default>python:modules['Products.Silva.adapters.tocrendering'].compute_default_show_types()</default>
           <items>request/model/get_silva_addables_allowed_in_container</items>
         </tales>
         <messages>

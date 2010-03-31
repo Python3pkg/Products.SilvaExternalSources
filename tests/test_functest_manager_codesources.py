@@ -138,10 +138,6 @@ class ManagerCodeSourcesTest(SilvaFunctionalTestCase):
         # click service_extensions
         sb.click_href_labeled('service_extensions (Silva Product and Extension Configuration)')
         self.failUnless('Configure Silva Extension Products' in sb.browser.contents)
-        # install Silva External Sources
-        form = sb.browser.getForm(name="SilvaExternalSources")
-        form.getControl('activate').click()
-        self.failUnless('SilvaExternalSources installed' in sb.browser.contents)
         sb.go('http://nohost/root/manage_services')
         self.failUnless('Code Sources' in sb.browser.contents)
         sb.click_href_labeled('service_codesources (Code Sources)')

@@ -4,7 +4,7 @@ ChangeLog
 2.2.1 (unreleased)
 ------------------
 
-- ...
+- Neatened up the toc code source rendering. 
 
 2.2 (2010-03-31)
 ----------------

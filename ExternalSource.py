@@ -174,7 +174,7 @@ class ExternalSource(Acquisition.Implicit):
             if fieldCssClasses:
                 fieldCssClasses = 'class="%s"'%fieldCssClasses.strip()
 
-            xml.append('<tr>\n<td width="7em" style="vertical-align: top"><a href="#" onclick="return false" %s>%s%s</a></td>\n' % (
+            xml.append('<tr>\n<td class="fieldtitlecell"><a href="#" onclick="return false" %s>%s%s</a></td>\n' % (
                 fieldCssClasses, fieldDescription, ustr(field.values['title'], 'UTF-8'))
                 )
 

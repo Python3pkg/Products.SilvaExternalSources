@@ -6,14 +6,8 @@
 import AccessControl
 
 from Products.SilvaExternalSources import install
-from Products.SilvaExternalSources.silvaxml.xmlexport import \
-    initializeXMLExportRegistry
 
 from silva.core import conf as silvaconf
-
 silvaconf.extensionName('SilvaExternalSources')
 silvaconf.extensionTitle('Silva External Sources')
 
-
-def initialize(context):
-    initializeXMLExportRegistry()

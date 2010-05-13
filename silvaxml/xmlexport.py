@@ -1,19 +1,22 @@
-from Products.Silva.silvaxml.xmlexport import theXMLExporter, VersionedContentProducer, SilvaBaseProducer
+# Copyright (c) 2002-2010 Infrae. All rights reserved.
+# See also LICENSE.txt
+# $Id$
+
+from five import grok
 from sprout.saxext.html2sax import saxify
+from zope.interface import Interface
+
+from Products.Silva.silvaxml.xmlexport import (
+    VersionedContentProducer, SilvaBaseProducer)
 from Products.ParsedXML.DOM.Core import Node
-from Products.SilvaExternalSources import ExternalSource
+from Products.SilvaDocument.silvaxml.xmlexport import NS_SILVA_DOCUMENT
 from Products.SilvaExternalSources.ExternalSource import getSourceForId
+from Products.SilvaExternalSources.interfaces import IExternalSource
 
-SilvaDocumentNS = 'http://infrae.com/namespace/silva-document'
-
-def initializeXMLExportRegistry():
-    """Here the actual content types are registered.
-    """
-    exporter = theXMLExporter
-    exporter.registerNamespace('doc', SilvaDocumentNS)
-    exporter.registerProducer(ExternalSource, ExternalSourceProducer)
 
 class ExternalSourceProducer(SilvaBaseProducer):
+    grok.adapts(IExternalSource, Interface)
+
     def sax(self):
         source = getSourceForId(self.context, self.context.id)
         parameters = {}

@@ -21,7 +21,7 @@ configuration = {
         'id': 'cs_toc',
         'title': 'TOC',
         'render_id': 'toc',
-        'desc': 'Displays a listing of items contained in folders and/or publications. (replaces the TOC element)',
+        'desc': 'Displays a listing of items contained in folders and/or publications. Multiple listings are possible. This code source replaces the TOC element',
         'cacheable': False,
         'elaborate': False,
         'previewable': True,

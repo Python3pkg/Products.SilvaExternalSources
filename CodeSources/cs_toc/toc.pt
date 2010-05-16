@@ -17,24 +17,21 @@
   errormessage string:<p><span class='error'>The path of this TOC is not valid.</span></p>;
   toc_adapter python:modules['Products.Silva.adapters.tocrendering'].getTOCRenderingAdapter;
   ">
-
 <!-- TOC codesource 0.5 -->
 <div tal:omit-tag="python:not (c1ass or style)"
   tal:attributes="
     class c1ass;
     style style;
 ">
-
 <h2 tal:condition="capsuletitle"
   tal:content="capsuletitle">
   capsule title
 </h2>
-
 <tal:loop repeat="top python:[path.strip() for path in options['paths'].split(',')]">
- <tal:def define="
-   model python:context.restrictedTraverse(top.split('/'));
-   adapter python:toc_adapter(model);
-   ">
+<tal:def define="
+  model python:context.restrictedTraverse(top.split('/'));
+  adapter python:toc_adapter(model);
+">
 <h3 tal:condition="python:display_headings==1"
   tal:attributes="class python:test(repeat['top'].start, 'interheading', nothing)"
   ><a tal:define="title model/get_title"
@@ -42,13 +39,11 @@
   tal:attributes="
     href model/absolute_url;
     title string:Go to $title;
-"
-  tal:content="python:title and title or model.id" /></h3>
-  <span tal:replace="structure python:adapter.render_tree(toc_depth=depth,display_desc_flag=show_desc,sort_order=sort_order,show_types=toc_types,show_icon=show_icon)" />
- </tal:def>
-
+  "
+  tal:content="python:title and title or model.id">
+  toc title</a></h3>
+<span tal:replace="structure python:adapter.render_tree(toc_depth=depth,display_desc_flag=show_desc,sort_order=sort_order,show_types=toc_types,show_icon=show_icon)" />
+</tal:def>
 </tal:loop>
-
 </div>
-
 </tal:def>

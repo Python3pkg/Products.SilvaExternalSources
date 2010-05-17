@@ -100,7 +100,7 @@
         <field><id>image_path</id> <type>LookupWindowField</type>
           <values>
             <alternate_name></alternate_name>
-            <css_class></css_class>
+            <css_class>store</css_class>
             <default></default>
             <description>Select an image.</description>
             <display_maxwidth></display_maxwidth>

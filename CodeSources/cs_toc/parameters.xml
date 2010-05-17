@@ -30,7 +30,7 @@
           <extra></extra>
           <hidden type="int">0</hidden>
           <max_length></max_length>
-          <max_rows type="int">10</max_rows>
+          <max_rows type="int">4</max_rows>
           <onclick>{
 var myid = this.getAttribute('id').replace(/^button/,'input');
 reference.getReference(
@@ -58,7 +58,7 @@ document.getElementById(myid).value = path;;
       <field><id>toc_types</id> <type>MultiListField</type>
         <values>
           <alternate_name></alternate_name>
-          <css_class></css_class>
+          <css_class>store</css_class>
           <default type="list">[]</default>
           <description>You must have container types selected (e.g. Folder and Publication) in order for the AutoTOC to descend into them. If no container types are selected, this will act as if the depth=0, i.e. only list items in this container.</description>
           <enabled type="int">1</enabled>
@@ -113,7 +113,7 @@ document.getElementById(myid).value = path;;
       <field><id>sort_on</id> <type>ListField</type>
         <values>
           <alternate_name></alternate_name>
-          <css_class></css_class>
+          <css_class>store</css_class>
           <default></default>
           <description>Sort the listing by: the order in the container, alphabetically by title, content modification date, or creation date.</description>
           <enabled type="int">1</enabled>
@@ -140,7 +140,7 @@ document.getElementById(myid).value = path;;
       <field><id>order</id> <type>ListField</type>
         <values>
           <alternate_name></alternate_name>
-          <css_class></css_class>
+          <css_class>store</css_class>
           <default></default>
           <description>Reverse the order of the listing.</description>
           <enabled type="int">1</enabled>

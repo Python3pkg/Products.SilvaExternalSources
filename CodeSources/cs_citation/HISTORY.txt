@@ -3,6 +3,10 @@ See also LICENSE.txt
 
 Silva Citation Code Source changes
 
+0.2
+
+    - improve unicode support
+
 0.1
 
     - Initial development.

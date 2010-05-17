@@ -1,5 +1,5 @@
 <div class="citation">
- <tal:block replace="structure options/citation" />
- <div class="author" tal:content="structure options/author" />
- <div class="source" tal:content="structure options/source" />
+ <tal:block replace="structure python:context.ustr(options['citation'])" />
+ <div class="author" tal:content="structure python:context.ustr(options['author'])" />
+ <div class="source" tal:content="structure python:context.ustr(options['source'])" />
 </div>

@@ -20,7 +20,7 @@ from Products.Silva import roleinfo
 from Products.SilvaExternalSources.codesources import configure
 
 manage_permission = 'Manage CodeSource Services'
-logger = logging.getLogger('silvaexternalsources')
+logger = logging.getLogger('silva.externalsources')
 
 
 def is_installed(root):

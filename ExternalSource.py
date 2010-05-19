@@ -160,7 +160,9 @@ class ExternalSource(Acquisition.Implicit):
             vtype = 'string'
             if '__type__' in k:
                 k, vtype = k.split('__type__')
-            formcopy[k] = v
+            formcopy[k.lower()] = v # Do a lower because the comment:
+                                    # 'it seems field is always in
+                                    # lower' is not quite true in fact
 
         for field in self.form().get_fields():
             fieldDescription = ustr(field.values.get('description',''), 'UTF-8')
@@ -181,8 +183,9 @@ class ExternalSource(Acquisition.Implicit):
             value = None
             #the field id is actually _always_ lowercase in formcopy
             # (see https://bugs.launchpad.net/silva/+bug/180860)
-            if formcopy.has_key(field.id.lower()):
-                value = formcopy[field.id.lower()]
+            field_id = field.id.lower()
+            if formcopy.has_key(field_id):
+                value = formcopy[field_id]
             if value is None:
                 # default value (if available)
                 value = field.get_value('default')
@@ -230,7 +233,7 @@ class ExternalSource(Acquisition.Implicit):
         try:
             result = form.validate_all(REQUEST)
         except FormValidationError, e:
-            REQUEST.RESPONSE.setStatus(400, 'Bad Request')
+            REQUEST.RESPONSE.setStatus(400)
             return '&'.join(['%s=%s' % (e.field['title'], e.error_text)
                                 for e in e.errors])
         else:

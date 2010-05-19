@@ -180,7 +180,7 @@ class ExternalSource(Acquisition.Implicit):
                 fieldCssClasses, fieldDescription, ustr(field.values['title'], 'UTF-8'))
                 )
 
-            value = None
+            value = ''
             #the field id is actually _always_ lowercase in formcopy
             # (see https://bugs.launchpad.net/silva/+bug/180860)
             field_id = field.id.lower()

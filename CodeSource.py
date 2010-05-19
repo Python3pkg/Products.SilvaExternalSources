@@ -85,7 +85,7 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
                 '</head><body><div class="kupu-toolbox-active"><div'
                 ' class="kupu-tooltray"><div '
                 'id="kupu-extsource-formcontainer"><form class="elaborate" '
-                % (root_url + '/globals/silva.css',
+                % (root_url + '/++resource++silva.core.smi/smi.css',
                    root_url + '/globals/silvaContentStyle.css',
                    'kupustyles.css',))
             html = html.replace(

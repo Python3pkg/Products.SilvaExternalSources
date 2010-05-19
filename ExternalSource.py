@@ -180,7 +180,7 @@ class ExternalSource(Acquisition.Implicit):
                 fieldCssClasses, fieldDescription, ustr(field.values['title'], 'UTF-8'))
                 )
 
-            value = ''
+            value = None
             #the field id is actually _always_ lowercase in formcopy
             # (see https://bugs.launchpad.net/silva/+bug/180860)
             field_id = field.id.lower()
@@ -199,6 +199,8 @@ class ExternalSource(Acquisition.Implicit):
                 else: # it needs to be None, rather than ''
                     value = None
             else:
+                if value is None:
+                    value = ''
                 value = ustr(self._xml_unescape(value), 'UTF-8')
             xml.append('<td>%s</td>\n</tr>\n' %
                             (field.render(value)))

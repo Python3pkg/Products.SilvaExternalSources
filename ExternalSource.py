@@ -5,11 +5,12 @@
 # Python
 import sys
 from urllib import quote
+from xml.sax.saxutils import escape, unescape
 
 from zope.interface import implements
-from DocumentTemplate import sequence
 
 # Zope
+from DocumentTemplate import sequence
 from AccessControl import ClassSecurityInfo, ModuleSecurityInfo
 from App.class_init import InitializeClass
 from DateTime import DateTime
@@ -30,55 +31,32 @@ icon="www/silvaexternalsource.png"
 module_security = ModuleSecurityInfo(
     'Products.SilvaExternalSources.ExternalSource')
 
-class _AvailableSources:
-    """SINGLETON
-
-    Helps getting a list of ExternalSources from context up.
-    Stop at the "Silva Root".
-    """
-
-    def _list(self, context):
-        """ Recurse through parents up.
-
-        Returns list of tuples of (id, object)
-
-        Only lists sources that can be reached from the context
-        through acquisition.
-        """
-        sources = {}
-        while 1:
-            objs = context.objectValues()
-            for obj in objs:
-                if IExternalSource.providedBy(obj):
-                    if not sources.has_key(obj.id):
-                        sources[obj.id] = obj
-            if IRoot.providedBy(context):
-                # stop at Silva Root
-                break
-            context = context.aq_parent
-        return sequence.sort(sources.items(), (('title', 'nocase', 'asc'),))
-
-    def __call__(self, context):
-        return self._list(context)
 
 module_security.declarePublic('availableSources')
-availableSources = _AvailableSources()
+def availableSources(context):
+    """List available sources in the site starting at context.
+    """
+    sources = {}
+    while context is not None:
+        for item in context.objectValues():
+            if IExternalSource.providedBy(item) and item.id not in sources:
+                sources[item.id] = item
+        if IRoot.providedBy(context):
+            break
+        context = Acquisition.aq_parent(context)
+    return sequence.sort(sources.items(), (('title', 'nocase', 'asc'),))
+
 
 module_security.declarePublic('getSourceForId')
-def getSourceForId(context, id):
+def getSourceForId(context, identifier):
     """ Look for an Source with given id. Mimic normal aqcuisition,
     but skip objects which have given id but do not implement the
     ExternalSource interface.
     """
-    nearest = getattr(context, id, None)
-    if nearest is None:
-        return None
+    nearest = getattr(context, identifier, None)
     if IExternalSource.providedBy(nearest):
         return nearest
-    if IRoot.providedBy(context):
-        return None
-    else:
-        return getSourceForId(context.aq_parent, id)
+    return None
 
 # helper function copied from
 # SilvaDocument/widgets/element/doc_element/source/mode_edit/save_helper.py
@@ -101,6 +79,7 @@ def ustr(text, enc='utf-8'):
         return text and '1' or '0'
     else:
         return unicode(str(text), enc, 'replace')
+
 
 class ExternalSource(Acquisition.Implicit):
 
@@ -190,7 +169,7 @@ class ExternalSource(Acquisition.Implicit):
                 # default value (if available)
                 value = field.get_value('default')
             if type(value) == list:
-                value = [ustr(self._xml_unescape(x), 'UTF-8') for x in value]
+                value = [ustr(unescape(x), 'UTF-8') for x in value]
             elif field.meta_type == "CheckBoxField":
                 value = int(value)
             elif field.meta_type == "DateTimeField":
@@ -201,7 +180,7 @@ class ExternalSource(Acquisition.Implicit):
             else:
                 if value is None:
                     value = ''
-                value = ustr(self._xml_unescape(value), 'UTF-8')
+                value = ustr(unescape(value), 'UTF-8')
             xml.append('<td>%s</td>\n</tr>\n' %
                             (field.render(value)))
 
@@ -228,9 +207,7 @@ class ExternalSource(Acquisition.Implicit):
             # need to quote the docref, as resolve_ref
             #(actually OFS.CopySupport._cb_decode) unquotes it
             REQUEST.form['model'] = self.resolve_ref(quote(REQUEST['docref']))
-        else:
-            # buggy behaviour. but allows backward compatibility
-            REQUEST.form['model'] = self
+
         form = self.form()
         try:
             result = form.validate_all(REQUEST)
@@ -247,46 +224,26 @@ class ExternalSource(Acquisition.Implicit):
     def _formresult_to_xml(self, formresult):
         """returns a result dictionary as an xml mapping"""
         xml = ['<sourcedata>','<sourceinfo>']
-        xml.append('<metatype>%s</metatype>'%self.meta_type)
-        xml.append('<source_id>%s</source_id>'%self.id)
-        xml.append('<source_title>%s</source_title>'%self._xml_escape(ustr(self.get_title())))
-        xml.append('<source_desc>%s</source_desc>'%self._xml_escape(ustr(self.description())))
+        xml.append('<metatype>%s</metatype>' % self.meta_type)
+        xml.append('<source_id>%s</source_id>' % self.id)
+        xml.append('<source_title>%s</source_title>' % escape(
+                ustr(self.get_title())))
+        xml.append('<source_desc>%s</source_desc>' % escape(
+                ustr(self.description())))
         xml.append('</sourceinfo>')
         xml.append('<params>')
         for key, value in formresult.items():
-            t = type(value).__name__
-            xml.append('<parameter type="%s" id="%s">%s</parameter>' %
-                        (t, self._xml_escape(ustr(key)),
-                            self._xml_escape(ustr(value))))
+            value_type = type(value).__name__
+            xml.append('<parameter type="%s" id="%s">%s</parameter>' % (
+                    value_type, escape(ustr(key)), escape(ustr(value))))
         xml.append('</params>')
         xml.append('</sourcedata>')
         return ''.join(xml)
-
-    def _xml_escape(self, input):
-        """entitize illegal chars in xml"""
-        input = input.replace('&', '&amp;')
-        input = input.replace('<', '&lt;')
-        input = input.replace('>', '&gt;')
-        return input
-
-    def _xml_unescape(self, input):
-        """entitize illegal chars in xml"""
-        input = input.replace('&amp;', '&')
-        input = input.replace('&lt;', '<')
-        input = input.replace('&gt;', '>')
-        return input
 
     security.declareProtected(SilvaPermissions.AccessContentsInformation,
                                 'to_html')
     def to_html(self, REQUEST=None, **kw):
         """ Render the HTML for inclusion in the rendered Silva HTML.
-        """
-        return ''
-
-    security.declareProtected(SilvaPermissions.AccessContentsInformation,
-                                'to_xml')
-    def to_xml(self, REQUEST=None, **kw):
-        """ Render the XML for this source.
         """
         return ''
 
@@ -305,9 +262,8 @@ class ExternalSource(Acquisition.Implicit):
         if not hasattr(self, '_is_previewable'):
             self._is_previewable = True
         return self._is_previewable
-                 
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 
+    security.declareProtected(SilvaPermissions.AccessContentsInformation,
                                 'data_encoding')
     def data_encoding(self):
         """ Specify the encoding of source's data.
@@ -386,8 +342,6 @@ class ExternalSource(Acquisition.Implicit):
         """
         self._is_previewable = not not previewable
 
-    """If the external source errors out, log the traceback to the zope error log.
-       This function allows continues processing"""
     security.declareProtected(SilvaPermissions.AccessContentsInformation,
                               'log_traceback')
     def log_traceback(self):

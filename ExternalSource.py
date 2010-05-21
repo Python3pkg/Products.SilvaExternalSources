@@ -3,9 +3,9 @@
 # $Id$
 
 # Python
-import sys
 from urllib import quote
 from xml.sax.saxutils import escape, unescape
+import sys
 
 from zope.interface import implements
 
@@ -25,8 +25,6 @@ from Products.Formulator.Errors import ValidationError, FormValidationError
 from silva.core.interfaces import IRoot
 from silva.translations import translate as _
 
-
-icon="www/silvaexternalsource.png"
 
 module_security = ModuleSecurityInfo(
     'Products.SilvaExternalSources.ExternalSource')
@@ -58,13 +56,12 @@ def getSourceForId(context, identifier):
         return nearest
     return None
 
-# helper function copied from
-# SilvaDocument/widgets/element/doc_element/source/mode_edit/save_helper.py
 def urepr(l):
     l = repr(l)
     if l[0] == 'u':
         l = l[1:]
     return l
+
 
 def ustr(text, enc='utf-8'):
     if text is None:

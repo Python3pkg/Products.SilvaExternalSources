@@ -347,10 +347,5 @@ class ExternalSource(Acquisition.Implicit):
         """
         self._is_previewable = not not previewable
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation,
-                              'log_traceback')
-    def log_traceback(self):
-        error_log = self.error_log
-        url = error_log.raising( sys.exc_info() )
 
 InitializeClass(ExternalSource)

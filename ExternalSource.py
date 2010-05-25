@@ -286,7 +286,7 @@ class ExternalSource(Acquisition.Implicit):
 
     security.declareProtected(SilvaPermissions.AccessContentsInformation,
                                 'index_html')
-    def index_html(self, REQUEST=None, RESPONSE=None, view_method=None):
+    def index_html(self, REQUEST=None, RESPONSE=None):
         """ render HTML with default or other test values in ZMI for
         purposes of testing the ExternalSource.
         """

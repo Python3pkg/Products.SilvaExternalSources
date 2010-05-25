@@ -24,7 +24,7 @@ from Products.SilvaExternalSources.interfaces import IExternalSource
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.Errors import ValidationError, FormValidationError
 
-from silva.core.interfaces import IRoot
+from silva.core.interfaces import IRoot, IVersion
 from silva.translations import translate as _
 
 
@@ -83,8 +83,11 @@ def ustr(text, enc='utf-8'):
 def get_model(request):
     if 'docref' in request.form and request.form['docref']:
         # XXX don't like to do this, this should go away (sylvain)
-        request.form['model'] = getUtility(IIntIds).getObject(
-                int(request['docref']))
+        model = getUtility(IIntIds).getObject(int(request['docref']))
+        if IVersion.providedBy(model):
+            request.form['version'] = model
+            model = model.get_content()
+        request.form['model'] = model
 
 
 

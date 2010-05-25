@@ -8,6 +8,8 @@ from xml.sax.saxutils import escape, unescape
 import sys
 
 from zope.interface import implements
+from zope.component import getUtility
+from zope.intid.interfaces import IIntIds
 
 # Zope
 from DocumentTemplate import sequence
@@ -78,6 +80,14 @@ def ustr(text, enc='utf-8'):
         return unicode(str(text), enc, 'replace')
 
 
+def get_model(request):
+    if 'docref' in request.form and request.form['docref']:
+        # XXX don't like to do this, this should go away (sylvain)
+        request.form['model'] = getUtility(IIntIds).getObject(
+                int(request['docref']))
+
+
+
 class ExternalSource(Acquisition.Implicit):
 
     implements(IExternalSource)
@@ -111,17 +121,14 @@ class ExternalSource(Acquisition.Implicit):
         """
         return self.parameters
 
+
     security.declareProtected(SilvaPermissions.AccessContentsInformation,
                                 'get_rendered_form_for_editor')
     def get_rendered_form_for_editor(self, REQUEST=None):
         """return the rendered form"""
-        if REQUEST.has_key('docref') and REQUEST['docref']:
-            # need to quote the docref, as resolve_ref
-            #(actually OFS.CopySupport._cb_decode) unquotes it
-            REQUEST.form['model'] = self.resolve_ref(quote(REQUEST['docref']))
-        else:
-            # buggy behaviour. but allows backward compatibility
-            REQUEST.form['model'] = self
+        assert REQUEST is not None
+        get_model(REQUEST)
+
         xml = ['<?xml version="1.0" encoding="UTF-8" ?>\n',
                 '<form id="extsourceform" action="" method="POST">\r',
                 ('<input type="hidden" name="metatype" value="%s" />\n' %
@@ -200,10 +207,8 @@ class ExternalSource(Acquisition.Implicit):
             XML mapping, if validation fails return a 400 with the error
             message
         """
-        if REQUEST.has_key('docref') and REQUEST['docref']:
-            # need to quote the docref, as resolve_ref
-            #(actually OFS.CopySupport._cb_decode) unquotes it
-            REQUEST.form['model'] = self.resolve_ref(quote(REQUEST['docref']))
+        assert REQUEST is not None
+        get_model(REQUEST)
 
         form = self.form()
         try:
@@ -212,11 +217,11 @@ class ExternalSource(Acquisition.Implicit):
             REQUEST.RESPONSE.setStatus(400)
             return '&'.join(['%s=%s' % (e.field['title'], e.error_text)
                                 for e in e.errors])
-        else:
-            REQUEST.RESPONSE.setHeader('Content-Type',
-                                        'text/xml;charset=UTF-8');
-            xml = self._formresult_to_xml(result)
-            return xml
+
+        REQUEST.RESPONSE.setHeader('Content-Type',
+                                   'text/xml;charset=UTF-8');
+        xml = self._formresult_to_xml(result)
+        return xml
 
     def _formresult_to_xml(self, formresult):
         """returns a result dictionary as an xml mapping"""

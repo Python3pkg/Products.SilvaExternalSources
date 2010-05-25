@@ -20,9 +20,13 @@ from Products.Silva.SilvaPermissions import ViewManagementScreens, \
     AccessContentsInformation
 from Products.Silva.helpers import add_and_edit
 
+from silva.core.interfaces.content import IVersion
 from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf
 from silva.translations import translate as _
+
+
+_marker = object()
 
 
 class CodeSource(ExternalSource, Folder, ZMIObject):
@@ -98,24 +102,31 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
         return html
 
     security.declareProtected(AccessContentsInformation, 'to_html')
-    def to_html(self, REQUEST, **kw):
-        """ render HTML for code source
+    def to_html(self, context, request, **parameters):
+        """Render HTML for code source
         """
         try:
             script = self[self._script_id]
         except KeyError:
             return None
-        self._deserialize(kw)
-        result = script(**kw)
+        self.__prepare_parameters(parameters)
+        parameters['version'] = None
+        parameters['model'] = context.get_content()
+        if IVersion.providedBy(context):
+            parameters['version'] = context
+        result = script(**parameters)
         if type(result) is unicode:
             return result
         return unicode(result, self.data_encoding(), 'replace')
 
-    def _deserialize(self, kw):
+    def __prepare_parameters(self, parameters):
         fields = self.form().get_fields()
         for field in fields:
-            kw[field.id] = self._cast_value(kw.get(field.id, None), field.meta_type)
-        return kw
+            value = parameters.get(field.id, _marker)
+            if value is _marker:
+                value = field.get_value('default')
+            parameters[field.id] = self._cast_value(value, field.meta_type)
+        return parameters
 
     def _cast_value(self, value, field_type):
         if field_type == 'CheckBoxField':
@@ -166,33 +177,27 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
 
         if title and title != self.title:
             self.title = title
-            m = _("Title changed. ")
-            msg += m #'Title changed. '
+            msg += _("Title changed. ")
 
         if script_id and script_id != self._script_id:
             self._script_id = script_id
-            m = _("Script id changed. ")
-            msg += m #'Script id changed. '
+            msg += _("Script id changed. ")
 
         # Assume description is in the encoding as specified
         # by "management_page_charset". Store it in unicode.
-        description = unicode(
-            description, self.management_page_charset)
+        description = unicode(description, self.management_page_charset)
 
         if description != self._description:
             self.set_description(description)
-            m = _("Description changed. ")
-            msg += m #'Description changed. '
+            msg += _("Description changed. ")
 
         if not (not not cacheable) is (not not self._is_cacheable):
             self.set_is_cacheable(cacheable)
-            m = _("Cacheability setting changed. ")
-            msg += m #'Cacheability setting changed. '
+            msg += _("Cacheability setting changed. ")
 
         if not (not not previewable) is (not not self.is_previewable()):
             self.set_is_previewable(previewable)
-            m = _("Previewable setting changed.")
-            msg += m #'Previewable setting changed.'
+            msg += _("Previewable setting changed.")
 
         if not elaborate:
             if self.elaborate():
@@ -203,8 +208,7 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
         try:
             script = self[script_id]
         except KeyError:
-            m = _("<b>Warning</b>: ")
-            msg += m #'<b>Warning</b>: '
+            msg += _("<b>Warning</b>: ")
             if not script_id:
                 m = _('no script id specified! ')
             else:

@@ -1,5 +1,4 @@
-from Products.Silva import mangle
-from Products.Formulator.Errors import ValidationError, FormValidationError
+from Products.Formulator.Errors import FormValidationError
 
 # I18N stuff
 from Products.Silva.i18n import translate as _

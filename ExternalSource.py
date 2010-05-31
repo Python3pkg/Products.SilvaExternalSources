@@ -3,9 +3,7 @@
 # $Id$
 
 # Python
-from urllib import quote
 from xml.sax.saxutils import escape, unescape
-import sys
 
 from zope.interface import implements
 from zope.component import getUtility
@@ -21,7 +19,6 @@ import Acquisition
 # Silva
 from Products.Silva import SilvaPermissions
 from Products.SilvaExternalSources.interfaces import IExternalSource
-from Products.Formulator.Form import ZMIForm
 from Products.Formulator.Errors import ValidationError, FormValidationError
 
 from silva.core.interfaces import IRoot, IVersion

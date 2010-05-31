@@ -12,7 +12,7 @@ if REQUEST.has_key('add_cancel'):
     return model.edit['tab_edit']()
 
 # validate form
-from Products.Formulator.Errors import ValidationError, FormValidationError
+from Products.Formulator.Errors import FormValidationError
 try:
     result = context.form.validate_all(REQUEST)
 except FormValidationError, e:

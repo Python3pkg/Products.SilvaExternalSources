@@ -5,14 +5,12 @@
 """Install for Silva External Sources extension
 """
 # Python
-from warnings import warn
 import logging
 import os
 
 # Zope
 from App.Common import package_home
 from Products.Formulator.Form import ZMIForm
-from zExceptions import BadRequest
 
 # Silva
 from Products.Silva.install import add_fss_directory_view

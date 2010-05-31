@@ -15,7 +15,6 @@ from OFS.Folder import Folder
 from Products.ZSQLMethods.SQL import SQLConnectionIDs, SQL
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
-from Products.PythonScripts.PythonScript import PythonScript
 # Formulator
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.XMLToForm import XMLToForm
@@ -23,7 +22,6 @@ from Products.Formulator.XMLToForm import XMLToForm
 from Products.Silva.SilvaPermissions import ViewManagementScreens, \
     AccessContentsInformation
 from Products.Silva.helpers import add_and_edit
-from Products.Silva import mangle
 
 from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf

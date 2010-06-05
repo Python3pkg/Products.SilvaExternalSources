@@ -133,8 +133,7 @@ class ExternalSource(Acquisition.Implicit):
                 '<form id="extsourceform" action="" method="POST">\r',
                 ('<input type="hidden" name="metatype" value="%s" />\n' %
                         self.meta_type),
-                ('<table width="100%" id="extsourceform" cellpadding="0" cellspacing="0" '
-                        '>\n<tbody>\n')]
+                ('<div class="sesform">\n')]
 
         form = REQUEST.form.copy()
         formcopy = {}
@@ -148,6 +147,11 @@ class ExternalSource(Acquisition.Implicit):
                                     # lower' is not quite true in fact
 
         for field in self.form().get_fields():
+            value = None
+            #the field id is actually _always_ lowercase in formcopy
+            # (see https://bugs.launchpad.net/silva/+bug/180860)
+            field_id = field.id.lower()
+
             fieldDescription = ustr(field.values.get('description',''), 'UTF-8')
             if fieldDescription:
                 fieldCssClasses = "rollover"
@@ -159,14 +163,10 @@ class ExternalSource(Acquisition.Implicit):
             if fieldCssClasses:
                 fieldCssClasses = 'class="%s"'%fieldCssClasses.strip()
 
-            xml.append('<tr>\n<td class="fieldtitlecell"><a href="#" onclick="return false" %s>%s%s</a></td>\n' % (
-                fieldCssClasses, fieldDescription, ustr(field.values['title'], 'UTF-8'))
+            xml.append('<div class="fieldblock">\n<label for="field-%s"><a href="#" onclick="return false" %s>%s%s</a></label>\n' % (
+                field_id.replace('_', '-'), fieldCssClasses, fieldDescription, ustr(field.values['title'], 'UTF-8'))
                 )
 
-            value = None
-            #the field id is actually _always_ lowercase in formcopy
-            # (see https://bugs.launchpad.net/silva/+bug/180860)
-            field_id = field.id.lower()
             if formcopy.has_key(field_id):
                 value = formcopy[field_id]
             if value is None:
@@ -185,15 +185,15 @@ class ExternalSource(Acquisition.Implicit):
                 if value is None:
                     value = ''
                 value = ustr(unescape(value), 'UTF-8')
-            xml.append('<td>%s</td>\n</tr>\n' %
+            xml.append('%s\n</div>\n' %
                             (field.render(value)))
 
         # if a Code Source has no parameters, inform the user how to proceed
         if len(self.form().get_fields()) == 0:
             no_params = _('This Code Source has no adjustable settings. Click a button to insert or remove it.')
-            xml.append('<tr>\n<td>%s</td>\n</tr>\n' % no_params)
+            xml.append('<p class="messageblock">%s</p>' % no_params)
 
-        xml.append('</tbody>\n</table>\n</form>\n')
+        xml.append('</div>\n</form>\n')
         REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8')
         return ''.join([l.encode('UTF-8') for l in xml])
 

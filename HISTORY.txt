@@ -1,12 +1,23 @@
 ChangeLog
 =========
 
-2.3 (unreleased)
+2.3 (2010/07/16)
 ----------------
 
-- ...
+- Code sources have now proper access to ``model`` and ``version`` they
+  are rendered one.
 
-2.2b1 (2010-02-01)
+- Clean some CSS style on some sources.
+
+- Improve installation code.
+
+- Clean some unused code.
+
+- Update to work with last Silva Document.
+
+- Compatiblity fixes for Zope 2.12.
+
+2.2b1 (2010/02/01)
 ------------------
 
 Bugs fixed

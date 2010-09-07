@@ -122,7 +122,7 @@ document.getElementById(myid).value = path;;
           <extra_item></extra_item>
           <first_item type="int">1</first_item>
           <hidden type="int">0</hidden>
-          <items type="list">[(u'alpha by title', u'alpha'), (u'folder order', u'silva'), (u'modification date', u'chronmod')]</items>
+          <items type="list">[(u'folder order', u'silva'), (u'alpha by title', u'alpha'), (u'modification date', u'chronmod')]</items>
           <required type="int">1</required>
           <size type="int">1</size>
           <title>sorting method</title>

@@ -2,11 +2,21 @@
 # See also LICENSE.txt
 # $Id$
 
-from Products.SilvaExternalSources.interfaces import IExternalSource
+import os
+
+from five import grok
+from zope.component import getUtility
+from zope import schema
+from zope.lifecycleevent.interfaces import IObjectCreatedEvent
+from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
+from zeam.utils.batch import batch
+from zeam.utils.batch.interfaces import IBatching
+from zope import component
+
+from Products.SilvaMetadata.interfaces import IMetadataService
+from Products.SilvaExternalSources.interfaces import ICSVSource
 from Products.SilvaExternalSources.ExternalSource import ExternalSource
 from Products.SilvaExternalSources import ASV
-
-from zope.interface import implements
 
 # Zope
 from AccessControl import ClassSecurityInfo
@@ -21,16 +31,17 @@ from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 
 # Silva
 from Products.Silva import SilvaPermissions
-from Products.Silva.helpers import add_and_edit
 from Products.Silva.Asset import Asset
 
+from silva.core.views import views as silvaviews
+from silva.core.conf import schema as silvaschema
+from silva.core.conf.interfaces import ITitledContent
 from silva.core import conf as silvaconf
-from silva.core.interfaces import IAsset
 from silva.translations import translate as _
+from zeam.form import silva as silvaforms
 
 
-class CSVSource(ExternalSource, Asset, Folder):
-
+class CSVSource(Folder, ExternalSource, Asset):
     """CSV Source is an asset that displays tabular data from a
     spreadsheet or database. The format of the uploaded text file
     should be &#8216;comma separated values&#8217;. The asset can
@@ -38,11 +49,9 @@ class CSVSource(ExternalSource, Asset, Folder):
     Source element. If necessary, all aspects of the display can be
     customized in the rendering templates of the CSV Source.
     """
-
-    implements(IExternalSource, IAsset)
+    grok.implements(ICSVSource)
 
     meta_type = "Silva CSV Source"
-
     management_page_charset = 'utf-8'
 
     security = ClassSecurityInfo()
@@ -70,11 +79,10 @@ class CSVSource(ExternalSource, Asset, Folder):
     # register priority, icon and factory
     silvaconf.priority(1)
     silvaconf.icon('www/csvsource.png')
-    silvaconf.factory('manage_addCSVSource')
 
     def __init__(self, id):
-        CSVSource.inheritedAttribute('__init__')(self, id)
-        self._raw_data = None
+        super(CSVSource, self).__init__(id)
+        self._raw_data = ''
         self._data = []
 
     # ACCESSORS
@@ -99,25 +107,30 @@ class CSVSource(ExternalSource, Asset, Folder):
 
     security.declareProtected(
         SilvaPermissions.AccessContentsInformation, 'to_html')
-    def to_html(self, *args, **kw):
+    def to_html(self, version=None, model=None, **kw):
         """ render HTML for CSV source
         """
-        layout = self[self._layout_id]
         rows = self._data[:]
         param = {}
         param.update(kw)
         if not param.get('csvtableclass'):
             param['csvtableclass'] = 'default'
+        batch_size = self._default_batch_size
+        batch_nav = ''
         if param.get('csvbatchsize'):
-            bs = int(param.get('csvbatchsize'))
-            param['csvbatchsize'] = bs
-        else:
-            param['csvbatchsize'] = CSVSource._default_batch_size
+            batch_size = int(param.get('csvbatchsize'))
+        model = self
+        if version is not None:
+            model = version.get_content()
         if rows:
             headings = rows[0]
-            rows = rows[1:]
+            rows = batch(
+                rows[1:], count=batch_size,
+                name=self.getId(), request=self.REQUEST)
             param['headings'] = headings
-        return layout(table=rows, parameters=param)
+            batch_nav = component.getMultiAdapter(
+                (model, rows, self.REQUEST), IBatching)()
+        return self.layout(table=rows, batch=batch_nav, parameters=param)
 
     security.declareProtected(
         SilvaPermissions.AccessContentsInformation, 'get_title')
@@ -170,38 +183,32 @@ class CSVSource(ExternalSource, Asset, Folder):
                     r[i] = unicode(value, self._data_encoding, 'replace')
         return rows
 
+    security.declareProtected(
+        SilvaPermissions.ChangeSilvaContent, 'set_file')
+    def set_file(self, file):
+        return self.update_data(file.read())
 
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'set_data_encoding')
-    def set_data_encoding (self, encoding):
+    def set_data_encoding(self, encoding):
         self._data_encoding = encoding
         self.update_data(self._raw_data)
         return
 
-##     security.declareProtected(ViewManagementScreens, 'set_headings')
-##     def set_headings (self, headings):
-##         self._has_headings = (not not headings)
-##         return
-
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'set_table_class')
-    def set_table_class (self, css_class):
+    def set_table_class(self, css_class):
         self._table_class = css_class
         return
 
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'set_description')
     def set_description(self, desc):
-        t = type(desc)
-        if t == type(u''):
+        if not isinstance(desc, unicode):
             desc = desc.encode('utf-8')
-        # Since the metadata system will re-validate, it cannot
-        # accept unicode... ugh... so, re-encode to utf-8 first.
-        ms = self.service_metadata
-        binding = ms.getMetadata(self)
-        d = {'content_description' : desc}
-        binding.setValues('silva-extra', d)
-        pass
+
+        binding = getUtility(IMetadataService).getMetadata(self)
+        binding.setValues('silva-extra', {'content_description' : desc})
 
     # MANAGERS
 
@@ -279,8 +286,6 @@ class CSVSource(ExternalSource, Asset, Folder):
 
 InitializeClass(CSVSource)
 
-import os
-
 def reset_parameter_form(csvsource):
     filename = os.path.join(package_home(globals()),
                             'layout',
@@ -295,30 +300,62 @@ def reset_table_layout(cs):
     # Works for Zope object implementing a 'write()" method...
     layout = [
         ('layout', ZopePageTemplate, 'csvtable.zpt'),
-        ('macro', ZopePageTemplate, 'macro.zpt'),
     ]
 
-    for id, klass, file in layout:
+    for id, factory, file in layout:
         filename = os.path.join(package_home(globals()), 'layout', file)
         f = open(filename, 'rb')
         if not id in cs.objectIds():
-            cs._setObject(id, klass(id))
+            cs._setObject(id, factory(id))
         cs[id].write(f.read())
         f.close()
 
-def manage_addCSVSource(context, id, title, file=None, REQUEST=None):
-    """Add a CSVSource object
+
+@grok.subscribe(ICSVSource, IObjectCreatedEvent)
+def source_created(source, event):
+    reset_table_layout(source)
+    reset_parameter_form(source)
+
+
+@apply
+def encoding_source():
+    encodings = []
+    for title, key in [
+        ('ISO-8859-15 (Western Europe - Latin-1/EURO)', 'ISO-8859-15'),
+        ('ISO-8859-1 (Western Europe - Latin-1)', 'ISO-8859-1'),
+        ('Windows-1252 (Western Europe - Latin-1/Windows)', 'cp1252'),
+        ('Mac Roman (Western Europe - Apple Macintosh)', 'mac_roman'),
+        ('UTF-8 (Unicode)', 'utf-8')]:
+        encodings.append(SimpleTerm(value=key, token=key, title=title))
+    return SimpleVocabulary(encodings)
+
+
+class ICSVSourceSchema(ITitledContent):
+
+    file = silvaschema.Bytes(
+        title=_(u"file"),
+        description=_(u"File to upload as source data."),
+        required=True)
+    data_encoding = schema.Choice(
+        title=_(u"character encoding"),
+        description=_(u'Character encoding of the source data.'),
+        source=encoding_source,
+        required=False)
+
+
+class CSVSourceAddForm(silvaforms.SMIAddForm):
+    """CSVSource Add Form.
     """
-    cs = CSVSource(id)
-    context._setObject(id, cs)
-    cs = context._getOb(id)
-    if file:
-        cs.update_data(file.read())
-    else:
-        cs.update_data("")      # XXX: This is necessary ??
-    reset_table_layout(cs)
-    reset_parameter_form(cs)
-    cs.set_title(title)
-    cs.set_description('CSV Source description')
-    add_and_edit(context, id, REQUEST, screen='editCSVSource')
-    return ''
+    grok.context(ICSVSource)
+    grok.name(u'Silva CSV Source')
+
+    fields = silvaforms.Fields(ICSVSourceSchema)
+
+
+class CSVSourceView(silvaviews.View):
+    """View a CSVSource.
+    """
+    grok.context(ICSVSource)
+
+    def render(self):
+        return self.content.to_html()

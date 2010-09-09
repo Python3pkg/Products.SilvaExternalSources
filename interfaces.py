@@ -2,13 +2,8 @@
 # See also LICENSE.txt
 # $Id$
 
-from silva.core.interfaces import ISilvaService
+from silva.core.interfaces import ISilvaService, IAsset
 from zope.interface import Interface
-
-# FIXME: I think it's useless
-#from AccessControl import ModuleSecurityInfo
-#__allow_access_to_unprotected_subobjects__ = 1
-#module_security = ModuleSecurityInfo('Products.SilvaExternalSources.interfaces')
 
 
 class ICodeSourceService(ISilvaService):
@@ -77,3 +72,7 @@ class IExternalSource(Interface):
         """Returns the title of this instance.
         """
         pass
+
+
+class ICSVSource(IExternalSource, IAsset):
+    pass

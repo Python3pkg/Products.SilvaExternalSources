@@ -54,7 +54,6 @@ def install(root):
             root.manage_pasteObjects(token)
 
 
-
 def uninstall(root):
     cs_fields = configure.configuration
     unregisterViews(root.service_view_registry)
@@ -70,24 +69,15 @@ def uninstall(root):
 def registerViews(reg):
     """Register core views on registry.
     """
-    # add
-    reg.register('add', 'Silva CSV Source', ['add', 'CSVSource'])
     # edit
     reg.register('edit', 'Silva CSV Source', ['edit', 'Asset', 'CSVSource'])
-    # public
-    reg.register('public', 'Silva CSV Source', ['public', 'CSVSource'])
 
 
 def unregisterViews(reg):
     """Unregister core views on registry.
     """
-    # add
-    reg.unregister('add', 'Silva CSV Source')
     # edit
     reg.unregister('edit', 'Silva CSV Source')
-    # public
-
-    reg.unregister('public', 'Silva CSV Source')
 
 
 def configureSecurity(root):

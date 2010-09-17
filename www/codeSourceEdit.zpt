@@ -4,24 +4,24 @@ See also LICENSE.txt
 Version of this file: $Revision: 1.7 $
 -->
 <tal:block replace="structure here/manage_page_header" />
-<tal:block 
+<tal:block
   define="manage_tabs_message options/manage_tabs_message | nothing"
   replace="structure here/manage_tabs" />
 
 <h3>
   Edit Silva Code Source
 </h3>
-<form action="manage_editCodeSource" method="post">
+<form action="manage_editCodeSource" name="editform" method="post">
   <table cellspacing="0" cellpadding="2" border="0">
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-         Contents 
+         Contents
         </div>
       </td>
       <td align="left" valign="top">
         <h4 class="form-help">
-          <a 
+          <a
             tal:attributes="
               href string:${here/absolute_url}/manage_main">
             manage contents
@@ -37,7 +37,7 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <h4 class="form-help">
-          <a 
+          <a
             tal:attributes="
               href string:${here/absolute_url}/parameters/manage_main">
             manage parameters
@@ -86,14 +86,14 @@ Version of this file: $Revision: 1.7 $
         </div>
       </td>
       <td align="left" valign="top">
-        <textarea 
-          style="width: 100%;" 
-          type="text" 
-          cols="40" 
-          rows="5" 
+        <textarea
+          style="width: 100%;"
+          type="text"
+          cols="40"
+          rows="5"
           wrap="soft"
           value=""
-          name="description" 
+          name="description"
           id="description"
           tal:content="here/description"
         />
@@ -128,7 +128,7 @@ Version of this file: $Revision: 1.7 $
         </div>
       </td>
       <td align="left" valign="top">
-        <input type="checkbox" name="previewable" 
+        <input type="checkbox" name="previewable"
           tal:attributes="checked python: here.is_previewable() and 'checked' or nothing" />
       </td>
     </tr>

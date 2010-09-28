@@ -172,6 +172,3 @@ def install_codesources(root, path, sources, product_name=None):
                 continue
             with open(os.path.join(codesource_path, filename), 'rb') as data:
                 installer(source, data, name)
-
-
-

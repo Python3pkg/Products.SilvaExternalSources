@@ -7,6 +7,7 @@
   <include package="five.grok" />
   <include package="silva.core.views" />
   <include package="zeam.form.silva" />
+  <include package="Products.Formulator" />
 
   <!-- i18n -->
   <i18n:registerTranslations directory="i18n" />

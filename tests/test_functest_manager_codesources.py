@@ -19,7 +19,7 @@ CODE_SOURCES = {
                        'caption_text', 'credit_link',
                        'credit_prefix', 'credit_text',
                        'creditlink_tooltip', 'image_link',
-                       'image_path', 'link_tooltip', 'link_url']},
+                       'image_path', 'link_url']},
     'cs_flash':{
         'title': 'Flash',
         'script_id': 'flash_script',
@@ -52,13 +52,13 @@ CODE_SOURCES = {
         'script_id': 'java_script',
         'contents': ['HISTORY', 'LICENSE', 'README', 'version',
                      'java_script'],
-        'parameters': ['code', 'codebase', 'height', 'params', 'width']},
+        'parameters': ['codebase', 'height', 'params', 'width']},
     'cs_java_plugin':{
         'title': 'Java Plugin',
         'script_id': 'java_script',
         'contents': ['HISTORY', 'LICENSE', 'README', 'version',
                      'java_script'],
-        'parameters': ['archive', 'code', 'codebase', 'height',
+        'parameters': ['archive', 'codebase', 'height',
                        'params', 'width']},
     'cs_ms_video':{
         'title': 'MS Video',
@@ -149,9 +149,12 @@ class ManagerCodeSourcesTest(unittest.TestCase):
         for source_name in CODE_SOURCES:
             info = CODE_SOURCES[source_name]
 
-            self.assertTrue(source_name in browser.inspect.zmi_listing)
+            source_link = '%s (%s)' % (source_name, info['title'])
+            self.assertTrue(
+                source_link in browser.inspect.zmi_listing,
+                msg='Missing code source %s' % source_link)
             self.assertEqual(
-                browser.inspect.zmi_listing[source_name].click(),
+                browser.inspect.zmi_listing[source_link].click(),
                 200)
 
             form = browser.get_form('editform')
@@ -160,13 +163,13 @@ class ManagerCodeSourcesTest(unittest.TestCase):
                     form.get_control(fieldname).value,
                     info[fieldname],
                     msg='Wrong value %s for %s in %s' % (
-                        form.get_control(fieldname).value, fieldname, source_name))
+                        form.get_control(fieldname).value, fieldname, source_link))
 
             self.assertEqual(browser.get_link('manage parameters').click(), 200)
             for parameter in info['parameters']:
                 self.assertTrue(
                     parameter in browser.inspect.zmi_listing,
-                    msg='Missing parameter %s in %s' % (parameter, source_name))
+                    msg='Missing parameter %s in %s' % (parameter, source_link))
 
             self.assertEqual(browser.get_link(source_name).click(), 200)
             self.assertEqual(browser.get_link('manage contents').click(), 200)
@@ -174,7 +177,7 @@ class ManagerCodeSourcesTest(unittest.TestCase):
             for content in info['contents']:
                 self.assertTrue(
                     content in browser.inspect.zmi_listing,
-                    msg='Missing content %s in %s' % (content, source_name))
+                    msg='Missing content %s in %s' % (content, source_link))
 
             self.assertEqual(
                 browser.get_link('service_codesources').click(),

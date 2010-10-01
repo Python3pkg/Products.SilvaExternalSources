@@ -3,6 +3,9 @@ See also LICENSE.txt
 
 Silva YouTube Code Source changes
 
+0.2
+    - Updated the embed code.
+
 0.1
     - Initial public release.
 

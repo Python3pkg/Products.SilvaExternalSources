@@ -1,4 +1,4 @@
-##parameters=code, archive='', codebase='', width, height, params=''
+##parameters=model, version, code, archive='', codebase='', width, height, params=''
 # Creates the HTML code for the java plugin technology according to the
 # documentation on
 # http://java.sun.com/j2se/1.5.0/docs/guide/plugin/developer_guide/using_tags.html#general
@@ -8,8 +8,6 @@
 # Unfortunately I could not find out how to instruct Internet Explorer to use
 # the latest installed version from 1.2 on, and at the same time to specify a
 # download page with the latest version.
-
-model = context.REQUEST.model
 
 if archive == '':
     archive_param_tag = ''

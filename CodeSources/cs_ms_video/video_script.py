@@ -1,4 +1,4 @@
-##parameters=ref, controller, autoplay, width='', height=''
+##parameters=model, version, ref, controller, autoplay, width='', height=''
 # Embeds movies using the Windows Media Player. This Code Source
 # was developped to embed *.avi files - therefore it uses the
 # clsid of the class ID of the Windows Media Player 6 
@@ -11,7 +11,6 @@
 # Media Player Plug-in DLL in Firefox does not listen to the extension
 # *.avi or its correct MIME-type, 'video/x-msvideo' (or 'video/avi').
 
-model = context.REQUEST.model
 
 if ref.find('://') == -1:
     video = model.restrictedTraverse(str(ref))

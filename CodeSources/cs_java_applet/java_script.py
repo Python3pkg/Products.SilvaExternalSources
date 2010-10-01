@@ -1,6 +1,4 @@
-##parameters=code, archive='', codebase='', width, height, params=''
-
-model = context.REQUEST.model
+##parameters=model, version, code, archive='', codebase='', width, height, params=''
 
 if archive == '':
     archive_attr = ''

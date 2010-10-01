@@ -1,6 +1,4 @@
-##parameters=ref, controller, autoplay, width, height, params=''
-
-model = context.REQUEST.model
+##parameters=model, version, ref, controller, autoplay, width, height, params=''
 
 if ref.find('://') == -1:
     video = model.restrictedTraverse(str(ref))

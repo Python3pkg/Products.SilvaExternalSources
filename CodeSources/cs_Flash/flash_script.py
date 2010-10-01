@@ -1,6 +1,4 @@
-##parameters=ref, width, height, play='true', quality='high', params=''
-
-model = context.REQUEST.model
+##parameters=model, version, ref, width, height, play='true', quality='high', params=''
 
 if ref.find('://') == -1:
     asset = model.restrictedTraverse(str(ref))

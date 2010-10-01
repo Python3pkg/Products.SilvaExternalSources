@@ -10,6 +10,9 @@ Contact: schluep at ethz ch
 
 History
 
+  0.4
+    New: model and version are now Keywords arguments 
+
   0.3
     New: Media file can be also referenced by absolute links 
 

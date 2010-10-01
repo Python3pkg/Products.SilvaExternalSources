@@ -31,7 +31,7 @@
           <max_length></max_length>
           <onclick>reference.getReference(
 function(path, id, title) {
-document.getElementsByName('%(field_id)s')[0].value = path;;
+document.getElementById('%(field_id)s').value = path;;
 }, '%(url)s', 'Silva Document', true)</onclick>
           <required type="int">1</required>
           <title>document</title>

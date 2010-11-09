@@ -22,20 +22,10 @@ class IExternalSource(Interface):
         This Formulator form is used in the Silva Document 'external data'
         document element to render the parameters UI.
         """
-        pass
 
-    def to_html(REQUEST, **kw):
-        """ Returns the HTML for inclusion in the rendered Silva HTML.
+    def to_html(content, request, **parameters):
+        """ Render the HTML for inclusion in the rendered Silva HTML.
         """
-        pass
-
-    def to_xml(REQUEST, **kw):
-        """ Returns XML for this source for inclusion in exported Silva XML.
-
-        NOTE: The use of this feature is not yet fully defined!
-
-        """
-        pass
 
     def is_cacheable(**kw):
         """ Returns the cacheability (true or false) for this source.
@@ -45,7 +35,6 @@ class IExternalSource(Interface):
         If the data from this source can be cached this source will only be
         called once.
         """
-        pass
 
     def data_encoding():
         """ Returns the encoding of source's data.
@@ -57,7 +46,6 @@ class IExternalSource(Interface):
         NOTE: This is usually only used *within* the external source
         implementation.
         """
-        pass
 
     def description():
         """ Returns the purpose of this external source.
@@ -66,12 +54,12 @@ class IExternalSource(Interface):
         It can contain a description of the use of its parameters and the
         what data is will render in the document.
         """
-        pass
+
 
     def get_title(self):
         """Returns the title of this instance.
         """
-        pass
+
 
 
 class ICSVSource(IExternalSource, IAsset):

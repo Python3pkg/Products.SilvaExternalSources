@@ -242,12 +242,12 @@ class ExternalSource(Acquisition.Implicit):
         xml.append('</sourcedata>')
         return ''.join(xml)
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation,
-                                'to_html')
-    def to_html(self, REQUEST=None, **kw):
+    security.declareProtected(
+        SilvaPermissions.AccessContentsInformation, 'to_html')
+    def to_html(self, content, request, **parameters):
         """ Render the HTML for inclusion in the rendered Silva HTML.
         """
-        return ''
+        raise NotImplementedError
 
     security.declareProtected(SilvaPermissions.AccessContentsInformation,
                                 'is_cacheable')

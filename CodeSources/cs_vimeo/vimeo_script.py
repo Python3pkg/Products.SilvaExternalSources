@@ -1,4 +1,4 @@
-##parameters= vimeo_id, width, height
+##parameters= model, vimeo_id, width, height
 
 video_id = vimeo_id
 video_width = width

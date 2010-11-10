@@ -1,6 +1,6 @@
-##parameters= vimeo_id, width, height 
+##parameters= vimeo_id, width, height
 
-video_id = vimeo_id 
+video_id = vimeo_id
 video_width = width
 video_height = height
 

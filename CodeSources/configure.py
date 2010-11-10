@@ -143,4 +143,13 @@ configuration = {
         'elaborate': False,
         'previewable': True,
     },
+    'cs_vimeo': {
+        'id': 'cs_vimeo',
+        'title': 'Vimeo video',
+        'render_id': 'vimeo_script',
+        'desc': "Code Source to embed Vimeo videos",
+        'cacheable': True,
+        'elaborate': False,
+        'previewable': True,
+    },
 }

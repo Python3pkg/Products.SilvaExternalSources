@@ -13,11 +13,6 @@ from zeam.utils.batch import batch
 from zeam.utils.batch.interfaces import IBatching
 from zope import component
 
-from Products.SilvaMetadata.interfaces import IMetadataService
-from Products.SilvaExternalSources.interfaces import ICSVSource
-from Products.SilvaExternalSources.ExternalSource import ExternalSource
-from Products.SilvaExternalSources import ASV
-
 # Zope
 from AccessControl import ClassSecurityInfo
 from App.Common import package_home
@@ -32,7 +27,12 @@ from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 # Silva
 from Products.Silva import SilvaPermissions
 from Products.Silva.Asset import Asset
+from Products.SilvaExternalSources import ASV
+from Products.SilvaExternalSources.ExternalSource import ExternalSource
+from Products.SilvaExternalSources.interfaces import ICSVSource
+from Products.SilvaMetadata.interfaces import IMetadataService
 
+from silva.core.interfaces import IVersion
 from silva.core.views import views as silvaviews
 from silva.core.conf import schema as silvaschema
 from silva.core.conf.interfaces import ITitledContent
@@ -73,7 +73,6 @@ class CSVSource(Folder, ExternalSource, Asset):
         'www/csvSourceEditData', globals(),  __name__='editCSVSourceData')
 
     _layout_id = 'layout'
-
     _default_batch_size = 20
 
     # register priority, icon and factory
@@ -107,29 +106,29 @@ class CSVSource(Folder, ExternalSource, Asset):
 
     security.declareProtected(
         SilvaPermissions.AccessContentsInformation, 'to_html')
-    def to_html(self, version=None, model=None, **kw):
+    def to_html(self, content, request, **parameters):
         """ render HTML for CSV source
         """
         rows = self._data[:]
         param = {}
-        param.update(kw)
+        param.update(parameters)
         if not param.get('csvtableclass'):
             param['csvtableclass'] = 'default'
         batch_size = self._default_batch_size
         batch_nav = ''
         if param.get('csvbatchsize'):
             batch_size = int(param.get('csvbatchsize'))
-        model = self
-        if version is not None:
-            model = version.get_content()
+        model = content
+        if IVersion.providedBy(content):
+            model = content.get_content()
         if rows:
             headings = rows[0]
             rows = batch(
-                rows[1:], count=batch_size,
-                name=self.getId(), request=self.REQUEST)
+                rows[1:],
+                count=batch_size, name=self.getId(), request=request)
             param['headings'] = headings
             batch_nav = component.getMultiAdapter(
-                (model, rows, self.REQUEST), IBatching)()
+                (model, rows, request), IBatching)()
         return self.layout(table=rows, batch=batch_nav, parameters=param)
 
     security.declareProtected(
@@ -265,12 +264,9 @@ class CSVSource(Folder, ExternalSource, Asset):
             m = _("Previewable setting changed. ")
             msg += m #'Previewable setting changed. '
         if file:
-            self.update_data(data.read())
+            self.update_data(file.read())
             m = _("Data updated. ")
             msg += m #'Data updated. '
-##         if not (not not headings) is (not not self._has_headings):
-##             self._has_headings = (not not headings)
-##             msg += 'Has headings setting changed. '
         return self.editCSVSource(manage_tabs_message=msg)
 
     security.declareProtected(
@@ -284,7 +280,9 @@ class CSVSource(Folder, ExternalSource, Asset):
             msg = _('Raw data updated. ')
         return self.editDataCSVSource(manage_tabs_message=msg)
 
+
 InitializeClass(CSVSource)
+
 
 def reset_parameter_form(csvsource):
     filename = os.path.join(package_home(globals()),
@@ -358,4 +356,4 @@ class CSVSourceView(silvaviews.View):
     grok.context(ICSVSource)
 
     def render(self):
-        return self.content.to_html()
+        return self.content.to_html(self.context, self.request)

@@ -23,10 +23,27 @@ from Products.Silva.helpers import add_and_edit
 from silva.core.interfaces.content import IVersion
 from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf
-from silva.translations import translate as _
 
 
 _marker = object()
+
+def cast_formulator_value(value, field_type):
+    if field_type == 'CheckBoxField':
+        if value is not None and int(value)==1:
+            return True
+        return False
+    elif field_type == 'IntegerField':
+        if not value: #if value is not set
+            return None
+        return int(value)
+    elif field_type == 'MultiListField':
+        if not value:
+            return []
+        if not isinstance(value,ListType):
+            return eval(value)
+        return value
+    #XXX More field types? Dates? Selects?
+    return value
 
 
 class CodeSource(ExternalSource, Folder, ZMIObject):
@@ -34,11 +51,7 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
     implements(IExternalSource)
 
     meta_type = "Silva Code Source"
-
     security = ClassSecurityInfo()
-
-    # UTF as UI is in UTF-8
-    _data_encoding = 'UTF-8'
 
     # ZMI Tabs
     manage_options = (
@@ -54,19 +67,18 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
     silvaconf.factory('manage_addCodeSourceForm')
     silvaconf.factory('manage_addCodeSource')
 
+    _data_encoding = 'UTF-8'
+    _elaborate = False
+
     def __init__(self, id, script_id=None):
-        self._elaborate = False
-        self.id = id
+        super(CodeSource, self).__init__(id)
         self._script_id = script_id
 
     # ACCESSORS
 
     security.declareProtected(AccessContentsInformation, 'elaborate')
     def elaborate(self):
-        elaborate = getattr(self, '_elaborate', None)
-        if elaborate is None:
-            elaborate = self._elaborate = False
-        return elaborate
+        return self._elaborate
 
     security.declareProtected(AccessContentsInformation, 'script_id')
     def script_id(self):
@@ -76,8 +88,7 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
                                 'get_rendered_form_for_editor')
     def get_rendered_form_for_editor(self, REQUEST=None):
         """non empty docstring"""
-        html = CodeSource.inheritedAttribute("get_rendered_form_for_editor"
-                                             )(self, REQUEST)
+        html = super(CodeSource, self).get_rendered_form_for_editor(REQUEST)
         if self.elaborate():
             root_url = self.get_root_url()
             html = html.replace(
@@ -102,49 +113,33 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
         return html
 
     security.declareProtected(AccessContentsInformation, 'to_html')
-    def to_html(self, context, request, **parameters):
+    def to_html(self, content, request, **parameters):
         """Render HTML for code source
         """
         try:
             script = self[self._script_id]
         except KeyError:
             return None
-        self.__prepare_parameters(parameters)
+        self._prepare_parameters(parameters)
         parameters['version'] = None
-        parameters['model'] = context.get_content()
-        if IVersion.providedBy(context):
-            parameters['version'] = context
+        parameters['model'] = content.get_content()
+        if IVersion.providedBy(content):
+            parameters['version'] = content
         result = script(**parameters)
         if type(result) is unicode:
             return result
         return unicode(result, self.data_encoding(), 'replace')
 
-    def __prepare_parameters(self, parameters):
-        fields = self.form().get_fields()
-        for field in fields:
+    def _prepare_parameters(self, parameters):
+        form = self.form()
+        if form is None:
+            return parameters
+        for field in form.get_fields():
             value = parameters.get(field.id, _marker)
             if value is _marker:
                 value = field.get_value('default')
-            parameters[field.id] = self._cast_value(value, field.meta_type)
+            parameters[field.id] = cast_formulator_value(value, field.meta_type)
         return parameters
-
-    def _cast_value(self, value, field_type):
-        if field_type == 'CheckBoxField':
-            if value is not None and int(value)==1:
-                return True
-            return False
-        elif field_type == 'IntegerField':
-            if not value: #if value is not set
-                return None
-            return int(value)
-        elif field_type == 'MultiListField':
-            if not value:
-                return []
-            if not isinstance(value,ListType):
-                return eval(value)
-            return value
-        #XXX More field types? Dates? Selects?
-        return value
 
     def set_elaborate(self, value):
         self._elaborate = value
@@ -164,24 +159,20 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
                 unicode('abcd', data_encoding, 'replace')
             except LookupError:
                 # unknown encoding, return error message
-                m = _(
-                    "Unknown encoding ${enc}, not changed! ",
-                    mapping={"enc":charset})
-                msg += sm #"Unknown encoding %s, not changed!. " %
-                          #data_encoding
-                return self.editCodeSource(manage_tabs_message=m)
+                msg += "Unknown encoding %s, not changed! " % data_encoding
+                return self.editCodeSource(manage_tabs_message=msg)
             self.set_data_encoding(data_encoding)
-            msg += 'Data encoding changed. '
+            msg += u'Data encoding changed. '
 
         title = unicode(title, self.management_page_charset)
 
         if title and title != self.title:
             self.title = title
-            msg += _("Title changed. ")
+            msg += "Title changed. "
 
         if script_id and script_id != self._script_id:
             self._script_id = script_id
-            msg += _("Script id changed. ")
+            msg += "Script id changed. "
 
         # Assume description is in the encoding as specified
         # by "management_page_charset". Store it in unicode.
@@ -189,15 +180,15 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
 
         if description != self._description:
             self.set_description(description)
-            msg += _("Description changed. ")
+            msg += "Description changed. "
 
         if not (not not cacheable) is (not not self._is_cacheable):
             self.set_is_cacheable(cacheable)
-            msg += _("Cacheability setting changed. ")
+            msg += "Cacheability setting changed. "
 
         if not (not not previewable) is (not not self.is_previewable()):
             self.set_is_previewable(previewable)
-            msg += _("Previewable setting changed.")
+            msg += "Previewable setting changed. "
 
         if not elaborate:
             if self.elaborate():
@@ -205,18 +196,11 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
         elif not self.elaborate():
             self.set_elaborate(True)
 
-        try:
-            script = self[script_id]
-        except KeyError:
-            msg += _("<b>Warning</b>: ")
-            if not script_id:
-                m = _('no script id specified! ')
-            else:
-                m = _(
-                    'This code source does not contain an callable object with\
-                    id "${id}"! ',
-                    mapping={'id': script_id})
-            msg += m
+        if not script_id:
+            msg += "<b>Warning</b>: no script id specified!"
+        if script_id not in self.objectIds():
+            msg += '<b>Warning</b>: This code source does not contain ' \
+                'an object with identifier "%s"! ' % script_id
         return self.editCodeSource(manage_tabs_message=msg)
 
 InitializeClass(CodeSource)

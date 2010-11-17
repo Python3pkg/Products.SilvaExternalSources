@@ -55,6 +55,7 @@ def getSourceForId(context, identifier):
         return nearest
     return None
 
+
 def urepr(l):
     l = repr(l)
     if l[0] == 'u':
@@ -115,7 +116,6 @@ class ExternalSource(Acquisition.Implicit):
     # ACCESSORS
 
     security.declareProtected(SilvaPermissions.AccessContentsInformation,'form')
-
     def form(self):
         """ get to the parameters form
         """
@@ -146,50 +146,52 @@ class ExternalSource(Acquisition.Implicit):
                                     # 'it seems field is always in
                                     # lower' is not quite true in fact
 
-        for field in self.form().get_fields():
-            value = None
-            #the field id is actually _always_ lowercase in formcopy
-            # (see https://bugs.launchpad.net/silva/+bug/180860)
-            field_id = field.id.lower()
+        form = self.form()
+        if form is not None:
+            for field in form.get_fields():
+                value = None
+                #the field id is actually _always_ lowercase in formcopy
+                # (see https://bugs.launchpad.net/silva/+bug/180860)
+                field_id = field.id.lower()
 
-            fieldDescription = ustr(field.values.get('description',''), 'UTF-8')
-            if fieldDescription:
-                fieldCssClasses = "rollover"
-                fieldDescription = '<span class="tooltip">%s</span>'%fieldDescription
-            else:
-                fieldCssClasses = ""
-            if field.values.get('required',False):
-                fieldCssClasses += ' requiredfield'
-            if fieldCssClasses:
-                fieldCssClasses = 'class="%s"'%fieldCssClasses.strip()
+                fieldDescription = ustr(field.values.get('description',''), 'UTF-8')
+                if fieldDescription:
+                    fieldCssClasses = "rollover"
+                    fieldDescription = '<span class="tooltip">%s</span>'%fieldDescription
+                else:
+                    fieldCssClasses = ""
+                if field.values.get('required',False):
+                    fieldCssClasses += ' requiredfield'
+                if fieldCssClasses:
+                    fieldCssClasses = 'class="%s"'%fieldCssClasses.strip()
 
-            xml.append('<div class="fieldblock">\n<label for="field-%s"><a href="#" onclick="return false" %s>%s%s</a></label>\n' % (
-                field_id.replace('_', '-'), fieldCssClasses, fieldDescription, ustr(field.values['title'], 'UTF-8'))
-                )
+                xml.append('<div class="fieldblock">\n<label for="field-%s"><a href="#" onclick="return false" %s>%s%s</a></label>\n' % (
+                    field_id.replace('_', '-'), fieldCssClasses, fieldDescription, ustr(field.values['title'], 'UTF-8'))
+                    )
 
-            if formcopy.has_key(field_id):
-                value = formcopy[field_id]
-            if value is None:
-                # default value (if available)
-                value = field.get_value('default')
-            if type(value) == list:
-                value = [ustr(unescape(x), 'UTF-8') for x in value]
-            elif field.meta_type == "CheckBoxField":
-                value = int(value)
-            elif field.meta_type == "DateTimeField":
-                if value:
-                    value = DateTime(value)
-                else: # it needs to be None, rather than ''
-                    value = None
-            else:
+                if formcopy.has_key(field_id):
+                    value = formcopy[field_id]
                 if value is None:
-                    value = ''
-                value = ustr(unescape(value), 'UTF-8')
-            xml.append('%s\n</div>\n' %
-                            (field.render(value)))
+                    # default value (if available)
+                    value = field.get_value('default')
+                if type(value) == list:
+                    value = [ustr(unescape(x), 'UTF-8') for x in value]
+                elif field.meta_type == "CheckBoxField":
+                    value = int(value)
+                elif field.meta_type == "DateTimeField":
+                    if value:
+                        value = DateTime(value)
+                    else: # it needs to be None, rather than ''
+                        value = None
+                else:
+                    if value is None:
+                        value = ''
+                    value = ustr(unescape(value), 'UTF-8')
+                xml.append('%s\n</div>\n' %
+                                (field.render(value)))
 
         # if a Code Source has no parameters, inform the user how to proceed
-        if len(self.form().get_fields()) == 0:
+        if form is None or len(form.get_fields()) == 0:
             no_params = _('This Code Source has no adjustable settings. Click a button to insert or remove it.')
             xml.append('<p class="messageblock">%s</p>' % no_params)
 
@@ -211,6 +213,9 @@ class ExternalSource(Acquisition.Implicit):
         get_model(REQUEST)
 
         form = self.form()
+        if form is None:
+            REQUEST.RESPONSE.setStatus(400)
+            return 'No parameters need to be validated'
         try:
             result = form.validate_all(REQUEST)
         except FormValidationError, e:
@@ -284,8 +289,7 @@ class ExternalSource(Acquisition.Implicit):
     def get_title (self):
         return self.title
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation,
-                                'index_html')
+    security.declareProtected(SilvaPermissions.AccessContentsInformation, 'index_html')
     def index_html(self, REQUEST=None, RESPONSE=None):
         """ render HTML with default or other test values in ZMI for
         purposes of testing the ExternalSource.
@@ -296,7 +300,7 @@ class ExternalSource(Acquisition.Implicit):
                 REQUEST.model = self
             try:
                 kw = form.validate_all(REQUEST)
-            except (FormValidationError, ValidationError), err:
+            except (FormValidationError, ValidationError):
                 # If we cannot validate (e.g. due to required parameters),
                 # return a form.
                 # FIXME: How to get some feedback in the rendered page? E.g.
@@ -309,36 +313,31 @@ class ExternalSource(Acquisition.Implicit):
 
     # MODIFIERS
 
-    security.declareProtected(SilvaPermissions.ViewManagementScreens,
-                                'set_form')
+    security.declareProtected(SilvaPermissions.ViewManagementScreens, 'set_form')
     def set_form(self, form):
         """ Set Formulator parameters form
         """
         self.parameters = form
 
-    security.declareProtected(SilvaPermissions.ViewManagementScreens,
-                                'set_data_encoding')
+    security.declareProtected(SilvaPermissions.ViewManagementScreens, 'set_data_encoding')
     def set_data_encoding(self, encoding):
         """ set encoding of data
         """
         self._data_encoding = encoding
 
-    security.declareProtected(SilvaPermissions.ViewManagementScreens,
-                                'set_description')
+    security.declareProtected(SilvaPermissions.ViewManagementScreens, 'set_description')
     def set_description(self, desc):
         """ set description of external source's use
         """
         self._description = desc
 
-    security.declareProtected(SilvaPermissions.ViewManagementScreens,
-                                'set_is_cacheable')
+    security.declareProtected(SilvaPermissions.ViewManagementScreens, 'set_is_cacheable')
     def set_is_cacheable(self, cacheable):
         """ set cacheablility of source
         """
         self._is_cacheable = cacheable
 
-    security.declareProtected(SilvaPermissions.ViewManagementScreens,
-                                 'set_is_cacheable')
+    security.declareProtected(SilvaPermissions.ViewManagementScreens, 'set_is_previewable')
     def set_is_previewable(self, previewable):
         """ set previewablility (in kupu) of source
         """

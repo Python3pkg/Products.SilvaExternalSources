@@ -21,7 +21,6 @@ from OFS.Folder import Folder
 
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.XMLToForm import XMLToForm
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 
 # Silva
@@ -55,22 +54,6 @@ class CSVSource(Folder, EditableExternalSource, Asset):
     management_page_charset = 'utf-8'
 
     security = ClassSecurityInfo()
-
-    # ZMI Tabs
-    manage_options = (
-        {'label':'Edit', 'action':'editCSVSource'},
-        {'label':'Edit Data', 'action':'editDataCSVSource'},
-        ) + Folder.manage_options
-
-    security.declareProtected(
-        SilvaPermissions.ViewManagementScreens, 'editCSVSource')
-    editCSVSource = PageTemplateFile(
-        'www/csvSourceEdit', globals(),  __name__='editCSVSource')
-
-    security.declareProtected(
-        SilvaPermissions.ViewManagementScreens, 'editDataCSVSource')
-    editDataCSVSource = PageTemplateFile(
-        'www/csvSourceEditData', globals(),  __name__='editCSVSourceData')
 
     _layout_id = 'layout'
     _default_batch_size = 20
@@ -208,77 +191,6 @@ class CSVSource(Folder, EditableExternalSource, Asset):
 
         binding = getUtility(IMetadataService).getMetadata(self)
         binding.setValues('silva-extra', {'content_description' : desc})
-
-    # MANAGERS
-
-    security.declareProtected(
-        SilvaPermissions.ViewManagementScreens, 'manage_editCSVSource')
-    def manage_editCSVSource(
-        self, title, character_set, description=None, cacheable=None,
-        headings=None, file=None, previewable=None):
-        """ Edit CSVSource object
-        """
-        msg = u''
-        charset = character_set
-        # first check if encoding is known
-        # if not, don't change it and display error message
-        try:
-            unicode('abcd', charset, 'replace')
-        except LookupError:
-            # unknown encoding, return error message
-            m = _(
-                "Unknown encoding ${enc}, not changed! ",
-                mapping={"enc":charset})
-            msg += m #"Unknown encoding %s, not changed!. " % charset
-            return self.editCSVSource(manage_tabs_message=msg)
-        self.set_data_encoding(charset)
-        m = _(
-            "Data encoding changed to: ${enc}. ",
-            mapping={"enc":charset})
-        msg += m #'Data encoding changed to: %s. ' % charset
-
-        # Assume title is in the encoding as specified
-        # by "management_page_charset". Store it in unicode.
-        title = unicode(
-            title, self.management_page_charset)
-
-        if title and title != self.get_title():
-            self.set_title(title)
-            msg += _("Title changed. ")
-
-        # Assume description is in the encoding as specified
-        # by "management_page_charset". Store it in unicode.
-        description = unicode(
-            description, self.management_page_charset, 'replace')
-
-        if description and description != self._description:
-            self.set_description(description)
-            m = _("Description changed. ")
-            msg += m #'Description changed. '
-        if not (not not cacheable) is (not not self._is_cacheable):
-            self.set_cacheable(cacheable)
-            m = _("Cacheability setting changed. ")
-            msg += m #'Cacheability setting changed. '
-        if not (not not previewable) is (not not self.is_previewable()):
-            self.set_previewable(previewable)
-            m = _("Previewable setting changed. ")
-            msg += m #'Previewable setting changed. '
-        if file:
-            self.update_data(file.read())
-            m = _("Data updated. ")
-            msg += m #'Data updated. '
-        return self.editCSVSource(manage_tabs_message=msg)
-
-    security.declareProtected(
-        SilvaPermissions.ViewManagementScreens, 'manage_editDataCSVSource')
-    def manage_editDataCSVSource(self, data=None):
-        """ Edit CSVSource raw data
-        """
-        msg = u''
-        if data:
-            self.update_data(data)
-            msg = _('Raw data updated. ')
-        return self.editDataCSVSource(manage_tabs_message=msg)
 
 
 InitializeClass(CSVSource)

@@ -157,7 +157,7 @@ def install_codesources(root, path, sources, product_name=None):
         if info['desc']:
             source.set_description(info['desc'])
         if info['cacheable']:
-            source.set_is_cacheable(True)
+            source.set_cacheable(True)
         if info['elaborate']:
             source.set_elaborate(True)
 

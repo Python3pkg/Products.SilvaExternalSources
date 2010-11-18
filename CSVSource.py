@@ -28,7 +28,7 @@ from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Products.Silva import SilvaPermissions
 from Products.Silva.Asset import Asset
 from Products.SilvaExternalSources import ASV
-from Products.SilvaExternalSources.ExternalSource import ExternalSource
+from Products.SilvaExternalSources.ExternalSource import EditableExternalSource
 from Products.SilvaExternalSources.interfaces import ICSVSource
 from Products.SilvaMetadata.interfaces import IMetadataService
 
@@ -41,7 +41,7 @@ from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 
 
-class CSVSource(Folder, ExternalSource, Asset):
+class CSVSource(Folder, EditableExternalSource, Asset):
     """CSV Source is an asset that displays tabular data from a
     spreadsheet or database. The format of the uploaded text file
     should be &#8216;comma separated values&#8217;. The asset can
@@ -97,7 +97,7 @@ class CSVSource(Folder, ExternalSource, Asset):
 
     security.declareProtected(
         SilvaPermissions.AccessContentsInformation, 'raw_data')
-    def raw_data (self):
+    def raw_data(self):
         if type(self._raw_data) != type(u''):
             data = unicode(self._raw_data, self._data_encoding, 'replace')
         else:
@@ -133,7 +133,7 @@ class CSVSource(Folder, ExternalSource, Asset):
 
     security.declareProtected(
         SilvaPermissions.AccessContentsInformation, 'get_title')
-    def get_title (self):
+    def get_title(self):
         """Return meta-data title for this instance
         """
         ms = self.service_metadata
@@ -141,13 +141,13 @@ class CSVSource(Folder, ExternalSource, Asset):
 
     security.declareProtected(
         SilvaPermissions.ViewManagementScreens, 'get_table_class')
-    def get_table_class (self):
+    def get_table_class(self):
         """Returns css class for table """
         return self._table_class
 
     security.declareProtected(
-        SilvaPermissions.AccessContentsInformation, 'description')
-    def description (self):
+        SilvaPermissions.AccessContentsInformation, 'get_description')
+    def get_description(self):
         """ Return desc from meta-data system"""
         ms = self.service_metadata
         return ms.getMetadataValue(self, 'silva-extra', 'content_description')
@@ -156,7 +156,7 @@ class CSVSource(Folder, ExternalSource, Asset):
 
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'update_data')
-    def update_data (self, data):
+    def update_data(self, data):
         asv = ASV.ASV()
         asv.input(data, ASV.CSV(), has_field_names=0)
         # extracting the raw data out of the asv structure
@@ -256,11 +256,11 @@ class CSVSource(Folder, ExternalSource, Asset):
             m = _("Description changed. ")
             msg += m #'Description changed. '
         if not (not not cacheable) is (not not self._is_cacheable):
-            self.set_is_cacheable(cacheable)
+            self.set_cacheable(cacheable)
             m = _("Cacheability setting changed. ")
             msg += m #'Cacheability setting changed. '
         if not (not not previewable) is (not not self.is_previewable()):
-            self.set_is_previewable(previewable)
+            self.set_previewable(previewable)
             m = _("Previewable setting changed. ")
             msg += m #'Previewable setting changed. '
         if file:

@@ -2,9 +2,6 @@
 # See also LICENSE.txt
 # $Id$
 
-from types import ListType
-from zope.interface import implements
-
 # Zope
 from App.class_init import InitializeClass
 from AccessControl import ClassSecurityInfo
@@ -12,14 +9,13 @@ from OFS.Folder import Folder
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.Formulator.Form import ZMIForm
-from Products.SilvaExternalSources.interfaces import IExternalSource
-from Products.SilvaExternalSources.ExternalSource import ExternalSource
-
-# Silva
+from Products.SilvaExternalSources.interfaces import ICodeSource
+from Products.SilvaExternalSources.ExternalSource import EditableExternalSource
 from Products.Silva.SilvaPermissions import ViewManagementScreens, \
     AccessContentsInformation
 from Products.Silva.helpers import add_and_edit
 
+from five import grok
 from silva.core.interfaces.content import IVersion
 from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf
@@ -39,16 +35,16 @@ def cast_formulator_value(value, field_type):
     elif field_type == 'MultiListField':
         if not value:
             return []
-        if not isinstance(value,ListType):
+        if not isinstance(value, list):
             return eval(value)
         return value
     #XXX More field types? Dates? Selects?
     return value
 
 
-class CodeSource(ExternalSource, Folder, ZMIObject):
+class CodeSource(EditableExternalSource, Folder, ZMIObject):
 
-    implements(IExternalSource)
+    grok.implements(ICodeSource)
 
     meta_type = "Silva Code Source"
     security = ClassSecurityInfo()
@@ -76,8 +72,8 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
 
     # ACCESSORS
 
-    security.declareProtected(AccessContentsInformation, 'elaborate')
-    def elaborate(self):
+    security.declareProtected(AccessContentsInformation, 'is_elaborate')
+    def is_elaborate(self):
         return self._elaborate
 
     security.declareProtected(AccessContentsInformation, 'script_id')
@@ -89,7 +85,7 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
     def get_rendered_form_for_editor(self, REQUEST=None):
         """non empty docstring"""
         html = super(CodeSource, self).get_rendered_form_for_editor(REQUEST)
-        if self.elaborate():
+        if self.is_elaborate():
             root_url = self.get_root_url()
             html = html.replace(
                 '<form ', '<html><head>'
@@ -128,10 +124,10 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
         result = script(**parameters)
         if type(result) is unicode:
             return result
-        return unicode(result, self.data_encoding(), 'replace')
+        return unicode(result, self.get_data_encoding(), 'replace')
 
     def _prepare_parameters(self, parameters):
-        form = self.form()
+        form = self.get_parameters_form()
         if form is None:
             return parameters
         for field in form.get_fields():
@@ -183,17 +179,17 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
             msg += "Description changed. "
 
         if not (not not cacheable) is (not not self._is_cacheable):
-            self.set_is_cacheable(cacheable)
+            self.set_cacheable(cacheable)
             msg += "Cacheability setting changed. "
 
         if not (not not previewable) is (not not self.is_previewable()):
-            self.set_is_previewable(previewable)
+            self.set_previewable(previewable)
             msg += "Previewable setting changed. "
 
         if not elaborate:
-            if self.elaborate():
+            if self.is_elaborate():
                 self.set_elaborate(False)
-        elif not self.elaborate():
+        elif not self.is_elaborate():
             self.set_elaborate(True)
 
         if not script_id:
@@ -205,9 +201,11 @@ class CodeSource(ExternalSource, Folder, ZMIObject):
 
 InitializeClass(CodeSource)
 
+
 manage_addCodeSourceForm = PageTemplateFile(
     "www/codeSourceAdd", globals(),
     __name__='manage_addCodeSourceForm')
+
 
 def manage_addCodeSource(context, id, title, script_id=None, REQUEST=None):
     """Add a CodeSource object

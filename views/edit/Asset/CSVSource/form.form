@@ -60,7 +60,7 @@
           <extra></extra>
         </values>
         <tales>
-          <default>python:form.REQUEST.model.description()</default>
+          <default>python:form.REQUEST.model.get_description()</default>
         </tales>
         <messages>
           <message name="external_validator_failed">Sorry, the form content failed validation.</message>

@@ -76,7 +76,7 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <input type="text" name="data_encoding" size="40" id="data_encoding" value=""
-          tal:attributes="value here/data_encoding" />
+          tal:attributes="value here/get_data_encoding" />
       </td>
     </tr>
     <tr>
@@ -95,7 +95,7 @@ Version of this file: $Revision: 1.7 $
           value=""
           name="description"
           id="description"
-          tal:content="here/description"
+          tal:content="here/get_description"
         />
       </td>
     </tr>
@@ -118,7 +118,7 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <input type="checkbox" name="elaborate" id="elaborate"
-          tal:attributes="checked python: here.elaborate() and 'checked' or nothing" />
+          tal:attributes="checked python: here.is_elaborate() and 'checked' or nothing" />
       </td>
     </tr>
     <tr>

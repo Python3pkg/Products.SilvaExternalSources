@@ -35,7 +35,7 @@
             <whitespace_preserve type="int">0</whitespace_preserve>
           </values>
           <tales>
-            <default>python:request.model.data_encoding()</default>
+            <default>python:request.model.get_data_encoding()</default>
           </tales>
           <messages>
             <message name="external_validator_failed">The input failed the external validator.</message>

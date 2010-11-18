@@ -10,14 +10,16 @@ class ICodeSourceService(ISilvaService):
     """Code source service.
     """
 
+
 class IExternalSource(Interface):
     """ Access to an external source of data.
     """
 
     # ACCESSORS
 
-    def form():
-        """ Returns a Formulator form or None if not applicable.
+    def get_parameters_form():
+        """ Returns a Formulator form describing the paramters used by
+        the external source or None if not applicable.
 
         This Formulator form is used in the Silva Document 'external data'
         document element to render the parameters UI.
@@ -27,7 +29,24 @@ class IExternalSource(Interface):
         """ Render the HTML for inclusion in the rendered Silva HTML.
         """
 
-    def is_cacheable(**kw):
+
+    def get_title():
+        """Returns the title of this instance.
+        """
+
+    def get_description():
+        """ Returns the purpose of this external source.
+
+        The description is shown in the 'external data' element's editor.
+        It can contain a description of the use of its parameters and the
+        what data is will render in the document.
+        """
+
+    def is_previewable(**parameters):
+        """ Specify the previewability (in kupu) of the source
+        """
+
+    def is_cacheable(**parameters):
         """ Returns the cacheability (true or false) for this source.
 
         Silva Document atempts to cache the public rendering. If a document
@@ -36,7 +55,7 @@ class IExternalSource(Interface):
         called once.
         """
 
-    def data_encoding():
+    def get_data_encoding():
         """ Returns the encoding of source's data.
 
         Silva expects unicode for its document data. This parameter
@@ -47,20 +66,34 @@ class IExternalSource(Interface):
         implementation.
         """
 
-    def description():
-        """ Returns the purpose of this external source.
 
-        The description is shown in the 'external data' element's editor.
-        It can contain a description of the use of its parameters and the
-        what data is will render in the document.
+class IEditableExternalSource(IExternalSource):
+    """An external source where settings can be edited.
+    """
+
+    def set_description(description):
+        """Set the description of the external source.
+        """
+
+    def set_data_encoding(encoding):
+        """Set the output encoding of the external source.
+        """
+
+    def set_cacheable(cacheable):
+        """Set cacheablility of the external source (boolean). If set
+        to False, the output of the source should never be cached.
+        """
+
+    def set_previewable(previewable):
+        """Set previewablility of the external source in the WYSIWYG (boolean).
         """
 
 
-    def get_title(self):
-        """Returns the title of this instance.
-        """
+class ICodeSource(IEditableExternalSource):
+    """Code source: an external source built in ZMI.
+    """
 
 
-
-class ICSVSource(IExternalSource, IAsset):
-    pass
+class ICSVSource(IEditableExternalSource, IAsset):
+    """An external source showing the content of a CSV file.
+    """

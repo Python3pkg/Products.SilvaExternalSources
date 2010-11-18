@@ -4,7 +4,7 @@ See also LICENSE.txt
 Version of this file: $Revision: 1.6 $
 -->
 <tal:block replace="structure here/manage_page_header" />
-<tal:block 
+<tal:block
   define="manage_tabs_message options/manage_tabs_message | nothing"
   replace="structure here/manage_tabs" />
 
@@ -31,15 +31,15 @@ Version of this file: $Revision: 1.6 $
         </div>
       </td>
       <td align="left" valign="top">
-        <textarea 
-          style="width: 100%;" 
-          type="text" 
-          cols="40" 
-          rows="5" 
+        <textarea
+          style="width: 100%;"
+          type="text"
+          cols="40"
+          rows="5"
           wrap="soft"
           value=""
-          name="description" 
-          tal:content="here/description"
+          name="description"
+          tal:content="here/get_description"
         />
       </td>
     </tr>
@@ -61,7 +61,7 @@ Version of this file: $Revision: 1.6 $
       </td>
       <td align="left" valign="top">
         <select size="1" name="character_set"
-          tal:define="selected python:here.data_encoding()">
+          tal:define="selected python:here.get_data_encoding()">
           <option value="ISO-8859-15" tal:attributes="selected
           python:'ISO-8859-1' == selected" >ISO-8859-15 (Western Europe - Latin-1/EURO)</option>
           <option value="ISO-8859-1" tal:attributes="selected
@@ -82,7 +82,7 @@ Version of this file: $Revision: 1.6 $
         </div>
       </td>
       <td align="left" valign="top">
-        <input type="checkbox" name="cacheable" 
+        <input type="checkbox" name="cacheable"
           tal:attributes="checked python: here.is_cacheable() and 'checked' or nothing" />
       </td>
     </tr>
@@ -93,7 +93,7 @@ Version of this file: $Revision: 1.6 $
         </div>
       </td>
       <td align="left" valign="top">
-        <input type="checkbox" name="previewable" 
+        <input type="checkbox" name="previewable"
           tal:attributes="checked python: here.is_previewable() and 'checked' or nothing" />
       </td>
     </tr>

@@ -3,7 +3,7 @@
 # $Id$
 
 from Products.SilvaExternalSources.interfaces import IExternalSource
-from Products.SilvaExternalSources.ExternalSource import ExternalSource
+from Products.SilvaExternalSources.ExternalSource import EditableExternalSource
 from zope.interface import implements
 
 # Zope
@@ -28,9 +28,7 @@ from silva.core import conf as silvaconf
 from silva.translations import translate as _
 
 
-icon="www/silvasqldatasource.png"
-
-class SQLSource(ZMIObject, ExternalSource, Folder):
+class SQLSource(ZMIObject, EditableExternalSource, Folder):
 
     implements(IExternalSource)
 
@@ -99,7 +97,7 @@ class SQLSource(ZMIObject, ExternalSource, Folder):
     def _get_data(self, args):
         if not self._sql_method:
             self._set_sql_method()
-        elif self._v_cached_parameters != self.form().get_field_ids():
+        elif self._v_cached_parameters != self.get_parameters_form().get_field_ids():
             self._set_sql_method()
         args = self._encode_dict_helper(args)
         return self._sql_method(REQUEST=args)
@@ -133,7 +131,7 @@ class SQLSource(ZMIObject, ExternalSource, Folder):
         self._p_changed = 1
 
     def _set_sql_method(self):
-        self._v_cached_parameters = parameters = self.form().get_field_ids()
+        self._v_cached_parameters = parameters = self.get_parameters_form().get_field_ids()
         arguments = '\n'.join(parameters)
         self._sql_method = SQL(
             self._sql_method_id, '', self._connection_id,
@@ -196,12 +194,12 @@ class SQLSource(ZMIObject, ExternalSource, Folder):
             msg += m #'Description changed. '
 
         if not (not not cacheable) is (not not self._is_cacheable):
-            self.set_is_cacheable(cacheable)
+            self.set_cacheable(cacheable)
             m = _("Cacheability setting changed. ")
             msg += m #'Cacheability setting changed. '
 
         if not (not not previewable) is (not not self.is_previewable()):
-            self.set_is_previewable(previewable)
+            self.set_previewable(previewable)
             m = _("Previewable setting changed. ")
             msg += m #'Previewable setting changed. '
 

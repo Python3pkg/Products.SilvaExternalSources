@@ -17,8 +17,9 @@ from DateTime import DateTime
 import Acquisition
 
 # Silva
-from Products.Silva import SilvaPermissions
+from Products.Silva import SilvaPermissions as permissions
 from Products.SilvaExternalSources.interfaces import IExternalSource
+from Products.SilvaExternalSources.interfaces import IEditableExternalSource
 from Products.Formulator.Errors import ValidationError, FormValidationError
 
 from silva.core.interfaces import IRoot, IVersion
@@ -90,11 +91,7 @@ def get_model(request):
 
 
 class ExternalSource(Acquisition.Implicit):
-
     implements(IExternalSource)
-
-    meta_type = "Silva External Source"
-
     security = ClassSecurityInfo()
 
     # XXX was management_page_charset = Converters.default_encoding
@@ -108,22 +105,21 @@ class ExternalSource(Acquisition.Implicit):
 
     _data_encoding = 'UTF-8'
     _description = ''
-    _is_cacheable = 0
-    # if true, the rendered source is displayed in kupu, given
-    # the parameters specified in the doc.
+    _is_cacheable = False
     _is_previewable = True
 
     # ACCESSORS
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation,'form')
-    def form(self):
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'get_parameters_form')
+    def get_parameters_form(self):
         """ get to the parameters form
         """
         return self.parameters
 
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation,
-                                'get_rendered_form_for_editor')
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'get_rendered_form_for_editor')
     def get_rendered_form_for_editor(self, REQUEST=None):
         """return the rendered form"""
         assert REQUEST is not None
@@ -146,7 +142,7 @@ class ExternalSource(Acquisition.Implicit):
                                     # 'it seems field is always in
                                     # lower' is not quite true in fact
 
-        form = self.form()
+        form = self.get_parameters_form()
         if form is not None:
             for field in form.get_fields():
                 value = None
@@ -199,8 +195,8 @@ class ExternalSource(Acquisition.Implicit):
         REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8')
         return ''.join([l.encode('UTF-8') for l in xml])
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation,
-                                'validate_form_to_request')
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'validate_form_to_request')
     def validate_form_to_request(self, REQUEST):
         """validate the form
 
@@ -212,89 +208,87 @@ class ExternalSource(Acquisition.Implicit):
         assert REQUEST is not None
         get_model(REQUEST)
 
-        form = self.form()
-        if form is None:
-            REQUEST.RESPONSE.setStatus(400)
-            return 'No parameters need to be validated'
-        try:
-            result = form.validate_all(REQUEST)
-        except FormValidationError, e:
-            REQUEST.RESPONSE.setStatus(400)
-            return '&'.join(['%s=%s' % (e.field['title'], e.error_text)
-                                for e in e.errors])
+        form = self.get_parameters_form()
+        values = {}
+        if form is not None:
+            try:
+                values = form.validate_all(REQUEST)
+            except FormValidationError, e:
+                REQUEST.RESPONSE.setStatus(400)
+                return '&'.join(['%s=%s' % (e.field['title'], e.error_text)
+                                 for e in e.errors])
 
-        REQUEST.RESPONSE.setHeader('Content-Type',
-                                   'text/xml;charset=UTF-8');
-        xml = self._formresult_to_xml(result)
-        return xml
+        REQUEST.RESPONSE.setHeader('Content-Type', 'text/xml;charset=UTF-8');
 
-    def _formresult_to_xml(self, formresult):
-        """returns a result dictionary as an xml mapping"""
-        xml = ['<sourcedata>','<sourceinfo>']
-        xml.append('<metatype>%s</metatype>' % self.meta_type)
-        xml.append('<source_id>%s</source_id>' % self.id)
-        xml.append('<source_title>%s</source_title>' % escape(
+        xml = [u'<sourcedata>', u'<sourceinfo>']
+        xml.append(u'<metatype>%s</metatype>' % self.meta_type)
+        xml.append(u'<source_id>%s</source_id>' % self.id)
+        xml.append(u'<source_title>%s</source_title>' % escape(
                 ustr(self.get_title())))
-        xml.append('<source_desc>%s</source_desc>' % escape(
-                ustr(self.description())))
-        xml.append('</sourceinfo>')
-        xml.append('<params>')
-        for key, value in formresult.items():
+        xml.append(u'<source_desc>%s</source_desc>' % escape(
+                ustr(self.get_description())))
+        xml.append(u'</sourceinfo>')
+        xml.append(u'<params>')
+        for key, value in values.items():
             value_type = type(value).__name__
-            xml.append('<parameter type="%s" id="%s">%s</parameter>' % (
+            xml.append(u'<parameter type="%s" id="%s">%s</parameter>' % (
                     value_type, escape(ustr(key)), escape(ustr(value))))
-        xml.append('</params>')
-        xml.append('</sourcedata>')
-        return ''.join(xml)
+        xml.append(u'</params>')
+        xml.append(u'</sourcedata>')
+
+        return u''.join(xml)
 
     security.declareProtected(
-        SilvaPermissions.AccessContentsInformation, 'to_html')
+        permissions.AccessContentsInformation, 'to_html')
     def to_html(self, content, request, **parameters):
         """ Render the HTML for inclusion in the rendered Silva HTML.
         """
         raise NotImplementedError
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation,
-                                'is_cacheable')
-    def is_cacheable(self, **kw):
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'is_cacheable')
+    def is_cacheable(self, **parameters):
         """ Specify the cacheability.
         """
         return self._is_cacheable
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation,
-                                 'is_previewable')
-    def is_previewable(self, **kw):
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'is_previewable')
+    def is_previewable(self, **parameters):
         """ Specify the previewability (in kupu) of the source
         """
         if not hasattr(self, '_is_previewable'):
             self._is_previewable = True
         return self._is_previewable
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation,
-                                'data_encoding')
-    def data_encoding(self):
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'get_data_encoding')
+    def get_data_encoding(self):
         """ Specify the encoding of source's data.
         """
         return self._data_encoding
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation,
-                                'description')
-    def description(self):
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'get_description')
+    def get_description(self):
         """ Specify the use of this source.
         """
         return self._description
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation,
-                                'get_title')
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'get_title')
     def get_title (self):
         return self.title
 
-    security.declareProtected(SilvaPermissions.AccessContentsInformation, 'index_html')
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'index_html')
     def index_html(self, REQUEST=None, RESPONSE=None):
         """ render HTML with default or other test values in ZMI for
         purposes of testing the ExternalSource.
         """
-        form = self.form()
+        # XXX This never work because of the missing request[model]
+        # being a Silva object.
+        form = self.get_parameters_form()
         if REQUEST is not None and form:
             if not hasattr(REQUEST, 'model'):
                 REQUEST.model = self
@@ -311,37 +305,47 @@ class ExternalSource(Acquisition.Implicit):
 
         return self.to_html(REQUEST, **kw)
 
-    # MODIFIERS
 
-    security.declareProtected(SilvaPermissions.ViewManagementScreens, 'set_form')
+InitializeClass(ExternalSource)
+
+
+class EditableExternalSource(ExternalSource):
+    implements(IEditableExternalSource)
+    security = ClassSecurityInfo()
+
+    security.declareProtected(
+        permissions.ViewManagementScreens, 'set_form')
     def set_form(self, form):
         """ Set Formulator parameters form
         """
         self.parameters = form
 
-    security.declareProtected(SilvaPermissions.ViewManagementScreens, 'set_data_encoding')
+    security.declareProtected(
+        permissions.ViewManagementScreens, 'set_data_encoding')
     def set_data_encoding(self, encoding):
         """ set encoding of data
         """
         self._data_encoding = encoding
 
-    security.declareProtected(SilvaPermissions.ViewManagementScreens, 'set_description')
-    def set_description(self, desc):
+    security.declareProtected(
+        permissions.ViewManagementScreens, 'set_description')
+    def set_description(self, description):
         """ set description of external source's use
         """
-        self._description = desc
+        self._description = description
 
-    security.declareProtected(SilvaPermissions.ViewManagementScreens, 'set_is_cacheable')
-    def set_is_cacheable(self, cacheable):
+    security.declareProtected(
+        permissions.ViewManagementScreens, 'set_cacheable')
+    def set_cacheable(self, cacheable):
         """ set cacheablility of source
         """
         self._is_cacheable = cacheable
 
-    security.declareProtected(SilvaPermissions.ViewManagementScreens, 'set_is_previewable')
-    def set_is_previewable(self, previewable):
+    security.declareProtected(permissions.ViewManagementScreens, 'set_previewable')
+    def set_previewable(self, previewable):
         """ set previewablility (in kupu) of source
         """
         self._is_previewable = not not previewable
 
 
-InitializeClass(ExternalSource)
+InitializeClass(EditableExternalSource)

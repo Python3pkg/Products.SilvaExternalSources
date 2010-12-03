@@ -8,6 +8,8 @@ import os
 
 version = '2.3.2dev'
 
+# Products.ZSQLMethods should be as an option ?
+
 setup(name='Products.SilvaExternalSources',
       version=version,
       description="Externals sources for Silva Document",
@@ -29,6 +31,7 @@ setup(name='Products.SilvaExternalSources',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
+        'Products.ZSQLMethods',
         'Products.Formulator',
         'Products.Silva',
         'Products.SilvaMetadata',

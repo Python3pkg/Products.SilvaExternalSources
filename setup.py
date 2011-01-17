@@ -51,4 +51,8 @@ setup(name='Products.SilvaExternalSources',
         'zope.lifecycleevent',
         'zope.schema',
         ],
+      entry_points="""
+      [silva.core.editor.plugins]
+      source = Products.SilvaExternalSources.ckeditor:PLUGINS
+      """,
       )

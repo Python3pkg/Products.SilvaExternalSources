@@ -157,7 +157,7 @@ class SQLSource(ZMIObject, EditableExternalSource, Folder):
                 # unknown encoding, return error message
                 m = _(
                     "Unknown encoding ${enc}, not changed! ",
-                    mapping={"enc":charset})
+                    mapping={"enc": data_encoding})
                 msg += m #"Unknown encoding %s, not changed!. " % data_encoding
                 return self.editSQLSource(manage_tabs_message=msg)
             self.set_data_encoding(data_encoding)

@@ -5,5 +5,5 @@
 
 
 PLUGINS = {
-    'silvaexternalsource': '++resource++Products.SilvaExternalSources.editor/plugins/silvaexternalsource'
+    'silvaexternalsource': '++resource++Products.SilvaExternalSources.ckeditor/plugins/silvaexternalsource'
     }

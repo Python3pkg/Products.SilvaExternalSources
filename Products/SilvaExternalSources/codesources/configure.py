@@ -15,7 +15,7 @@ configuration = {
         'desc': 'Code Source to embed a public Google Calendar.',
         'cacheable': True,
         'elaborate': False,
-        'previewable': True,
+        'previewable': False,
     },
     'cs_toc': {
         'id': 'cs_toc',
@@ -42,7 +42,7 @@ configuration = {
         'desc': 'Code Source for Google Maps iFrame.',
         'cacheable': True,
         'elaborate': False,
-        'previewable': True,
+        'previewable': False,
     },
     'cs_network_image': {
         'id': 'cs_network_image',

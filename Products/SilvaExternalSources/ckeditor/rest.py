@@ -6,9 +6,6 @@
 from five import grok
 from infrae import rest
 from silva.core.interfaces import ISilvaObject, IVersionedContent
-from zope.traversing.browser import absoluteURL
-from zope.component import getUtility
-from zope.intid.interfaces import IIntIds
 
 from Products.SilvaExternalSources.ExternalSource import availableSources
 from Products.SilvaExternalSources.interfaces import IExternalSource
@@ -25,46 +22,62 @@ class ListAvailableSources(rest.REST):
         sources = []
         for identifier, source in availableSources(self.context):
             sources.append({'identifier': identifier,
-                            'title': source.title,
-                            'url': absoluteURL(source, self.request)})
-        return self.json_response(
-            {'sources': sources,
-             'document': getUtility(IIntIds).register(self.context)})
+                            'title': source.title})
+        return self.json_response(sources)
 
 
-class PreviewSource(rest.REST):
+class SourceAPI(rest.REST):
     grok.context(ISilvaObject)
+    grok.baseclass()
+
+    def get_source(self, identifier):
+        """Return the External Source associated with the given
+        identifier.
+        """
+        source = getattr(self.context, identifier, None)
+        if source is not None:
+            if IExternalSource.providedBy(source):
+                return source
+        return source
+
+    def get_parameters(self):
+        """Extract External Source parameters (formulator) from the
+        request.
+        """
+        parameters = {}
+        for key in self.request.form:
+            if key.startswith('field_'):
+                # Only take Formulator fields.
+                parameters[key[6:]] = self.request.form[key]
+        return parameters
+
+
+class PreviewSource(SourceAPI):
     grok.name('Products.SilvaExternalSources.source.preview')
 
     def POST(self, identifier):
-        source = getattr(self.context, identifier, None)
+        source = self.get_source(identifier)
         if source is not None:
             if source.is_previewable():
+                parameters = self.get_parameters()
 
-                parameters = {}
-                for key in self.request.form:
-                    if key.startswith('field_'):
-                        # Only take Formulator fields.
-                        parameters[key[6:]] = self.request.form[key]
-
-                context = self.context
-                if IVersionedContent.providedBy(context):
-                    version = context.get_editable()
+                model = self.context
+                if IVersionedContent.providedBy(model):
+                    version = model.get_editable()
                     if version is None:
-                        version = context.get_viewable()
+                        version = model.get_viewable()
                     if version is not None:
-                        context = version
+                        model = version
 
                 return source.to_html(
-                    version, self.request, **parameters)
+                    model, self.request, **parameters)
             return "<b>This Code source is not previewable.</b>"
         return "<b>This Code Source doesn't exist.</b>"
 
 
-class SourceParameters(rest.REST):
+class SourceParameters(SourceAPI):
     """Return a form to enter and validate source paramters.
     """
-    grok.context(IExternalSource)
     grok.name('Products.SilvaExternalSources.source.parameters')
 
     template = grok.PageTemplate(filename="templates/parameters.pt")
@@ -77,37 +90,39 @@ class SourceParameters(rest.REST):
     def namespace(self):
         return {}
 
-    def GET(self, document):
+    def POST(self, identifier):
+        source = self.get_source(identifier)
+        self.identifier = identifier
         self.fields = []
-        form = self.context.get_parameters_form()
+        form = source.get_parameters_form()
+        parameters = self.get_parameters()
         if form is not None:
-            service = getUtility(IIntIds)
-            self.request.form['model'] = service.getObject(int(document))
+            self.request.form['model'] = self.context
             # Collect field.
             for field in form.get_fields():
                 label_class = ['cke_dialog_ui_labeled_label']
                 if field.values.get('required'):
                     label_class.append('cke_required')
+                value = parameters.get(field.id)
                 self.fields.append(
                     { 'id': field.generate_field_html_id(),
                       'label_class': ' '.join(label_class),
                       'title': field.values.get('title'),
                       'description': field.values.get('description'),
-                      'widget': field.render(None)})
+                      'widget': field.render(value)})
         return self.template.render(self)
 
 
-class SourceParametersValidator(rest.REST):
+class SourceParametersValidator(SourceAPI):
     """Validate source parameters.
     """
-    grok.context(IExternalSource)
     grok.name('Products.SilvaExternalSources.source.validate')
 
-    def POST(self, identifier, document):
-        form = self.context.get_parameters_form()
+    def POST(self, identifier):
+        source = self.get_source(identifier)
+        form = source.get_parameters_form()
         if form is not None:
-            service = getUtility(IIntIds)
-            self.request.form['model'] = service.getObject(int(document))
+            self.request.form['model'] = self.context
             try:
                 form.validate_all(self.request)
             except FormValidationError as failure:

@@ -10,6 +10,37 @@
             };
             return false;
         },
+        isInsideASource: function(element) {
+            var first_try = true;
+
+            while (element != null) {
+                element = element.getAscendant('div', first_try);
+                if (CKEDITOR.plugins.silvaexternalsource.isSource(element)) {
+                    return element;
+                }
+                first_try = false;
+            };
+            return null;
+        },
+        getSelectedSource: function(editor, select_base_element) {
+            var selection = editor.getSelection();
+            var element = null;
+            var base = null;
+
+            if (selection.getType() == CKEDITOR.SELECTION_ELEMENT) {
+                base = selection.getSelectedElement();
+            } else {
+                base = selection.getStartElement();
+            };
+            element = CKEDITOR.plugins.silvaexternalsource.isInsideASource(base);
+            if (element != null) {
+                if (base.$ != element.$ && select_base_element) {
+                    selection.selectElement(element);
+                }
+                return element;
+            }
+            return null;
+        },
         loadPreview: function(element) {
             var info = element.attr('data-silva-settings');
             var preview = element.find('.external-source-preview');
@@ -33,12 +64,27 @@
 
     var API = CKEDITOR.plugins.silvaexternalsource;
 
+    CKEDITOR.externalSourceCommand = function(){};
+    CKEDITOR.externalSourceCommand.prototype = {
+        exec: function(editor) {
+            var source = API.getSelectedSource(editor, true);
+
+            if (source) {
+                editor.openDialog('silvaexternalsourceedit');
+            } else {
+                editor.openDialog('silvaexternalsourcenew');
+            };
+        },
+        canUndo: false,
+        editorFocus : CKEDITOR.env.ie || CKEDITOR.env.webkit
+    };
+
     CKEDITOR.plugins.add('silvaexternalsource', {
         requires: ['dialog'],
         init: function(editor) {
             editor.addCommand(
                 'silvaexternalsource',
-                new CKEDITOR.dialogCommand('silvaexternalsource'));
+                new CKEDITOR.externalSourceCommand());
             editor.ui.addButton('SilvaExternalSource', {
                 label: 'Add an External Source',
                 command: 'silvaexternalsource',
@@ -56,9 +102,6 @@
                     'display: none;' +
                     '}');
 
-            // Dialog
-            CKEDITOR.dialog.add('silvaexternalsource', this.path + 'dialogs/source.js');
-
             // Events
             editor.on('contentDom', function(event) {
                 // When a document is loaded, we load code sources previews
@@ -68,6 +111,39 @@
                     API.loadPreview($(element));
                 });
             });
+            editor.on('doubleclick', function(event){
+                var element = API.getSelectedSource(editor, true);
+
+                if (element != null) {
+                    event.data.dialog = 'silvaexternalsourceedit';
+                };
+            });
+
+            // Dialog
+            CKEDITOR.dialog.add('silvaexternalsourcenew', this.path + 'dialogs/source.js');
+            CKEDITOR.dialog.add('silvaexternalsourceedit', this.path + 'dialogs/source.js');
+
+            // Menu
+            if (editor.addMenuItems) {
+                editor.addMenuItems({
+                    externalsource: {
+                        label: 'Source settings',
+                        command : 'silvaexternalsource',
+                        group : 'image',
+                        order: 1
+                    }
+                });
+            };
+            if (editor.contextMenu) {
+                editor.contextMenu.addListener(function(element, selection) {
+                    if (API.isInsideASource(element)) {
+                        return {
+                            externalsource: CKEDITOR.TRISTATE_OFF
+                        };
+                    };
+                    return null;
+                });
+            };
 
         },
         afterInit: function(editor) {
@@ -104,6 +180,7 @@
                                 var attributes = element.attributes;
 
                                 attributes['contenteditable'] = 'false';
+                                element.children = [];
                             };
                             return null;
                         }

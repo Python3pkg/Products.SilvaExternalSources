@@ -130,6 +130,16 @@
                     API.loadPreview($(element));
                 });
             });
+            editor.on('selectionChange', function(event) {
+                var element = API.getSelectedSource(editor, true);
+                var command = editor.getCommand('silvaexternalsource');
+
+                if (element != null) {
+                    command.setState(CKEDITOR.TRISTATE_ON);
+                } else {
+                    command.setState(CKEDITOR.TRISTATE_OFF);
+                };
+            });
             editor.on('doubleclick', function(event){
                 var element = API.getSelectedSource(editor, true);
 
@@ -145,10 +155,11 @@
             // Menu
             if (editor.addMenuItems) {
                 editor.addMenuItems({
-                    externalsource: {
+                    silvaexternalsource: {
                         label: 'Source settings',
                         command : 'silvaexternalsource',
-                        group : 'image',
+                        group : 'form',
+                        className: 'cke_button_hiddenfield',
                         order: 1
                     }
                 });
@@ -157,7 +168,7 @@
                 editor.contextMenu.addListener(function(element, selection) {
                     if (API.isInsideASource(element)) {
                         return {
-                            externalsource: CKEDITOR.TRISTATE_OFF
+                            silvaexternalsource: CKEDITOR.TRISTATE_OFF
                         };
                     };
                     return null;

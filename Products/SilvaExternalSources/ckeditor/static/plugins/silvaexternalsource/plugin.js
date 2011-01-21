@@ -98,8 +98,27 @@
                     'display: inline-block;' +
                     '}');
             editor.addCss(
-                'span.external-source-info {' +
-                    'display: none;' +
+                'div.source-float-left {' +
+                    'float: left;' +
+                    '}');
+            editor.addCss(
+                'div.source-float-right {' +
+                    'float: right;' +
+                    '}');
+            editor.addCss(
+                'div.source-left {' +
+                    'text-align: left;' +
+                    'display: block;' +
+                    '}');
+            editor.addCss(
+                'div.source-right {' +
+                    'text-align: right;' +
+                    'display: block;' +
+                    '}');
+            editor.addCss(
+                'div.source-center {' +
+                    'text-align: center;' +
+                    'display: block;' +
                     '}');
 
             // Events

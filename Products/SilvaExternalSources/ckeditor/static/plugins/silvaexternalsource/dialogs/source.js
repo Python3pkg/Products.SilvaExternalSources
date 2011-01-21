@@ -1,4 +1,5 @@
 
+
 (function($, CKEDITOR) {
 
     var API = CKEDITOR.plugins.silvaexternalsource;
@@ -29,10 +30,10 @@
         });
     };
 
-    var create_parameters_definition = function (identifier) {
-        return {
+    var create_parameters_fields = function (identifier) {
+        return [{
             type: 'html',
-            id: 'source_parameters',
+            id: 'source_options',
             html: '<div class="' + identifier + '"></div>',
             setup: function(data) {
                 if (data.parameters) {
@@ -83,7 +84,26 @@
 
                 data.parameters = $.param(container.find('form').serializeArray());
             }
-        };
+        }, {
+            type: 'select',
+            id: 'source_align',
+            label: 'Source alignement',
+            required: true,
+            items: [
+                ['default', 'default'],
+                ['align left', 'source-left'],
+                ['align center', 'source-center'],
+                ['align right', 'source-right'],
+                ['float left', 'source-float-left'],
+                ['float right', 'source-float-right']
+            ],
+            setup: function(data) {
+                this.setValue(data.align);
+            },
+            commit: function(data) {
+                data.align = this.getValue();
+            }
+        }];
     };
 
     CKEDITOR.dialog.add('silvaexternalsourcenew', function(editor) {
@@ -91,49 +111,55 @@
             title: 'Add a new External Source',
             minWidth: 600,
             minHeight: 400,
-            contents: [
-                { id: 'source',
-                  elements: [
-                      { type: 'select',
-                        id: 'source_type',
-                        label: 'Source to add',
-                        required: true,
-                        items: [],
-                        onChange: function(event) {
-                            var container = $('.external_source_add');
+            contents: [{
+                id: 'external_source_new_page',
+                elements: [{
+                    type: 'select',
+                    id: 'source_type',
+                    label: 'Source to add',
+                    required: true,
+                    items: [],
+                    onChange: function(event) {
+                        var dialog = this.getDialog();
+                        var align_input = dialog.getContentElement(
+                            'external_source_new_page', 'source_align').getElement();
+                        var container = $('.external_source_add');
 
-                            if (event.data.value) {
-                                load_parameters(container, {'identifier': event.data.value});
-                            } else {
-                                container.html('');
-                            }
-                        },
-                        setup: function(data) {
-                            // Load the list of External Source from the server on setup.
-                            var self = this;
-
-                            this.clear();
-                            this.add('Select a source to add', '');
-                            this.setValue('');
-                            $.getJSON(
-                                rest_url(LIST_SOURCES_REST_URL),
-                                function(sources) {
-                                    for (var i=0; i < sources.length; i++) {
-                                        self.add(sources[i].title, sources[i].identifier);
-                                    };
-                                });
-                        },
-                        validate: function() {
-                            var checker = CKEDITOR.dialog.validate.notEmpty(
-                                'You need to select a External Source to add !');
-
-                            return checker.apply(this);
+                        if (event.data.value) {
+                            load_parameters(container, {'identifier': event.data.value});
+                            align_input.show();
+                        } else {
+                            container.html('');
+                            align_input.hide();
                         }
-                      },
-                      create_parameters_definition('external_source_add')
-                  ]
-                }
-            ],
+                    },
+                    setup: function(data) {
+                        // Load the list of External Source from the server on setup.
+                        var self = this;
+
+                        this.clear();
+                        this.add('Select a source to add', '');
+                        this.setValue('');
+                        $.getJSON(
+                            rest_url(LIST_SOURCES_REST_URL),
+                            function(sources) {
+                                for (var i=0; i < sources.length; i++) {
+                                    self.add(sources[i].title, sources[i].identifier);
+                                };
+                            });
+                    },
+                    validate: function() {
+                        var checker = CKEDITOR.dialog.validate.notEmpty(
+                            'You need to select a External Source to add !');
+
+                        return checker.apply(this);
+                    }
+                }, {
+                    type: 'vbox',
+                    id: 'source_parameters',
+                    children: create_parameters_fields('external_source_add')
+                }]
+            }],
             onShow: function() {
                 var data = {};
 
@@ -151,7 +177,7 @@
                 var source = new CKEDITOR.dom.element('div');
                 var attributes = {};
 
-                attributes['class'] = 'external-source';
+                attributes['class'] = 'external-source ' + data.align;
                 attributes['contenteditable'] = false;
                 attributes['data-silva-settings'] = data.parameters;
                 source.setAttributes(attributes);
@@ -168,18 +194,21 @@
             title: 'External Source Settings',
             minWidth: 600,
             minHeight: 400,
-            contents: [
-                { id: 'source',
-                  elements: [
-                      create_parameters_definition('external_source_edit')
-                  ]
-                }
-            ],
+            contents: [{
+                id: 'external_source_edit_page',
+                elements: create_parameters_fields('external_source_edit')
+            }],
             onShow: function() {
                 var data = {};
                 var editor = this.getParentEditor();
                 var source = API.getSelectedSource(editor);
+                var parse_alignment = /^external-source\s+([a-z-]+)\s*$/;
+                var info_alignment = parse_alignment.exec(
+                    source.getAttribute('class'));
 
+                if (info_alignment != null) {
+                    data.align = info_alignment[1];
+                }
                 data.parameters = source.getAttribute('data-silva-settings');
 
                 this.setupContent(data);
@@ -191,6 +220,7 @@
 
                 this.commitContent(data);
 
+                source.setAttribute('class', 'external-source ' + data.align);
                 source.setAttribute('data-silva-settings', data.parameters);
 
                 API.loadPreview($(source.$));

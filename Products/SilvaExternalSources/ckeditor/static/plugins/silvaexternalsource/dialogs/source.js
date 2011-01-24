@@ -30,22 +30,51 @@
         });
     };
 
-    var create_parameters_fields = function (identifier) {
+    var create_parameters_fields = function (parameters_identifier) {
         return [{
             type: 'html',
             id: 'source_options',
-            html: '<div class="' + identifier + '"></div>',
+            html: '<div class="' + parameters_identifier + '"></div>',
             setup: function(data) {
-                if (data.parameters) {
-                    var container = $('.' + identifier);
+                var container = $('.' + parameters_identifier);
 
-                    load_parameters(container, data.parameters);
+                this._.source = {};
+                if (data.instance) {
+                    var editor = this.getDialog().getParentEditor();
+
+                    this._.source['source_instance'] = data.instance;
+                    this._.source['source_text'] = editor.name;
+                } else if (data.name) {
+                    this._.source['source_name'] = data.name;
+                };
+                if (data.parameters) {
+                    var extra = [{'name': 'source_inline', 'value':1}];
+                    var parameters = data.parameters;
+
+                    for (var key in this._.source) {
+                        extra.push({'name': key, 'value': this._.source[key]});
+                    };
+                    parameters = parameters + '&' + $.param(extra);
+                    load_parameters(container, parameters);
+                } else if (data.instance) {
+                    var parameters = [];
+
+                    for (var key in this._.source) {
+                        parameters.push({'name': key, 'value': this._.source[key]});
+                    };
+                    load_parameters(container, $.param(this._.source));
                 };
             },
             validate: function() {
-                var container = $('.' + identifier);
+                var container = $('.' + parameters_identifier);
                 var parameters = container.find('form').serializeArray();
                 var succeeded = true;
+
+                // Add keys to identify the source.
+                for (var key in this._.source) {
+                    parameters.push({'name': key, 'value':this._.source[key]});
+                };
+                parameters.push({'name': 'source_inline', 'value': 1});
 
                 $.ajax({
                     url: rest_url(VALIDATE_REST_URL),
@@ -80,7 +109,7 @@
                 return succeeded;
             },
             commit: function(data) {
-                var container = $('.' + identifier);
+                var container = $('.' + parameters_identifier);
 
                 data.parameters = $.param(container.find('form').serializeArray());
             }
@@ -123,12 +152,21 @@
                         var dialog = this.getDialog();
                         var align_input = dialog.getContentElement(
                             'external_source_new_page', 'source_align').getElement();
+                        var source_options = dialog.getContentElement(
+                            'external_source_new_page', 'source_options');
                         var container = $('.external_source_add');
 
                         if (event.data.value) {
-                            load_parameters(container, {'identifier': event.data.value});
+                            if (source_options._.source) {
+                                source_options._.source.source_name = event.data.value;
+                            };
+                            load_parameters(container, {'source_name': event.data.value});
                             align_input.show();
                         } else {
+                            if (source_options._.source &&
+                                source_options._.source.source_name) {
+                                delete source_options._.source.source_name;
+                            };
                             container.html('');
                             align_input.hide();
                         }
@@ -153,6 +191,9 @@
                             'You need to select a External Source to add !');
 
                         return checker.apply(this);
+                    },
+                    commit: function(data) {
+                        data.name = this.getValue();
                     }
                 }, {
                     type: 'vbox',
@@ -179,12 +220,13 @@
 
                 attributes['class'] = 'external-source ' + data.align;
                 attributes['contenteditable'] = false;
+                attributes['data-silva-name'] = data.name;
                 attributes['data-silva-settings'] = data.parameters;
                 source.setAttributes(attributes);
                 ranges[0].insertNode(source);
                 selection.selectElement(source);
 
-                API.loadPreview($(source.$));
+                API.loadPreview($(source.$), editor);
             }
         };
     });
@@ -209,7 +251,11 @@
                 if (info_alignment != null) {
                     data.align = info_alignment[1];
                 }
-                data.parameters = source.getAttribute('data-silva-settings');
+                data.name = source.getAttribute('data-silva-name');
+                data.instance = source.getAttribute('data-silva-instance');
+                if (source.hasAttribute('data-silva-settings')) {
+                    data.parameters = source.getAttribute('data-silva-settings');
+                };
 
                 this.setupContent(data);
             },
@@ -223,7 +269,7 @@
                 source.setAttribute('class', 'external-source ' + data.align);
                 source.setAttribute('data-silva-settings', data.parameters);
 
-                API.loadPreview($(source.$));
+                API.loadPreview($(source.$), editor);
             }
         };
     });

@@ -41,10 +41,38 @@
             }
             return null;
         },
-        loadPreview: function(element) {
+        loadPreview: function(element, editor) {
+            // element is a JQuery element. Editor a CKEditor one.
             var info = element.attr('data-silva-settings');
             var preview = element.find('.external-source-preview');
             var content_url = $('#content-url').attr('href');
+            var extra_info = [];
+
+            // We load an existing code source. Add instance and text.
+            if (element.attr('data-silva-instance') != undefined) {
+                extra_info.push({
+                    'name': 'source_instance',
+                    'value': element.attr('data-silva-instance')
+                });
+                extra_info.push({
+                    'name': 'source_text',
+                    'value': editor.name
+                });
+            } else if (element.attr('data-silva-name') != undefined) {
+                // This is a new code source.
+                extra_info.push({
+                    'name': 'source_name',
+                    'value': element.attr('data-silva-name')
+                });
+            };
+            // Merge all preview information together.
+            if (info == undefined) {
+                info = $.param(extra_info);
+            } else {
+                // Those are inline changed options.
+                extra_info.push({'name': 'source_inline', 'value': 1});
+                info += '&' + $.param(extra_info);
+            };
 
             $.ajax({
                 url: content_url + '/++rest++Products.SilvaExternalSources.source.preview',
@@ -52,6 +80,7 @@
                 type: 'POST',
                 success: function(html) {
                     if (!preview.length) {
+                        element.empty(); //CKEditor adds an br in empty container.
                         preview = $('<div class="external-source-preview"></div');
                         preview.appendTo(element);
                     };
@@ -127,7 +156,7 @@
                 var document = $(editor.document.getDocumentElement().$);
 
                 document.find('.external-source').each(function (index, element) {
-                    API.loadPreview($(element));
+                    API.loadPreview($(element), editor);
                 });
             });
             editor.on('selectionChange', function(event) {
@@ -192,7 +221,8 @@
                 // Test if the given element is an image div.
                 return (element &&
                         element.name == 'div' &&
-                        element.attributes['class'] == 'external-source');
+                        element.attributes['class'] != null &&
+                        element.attributes['class'].match('external-source'));
             };
             var is_preview_div = function(element) {
                 // Test if the given element is an image div.
@@ -222,14 +252,14 @@
                 htmlFilter.addRules({
                     elements: {
                         div: function(element) {
-                            if (is_source_div(element)) {
+                            if (is_preview_div(element)) {
+                                return false;
+                            } else if (is_source_div(element)) {
                                 var attributes = element.attributes;
 
                                 remove(attributes, 'contenteditable');
                                 remove(attributes, 'style');
                                 return null;
-                            } else if (is_preview_div(element)) {
-                                return false;
                             };
                             return null;
                         }

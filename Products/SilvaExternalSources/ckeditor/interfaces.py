@@ -31,8 +31,8 @@ class IBindedSourceInstance(interface.Interface):
         """Return the associated source and form to the instance.
         """
 
-    def get_parameters(self):
-        """Return the source parameters as an HTTP query string.
+    def clear_parameters(self):
+        """Erase all set parameters.
         """
 
     def update_parameters(self, parmeters):

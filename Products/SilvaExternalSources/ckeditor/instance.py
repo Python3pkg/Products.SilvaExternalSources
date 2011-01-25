@@ -4,7 +4,6 @@
 # $Id$
 
 import uuid
-import urllib
 import logging
 
 from five import grok
@@ -62,6 +61,10 @@ class BindedSourceInstance(object):
                 return source, form
         return None, None
 
+    def clear_parameters(self):
+        source, form = self.get_source_and_form()
+        form.erase()
+
     def update_parameters(self, parameters):
         save_request = TestRequest(form=parse_qs(parameters))
         source, form = self.get_source_and_form(save_request)
@@ -113,10 +116,13 @@ class SourceInstances(grok.Annotation):
         self._p_changed = True
         return identifier
 
-    def remove(self, instance_identifier):
-        del self._instances[instance_identifier]
-        # Force ZODB changed (dict is not a PersistentDict)
-        self._p_changed = True
+    def remove(self, instance_identifier, context, request):
+        if instance_identifier in self._instances:
+            instance = self.bind(instance_identifier, context, request)
+            instance.clear_parameters()
+            del self._instances[instance_identifier]
+            # Force ZODB changed (dict is not a PersistentDict)
+            self._p_changed = True
 
     def bind(self, instance_identifier, context, request):
         return BindedSourceInstance(

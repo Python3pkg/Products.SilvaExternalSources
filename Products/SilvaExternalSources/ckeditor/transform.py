@@ -51,7 +51,7 @@ class ExternalSourceSaveFilter(TransformationFilter):
         # Remove all sources that we didn't see.
         all_sources = set(self.sources.keys())
         for identifier in all_sources.difference(self.seen_sources):
-            self.sources.remove(identifier)
+            self.sources.remove(identifier, self.context, self.request)
 
 
 class ExternalSourceInputFilter(TransformationFilter):

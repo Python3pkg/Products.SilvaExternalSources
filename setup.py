@@ -52,7 +52,7 @@ setup(name='Products.SilvaExternalSources',
         'zope.schema',
         ],
       entry_points="""
-      [silva.core.editor.plugins]
-      source = Products.SilvaExternalSources.ckeditor:PLUGINS
+      [silva.core.editor.extension]
+      source = Products.SilvaExternalSources.ckeditor:extension
       """,
       )

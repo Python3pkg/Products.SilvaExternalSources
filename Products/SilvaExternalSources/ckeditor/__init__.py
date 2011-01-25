@@ -3,7 +3,10 @@
 # See also LICENSE.txt
 # $Id$
 
+class CKEditorExtension(object):
+    base = '++resource++Products.SilvaExternalSources.ckeditor'
+    plugins = {
+        'silvaexternalsource': 'plugins/silvaexternalsource'
+        }
 
-PLUGINS = {
-    'silvaexternalsource': '++resource++Products.SilvaExternalSources.ckeditor/plugins/silvaexternalsource'
-    }
+extension = CKEditorExtension()

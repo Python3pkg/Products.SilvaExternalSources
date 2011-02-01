@@ -280,31 +280,6 @@ class ExternalSource(Acquisition.Implicit):
     def get_title (self):
         return self.title
 
-    security.declareProtected(
-        permissions.AccessContentsInformation, 'index_html')
-    def index_html(self, REQUEST=None, RESPONSE=None):
-        """ render HTML with default or other test values in ZMI for
-        purposes of testing the ExternalSource.
-        """
-        # XXX This never work because of the missing request[model]
-        # being a Silva object.
-        form = self.get_parameters_form()
-        if REQUEST is not None and form:
-            if not hasattr(REQUEST, 'model'):
-                REQUEST.model = self
-            try:
-                kw = form.validate_all(REQUEST)
-            except (FormValidationError, ValidationError):
-                # If we cannot validate (e.g. due to required parameters),
-                # return a form.
-                # FIXME: How to get some feedback in the rendered page? E.g.
-                # in case of validation errors.
-                return form.render(REQUEST=REQUEST)
-        else:
-            kw = {}
-
-        return self.to_html(REQUEST, **kw)
-
 
 InitializeClass(ExternalSource)
 

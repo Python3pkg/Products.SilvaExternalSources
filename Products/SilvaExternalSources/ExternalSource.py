@@ -108,6 +108,15 @@ class ExternalSource(Acquisition.Implicit):
     _is_cacheable = False
     _is_previewable = True
 
+    #priority can be used when presenting lists of external sources.  Sort
+    # by the priority (then alpha).  Content Layout add screen sorts by
+    # priority, initially only showing the those with the highest priorities
+    # (priority<10).  Having a range of high priorities enables sorting firth
+    # by priority with a secondary alpha by title
+    # make the default priority 10, so ES's actually have to be promoted to
+    # "initially visible"
+    _priority = 10
+    
     # ACCESSORS
 
     security.declareProtected(
@@ -252,6 +261,12 @@ class ExternalSource(Acquisition.Implicit):
         """
         return self._is_cacheable
 
+    security.declareProtected(permissions.AccessContentsInformation,'priority')
+    def priority(self):
+        """ return the priority
+        """
+        return self._priority
+
     security.declareProtected(
         permissions.AccessContentsInformation, 'is_previewable')
     def is_previewable(self, **parameters):
@@ -322,5 +337,10 @@ class EditableExternalSource(ExternalSource):
         """
         self._is_previewable = not not previewable
 
+    security.declareProtected(permissions.ViewManagementScreens, 'set_priority')
+    def set_priority(self, priority):
+        """ set previewablility (in kupu) of source
+        """
+        self._is_previewable = not not previewable
 
 InitializeClass(EditableExternalSource)

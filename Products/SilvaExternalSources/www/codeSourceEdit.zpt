@@ -132,6 +132,34 @@ Version of this file: $Revision: 1.7 $
           tal:attributes="checked python: here.is_previewable() and 'checked' or nothing" />
       </td>
     </tr>
+     <tr>
+       <td align="left" valign="top">
+        <div class="form-label">
+          Icon ID
+          <br>
+          <small>
+           Image icon to display in the 'Add To
+            <br> 
+           Page' window. Use a 32x32 image.  
+         </small>
+       </div>
+      </td>
+      <td align="left" valign="top">
+        <input type="text" name="icon_id" size="40"
+          tal:attributes="value here/icon_id" />
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-label">
+          Priority
+        </div>
+      </td>
+      <td align="left" valign="top">
+        <input type="text" name="priority:int" size="10"
+          tal:attributes="value here/priority" />
+      </td>
+    </tr>
     <tr>
       <td align="left" valign="top">
       </td>

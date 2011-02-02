@@ -6,6 +6,16 @@ ChangeLog
 
 - ...
 
+Bethel Changes
+--------------
+
+* Add a 'priority' to external sources, to enable better sorting.
+
+* Add a 'icon_id' to code sources, so an icon representing the code source
+  can be displayed in SMI edit screens (Page), rather than the code source icon.
+  
+* Add a cs_page_asset and cs_rich_text external sources, installed by default.
+
 2.3.3 (2010-02-02)
 ------------------
 

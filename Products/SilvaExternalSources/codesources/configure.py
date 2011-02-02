@@ -1,4 +1,20 @@
 configuration = {
+    'cs_rich_text': {
+        'id': 'cs_rich_text',
+        'title': 'Rich Text',
+        'render_id': 'render',
+        'desc': "Rich Text (html) using Tiny MCE",
+        'cacheable': False,
+        'elaborate': False,
+   },
+    'cs_page_asset': {
+        'id': 'cs_page_asset',
+        'title': 'Embed Page Asset',
+        'render_id': 'render',
+        'desc': "Embed a Page Asset",
+        'cacheable': False,
+        'elaborate': False,
+    },
     'cs_you_tube': {
         'id': 'cs_you_tube',
         'title': 'YouTube video',

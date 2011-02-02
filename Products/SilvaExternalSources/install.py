@@ -47,7 +47,8 @@ def install(root):
     install_codesources(root, codesources_path, configure.configuration)
 
     # install by default cs_toc and cs_citation
-    for source_id in ['cs_toc', 'cs_citation',]:
+    for source_id in ['cs_toc', 'cs_citation', 
+                      'cs_page_asset', 'cs_rich_text']:
         if not hasattr(root.aq_explicit, source_id) and \
                 hasattr(root.service_codesources.aq_explicit, source_id):
             token = root.service_codesources.manage_copyObjects([source_id,])

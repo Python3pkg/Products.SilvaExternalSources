@@ -1,0 +1,6 @@
+HISTORY.txt
+
+Copyright © 2010 Infrae. All rights reserved.
+
+
+    * 0.1 - initial version (for silva 2.1 + contentlayout extension)

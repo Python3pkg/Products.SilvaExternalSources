@@ -88,11 +88,23 @@ class IEditableExternalSource(IExternalSource):
         """Set previewablility of the external source in the WYSIWYG (boolean).
         """
 
+    def set_priority(priority):
+        """Set the priority of the external source (Integer)
+        """
 
 class ICodeSource(IEditableExternalSource):
     """Code source: an external source built in ZMI.
     """
-
+    
+    def set_icon_id(icon_id):
+        """set the id of an image object existing within the codesource to
+           use that this source's icon"""
+        
+    def icon_id():
+        """return the icon_id (may be none)"""
+        
+    def get_icon():
+        """return the icon object (may be none)"""
 
 class ICSVSource(IEditableExternalSource, IAsset):
     """An external source showing the content of a CSV file.

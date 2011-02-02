@@ -69,6 +69,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     def __init__(self, id, script_id=None):
         super(CodeSource, self).__init__(id)
         self._script_id = script_id
+        self._icon_id = None
 
     # ACCESSORS
 
@@ -79,6 +80,21 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     security.declareProtected(AccessContentsInformation, 'script_id')
     def script_id(self):
         return self._script_id
+
+    security.declareProtected(AccessContentsInformation, 'icon_id')
+    def icon_id(self):
+        if not hasattr(self, '_icon_id'):
+            self._icon_id = None
+        return self._icon_id
+    
+    security.declareProtected(AccessContentsInformation, 'get_icon')
+    def get_icon(self):
+        if not self.icon_id():
+            return None
+        try:
+            return self[self._icon_id]
+        except KeyError:
+            return None
 
     security.declareProtected(AccessContentsInformation,
                                 'get_rendered_form_for_editor')
@@ -140,12 +156,18 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     def set_elaborate(self, value):
         self._elaborate = value
 
-    # MANAGERS
+        
+    def set_icon_id(self, icon_id):
+        #XXX should probably have some validation here
+        self._icon_id = icon_id
+
+# MANAGERS
 
     security.declareProtected(ViewManagementScreens, 'manage_editCodeSource')
     def manage_editCodeSource(
         self, title, script_id, data_encoding, description=None,
-        cacheable=None, elaborate=None, previewable=None):
+        cacheable=None, elaborate=None, previewable=None, priority=None, 
+        icon_id=None):
         """ Edit CodeSource object
         """
         msg = u''
@@ -170,6 +192,10 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             self._script_id = script_id
             msg += "Script id changed. "
 
+        if icon_id and icon_id != self._icon_id:
+            self._icon_id = icon_id
+            msg += "Icon id changed. "
+
         # Assume description is in the encoding as specified
         # by "management_page_charset". Store it in unicode.
         description = unicode(description, self.management_page_charset)
@@ -192,11 +218,18 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         elif not self.is_elaborate():
             self.set_elaborate(True)
 
+        if priority != self.priority():
+            self.set_priority(priority)
+            msg += 'Priority changed. '
+
         if not script_id:
             msg += "<b>Warning</b>: no script id specified!"
         if script_id not in self.objectIds():
             msg += '<b>Warning</b>: This code source does not contain ' \
                 'an object with identifier "%s"! ' % script_id
+        if icon_id not in self.objectids():
+            msg += '<b>Warning</b>: This code source does not contain ' \
+                'an object with identifier "%s"! ' % icon_id
         return self.editCodeSource(manage_tabs_message=msg)
 
 InitializeClass(CodeSource)

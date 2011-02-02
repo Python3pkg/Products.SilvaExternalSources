@@ -6,6 +6,8 @@ configuration = {
         'desc': "Rich Text (html) using Tiny MCE",
         'cacheable': False,
         'elaborate': False,
+        'priority': 1,
+        'icon_id': 'rich_text_image.png',
    },
     'cs_page_asset': {
         'id': 'cs_page_asset',
@@ -14,6 +16,8 @@ configuration = {
         'desc': "Embed a Page Asset",
         'cacheable': False,
         'elaborate': False,
+        'priority': 9,
+        'icon_id': 'page_asset_image.png',
     },
     'cs_you_tube': {
         'id': 'cs_you_tube',

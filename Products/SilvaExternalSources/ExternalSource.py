@@ -341,6 +341,6 @@ class EditableExternalSource(ExternalSource):
     def set_priority(self, priority):
         """ set previewablility (in kupu) of source
         """
-        self._is_previewable = not not previewable
+        self._priority = priority
 
 InitializeClass(EditableExternalSource)

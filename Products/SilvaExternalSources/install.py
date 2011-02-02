@@ -138,13 +138,19 @@ def install_js(context, data, id):
     factory = context.manage_addProduct['OFSP']
     factory.manage_addDTMLMethod(id + '.js', '', data.read())
 
+def install_png(context, data, id):
+    """Install a JS script as a dtml file.
+    """
+    factory = context.manage_addProduct['OFSP']
+    factory.manage_addImage(id, data.read(), '')
 
 INSTALLERS = {
     '.pt': install_pt,
     '.py': install_py,
     '.xml': install_xml,
     '.js': install_js,
-    '.txt': install_pt}
+    '.txt': install_pt,
+    '.png': install_png,}
 
 
 def install_codesources(root, path, sources, product_name=None):
@@ -161,6 +167,13 @@ def install_codesources(root, path, sources, product_name=None):
             source.set_cacheable(True)
         if info['elaborate']:
             source.set_elaborate(True)
+        #not all codesources have these two settings
+        pri = info.get('priority',None)
+        if pri:
+            source.set_priority(pri)
+        icon_id = info.get('icon_id',None)
+        if icon_id:
+            source.set_icon_id(icon_id)
 
         codesource_path = os.path.join(path, info['id'])
         for filename in os.listdir(codesource_path):

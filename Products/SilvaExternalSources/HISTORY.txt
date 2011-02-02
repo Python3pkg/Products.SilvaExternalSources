@@ -1,12 +1,13 @@
 ChangeLog
 =========
 
-2.3.3 (unreleased)
+2.3.3 (2010-02-02)
 ------------------
 
-- ...
+- Remove broken test view ``index_html`` on a ExternalSource. This breaks 
+  some filesystem based sources, and doesn't work anyway.
 
-2.3.2 (2010/12/20)
+2.3.2 (2010-12-20)
 ------------------
 
 - Add a vimeo code source.

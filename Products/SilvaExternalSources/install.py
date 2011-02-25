@@ -13,7 +13,6 @@ from App.Common import package_home
 from Products.Formulator.Form import ZMIForm
 
 # Silva
-from Products.Silva.install import add_fss_directory_view
 from Products.Silva import roleinfo
 from Products.SilvaExternalSources.codesources import configure
 
@@ -22,15 +21,9 @@ logger = logging.getLogger('silva.externalsources')
 
 
 def is_installed(root):
-    # Hack to get installed state of this extension
-    return hasattr(root.service_views, 'SilvaExternalSources')
-
+    return 'service_codesources' in root.objectIds()
 
 def install(root):
-    add_fss_directory_view(
-        root.service_views, 'SilvaExternalSources', __file__, 'views')
-    # also register views
-    registerViews(root.service_view_registry)
     # metadata registration
     setupMetadata(root)
     configureSecurity(root)
@@ -56,7 +49,6 @@ def install(root):
 
 def uninstall(root):
     cs_fields = configure.configuration
-    unregisterViews(root.service_view_registry)
     if not hasattr(root, 'service_codesources'):
         root.service_views.manage_delObjects(['SilvaExternalSources'])
     else:
@@ -64,21 +56,6 @@ def uninstall(root):
         for cs_name, cs_element in cs_fields.items():
             if cs_element['id'] in root.service_codesources.objectIds():
                 root.service_codesources.manage_delObjects([cs_element['id']])
-
-
-def registerViews(reg):
-    """Register core views on registry.
-    """
-    # edit
-    reg.register('edit', 'Silva CSV Source', ['edit', 'Asset', 'CSVSource'])
-
-
-def unregisterViews(reg):
-    """Unregister core views on registry.
-    """
-    # edit
-    reg.unregister('edit', 'Silva CSV Source')
-
 
 def configureSecurity(root):
     """Update the security tab settings to the Silva defaults.
@@ -127,8 +104,13 @@ def install_xml(context, data, id):
     """Install an XML file.
     """
     form = ZMIForm('form', 'Parameters form')
-    form.set_xml(data.read())
-    context.set_form(form)
+    try:
+        form.set_xml(data.read())
+        context.set_form(form)
+    except:
+        logger.exception(
+            'Error while installing Formulator form id "%s" in "%s"' % (
+                id, '/'.join(context.getPhysicalPath())))
 
 
 def install_js(context, data, id):

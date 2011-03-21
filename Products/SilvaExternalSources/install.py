@@ -49,13 +49,11 @@ def install(root):
 
 def uninstall(root):
     cs_fields = configure.configuration
-    if not hasattr(root, 'service_codesources'):
-        root.service_views.manage_delObjects(['SilvaExternalSources'])
-    else:
-        root.service_views.manage_delObjects(['SilvaExternalSources'])
+    if hasattr(root, 'service_codesources'):
         for cs_name, cs_element in cs_fields.items():
             if cs_element['id'] in root.service_codesources.objectIds():
                 root.service_codesources.manage_delObjects([cs_element['id']])
+
 
 def configureSecurity(root):
     """Update the security tab settings to the Silva defaults.

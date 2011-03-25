@@ -72,7 +72,7 @@ def setupMetadata(root):
 
 def configureAddables(root):
     addables = ['Silva CSV Source']
-    new_addables = root.get_silva_addables_allowed_in_container()
+    new_addables = root.get_silva_addables_allowed_in_container() or []
     for a in addables:
         if a not in new_addables:
             new_addables.append(a)

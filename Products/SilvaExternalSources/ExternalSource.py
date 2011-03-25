@@ -15,7 +15,6 @@ import Acquisition
 from Products.Silva import SilvaPermissions as permissions
 from Products.SilvaExternalSources.interfaces import IExternalSource
 from Products.SilvaExternalSources.interfaces import IEditableExternalSource
-from Products.Formulator.Errors import ValidationError, FormValidationError
 
 from silva.core.interfaces import IRoot
 

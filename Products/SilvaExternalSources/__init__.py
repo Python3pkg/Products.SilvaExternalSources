@@ -2,9 +2,6 @@
 # See also LICENSE.txt
 # $Id$
 
-# prevent a circular import in Zope 2.12
-import AccessControl
-
 from Products.SilvaExternalSources import install
 
 from silva.core import conf as silvaconf

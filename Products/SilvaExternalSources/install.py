@@ -27,7 +27,7 @@ def install(root):
     # metadata registration
     setupMetadata(root)
     configureSecurity(root)
-    configureAddables(root)
+    configureAddables(root, ['Silva CSV Source'])
 
     # add service_codesources
     if not hasattr(root.aq_explicit, 'service_codesources'):
@@ -70,13 +70,13 @@ def setupMetadata(root):
     mapping.editMappings(default, tm)
 
 
-def configureAddables(root):
-    addables = ['Silva CSV Source']
-    new_addables = root.get_silva_addables_allowed_in_container() or []
-    for a in addables:
-        if a not in new_addables:
-            new_addables.append(a)
-    root.set_silva_addables_allowed_in_container(new_addables)
+def configureAddables(root, meta_types):
+    addables = root.get_silva_addables_allowed_in_container()
+    if addables:
+        for meta_type in meta_type:
+            if meta_type not in addables:
+                addables.append(meta_type)
+        root.set_silva_addables_allowed_in_container(addables)
 
 
 # All the code following are default helper to help you to install

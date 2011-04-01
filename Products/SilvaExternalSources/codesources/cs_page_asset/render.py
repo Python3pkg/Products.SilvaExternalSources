@@ -13,5 +13,5 @@ if not pa:
 viewable = pa.get_viewable()
 if not viewable:
   return "<div>Embedded Page Asset not published: %s</div>"%(object_path)
-view = viewable.restrictedTraverse(['@@publicview'])
+view = viewable.restrictedTraverse(['@@content.html'])
 return view.render_asset()

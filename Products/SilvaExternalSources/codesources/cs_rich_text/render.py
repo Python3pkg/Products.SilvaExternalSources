@@ -4,7 +4,7 @@
 ##bind namespace=
 ##bind script=script
 ##bind subpath=traverse_subpath
-##parameters=rich_text
+##parameters=rich_text, model=None, version=None
 ##title=
 ##
-return context.parameters.rich_text.render_view(rich_text)
+return context.parameters.rich_text.render_view(rich_text, model=model, version=version)

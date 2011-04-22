@@ -3,6 +3,7 @@
 # $Id$
 
 from silva.core.interfaces import ISilvaService, IAsset
+from silva.core.interfaces import IXMLZEXPExportable
 from zope.interface import Interface
 
 
@@ -89,7 +90,7 @@ class IEditableExternalSource(IExternalSource):
         """
 
 
-class ICodeSource(IEditableExternalSource):
+class ICodeSource(IEditableExternalSource, IXMLZEXPExportable):
     """Code source: an external source built in ZMI.
     """
 

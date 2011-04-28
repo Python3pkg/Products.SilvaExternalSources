@@ -2,6 +2,8 @@
 # See also LICENSE.txt
 # $Id$
 
+from cStringIO import StringIO
+import csv
 import os
 
 from five import grok
@@ -26,7 +28,6 @@ from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 # Silva
 from Products.Silva import SilvaPermissions
 from Products.Silva.Asset import Asset
-from Products.SilvaExternalSources import ASV
 from Products.SilvaExternalSources.ExternalSource import EditableExternalSource
 from Products.SilvaExternalSources.interfaces import ICSVSource
 from Products.SilvaMetadata.interfaces import IMetadataService
@@ -140,30 +141,15 @@ class CSVSource(Folder, EditableExternalSource, Asset):
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'update_data')
     def update_data(self, data):
-        asv = ASV.ASV()
-        asv.input(data, ASV.CSV(), has_field_names=0)
-        # extracting the raw data out of the asv structure
-        # thereby converting them into plain list-of-lists
-        # containing strings
-        rows = []
-        for r in asv:
-            l = []
-            for c in r:
-                l.append(c)
-            rows.append(l)
-        # convert the data to unicode
-        rows = self._unicode_helper(rows)
-        self._data = rows
+
+        def convert_to_unicode(line):
+            return map(
+                lambda v: v.decode(self._data_encoding, 'replace'),
+                line)
+
+        self._data = map(convert_to_unicode, csv.reader(StringIO(data)))
         self._raw_data = data
         self.update_quota()
-
-    def _unicode_helper(self, rows):
-        for r in rows:
-            for i in xrange(len(r)):
-                value = r[i]
-                if type(value) is type(''):
-                    r[i] = unicode(value, self._data_encoding, 'replace')
-        return rows
 
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'set_file')
@@ -175,13 +161,11 @@ class CSVSource(Folder, EditableExternalSource, Asset):
     def set_data_encoding(self, encoding):
         self._data_encoding = encoding
         self.update_data(self._raw_data)
-        return
 
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'set_table_class')
     def set_table_class(self, css_class):
         self._table_class = css_class
-        return
 
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'set_description')

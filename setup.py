@@ -56,6 +56,6 @@ setup(name='Products.SilvaExternalSources',
         ],
       entry_points="""
       [silva.core.editor.extension]
-      source = Products.SilvaExternalSources.ckeditor:extension
+      source = Products.SilvaExternalSources.editor:extension
       """,
       )

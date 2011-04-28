@@ -11,7 +11,7 @@ from zope.component import getMultiAdapter
 
 from Products.SilvaExternalSources.ExternalSource import availableSources
 from Products.SilvaExternalSources.interfaces import IExternalSource
-from Products.SilvaExternalSources.ckeditor.interfaces import ISourceInstances
+from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
 from Products.Formulator.interfaces import IBindedForm
 
 
@@ -123,8 +123,6 @@ class SourceParameters(SourceAPI):
         source, form = self.get_source()
         self.fields = []
         if form is not None:
-            # For hacked parameters.
-            self.request.form['model'] = self.context
             # Collect field.
             is_inline = 'source_inline' not in self.request.form
             for field in form.fields(

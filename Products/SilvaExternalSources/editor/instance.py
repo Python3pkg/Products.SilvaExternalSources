@@ -12,9 +12,9 @@ from zope.component import getMultiAdapter
 from zope.publisher.browser import TestRequest
 
 from Products.SilvaExternalSources.interfaces import IExternalSource
-from Products.SilvaExternalSources.ckeditor.interfaces import (
+from Products.SilvaExternalSources.editor.interfaces import (
     ISourceInstances, IBindedSourceInstance, ISourceParameters)
-from Products.SilvaExternalSources.ckeditor.utils import parse_qs
+from Products.SilvaExternalSources.editor.utils import parse_qs
 from Products.Formulator.interfaces import IBindedForm
 
 logger = logging.getLogger('Products.SilvaExternalSources')

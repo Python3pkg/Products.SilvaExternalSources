@@ -13,7 +13,7 @@ from silva.core.editor.transform.editor.output import clean_editor_attributes
 from silva.core.interfaces import IVersion
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-from Products.SilvaExternalSources.ckeditor.interfaces import ISourceInstances
+from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
 
 
 SOURCE_XPATH = '//div[contains(@class, "external-source")]'

@@ -4,7 +4,7 @@
 # $Id$
 
 class CKEditorExtension(object):
-    base = '++static++/Products.SilvaExternalSources.ckeditor'
+    base = '++static++/Products.SilvaExternalSources.editor'
     plugins = {
         'silvaexternalsource': 'plugins/silvaexternalsource'
         }

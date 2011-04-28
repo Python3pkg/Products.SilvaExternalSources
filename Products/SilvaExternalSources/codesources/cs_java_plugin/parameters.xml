@@ -15,7 +15,7 @@
     <group>
       <title>Default</title>
       <fields>
-        
+
         <field><id>code</id> <type>StringField</type>
         <values>
           <alternate_name></alternate_name>
@@ -43,28 +43,19 @@
           <message name="too_long">Too much input was given.</message>
         </messages>
         </field>
-        <field><id>archive</id> <type>LookupWindowField</type>
+        <field><id>archive</id> <type>ReferenceField</type>
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>
           <default></default>
-          <description>Path to the jar archive of the applet. The path may be relative (without leading '/'), absolute (with leading '/') or pointing to another site (using 'http://...').</description>
-          <display_maxwidth></display_maxwidth>
-          <display_width type="int">20</display_width>
+          <description>Select the JAR archive containing the applet archive.</description>
           <enabled type="int">1</enabled>
           <external_validator></external_validator>
-          <extra></extra>
           <hidden type="int">0</hidden>
-          <max_length></max_length>
-          <onclick>reference.getReference(
-          function(path, id, title) {
-          document.getElementById('%(field_id)s').value = path;;
-          }, '%(url)s', 'Asset', true)</onclick>
+          <interface type="interface">silva.core.interfaces.content.IFile</interface>
+          <multiple type="int">0</multiple>
           <required type="int">0</required>
-          <title>archive</title>
-          <truncate type="int">0</truncate>
-          <unicode type="int">1</unicode>
-          <whitespace_preserve type="int">0</whitespace_preserve>
+          <title>JAR Archive</title>
         </values>
         <tales>
         </tales>
@@ -74,28 +65,19 @@
           <message name="too_long">Too much input was given.</message>
         </messages>
         </field>
-        <field><id>codebase</id> <type>LookupWindowField</type>
+        <field><id>codebase</id> <type>ReferenceField</type>
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>
           <default></default>
-          <description>Path to the jar archive of the applet. The path may be relative (without leading '/'), absolute (with leading '/') or pointing to another site (using 'http://...').</description>
-          <display_maxwidth></display_maxwidth>
-          <display_width type="int">20</display_width>
+          <description>Select the JAR archive containing the applet codebase.</description>
           <enabled type="int">1</enabled>
           <external_validator></external_validator>
-          <extra></extra>
           <hidden type="int">0</hidden>
-          <max_length></max_length>
-          <onclick>reference.getReference(
-          function(path, id, title) {
-          document.getElementById('%(field_id)s').value = path;;
-          }, '%(url)s', 'Asset', true)</onclick>
+          <interface type="interface">silva.core.interfaces.content.IFile</interface>
+          <multiple type="int">0</multiple>
           <required type="int">0</required>
-          <title>codebase</title>
-          <truncate type="int">0</truncate>
-          <unicode type="int">1</unicode>
-          <whitespace_preserve type="int">0</whitespace_preserve>
+          <title>JAR Codebase</title>
         </values>
         <tales>
         </tales>
@@ -110,7 +92,7 @@
           <alternate_name></alternate_name>
           <css_class></css_class>
           <default></default>
-          <description>Width of java applet on the screen.</description>
+          <description>Width of the java applet.</description>
           <display_maxwidth></display_maxwidth>
           <display_width type="int">20</display_width>
           <enabled type="int">1</enabled>
@@ -137,7 +119,7 @@
           <alternate_name></alternate_name>
           <css_class></css_class>
           <default></default>
-          <description>Height of java applet on the screen.</description>
+          <description>Height of the java applet.</description>
           <display_maxwidth></display_maxwidth>
           <display_width type="int">20</display_width>
           <enabled type="int">1</enabled>

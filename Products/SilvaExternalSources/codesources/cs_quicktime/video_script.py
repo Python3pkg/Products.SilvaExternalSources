@@ -1,11 +1,6 @@
 ##parameters=model, version, ref, controller, autoplay, width, height, params=''
 
-if ref.find('://') == -1:
-    video = model.restrictedTraverse(str(ref))
-    video_url = video.absolute_url()
-else:
-    video_url = ref
-
+video_url = ref.absolute_url()
 if width == '':
     width_attr = ''
 else:

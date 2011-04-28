@@ -1,23 +1,15 @@
 ##parameters=model, version, code, archive='', codebase='', width, height, params=''
 
-if archive == '':
+if archive is None:
     archive_attr = ''
 else:
-    if archive.find('://') == -1:
-        archive_obj = model.restrictedTraverse(str(archive))
-        archive_url = archive_obj.absolute_url()
-    else:
-        archive_url = archive
+    archive_url = archive.absolute_url()
     archive_attr = 'archive="%s"' % archive_url
 
 if codebase== '':
     codebase_attr = ''
 else:
-    if codebase.find('://') == -1:
-        codebase_obj = model.restrictedTraverse(str(codebase))
-        codebase_url = codebase_obj.absolute_url()
-    else:
-        codebase_url = codebase
+    codebase_url = codebase.absolute_url()
     codebase_attr = 'codebase="%s"' % codebase_url
 
 param_tags = ''

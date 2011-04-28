@@ -13,7 +13,7 @@
   <i18n_domain></i18n_domain>
   <groups>
     <group>
-      <title>Formulario</title>
+      <title>Default</title>
       <fields>
 
       <field><id>url</id> <type>StringField</type>
@@ -124,18 +124,6 @@
           <message name="unknown_selection">You selected an item that was not in the list.</message>
         </messages>
       </field>
-      </fields>
-    </group>
-    <group>
-      <title>Mapa</title>
-      <fields>
-
-      </fields>
-    </group>
-    <group>
-      <title>Geral</title>
-      <fields>
-
       </fields>
     </group>
   </groups>

@@ -3,13 +3,12 @@
   capsulestyle options/capsule_style | nothing;
   capsuleclass python: capsulestyle and ' ' + capsulestyle or '';
   capsuletitle options/capsule_title | nothing;
-  imagepath    options/image_path;
-  image        python: context.restrictedTraverse(str(imagepath));
+  image        options/image_path;
   dimensions   python: image.getCanonicalWebScale();
   imagewidth   python: dimensions[0];
   imagelink    options/image_link | nothing;
   linkurl      options/link_url | nothing;
-  reference    python: imagelink and (imagelink == 'hires' and imagepath+'?hires' or linkurl);
+  reference    python: imagelink and (imagelink == 'hires' and image.absolute_url() + '?hires' or linkurl);
   captiontext  options/caption_text | nothing;
   creditprefix options/credit_prefix | nothing;
   creditlink   options/credit_link | nothing;

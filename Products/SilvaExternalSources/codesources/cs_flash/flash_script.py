@@ -1,11 +1,6 @@
 ##parameters=model, version, ref, width, height, play='true', quality='high', params=''
 
-if ref.find('://') == -1:
-    asset = model.restrictedTraverse(str(ref))
-    asset_url = asset.absolute_url()
-else:
-    asset_url = ref
-
+asset_url = ref.absolute_url()
 if width == '':
     width_attr = ''
 else:

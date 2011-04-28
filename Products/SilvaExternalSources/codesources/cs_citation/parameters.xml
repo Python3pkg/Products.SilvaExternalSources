@@ -16,10 +16,9 @@
       <title>Default</title>
       <fields>
 
-      <field><id>citation</id> <type>KupuPopupWindowField</type>
+      <field><id>citation</id> <type>TextAreaField</type>
         <values>
           <alternate_name></alternate_name>
-          <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button', u'kupu-subscript-button', u'kupu-superscript-button', u'kupu-source-button']</buttons>
           <css_class>store</css_class>
           <default></default>
           <description>Text of the citation (can be rich text).</description>
@@ -28,10 +27,7 @@
           <hidden type="int">0</hidden>
           <max_length></max_length>
           <required type="int">1</required>
-          <textstyles type="list">[u'P|normal', u'P|lead', u'P|annotation']</textstyles>
           <title>citation</title>
-          <toolboxes type="list">[u'kupu-toolbox-links', u'kupu-toolbox-indexes', u'kupu-toolbox-abbr', u'kupu-toolbox-cleanupexpressions', u'kupu-toolbox-typochars', u'kupu-toolbox-save']</toolboxes>
-          <truncate type="int">0</truncate>
           <unicode type="int">1</unicode>
           <whitespace_preserve type="int">1</whitespace_preserve>
         </values>
@@ -43,25 +39,19 @@
           <message name="too_long">Too much input was given.</message>
         </messages>
       </field>
-      <field><id>author</id> <type>KupuPopupWindowField</type>
+      <field><id>author</id> <type>TextAreaField</type>
         <values>
           <alternate_name></alternate_name>
-          <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button', u'kupu-subscript-button', u'kupu-superscript-button', u'kupu-source-button']</buttons>
           <css_class>store</css_class>
           <default></default>
           <description>Author of citation (can be rich text).</description>
-          <display_maxwidth></display_maxwidth>
-          <display_width type="int">20</display_width>
           <enabled type="int">1</enabled>
           <external_validator></external_validator>
           <extra></extra>
           <hidden type="int">0</hidden>
           <max_length></max_length>
           <required type="int">0</required>
-          <textstyles type="list">[u'P|normal', u'P|lead', u'P|annotation']</textstyles>
           <title>author</title>
-          <toolboxes type="list">[u'kupu-toolbox-links', u'kupu-toolbox-indexes', u'kupu-toolbox-abbr', u'kupu-toolbox-cleanupexpressions', u'kupu-toolbox-typochars', u'kupu-toolbox-save']</toolboxes>
-          <truncate type="int">0</truncate>
           <unicode type="int">1</unicode>
           <whitespace_preserve type="int">1</whitespace_preserve>
         </values>
@@ -73,10 +63,9 @@
           <message name="too_long">Too much input was given.</message>
         </messages>
       </field>
-      <field><id>source</id> <type>KupuPopupWindowField</type>
+      <field><id>source</id> <type>TextAreaField</type>
         <values>
           <alternate_name></alternate_name>
-          <buttons type="list">[u'kupu-save-button', u'kupu-bold-button', u'kupu-italic-button', u'kupu-underline-button', u'kupu-subscript-button', u'kupu-superscript-button', u'kupu-source-button']</buttons>
           <css_class>store</css_class>
           <default></default>
           <description>Source of citation (can be rich text).</description>
@@ -85,10 +74,7 @@
           <hidden type="int">0</hidden>
           <max_length></max_length>
           <required type="int">0</required>
-          <textstyles type="list">[u'P|normal', u'P|lead', u'P|annotation']</textstyles>
           <title>source</title>
-          <toolboxes type="list">[u'kupu-toolbox-links', u'kupu-toolbox-indexes', u'kupu-toolbox-abbr', u'kupu-toolbox-cleanupexpressions', u'kupu-toolbox-typochars', u'kupu-toolbox-save']</toolboxes>
-          <truncate type="int">0</truncate>
           <unicode type="int">1</unicode>
           <whitespace_preserve type="int">1</whitespace_preserve>
         </values>

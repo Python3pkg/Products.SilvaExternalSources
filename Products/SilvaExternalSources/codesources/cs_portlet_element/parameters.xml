@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <form>
   <title>Parameters form</title>
   <row_length>4</row_length>
@@ -16,28 +15,19 @@
       <title>Default</title>
       <fields>
 
-      <field><id>document</id> <type>LookupWindowField</type>
+      <field><id>document</id> <type>ReferenceField</type>
         <values>
           <alternate_name></alternate_name>
           <css_class>store</css_class>
           <default></default>
           <description>Locate a document to display in the portlet.</description>
-          <display_maxwidth></display_maxwidth>
-          <display_width type="int">20</display_width>
           <enabled type="int">1</enabled>
           <external_validator></external_validator>
-          <extra></extra>
           <hidden type="int">0</hidden>
-          <max_length></max_length>
-          <onclick>reference.getReference(
-function(path, id, title) {
-document.getElementById('%(field_id)s').value = path;;
-}, '%(url)s', 'Silva Document', true)</onclick>
+          <interface type="interface">silva.core.interfaces.content.IPublishable</interface>
+          <multiple type="int">0</multiple>
           <required type="int">1</required>
           <title>document</title>
-          <truncate type="int">0</truncate>
-          <unicode type="int">0</unicode>
-          <whitespace_preserve type="int">0</whitespace_preserve>
         </values>
         <tales>
         </tales>

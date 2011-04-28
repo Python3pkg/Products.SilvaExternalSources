@@ -12,12 +12,7 @@
 # *.avi or its correct MIME-type, 'video/x-msvideo' (or 'video/avi').
 
 
-if ref.find('://') == -1:
-    video = model.restrictedTraverse(str(ref))
-    video_url = video.absolute_url()
-else:
-    video_url = ref
-
+video_url = ref.absolute_url()
 if width == '':
     width_attr = ''
 else:

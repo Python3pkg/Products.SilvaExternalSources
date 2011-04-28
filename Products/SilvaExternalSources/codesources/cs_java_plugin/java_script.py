@@ -9,27 +9,19 @@
 # the latest installed version from 1.2 on, and at the same time to specify a
 # download page with the latest version.
 
-if archive == '':
+if archive is None:
     archive_param_tag = ''
     archive_attr = ''
 else:
-    if archive.find('://') == -1:
-        archive_obj = model.restrictedTraverse(str(archive))
-        archive_url = archive_obj.absolute_url()
-    else:
-        archive_url = archive
+    archive_url = archive.absolute_url()
     archive_param_tag = '<param name="archive" value="%s" />' % archive_url
     archive_attr = 'archive="%s"' % archive_url
-  
-if codebase== '':
+
+if codebase is None:
     codebase_param_tag = ''
     codebase_attr = ''
 else:
-    if codebase.find('://') == -1:
-        codebase_obj = model.restrictedTraverse(str(codebase))
-        codebase_url = codebase_obj.absolute_url()
-    else:
-        codebase_url = codebase
+    codebase_url = codebase.absolute_url()
     codebase_param_tag = '<param name="codebase" value="%s" />' % codebase_url
     codebase_attr = 'codebase="%s"' % codebase_url
 
@@ -67,7 +59,7 @@ return """
   <param name="type" value="application/x-java-applet;version=1.2" />
   <embed type="application/x-java-applet;version=1.2"
     width="%s" height="%s" align="baseline"
-    code="%s" 
+    code="%s"
     %s%s%s
     pluginspage="http://java.sun.com/j2se/1.5.0/download.html">
     <noembed>
@@ -82,18 +74,18 @@ return """
 return """
 <p class="p">
             <!--[if !IE]>-->
-            <object classid="java:%s" 
+            <object classid="java:%s"
                     type="application/x-java-applet"
-                    archive="%s" 
+                    archive="%s"
                     width="%s" height="%s" >
               <!-- Konqueror browser needs the following param -->
               <param name="archive" value="%s" />
             <!--<![endif]-->
-              <object classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" 
-                      width="%s" height="%s" > 
+              <object classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93"
+                      width="%s" height="%s" >
                 <param name="code" value="%s" />
                 <param name="archive" value="%s" />
-              </object> 
+              </object>
             <!--[if !IE]>-->
             </object>
             <!--<![endif]-->

@@ -15,29 +15,20 @@
     <group>
       <title>Default</title>
       <fields>
-        
-        <field><id>find_object</id> <type>LookupWindowField</type>
+        <field><id>find_object</id> <type>ReferenceField</type>
         <values>
           <alternate_name></alternate_name>
           <css_class>store</css_class>
           <default></default>
           <description>Choose a Silva Find object.</description>
-          <display_maxwidth></display_maxwidth>
-          <display_width type="int">20</display_width>
           <enabled type="int">1</enabled>
           <external_validator></external_validator>
           <extra></extra>
           <hidden type="int">0</hidden>
-          <max_length></max_length>
-          <onclick>reference.getReference(
-          function(path, id, title) {
-          document.getElementById('%(field_id)s').value = path;;
-          }, '%(url)s', 'Silva Find', true)</onclick>
+          <interface type="interface">Products.SilvaFind.interfaces.IFind</interface>
+          <multiple type="int">0</multiple>
           <required type="int">1</required>
           <title>Silva Find location</title>
-          <truncate type="int">0</truncate>
-          <unicode type="int">0</unicode>
-          <whitespace_preserve type="int">0</whitespace_preserve>
         </values>
         <tales>
         </tales>

@@ -1,28 +1,25 @@
-<tal:def define="
-  alignment python: options['alignment_selector'] or '';
-  capsulestyle options/capsule_style | nothing;
-  capsuleid python: options['capsule_id'] or '';
-  capsuleclass python: options['capsule_class'] or '';
-  capsuletitle options/capsule_title | nothing;
-  show_doc_title options/show_title | nothing;
-  document options/document | nothing;
-">
-<!-- Start portlet element -->
-<div 
-  tal:attributes="
-  class python:alignment + ' ' + capsuleclass;
-  id capsuleid;
-  style capsulestyle; 
-">
-<h2 class="heading"
-  tal:condition="capsuletitle"
-  tal:content="structure capsuletitle">
-    title....
-</h2>
-<div class="portlet"
-  tal:content="structure python:here.get_portlet_content(show_doc_title,document)">
-  document
-</div>
-</div>
-<!-- End portlet element -->
+<tal:def define="alignment python: options['alignment_selector'] or '';
+                 capsulestyle options/capsule_style | nothing;
+                 capsuleid python: options['capsule_id'] or '';
+                 capsuleclass python: options['capsule_class'] or '';
+                 capsuletitle options/capsule_title | nothing;
+                 document options/document | nothing;
+                 ">
+  <!-- Start portlet element -->
+  <div
+     tal:attributes="class python:alignment + ' ' + capsuleclass;
+                     id capsuleid;
+                     style capsulestyle;
+                     ">
+    <h2 class="heading"
+        tal:condition="capsuletitle"
+        tal:content="structure capsuletitle">
+      title....
+    </h2>
+    <div class="portlet"
+         tal:content="structure document/@@content.html">
+      document
+    </div>
+  </div>
+  <!-- End portlet element -->
 </tal:def>

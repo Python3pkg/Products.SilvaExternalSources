@@ -13,7 +13,7 @@
   <i18n_domain></i18n_domain>
   <groups>
     <group>
-      <title>Formulario</title>
+      <title>Default</title>
       <fields>
 
       <field><id>iframe</id> <type>TextAreaField</type>
@@ -48,18 +48,6 @@ remove all this text and paste here...</default>
           <message name="too_long">You entered too many characters.</message>
         </messages>
       </field>
-      </fields>
-    </group>
-    <group>
-      <title>Mapa</title>
-      <fields>
-
-      </fields>
-    </group>
-    <group>
-      <title>Geral</title>
-      <fields>
-
       </fields>
     </group>
   </groups>

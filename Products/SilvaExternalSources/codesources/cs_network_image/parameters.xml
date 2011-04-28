@@ -15,35 +15,19 @@
     <group>
       <title>Default</title>
       <fields>
-      <field><id>image_location</id> <type>LookupWindowField</type>
+      <field><id>image_location</id> <type>ReferenceField</type>
         <values>
           <alternate_name></alternate_name>
-          <button_label>get image...</button_label>
           <css_class>store</css_class>
           <default></default>
-          <description>Enter or lookup the url of an image. You can drag and drop an image from another browser window (if the image is also a link you will get the link, so view the image first). Or, lookup a local image within your site with the get image button.</description>
-          <display_maxwidth></display_maxwidth>
-          <display_width type="int">20</display_width>
+          <description>Lookup an image.</description>
           <enabled type="int">1</enabled>
           <external_validator></external_validator>
-          <extra></extra>
           <hidden type="int">0</hidden>
-          <max_length></max_length>
-          <max_rows type="int">1</max_rows>
-          <onclick>{
-var myid = this.getAttribute('id').replace(/^button/,'input');
-reference.getReference(
-function(path, id, title) {
-document.getElementById(myid).value = path;;
-}, '%(url)s', 'Silva Image', true, '%(selected_path)s')}</onclick>
+          <interface type="interface">silva.core.interfaces.content.IImage</interface>
+          <multiple type="int">0</multiple>
           <required type="int">1</required>
-          <required_rows type="int">1</required_rows>
-          <show_add_remove type="int">0</show_add_remove>
-          <show_edit_button type="int">0</show_edit_button>
           <title>image location</title>
-          <truncate type="int">0</truncate>
-          <unicode type="int">0</unicode>
-          <whitespace_preserve type="int">0</whitespace_preserve>
         </values>
         <tales>
         </tales>
@@ -162,35 +146,19 @@ document.getElementById(myid).value = path;;
           <message name="too_long">Too much input was given.</message>
         </messages>
       </field>
-      <field><id>link_url</id> <type>LookupWindowField</type>
+      <field><id>link_url</id> <type>ReferenceField</type>
         <values>
           <alternate_name></alternate_name>
-          <button_label>get reference...</button_label>
           <css_class>store</css_class>
           <default></default>
-          <description>Enter or lookup the resource location. You can drag and drop links from another browser window.</description>
-          <display_maxwidth></display_maxwidth>
-          <display_width type="int">20</display_width>
+          <description>Lookup the resource.</description>
           <enabled type="int">1</enabled>
           <external_validator></external_validator>
-          <extra></extra>
           <hidden type="int">0</hidden>
-          <max_length></max_length>
-          <max_rows type="int">1</max_rows>
-          <onclick>{
-var myid = this.getAttribute('id').replace(/^button/,'input');
-reference.getReference(
-function(path, id, title) {
-document.getElementById(myid).value = path;;
-}, '%(url)s', '', true, '%(selected_path)s')}</onclick>
+          <interface type="interface">silva.core.interfaces.content.ISilvaObject</interface>
+          <multiple type="int">0</multiple>
           <required type="int">0</required>
-          <required_rows type="int">1</required_rows>
-          <show_add_remove type="int">0</show_add_remove>
-          <show_edit_button type="int">0</show_edit_button>
           <title>link url</title>
-          <truncate type="int">0</truncate>
-          <unicode type="int">0</unicode>
-          <whitespace_preserve type="int">0</whitespace_preserve>
         </values>
         <tales>
         </tales>

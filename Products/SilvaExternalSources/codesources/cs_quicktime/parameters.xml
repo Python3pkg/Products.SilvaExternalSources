@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <form>
   <title>Parameters form</title>
   <row_length>4</row_length>
@@ -15,29 +14,20 @@
     <group>
       <title>Default</title>
       <fields>
-        
-        <field><id>ref</id> <type>LookupWindowField</type>
+        <field><id>ref</id> <type>ReferenceField</type>
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>
           <default></default>
-          <description>Path to the QuickTime movie. The path may be relative (without leading '/'), absolute (with leading '/') or pointing to another site (using 'http://...'). Ideally this path points to a reference movie that redirects the QuickTime plug-in to a streaming server.</description>
-          <display_maxwidth></display_maxwidth>
-          <display_width type="int">20</display_width>
+          <description>Select a QuickTime movie file.</description>
           <enabled type="int">1</enabled>
           <external_validator></external_validator>
           <extra></extra>
           <hidden type="int">0</hidden>
-          <max_length></max_length>
-          <onclick>reference.getReference(
-          function(path, id, title) {
-          document.getElementById('%(field_id)s').value = path;;
-          }, '%(url)s', 'Asset', true)</onclick>
+          <interface type="interface">silva.core.interfaces.content.IFile</interface>
+          <multiple type="int">0</multiple>
           <required type="int">1</required>
-          <title>reference</title>
-          <truncate type="int">0</truncate>
-          <unicode type="int">1</unicode>
-          <whitespace_preserve type="int">0</whitespace_preserve>
+          <title>Movie file</title>
         </values>
         <tales>
         </tales>

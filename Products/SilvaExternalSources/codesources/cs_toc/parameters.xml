@@ -26,7 +26,7 @@
           <external_validator></external_validator>
           <hidden type="int">0</hidden>
           <interface type="interface">silva.core.interfaces.content.IContainer</interface>
-          <multiple type="int">0</multiple>
+          <multiple type="int">1</multiple>
           <required type="int">1</required>
           <title>path to container</title>
         </values>
@@ -58,8 +58,8 @@
           <view_separator>&lt;br /&gt;</view_separator>
         </values>
         <tales>
-          <default>python:modules['Products.Silva.adapters.tocrendering'].compute_default_show_types()</default>
-          <items>request/model/get_silva_addables_allowed_in_container</items>
+          <default>python:modules['Products.SilvaExternalSources.codesources.toc'].get_publishable_content_types(context)</default>
+          <items>python:modules['Products.SilvaExternalSources.codesources.toc'].get_container_content_types(context)</items>
         </tales>
         <messages>
           <message name="external_validator_failed">The input failed the external validator.</message>

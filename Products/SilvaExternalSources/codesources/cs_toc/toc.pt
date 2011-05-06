@@ -1,4 +1,5 @@
-<tal:def define="capsuletitle options/capsule_title | nothing;
+<tal:def define="view here;
+                 capsuletitle options/capsule_title | nothing;
                  align options/alignment | nothing;
                  cssclass options/css_class | nothing;
                  c1ass python:(align and cssclass and (align + ' ' + cssclass)) or align or cssclass;

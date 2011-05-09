@@ -32,8 +32,7 @@ def install(root):
     # add service_codesources
     if not hasattr(root.aq_explicit, 'service_codesources'):
         factory = root.manage_addProduct['SilvaExternalSources']
-        factory.manage_addCodeSourceService(
-            'service_codesources', 'Code Sources')
+        factory.manage_addCodeSourceService()
 
     # add core Silva Code Sources
     codesources_path = os.path.join(package_home(globals()), 'codesources')

@@ -2,12 +2,12 @@
 # See also LICENSE.txt
 # $Id$
 
-from silva.core.interfaces import ISilvaService, IAsset
+from silva.core.interfaces import ISilvaService, ISilvaLocalService, IAsset
 from silva.core.interfaces import IXMLZEXPExportable
 from zope.interface import Interface
 
 
-class ICodeSourceService(ISilvaService):
+class ICodeSourceService(ISilvaService, ISilvaLocalService):
     """Code source service.
     """
 

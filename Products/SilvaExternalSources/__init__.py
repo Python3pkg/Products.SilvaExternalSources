@@ -5,6 +5,7 @@
 from Products.SilvaExternalSources import install
 
 from silva.core import conf as silvaconf
-silvaconf.extensionName('SilvaExternalSources')
-silvaconf.extensionTitle('Silva External Sources')
 
+silvaconf.extension_name('SilvaExternalSources')
+silvaconf.extension_title('Silva External Sources')
+silvaconf.extension_default()

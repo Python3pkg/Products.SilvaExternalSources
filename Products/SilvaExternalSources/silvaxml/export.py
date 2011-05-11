@@ -1,6 +1,6 @@
 from five import grok
 
-from silva.core.interfaces import IVersion, IExportSettings
+from silva.core.interfaces import IVersion, ISilvaXMLExportHandler
 from silva.core.editor.transform.base import TransformationFilter
 from silva.core.editor.transform.interfaces import ISilvaXMLExportFilter
 from Products.SilvaExternalSources.editor import transform
@@ -18,12 +18,12 @@ class FieldProducer(ElementTreeContentHandler):
 
 
 class ExternalSourceExportFilter(TransformationFilter):
-    grok.adapts(IVersion, IExportSettings)
+    grok.adapts(IVersion, ISilvaXMLExportHandler)
     grok.provides(ISilvaXMLExportFilter)
 
-    def __init__(self, context, settings):
+    def __init__(self, context, handler):
         self.context = context
-        self.settings = settings
+        self.handler = handler
 
     def prepare(self, name, text):
         self.sources = ISourceInstances(text)
@@ -32,17 +32,17 @@ class ExternalSourceExportFilter(TransformationFilter):
         for node in tree.xpath(transform.SOURCE_XPATH):
             identifier = node.attrib['data-source-instance']
             del node.attrib['data-source-instance']
+            settings = self.handler.getSettings()
             instance = self.sources.bind(
-                identifier, self.context, self.settings.request)
+                identifier, self.context, settings.request)
             source, form = instance.get_source_and_form()
-            root = self.settings.getExportRoot()
+            root = settings.getExportRoot()
             path = relative_path(
                 root.getPhysicalPath(), source.getPhysicalPath())
             node.attrib['source-path'] = canonical_path(
                 "/".join(path))
 
             producer = FieldProducer(root=node)
-            producer.startDocument()
             producer.startPrefixMapping(None, NS_URI)
             producer.startElement('fields')
             for field in form.fields(ignore_content=False):
@@ -51,6 +51,5 @@ class ExternalSourceExportFilter(TransformationFilter):
                     field._field, field._value, producer)
                 producer.endElement('field')
             producer.endElement('fields')
-            producer.endDocument()
 
 

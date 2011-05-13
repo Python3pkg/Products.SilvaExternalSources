@@ -1,0 +1,47 @@
+from five import grok
+from zope.component import getMultiAdapter
+
+from silva.core.interfaces import IVersion, ISilvaXMLImportHandler
+from silva.core.editor.transform.interfaces import ISilvaXMLImportFilter
+from silva.core.editor.transform.base import TransformationFilter
+
+from Products.Formulator.interfaces import IFieldValueWriter
+from Products.SilvaExternalSources.silvaxml import NS_URI
+from Products.SilvaExternalSources.editor import transform
+from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
+
+
+class ExternalSourceImportFilter(TransformationFilter):
+    grok.adapts(IVersion, ISilvaXMLImportHandler)
+    grok.provides(ISilvaXMLImportFilter)
+
+    def __init__(self, context, handler):
+        self.context = context
+        self.handler = handler
+
+    def prepare(self, name, text):
+        self.sources = ISourceInstances(text)
+        self.request = self.handler.settings().request
+
+    def __call__(self, tree):
+        for source_node in tree.xpath(transform.SOURCE_XPATH):
+            identifier = self.sources.new(
+                source_node.attrib['source-path'])
+            instance = self.sources.bind(
+                identifier, self.context, self.request)
+            source, form = instance.get_source_and_form()
+            fields_by_id = dict([(f.id, f) for f in form.fields()])
+            for field_node in source_node.xpath(
+                    './cs:fields/cs:field', namespaces={'cs': NS_URI}):
+                field_id = field_node.attrib['id']
+                field = fields_by_id[field_id]
+                value = field.deserialize(field_node.text)
+                writer = getMultiAdapter(
+                    (field._field, form), IFieldValueWriter)
+                writer(value)
+
+            del source_node[:]
+            del source_node.attrib['source-path']
+            source_node.attrib['data-source-instance'] = identifier
+
+

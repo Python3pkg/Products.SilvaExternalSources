@@ -47,8 +47,7 @@ class ExternalSourceExportFilter(TransformationFilter):
             producer.startElement('fields')
             for field in form.fields(ignore_content=False):
                 producer.startElement('field', {(None, 'id'): field.id})
-                field._field.validator.serializeValue(
-                    field._field, field._value, producer)
+                field.serialize(producer)
                 producer.endElement('field')
             producer.endElement('fields')
 

@@ -7,7 +7,6 @@ from silva.core.editor.transform.base import TransformationFilter
 
 from Products.Formulator.interfaces import IFieldValueWriter
 from Products.SilvaExternalSources.silvaxml import NS_URI
-from Products.SilvaExternalSources.editor import transform
 from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
 
 
@@ -24,7 +23,9 @@ class ExternalSourceImportFilter(TransformationFilter):
         self.request = self.handler.settings().request
 
     def __call__(self, tree):
-        for source_node in tree.xpath(transform.SOURCE_XPATH):
+        for source_node in tree.xpath(
+                '//html:div[contains(@class, "external-source")]',
+                namespaces={'html': 'http://www.w3.org/1999/xhtml'}):
             identifier = self.sources.new(
                 source_node.attrib['source-path'])
             instance = self.sources.bind(

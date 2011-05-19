@@ -3,7 +3,6 @@ from five import grok
 from silva.core.interfaces import IVersion, ISilvaXMLExportHandler
 from silva.core.editor.transform.base import TransformationFilter
 from silva.core.editor.transform.interfaces import ISilvaXMLExportFilter
-from Products.SilvaExternalSources.editor import transform
 from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
 from Products.SilvaExternalSources.silvaxml import NS_URI
 from Products.SilvaExternalSources.silvaxml.treehandler import \
@@ -29,7 +28,9 @@ class ExternalSourceExportFilter(TransformationFilter):
         self.sources = ISourceInstances(text)
 
     def __call__(self, tree):
-        for node in tree.xpath(transform.SOURCE_XPATH):
+        for node in tree.xpath(
+                '//html:div[contains(@class, "external-source")]',
+                namespaces={'html': 'http://www.w3.org/1999/xhtml'}):
             identifier = node.attrib['data-source-instance']
             del node.attrib['data-source-instance']
             settings = self.handler.getSettings()

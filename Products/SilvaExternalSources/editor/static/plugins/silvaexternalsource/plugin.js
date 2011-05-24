@@ -79,6 +79,8 @@
                 data: info,
                 type: 'POST',
                 success: function(html) {
+                    var is_dirty = editor.checkDirty();
+
                     if (!preview.length) {
                         element.empty(); //CKEditor adds an br in empty container.
                         preview = $('<div class="external-source-preview"></div');
@@ -86,6 +88,11 @@
                     };
 
                     preview.html(html);
+
+                    // If the document was unmodified, the fact to
+                    // load the preview should not have modified it, reset the flag.
+                    if (!is_dirty)
+                        editor.resetDirty();
                 }
             });
         }

@@ -1,4 +1,4 @@
-<tal:def define="view here;
+<div tal:define="view here;
                  capsuletitle options/capsule_title | nothing;
                  align options/alignment | nothing;
                  cssclass options/css_class | nothing;
@@ -36,4 +36,4 @@
       <tal:toc tal:replace="structure provider:toc" />
     </tal:tocs>
   </div>
-</tal:def>
+</div>

@@ -2,12 +2,11 @@
 # Copyright (c) 2010 Infrae. All rights reserved.
 # See also LICENSE.txt
 # $Id$
-
+import lxml.html
 
 from five import grok
 from silva.core.editor.transform.interfaces import (
     ISaveEditorFilter, IInputEditorFilter, IDisplayFilter)
-from silva.core.editor import utils
 from silva.core.editor.transform.base import TransformationFilter
 from silva.core.editor.transform.editor.output import clean_editor_attributes
 from silva.core.interfaces import IVersion
@@ -92,5 +91,5 @@ class ExternalSourceDisplayFilter(TransformationFilter):
             del source.attrib['data-source-instance']
             instance = self.sources.bind(
                 identifier, self.context, self.request)
-            html = utils.parse_html_fragments(instance.render())
+            html = lxml.html.fromstring('<div>' + instance.render() + '</div>')
             source.insert(0, html)

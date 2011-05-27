@@ -32,7 +32,7 @@
           <onclick>reference.getReference(
     function(path, id, title) {
         document.getElementsByName('%(field_id)s')[0].value = path;;
-        }, '%(url)s', '', true, '%(selected_path)s')
+        }, '%(url)s', 'Silva Page Asset', true, '%(selected_path)s')
         </onclick>
           <required type="int">1</required>
           <title>Page Asset</title>

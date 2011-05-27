@@ -227,7 +227,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         if script_id not in self.objectIds():
             msg += '<b>Warning</b>: This code source does not contain ' \
                 'an object with identifier "%s"! ' % script_id
-        if icon_id not in self.objectids():
+        if icon_id not in self.objectIds():
             msg += '<b>Warning</b>: This code source does not contain ' \
                 'an object with identifier "%s"! ' % icon_id
         return self.editCodeSource(manage_tabs_message=msg)

@@ -29,11 +29,11 @@
           <extra></extra>
           <hidden type="int">0</hidden>
           <max_length></max_length>
-          <onclick>reference.getReference(
-    function(path, id, title) {
-        document.getElementsByName('%(field_id)s')[0].value = path;;
-        }, '%(url)s', 'Silva Page Asset', true, '%(selected_path)s')
-        </onclick>
+          <onclick>{var myid = this.getAttribute('id').replace(/^button/,'input');
+reference.getReference(
+function(path, id, title) {
+document.getElementById(myid).value = path;
+}, '%(url)s', 'Silva Page Asset', true, '%(selected_path)s')}</onclick>
           <required type="int">1</required>
           <title>Page Asset</title>
           <truncate type="int">0</truncate>

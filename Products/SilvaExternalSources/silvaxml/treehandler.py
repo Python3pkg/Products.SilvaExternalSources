@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2010 Infrae. All rights reserved.
+# See also LICENSE.txt
+# $Id$
+
 from xml.sax.handler import ContentHandler
 from lxml import etree
 from lxml.etree import ElementTree, SubElement

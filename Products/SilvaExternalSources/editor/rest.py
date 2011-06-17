@@ -12,7 +12,7 @@ from zope.component import getMultiAdapter
 from Products.SilvaExternalSources.ExternalSource import availableSources
 from Products.SilvaExternalSources.interfaces import IExternalSource
 from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
-from Products.Formulator.interfaces import IBindedForm
+from Products.Formulator.interfaces import IBoundForm
 
 
 class ListAvailableSources(rest.REST):
@@ -71,7 +71,7 @@ class SourceAPI(rest.REST):
                         # If there is a formulator form, query its binding.
                         form = getMultiAdapter(
                             (formulator_form, self.request, document),
-                            IBindedForm)
+                            IBoundForm)
                     return source, form
 
         return None, None

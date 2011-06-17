@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2010 Infrae. All rights reserved.
+# See also LICENSE.txt
+# $Id$
+
 from five import grok
 
 from silva.core.interfaces import IVersion, ISilvaXMLExportHandler
@@ -7,13 +12,16 @@ from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
 from Products.SilvaExternalSources.silvaxml import NS_URI
 from Products.SilvaExternalSources.silvaxml.treehandler import \
     ElementTreeContentHandler
-from silva.core.references.reference import relative_path, canonical_path
 
 
 class FieldProducer(ElementTreeContentHandler):
-    @property
-    def handler(self):
-        return self
+
+    def __init__(self, handler, **kwargs):
+        ElementTreeContentHandler.__init__(self, **kwargs)
+        self.__handler = handler
+
+    def getHandler(self):
+       return self.__handler
 
 
 class ExternalSourceExportFilter(TransformationFilter):
@@ -37,13 +45,9 @@ class ExternalSourceExportFilter(TransformationFilter):
             instance = self.sources.bind(
                 identifier, self.context, settings.request)
             source, form = instance.get_source_and_form()
-            root = settings.getExportRoot()
-            path = relative_path(
-                root.getPhysicalPath(), source.getPhysicalPath())
-            node.attrib['source-path'] = canonical_path(
-                "/".join(path))
+            node.attrib['source-identifier'] = source.getId()
 
-            producer = FieldProducer(root=node)
+            producer = FieldProducer(self.handler, root=node)
             producer.startPrefixMapping(None, NS_URI)
             producer.startElement('fields')
             for field in form.fields(ignore_content=False):

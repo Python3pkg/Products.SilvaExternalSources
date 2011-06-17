@@ -6,6 +6,7 @@
 import uuid
 import logging
 
+import persistent
 from five import grok
 from silva.core.editor.interfaces import IText
 from zope.component import getMultiAdapter
@@ -13,14 +14,14 @@ from zope.publisher.browser import TestRequest
 
 from Products.SilvaExternalSources.interfaces import IExternalSource
 from Products.SilvaExternalSources.editor.interfaces import (
-    ISourceInstances, IBindedSourceInstance, ISourceParameters)
+    ISourceInstances, IBindSourceInstance, ISourceParameters)
 from Products.SilvaExternalSources.editor.utils import parse_qs
-from Products.Formulator.interfaces import IBindedForm
+from Products.Formulator.interfaces import IBoundForm
 
 logger = logging.getLogger('Products.SilvaExternalSources')
 
 
-class SourceParameters(object):
+class SourceParameters(persistent.Persistent):
     grok.implements(ISourceParameters)
 
     def __init__(self, source_identifier):
@@ -30,8 +31,8 @@ class SourceParameters(object):
         return self.__source_identifier
 
 
-class BindedSourceInstance(object):
-    grok.implements(IBindedSourceInstance)
+class BindSourceInstance(object):
+    grok.implements(IBindSourceInstance)
 
     def __init__(self, parameters, context, request, manager):
         self.__parameters = parameters
@@ -56,7 +57,7 @@ class BindedSourceInstance(object):
                     # If there is a formulator form, query its binding.
                     form = getMultiAdapter(
                         (formulator_form, request, self.context),
-                        IBindedForm)
+                        IBoundForm)
                     form.set_content(self.__parameters)
                 return source, form
         return None, None
@@ -125,7 +126,7 @@ class SourceInstances(grok.Annotation):
             self._p_changed = True
 
     def bind(self, instance_identifier, context, request):
-        return BindedSourceInstance(
+        return BindSourceInstance(
             self[instance_identifier], context, request, self)
 
     @proxy_method

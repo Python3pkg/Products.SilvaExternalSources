@@ -21,7 +21,7 @@ class ISourceParameters(interface.Interface):
         """
 
 
-class IBindedSourceInstance(interface.Interface):
+class IBindSourceInstance(interface.Interface):
     """Bind a request, context and source parameters together, to
     read, update and render a source.
     """

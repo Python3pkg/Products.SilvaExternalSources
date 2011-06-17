@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# Copyright (c) 2010 Infrae. All rights reserved.
+# See also LICENSE.txt
+# $Id$
+
 from five import grok
 from zope.component import getMultiAdapter
 
@@ -27,7 +32,7 @@ class ExternalSourceImportFilter(TransformationFilter):
                 '//html:div[contains(@class, "external-source")]',
                 namespaces={'html': 'http://www.w3.org/1999/xhtml'}):
             identifier = self.sources.new(
-                source_node.attrib['source-path'])
+                source_node.attrib['source-identifier'])
             instance = self.sources.bind(
                 identifier, self.context, self.request)
             source, form = instance.get_source_and_form()
@@ -36,13 +41,14 @@ class ExternalSourceImportFilter(TransformationFilter):
                     './cs:fields/cs:field', namespaces={'cs': NS_URI}):
                 field_id = field_node.attrib['id']
                 field = fields_by_id[field_id]
-                value = field.deserialize(field_node.text)
+                # The value is composed of sub-tags
+                value = field.deserialize(field_node, self.handler)
                 writer = getMultiAdapter(
                     (field._field, form), IFieldValueWriter)
                 writer(value)
 
             del source_node[:]
-            del source_node.attrib['source-path']
+            del source_node.attrib['source-identifier']
             source_node.attrib['data-source-instance'] = identifier
 
 

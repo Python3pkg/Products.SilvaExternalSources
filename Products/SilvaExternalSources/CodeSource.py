@@ -64,18 +64,12 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     silvaconf.factory('manage_addCodeSource')
 
     _data_encoding = 'UTF-8'
-    _elaborate = False
 
     def __init__(self, id, script_id=None):
         super(CodeSource, self).__init__(id)
         self._script_id = script_id
 
     # ACCESSORS
-
-    security.declareProtected(AccessContentsInformation, 'is_elaborate')
-    def is_elaborate(self):
-        return self._elaborate
-
     security.declareProtected(AccessContentsInformation, 'script_id')
     def script_id(self):
         return self._script_id
@@ -109,15 +103,12 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             parameters[field.id] = cast_formulator_value(value, field.meta_type)
         return parameters
 
-    def set_elaborate(self, value):
-        self._elaborate = value
-
     # MANAGERS
 
     security.declareProtected(ViewManagementScreens, 'manage_editCodeSource')
     def manage_editCodeSource(
         self, title, script_id, data_encoding, description=None,
-        cacheable=None, elaborate=None, previewable=None):
+        cacheable=None, previewable=None):
         """ Edit CodeSource object
         """
         msg = u''
@@ -157,12 +148,6 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         if not (not not previewable) is (not not self.is_previewable()):
             self.set_previewable(previewable)
             msg += "Previewable setting changed. "
-
-        if not elaborate:
-            if self.is_elaborate():
-                self.set_elaborate(False)
-        elif not self.is_elaborate():
-            self.set_elaborate(True)
 
         if not script_id:
             msg += "<b>Warning</b>: no script id specified!"

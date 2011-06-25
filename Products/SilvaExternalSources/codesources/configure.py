@@ -5,7 +5,6 @@ configuration = {
         'render_id': 'youtube_source',
         'desc': "Code Source to embed YouTube videos",
         'cacheable': True,
-        'elaborate': False,
         'previewable': True,
     },
     'cs_google_calendar': {
@@ -14,7 +13,6 @@ configuration = {
         'render_id': 'google_calendar_source',
         'desc': 'Code Source to embed a public Google Calendar.',
         'cacheable': True,
-        'elaborate': False,
         'previewable': False,
     },
     'cs_toc': {
@@ -23,7 +21,6 @@ configuration = {
         'render_id': 'toc',
         'desc': 'Displays a listing of items contained in folders and/or publications. Multiple listings are possible. This code source replaces the TOC element',
         'cacheable': False,
-        'elaborate': False,
         'previewable': True,
     },
     'cs_citation': {
@@ -32,7 +29,6 @@ configuration = {
         'render_id': 'render_citation',
         'desc': 'A citation allows authors to include a reference, citing an author and a source.',
         'cacheable': True,
-        'elaborate': False,
         'previewable': True,
     },
     'cs_google_maps': {
@@ -41,7 +37,6 @@ configuration = {
         'render_id': 'google_maps_source',
         'desc': 'Code Source for Google Maps iFrame.',
         'cacheable': True,
-        'elaborate': False,
         'previewable': False,
     },
     'cs_network_image': {
@@ -50,7 +45,6 @@ configuration = {
         'render_id': 'netimage',
         'desc': 'Insert an image from the network with a link and/or tooltip.',
         'cacheable': True,
-        'elaborate': False,
         'previewable': True,
     },
     'cs_ms_video': {
@@ -59,7 +53,6 @@ configuration = {
         'render_id': 'video_script',
         'desc': 'Embeds a Window Media Player movie.',
         'cacheable': True,
-        'elaborate': False,
         'previewable': True,
     },
     'cs_quicktime': {
@@ -68,7 +61,6 @@ configuration = {
         'render_id': 'video_script',
         'desc': 'Embedder for a Quicktime movie with configuration parameters.',
         'cacheable': True,
-        'elaborate': False,
         'previewable': True,
     },
     'cs_related_info': {
@@ -77,7 +69,6 @@ configuration = {
         'render_id': 'capsule',
         'desc': 'Provide related info and crosslinks.',
         'cacheable': True,
-        'elaborate': False,
         'previewable': True,
     },
     'cs_flash': {
@@ -86,7 +77,6 @@ configuration = {
         'render_id': 'flash_script',
         'desc': 'Embeds a Flash movie in a page using parameters.',
         'cacheable': False,
-        'elaborate': False,
         'previewable': False,
     },
     'cs_encaptionate': {
@@ -95,7 +85,6 @@ configuration = {
         'render_id': 'capsule',
         'desc': 'Insert an image with title, link, caption, and/or credit.',
         'cacheable': True,
-        'elaborate': False,
         'previewable': True,
     },
     'cs_java_applet': {
@@ -104,7 +93,6 @@ configuration = {
         'render_id': 'java_script',
         'desc': 'Embeds a Java applet with parameters using the HTML applet tag.',
         'cacheable': True,
-        'elaborate': False,
         'previewable': False,
     },
     'cs_java_plugin': {
@@ -113,7 +101,6 @@ configuration = {
         'render_id': 'java_script',
         'desc': 'Embeds a Java applet with the Java plug-in mechanism.',
         'cacheable': True,
-        'elaborate': False,
         'previewable': False,
     },
     'cs_search_field': {
@@ -122,7 +109,6 @@ configuration = {
         'render_id': 'layout',
         'desc': 'Inserts a search field in a document. Requires SilvaFind.',
         'cacheable': True,
-        'elaborate': False,
         'previewable': True,
     },
     'cs_flash_source': {
@@ -131,7 +117,6 @@ configuration = {
         'render_id': 'embedder',
         'desc': 'This Code Source embeds a Flash file (swf or flv) in a page and provides a form for easy parameter configuration.',
         'cacheable': True,
-        'elaborate': False,
         'previewable': False,
     },
     'cs_portlet_element': {
@@ -140,7 +125,6 @@ configuration = {
         'render_id': 'portlet_element',
         'desc': 'Code Source to include Silva Documents within other Silva Documents.',
         'cacheable': True,
-        'elaborate': False,
         'previewable': True,
     },
     'cs_vimeo': {
@@ -149,7 +133,6 @@ configuration = {
         'render_id': 'vimeo_script',
         'desc': "Code Source to embed Vimeo videos",
         'cacheable': True,
-        'elaborate': False,
         'previewable': True,
     },
 }

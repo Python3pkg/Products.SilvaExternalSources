@@ -137,8 +137,6 @@ def install_codesources(root, path, sources, product_name=None):
             source.set_description(info['desc'])
         if info['cacheable']:
             source.set_cacheable(True)
-        if info['elaborate']:
-            source.set_elaborate(True)
 
         codesource_path = os.path.join(path, info['id'])
         for filename in os.listdir(codesource_path):

@@ -113,17 +113,6 @@ Version of this file: $Revision: 1.7 $
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          <label for="elaborate">Source is elaborate</label><br /><small>When editing in kupu, the external source<br /> will open in a popup window.</small>
-        </div>
-      </td>
-      <td align="left" valign="top">
-        <input type="checkbox" name="elaborate" id="elaborate"
-          tal:attributes="checked python: here.is_elaborate() and 'checked' or nothing" />
-      </td>
-    </tr>
-    <tr>
-      <td align="left" valign="top">
-        <div class="form-label">
           Source is previewable in kupu
         </div>
       </td>

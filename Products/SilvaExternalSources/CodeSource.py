@@ -21,27 +21,6 @@ from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf
 
 
-_marker = object()
-
-def cast_formulator_value(value, field_type):
-    if field_type == 'CheckBoxField':
-        if value is not None and int(value)==1:
-            return True
-        return False
-    elif field_type == 'IntegerField':
-        if not value: #if value is not set
-            return None
-        return int(value)
-    elif field_type == 'MultiListField':
-        if not value:
-            return []
-        if not isinstance(value, list):
-            return eval(value)
-        return value
-    #XXX More field types? Dates? Selects?
-    return value
-
-
 class CodeSource(EditableExternalSource, Folder, ZMIObject):
 
     grok.implements(ICodeSource)
@@ -82,26 +61,14 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             script = self[self._script_id]
         except KeyError:
             return None
-        self._prepare_parameters(parameters)
         parameters['version'] = None
         parameters['model'] = content.get_content()
         if IVersion.providedBy(content):
             parameters['version'] = content
         result = script(**parameters)
-        if type(result) is unicode:
+        if isinstance(result,  unicode):
             return result
         return unicode(result, self.get_data_encoding(), 'replace')
-
-    def _prepare_parameters(self, parameters):
-        form = self.get_parameters_form()
-        if form is None:
-            return parameters
-        for field in form.get_fields():
-            value = parameters.get(field.id, _marker)
-            if value is _marker:
-                value = field.get_value('default')
-            parameters[field.id] = cast_formulator_value(value, field.meta_type)
-        return parameters
 
     # MANAGERS
 

@@ -1,20 +1,18 @@
 ChangeLog
 =========
 
-2.3.4 (unreleased)
+2.3.4-bethel.1 (2011-07-07)
 ------------------
-
-- ...
 
 Bethel Changes
 --------------
 
-* Add a 'priority' to external sources, to enable better sorting.
+- Add a 'priority' to external sources, to enable better sorting.
 
-* Add a 'icon_id' to code sources, so an icon representing the code source
+- Add a 'icon_id' to code sources, so an icon representing the code source
   can be displayed in SMI edit screens (Page), rather than the code source icon.
   
-* Add a cs_page_asset and cs_rich_text external sources, installed by default.
+- Add a cs_page_asset and cs_rich_text external sources, installed by default.
 
 2.3.3 (2010-02-02)
 ------------------

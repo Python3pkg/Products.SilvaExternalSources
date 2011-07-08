@@ -1,11 +1,7 @@
 <div tal:define="view here;
                  capsuletitle options/capsule_title | nothing;
-                 align options/alignment | nothing;
-                 cssclass options/css_class | nothing;
-                 c1ass python:(align and cssclass and (align + ' ' + cssclass)) or align or cssclass;
-                 cssstyle options/css_style | nothing;
-                 center python:align == 'align-center' and 'margin-left:auto;;margin-right:auto;;' or nothing;
-                 style python:((center or '') + (cssstyle or '')) or nothing;
+                 css_class options/css_class | string:'';
+                 css_style options/css_style | string:'';
                  toc_containers options/paths;
                  toc_content_types options/toc_types;
                  toc_depth options/depth;
@@ -15,9 +11,9 @@
                  display_headings options/display_headings | python:0;
                  link_headings options/link_headings | python:0;">
   <!-- TOC codesource 0.5 -->
-  <div tal:omit-tag="python:not (c1ass or style)"
-       tal:attributes="class c1ass;
-                       style style;">
+  <div tal:omit-tag="python:not (css_class or css_style)"
+       tal:attributes="class css_class;
+                       style css_style;">
     <h2 tal:condition="capsuletitle"
         tal:content="capsuletitle">
       capsule title

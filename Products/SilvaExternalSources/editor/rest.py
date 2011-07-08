@@ -4,7 +4,7 @@
 # $Id$
 
 from five import grok
-from infrae import rest
+from silva.ui.rest import UIREST
 from silva.core.interfaces import ISilvaObject, IVersionedContent
 from silva.core.editor.interfaces import IText
 from zope.component import getMultiAdapter
@@ -15,7 +15,7 @@ from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
 from Products.Formulator.interfaces import IBoundForm
 
 
-class ListAvailableSources(rest.REST):
+class ListAvailableSources(UIREST):
     """List all available sources.
     """
     grok.context(ISilvaObject)
@@ -29,7 +29,7 @@ class ListAvailableSources(rest.REST):
         return self.json_response(sources)
 
 
-class SourceAPI(rest.REST):
+class SourceAPI(UIREST):
     grok.context(ISilvaObject)
     grok.baseclass()
 

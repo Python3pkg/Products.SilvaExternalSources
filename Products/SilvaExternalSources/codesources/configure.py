@@ -25,7 +25,7 @@ configuration = {
     },
     'cs_citation': {
         'id': 'cs_citation',
-        'title': 'citation',
+        'title': 'Citation',
         'render_id': 'render_citation',
         'desc': 'A citation allows authors to include a reference, citing an author and a source.',
         'cacheable': True,

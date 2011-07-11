@@ -1,16 +1,13 @@
-<tal:def define="alignment python: options['alignment_selector'] or '';
-                 capsulestyle options/capsule_style | nothing;
+<tal:def define="capsulestyle options/capsule_style | nothing;
                  capsuleid python: options['capsule_id'] or '';
                  capsuleclass python: options['capsule_class'] or '';
                  capsuletitle options/capsule_title | nothing;
                  document options/document | nothing;
                  ">
   <!-- Start portlet element -->
-  <div
-     tal:attributes="class python:alignment + ' ' + capsuleclass;
-                     id capsuleid;
-                     style capsulestyle;
-                     ">
+  <div tal:attributes="class capsuleclass;
+                       id capsuleid;
+                       style capsulestyle;">
     <h2 class="heading"
         tal:condition="capsuletitle"
         tal:content="structure capsuletitle">

@@ -1,24 +1,16 @@
 <tal:def define="location   options/image_location;
-                 alignment  options/alignment_selector | nothing;
-                 centered   python:alignment == 'image-center' and 'image-center' or nothing;
                  linkurl    options/link_url | nothing;
                  tooltip    options/link_tooltip | nothing;
                  ">
   <!-- Network Image Code Source -->
-  <div tal:omit-tag="not:centered"
-       tal:attributes="class alignment">
-    <a tal:omit-tag="not:linkurl"
-       tal:attributes="href linkurl/@@absolute_url;
-                       title python:tooltip and tooltip or nothing;
-                       ">
-      <img tal:condition="location"
-           tal:attributes="src location/@@absolute_url;
-                           class alignment;
-                           width options/image_width;
-                           height options/image_height;
-                           alt options/alt_text | nothing;
-                           " />
-    </a>
-  </div>
+  <a tal:omit-tag="not:linkurl"
+     tal:attributes="href linkurl/@@absolute_url;
+                     title python:tooltip and tooltip or nothing;">
+    <img tal:condition="location"
+         tal:attributes="src location/@@absolute_url;
+                         width options/image_width;
+                         height options/image_height;
+                         alt options/alt_text | nothing;" />
+  </a>
   <!-- /Network Image -->
 </tal:def>

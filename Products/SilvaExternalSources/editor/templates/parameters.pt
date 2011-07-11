@@ -1,9 +1,9 @@
 <form i18n:domain="silva"
       class="external_source_fields">
   <style type="text/css" media="all">
-    .external_source_edit {
+    .external_source_edit, .external_source_add {
        max-height: 500px;
-       overflow-y: scroll;
+       overflow-y: auto;
     }
     .external_source_field {
        position: relative;

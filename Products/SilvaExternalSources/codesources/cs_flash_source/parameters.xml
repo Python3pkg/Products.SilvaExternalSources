@@ -64,22 +64,48 @@
           <message name="unknown_selection">You selected an item that was not in the list.</message>
         </messages>
         </field>
-        <field><id>alignment</id> <type>ListField</type>
+        <field><id>quality</id> <type>StringField</type>
         <values>
           <alternate_name></alternate_name>
           <css_class>store</css_class>
-          <default></default>
-          <description>Choose an alignment.</description>
+          <default>high</default>
+          <description>Enter a display quality for the movie (low, medium, high, best).</description>
+          <display_maxwidth></display_maxwidth>
+          <display_width type="int">20</display_width>
           <enabled type="int">1</enabled>
           <external_validator></external_validator>
           <extra></extra>
-          <extra_item></extra_item>
-          <first_item type="int">0</first_item>
           <hidden type="int">0</hidden>
-          <items type="list">[(u'align-left', u''), (u'float-left', u'float-left'), (u'float-right', u'float-right')]</items>
+          <max_length></max_length>
           <required type="int">0</required>
-          <size type="int">1</size>
-          <title>alignment</title>
+          <title>quality</title>
+          <truncate type="int">0</truncate>
+          <unicode type="int">0</unicode>
+          <whitespace_preserve type="int">0</whitespace_preserve>
+        </values>
+        <tales>
+        </tales>
+        <messages>
+          <message name="external_validator_failed">The input failed the external validator.</message>
+          <message name="required_not_found">Input is required but no input given.</message>
+          <message name="too_long">Too much input was given.</message>
+        </messages>
+        </field>
+        <field><id>loop</id> <type>RadioField</type>
+        <values>
+          <alternate_name></alternate_name>
+          <css_class></css_class>
+          <default></default>
+          <description>Choose whether the movie should loop continuously.</description>
+          <enabled type="int">1</enabled>
+          <external_validator></external_validator>
+          <extra_item></extra_item>
+          <first_item type="int">1</first_item>
+          <hidden type="int">0</hidden>
+          <items type="list">[(u'no', u'false'), (u'yes', u'true')]</items>
+          <orientation>horizontal</orientation>
+          <required type="int">0</required>
+          <title>loop</title>
           <unicode type="int">0</unicode>
           <whitespace_preserve type="int">0</whitespace_preserve>
         </values>
@@ -145,59 +171,6 @@
           <message name="too_long">Too much input was given.</message>
         </messages>
         </field>
-        <field><id>quality</id> <type>StringField</type>
-        <values>
-          <alternate_name></alternate_name>
-          <css_class>store</css_class>
-          <default>high</default>
-          <description>Enter a display quality for the movie (low, medium, high, best).</description>
-          <display_maxwidth></display_maxwidth>
-          <display_width type="int">20</display_width>
-          <enabled type="int">1</enabled>
-          <external_validator></external_validator>
-          <extra></extra>
-          <hidden type="int">0</hidden>
-          <max_length></max_length>
-          <required type="int">0</required>
-          <title>quality</title>
-          <truncate type="int">0</truncate>
-          <unicode type="int">0</unicode>
-          <whitespace_preserve type="int">0</whitespace_preserve>
-        </values>
-        <tales>
-        </tales>
-        <messages>
-          <message name="external_validator_failed">The input failed the external validator.</message>
-          <message name="required_not_found">Input is required but no input given.</message>
-          <message name="too_long">Too much input was given.</message>
-        </messages>
-        </field>
-        <field><id>loop</id> <type>RadioField</type>
-        <values>
-          <alternate_name></alternate_name>
-          <css_class></css_class>
-          <default></default>
-          <description>Choose whether the movie should loop continuously.</description>
-          <enabled type="int">1</enabled>
-          <external_validator></external_validator>
-          <extra_item></extra_item>
-          <first_item type="int">1</first_item>
-          <hidden type="int">0</hidden>
-          <items type="list">[(u'no', u'false'), (u'yes', u'true')]</items>
-          <orientation>horizontal</orientation>
-          <required type="int">0</required>
-          <title>loop</title>
-          <unicode type="int">0</unicode>
-          <whitespace_preserve type="int">0</whitespace_preserve>
-        </values>
-        <tales>
-        </tales>
-        <messages>
-          <message name="external_validator_failed">The input failed the external validator.</message>
-          <message name="required_not_found">Input is required but no input given.</message>
-          <message name="unknown_selection">You selected an item that was not in the list.</message>
-        </messages>
-        </field>
         <field><id>bgcolor</id> <type>StringField</type>
         <values>
           <alternate_name></alternate_name>
@@ -212,7 +185,7 @@
           <hidden type="int">0</hidden>
           <max_length></max_length>
           <required type="int">0</required>
-          <title>backgrnd color</title>
+          <title>background color</title>
           <truncate type="int">0</truncate>
           <unicode type="int">0</unicode>
           <whitespace_preserve type="int">0</whitespace_preserve>

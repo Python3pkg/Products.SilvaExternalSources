@@ -1,45 +1,33 @@
-<tal:init define="
-  align        options/alignment | nothing;
-  cssclass     options/css_class | nothing;
-  cssstyle     options/css_style | nothing;
-  capsuletitle options/capsule_title | nothing;
-  capsulebody  options/capsule_body | nothing;
-  linktext     options/link_text | nothing;
-  linkurl      options/link_url | nothing;
-  adjust python:align == 'align-center' and 'margin-left:auto;;margin-right:auto;;' or nothing;
-  styles python:cssstyle and adjust;
-  catstyles python:styles and (adjust + cssstyle) or nothing;
-  style python:catstyles and catstyles or (cssstyle and cssstyle or adjust);
-">
-<!-- Related Info codesource -->
-<div tal:omit-tag="not:align"
-  tal:attributes="class align">
-<div class="info plot clover"
-  tal:attributes="
-    class python:cssclass and cssclass or default;
-    style style;
-">
+<tal:init define="cssclass     options/css_class | nothing;
+                  cssstyle     options/css_style | nothing;
+                  capsuletitle options/capsule_title | nothing;
+                  capsulebody  options/capsule_body | nothing;
+                  linktext     options/link_text | nothing;
+                  linkurl      options/link_url | nothing">
+  <!-- Related Info codesource -->
+  <div class="info plot clover"
+       tal:attributes="class python:cssclass and cssclass or default;
+                       style cssstyle;">
 
-<h2 tal:condition="capsuletitle"
-  tal:content="structure capsuletitle">
-  Title....
-</h2>
+    <h2 tal:condition="capsuletitle"
+        tal:content="structure capsuletitle">
+      Title....
+    </h2>
 
-<p tal:condition="capsulebody"
-  tal:content="structure capsulebody">
-  Capsule body text....
-</p>
+    <p tal:condition="capsulebody"
+       tal:content="structure capsulebody">
+      Capsule body text....
+    </p>
 
-<p tal:condition="linktext">
-<a tal:omit-tag="not:linkurl"
-  tal:attributes="href linkurl">
-<span tal:replace="structure linktext">
-  Link text....
-</span>
-</a>
-</p>
+    <p tal:condition="linktext">
+      <a tal:omit-tag="not:linkurl"
+         tal:attributes="href linkurl">
+        <span tal:replace="structure linktext">
+          Link text....
+        </span>
+      </a>
+    </p>
 
-</div>
-</div>
-<!-- /Related Info -->
+  </div>
+  <!-- /Related Info -->
 </tal:init>

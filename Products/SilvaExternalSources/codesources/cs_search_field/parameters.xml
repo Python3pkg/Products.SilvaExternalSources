@@ -42,7 +42,7 @@
         <values>
           <alternate_name></alternate_name>
           <css_class>store</css_class>
-          <default></default>
+          <default>40</default>
           <description>Width of search field in number of characters.</description>
           <display_maxwidth></display_maxwidth>
           <display_width type="int">20</display_width>

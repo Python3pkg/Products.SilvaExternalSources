@@ -14,6 +14,20 @@ from Products.SilvaExternalSources.interfaces import IExternalSource
 from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
 from Products.Formulator.interfaces import IBoundForm
 
+# Define the CSS class names to use with CKE editor.
+STYLES = {'ListField': {'css_class': 'cke_dialog_ui_input_select'},
+          'MultiListField': {'css_class': 'cke_dialog_ui_input_select'},
+          'StringField': {'css_class': 'cke_dialog_ui_input_text'},
+          'IntegerField': {'css_class': 'cke_dialog_ui_input_text'},
+          'EmailField': {'css_class': 'cke_dialog_ui_input_text'},
+          'PatternField': {'css_class': 'cke_dialog_ui_input_text'},
+          'TextAreaField': {'css_class': 'cke_dialog_ui_input_textarea'},
+          'RawTextAreaField': {'css_class': 'cke_dialog_ui_input_textarea'},
+          'ListTextAreaField': {'css_class': 'cke_dialog_ui_input_textarea'},
+          'LinesField': {'css_class': 'cke_dialog_ui_input_textarea'},
+          'EmailLinesField': {'css_class': 'cke_dialog_ui_input_textarea'},
+          'PasswordField': {'css_class': 'cke_dialog_ui_input_password'}}
+
 
 class ListAvailableSources(UIREST):
     """List all available sources.
@@ -126,7 +140,9 @@ class SourceParameters(SourceAPI):
             # Collect field.
             is_inline = 'source_inline' not in self.request.form
             for field in form.fields(
-                ignore_request=is_inline, ignore_content=not is_inline):
+                ignore_request=is_inline,
+                ignore_content=not is_inline,
+                customizations=STYLES):
                 label_class = ['cke_dialog_ui_labeled_label']
                 if field.required:
                     label_class.append('cke_required')

@@ -1,3 +1,4 @@
+/* Code source dialog */
 .cke_dialog_contents .external_source_edit,
 .cke_dialog_contents .external_source_add {
   max-height: 500px;
@@ -26,5 +27,3 @@
   color: red;
   display: block;
 }
-
-

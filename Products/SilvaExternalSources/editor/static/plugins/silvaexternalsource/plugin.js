@@ -115,23 +115,45 @@
         editorFocus : CKEDITOR.env.ie || CKEDITOR.env.webkit
     };
 
+    CKEDITOR.removeExternalSourceCommand = function() {};
+    CKEDITOR.removeExternalSourceCommand.prototype = {
+        exec: function(editor) {
+            var source = API.getSelectedSource(editor);
+            if (source !== null) {
+                source.remove();
+            }
+        },
+        startDisabled: true
+    };
+
     CKEDITOR.plugins.add('silvaexternalsource', {
         requires: ['dialog'],
         init: function(editor) {
             editor.addCommand(
                 'silvaexternalsource',
                 new CKEDITOR.externalSourceCommand());
+            editor.addCommand(
+                'silvaremoveexternalsource',
+                new CKEDITOR.removeExternalSourceCommand());
             editor.ui.addButton('SilvaExternalSource', {
                 label: 'Add an External Source',
                 command: 'silvaexternalsource',
-                className: 'cke_button_hiddenfield'
+                className: 'cke_button_editdiv'
+            });
+            editor.ui.addButton('SilvaRemoveExternalSource', {
+                label: 'Remove an External Source',
+                command: 'silvaremoveexternalsource',
+                className: 'cke_button_removediv'
             });
             editor.addCss(
                 'div.external-source {' +
+                    'margin: 5px;' +
                     'padding: 1px;' +
                     'color: #444;' +
                     'background-color: #EEE8AA;' +
                     'display: inline-block;' +
+                    'min-height: 100px;' +
+                    'min-width: 200px;' +
                     '}');
             editor.addCss(
                 'div.source-float-left {' +
@@ -167,19 +189,22 @@
                 });
             });
             editor.on('selectionChange', function(event) {
-                var element = API.getSelectedSource(editor, true);
-                var command = editor.getCommand('silvaexternalsource');
+                var element = API.getSelectedSource(editor);
+                var command_edit = editor.getCommand('silvaexternalsource');
+                var command_remove = editor.getCommand('silvaremoveexternalsource');
 
-                if (element != null) {
-                    command.setState(CKEDITOR.TRISTATE_ON);
+                if (element !== null) {
+                    command_edit.setState(CKEDITOR.TRISTATE_ON);
+                    command_remove.setState(CKEDITOR.TRISTATE_OFF);
                 } else {
-                    command.setState(CKEDITOR.TRISTATE_OFF);
+                    command_edit.setState(CKEDITOR.TRISTATE_OFF);
+                    command_remove.setState(CKEDITOR.TRISTATE_DISABLED);
                 };
             });
             editor.on('doubleclick', function(event){
-                var element = API.getSelectedSource(editor, true);
+                var element = API.getSelectedSource(editor);
 
-                if (element != null) {
+                if (element !== null) {
                     event.data.dialog = 'silvaexternalsourceedit';
                 };
             });
@@ -195,8 +220,15 @@
                         label: 'Source settings',
                         command : 'silvaexternalsource',
                         group : 'form',
-                        className: 'cke_button_hiddenfield',
+                        className: 'cke_button_editdiv',
                         order: 1
+                    },
+                    silvaremoveexternalsource: {
+                        label: 'Remove source',
+                        command : 'silvaremoveexternalsource',
+                        group : 'form',
+                        className: 'cke_button_removediv',
+                        order: 2
                     }
                 });
             };
@@ -204,7 +236,8 @@
                 editor.contextMenu.addListener(function(element, selection) {
                     if (API.isInsideASource(element)) {
                         return {
-                            silvaexternalsource: CKEDITOR.TRISTATE_OFF
+                            silvaexternalsource: CKEDITOR.TRISTATE_OFF,
+                            silvaremoveexternalsource: CKEDITOR.TRISTATE_OFF
                         };
                     };
                     return null;

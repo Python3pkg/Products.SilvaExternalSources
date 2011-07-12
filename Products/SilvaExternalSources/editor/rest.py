@@ -4,6 +4,7 @@
 # $Id$
 
 from five import grok
+from megrok.chameleon.components import ChameleonPageTemplate
 from silva.ui.rest import UIREST
 from silva.core.interfaces import ISilvaObject, IVersionedContent
 from silva.core.editor.interfaces import IText
@@ -123,7 +124,7 @@ class SourceParameters(SourceAPI):
     """
     grok.name('Products.SilvaExternalSources.source.parameters')
 
-    template = grok.PageTemplate(filename="templates/parameters.pt")
+    template = ChameleonPageTemplate(filename="templates/parameters.cpt")
 
     def default_namespace(self):
         return {'rest': self,

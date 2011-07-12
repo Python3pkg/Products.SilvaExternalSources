@@ -11,18 +11,19 @@
         return $('#content-url').attr('href') + '/' + url;
     };
 
-    var load_parameters = function(container, parameters) {
+    var load_parameters = function($container, parameters) {
         // Fetch the parameters form.
+        $container.html('<p>Fetching source parameters from server ...</p>');
         $.ajax({
             url: rest_url(PARAMETERS_REST_URL),
             data: parameters,
             dataType: 'html',
             type: 'POST',
             success: function(html) {
-                container.html(html);
+                $container.html(html);
             },
             error: function() {
-                container.html('');
+                $container.html('');
                 alert('An unexpected error happened on the server while ' +
                       'retrieving Code source parameters. ' +
                       'The Code Source might be buggy.');
@@ -36,7 +37,7 @@
             id: 'source_options',
             html: '<div class="' + parameters_identifier + '"></div>',
             setup: function(data) {
-                var container = $('.' + parameters_identifier);
+                var $container = $('.' + parameters_identifier);
 
                 this._.source = {};
                 if (data.instance) {
@@ -55,19 +56,19 @@
                         extra.push({'name': key, 'value': this._.source[key]});
                     };
                     parameters = parameters + '&' + $.param(extra);
-                    load_parameters(container, parameters);
+                    load_parameters($container, parameters);
                 } else if (data.instance) {
                     var parameters = [];
 
                     for (var key in this._.source) {
                         parameters.push({'name': key, 'value': this._.source[key]});
                     };
-                    load_parameters(container, $.param(this._.source));
+                    load_parameters($container, $.param(this._.source));
                 };
             },
             validate: function() {
-                var container = $('.' + parameters_identifier);
-                var parameters = container.find('form').serializeArray();
+                var $container = $('.' + parameters_identifier);
+                var parameters = $container.find('form').serializeArray();
                 var succeeded = true;
 
                 // Add keys to identify the source.
@@ -85,11 +86,11 @@
                     success: function(data) {
                         if (!data['success']) {
                             // First remove all previous errors.
-                            container.find('.external_source_error').remove();
+                            $container.find('.external_source_error').remove();
                             // Create new error reporting.
                             for (var i=0; i < data['messages'].length; i++) {
                                 var error = data['messages'][i];
-                                var label = container.find('label[for=' + error.identifier + ']');
+                                var label = $container.find('label[for=' + error.identifier + ']');
 
                                 $('<span class="external_source_error">' +
                                   error.message + '</span>').insertAfter(label);
@@ -109,9 +110,9 @@
                 return succeeded;
             },
             commit: function(data) {
-                var container = $('.' + parameters_identifier);
+                var $container = $('.' + parameters_identifier);
 
-                data.parameters = $.param(container.find('form').serializeArray());
+                data.parameters = $.param($container.find('form').serializeArray());
             }
         }, {
             type: 'select',
@@ -154,20 +155,20 @@
                             'external_source_new_page', 'source_align').getElement();
                         var source_options = dialog.getContentElement(
                             'external_source_new_page', 'source_options');
-                        var container = $('.external_source_add');
+                        var $container = $('.external_source_add');
 
                         if (event.data.value) {
                             if (source_options._.source) {
                                 source_options._.source.source_name = event.data.value;
                             };
-                            load_parameters(container, {'source_name': event.data.value});
+                            load_parameters($container, {'source_name': event.data.value});
                             align_input.show();
                         } else {
                             if (source_options._.source &&
                                 source_options._.source.source_name) {
                                 delete source_options._.source.source_name;
                             };
-                            container.html('');
+                            $container.html('');
                             align_input.hide();
                         }
                     },

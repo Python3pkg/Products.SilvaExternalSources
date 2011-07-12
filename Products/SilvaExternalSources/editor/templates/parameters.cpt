@@ -1,0 +1,24 @@
+<form class="external_source_fields"
+      i18n:domain="silva">
+  <div role="presentation"
+       class="cke_dialog_ui_vbox_child external_source_field"
+       tal:repeat="field rest.fields">
+    <label class="#" for="#"
+           tal:attributes="class field.label_class;
+                           for field.id">
+      <span class="description cke_light_background"
+            tal:content="field.description"
+            tal:condition="field.description">
+        Description
+      </span>
+      <tal:label tal:replace="field.title" />
+    </label>
+    <div role="presentation" class="cke_dialog_ui_labeled_content"
+         tal:content="structure field.widget">
+    </div>
+  </div>
+  <span tal:condition="not rest.fields"
+        i18n:translate="">
+    This External Source has no adjustable settings.
+  </span>
+</form>

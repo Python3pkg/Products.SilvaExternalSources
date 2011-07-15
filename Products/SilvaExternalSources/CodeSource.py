@@ -48,6 +48,15 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         super(CodeSource, self).__init__(id)
         self._script_id = script_id
 
+    def is_broken(self):
+        # return True if the source is broken and needs maintenance.
+        if self.parameters is not None:
+            try:
+                self.parameters.get_fields()
+            except AttributeError:
+                return True
+        return False
+
     # ACCESSORS
     security.declareProtected(AccessContentsInformation, 'script_id')
     def script_id(self):

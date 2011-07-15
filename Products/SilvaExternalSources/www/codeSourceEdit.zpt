@@ -42,6 +42,9 @@ Version of this file: $Revision: 1.7 $
               href string:${here/absolute_url}/parameters/manage_main">
             manage parameters
           </a>
+          <span style="color: red; text-decoration: blink" tal:condition="here/is_broken">
+            THIS SOURCE IS BROKEN
+          </span>
         </h4>
       </td>
     </tr>

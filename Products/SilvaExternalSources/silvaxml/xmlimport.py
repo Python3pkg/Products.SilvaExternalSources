@@ -3,6 +3,8 @@
 # See also LICENSE.txt
 # $Id$
 
+import logging
+
 from five import grok
 from zope.component import getMultiAdapter
 
@@ -13,6 +15,8 @@ from silva.core.editor.transform.base import TransformationFilter
 from Products.Formulator.interfaces import IFieldValueWriter
 from Products.SilvaExternalSources.silvaxml import NS_URI
 from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
+
+logger = logging.getLogger('silva.xml')
 
 
 class ExternalSourceImportFilter(TransformationFilter):
@@ -40,7 +44,12 @@ class ExternalSourceImportFilter(TransformationFilter):
             for field_node in source_node.xpath(
                     './cs:fields/cs:field', namespaces={'cs': NS_URI}):
                 field_id = field_node.attrib['id']
-                field = fields_by_id[field_id]
+                field = fields_by_id.get(field_id)
+                if field is None:
+                    logger.warn(u"unknown code source parameter %s in %s" % (
+                            field_id, identifier))
+                    # This field have been removed. Ignore it.
+                    continue
                 # The value is composed of sub-tags
                 value = field.deserialize(field_node, self.handler)
                 writer = getMultiAdapter(

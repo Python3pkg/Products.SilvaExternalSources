@@ -11,21 +11,25 @@
         ul li.broken a { font-weight: bold; color: red; }
       </style>
 
-      <h2>Code sources used in this site</h2>
+      <h2 i18n:translate="">
+        Code sources used in this site
+      </h2>
 
-      <h3>Currently known code sources</h3>
+      <h3 i18n:translate="">
+        Currently known code sources
+      </h3>
 
       <tal:sources
          tal:condition="view/sources">
         <p i18n:translate="">
-          There is currently
+          There are currently
           <span tal:replace="python:len(view.sources)" i18n:name="count" />
           known code sources likely to be used in this Silva site.
         </p>
 
         <p i18n:translate="">
           Sources in red are broken and need attention. However, it is
-          possible that <i>other sources are broken</i> as well and are not
+          possible that other sources are broken as well and are not
           displayed in red.
         </p>
 
@@ -48,9 +52,14 @@
         Try to find them with the actions below.
       </p>
 
-      <h3>Find them</h3>
+      <h3 i18n:translate="">
+        Find them
+      </h3>
 
-      <p>You can find all existing code sources using those actions.</p>
+      <p i18n:translate="">
+        You can find all existing code sources using those
+        actions. This can take a long time.
+      </p>
 
       <form action="#" method="post"
             tal:attributes="action request/URL">

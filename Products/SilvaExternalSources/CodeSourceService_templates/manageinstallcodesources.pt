@@ -1,0 +1,51 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/@@standard_macros/page"
+      i18n:domain="silva">
+  <body>
+    <div metal:fill-slot="body">
+
+      <h2 i18n:translate="">
+        Install new code sources
+      </h2>
+
+      <tal:installables
+         tal:condition="view/sources">
+        <p i18n:translate="">
+          You can here install new code sources in your Silva site:
+        </p>
+
+        <form>
+          <div tal:repeat="source view/sources">
+            <tal:details tal:condition="source/validate"
+                         tal:define="id source/identifier">
+              <input type="checkbox" name="sources" value="#" id="#"
+                     tal:attributes="value id; id id" />
+              <label class="form-label" for="#"
+                     tal:attributes="for id">
+                <span tal:replace="source/title" />
+                (<span tal:replace="id" />)
+              </label>
+              <p class="form-help"
+                 tal:define="description source/description"
+                 tal:condition="description"
+                 tal:content="description">
+                Description
+              </p>
+            </tal:details>
+          </div>
+          <input type="submit" name="install" value="Install"
+                 i18n:attributes="value" />
+        </form>
+      </tal:installables>
+
+      <p tal:condition="not:view/sources"
+         i18n:translate="">
+        There is no installable code sources.
+      </p>
+
+    </div>
+  </body>
+</html>

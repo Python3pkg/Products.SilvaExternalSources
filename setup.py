@@ -55,6 +55,8 @@ setup(name='Products.SilvaExternalSources',
         'zope.schema',
         ],
       entry_points="""
+      [Products.SilvaExternalSources.sources]
+      defaults = Products.SilvaExternalSources.codesources
       [silva.core.editor.extension]
       source = Products.SilvaExternalSources.editor:extension
       [silva.ui.resources]

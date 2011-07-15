@@ -22,7 +22,6 @@ from silva.core import conf as silvaconf
 
 
 class CodeSource(EditableExternalSource, Folder, ZMIObject):
-
     grok.implements(ICodeSource)
 
     meta_type = "Silva Code Source"

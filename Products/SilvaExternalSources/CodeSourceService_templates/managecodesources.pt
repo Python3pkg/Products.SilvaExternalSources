@@ -1,0 +1,64 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/@@standard_macros/page"
+      i18n:domain="silva">
+  <body>
+    <div metal:fill-slot="body">
+
+      <style type="text/css">
+        ul li.broken a { font-weight: bold; color: red; }
+      </style>
+
+      <h2>Code sources used in this site</h2>
+
+      <h3>Currently known code sources</h3>
+
+      <tal:sources
+         tal:condition="view/sources">
+        <p i18n:translate="">
+          There is currently
+          <span tal:replace="python:len(view.sources)" i18n:name="count" />
+          known code sources likely to be used in this Silva site.
+        </p>
+
+        <p i18n:translate="">
+          Sources in red are broken and need attention. However, it is
+          possible that <i>other sources are broken</i> as well and are not
+          displayed in red.
+        </p>
+
+        <ul>
+          <li class="#"
+              tal:repeat="source view/sources"
+              tal:attributes="class python:source['broken'] and 'broken' or None">
+            <a href="#" title="#" target="_blank"
+               tal:attributes="href string:${source/url}/editCodeSource;
+                               title source/path">
+              <span tal:replace="source/id" />
+            </a> : <span tal:replace="source/title" />
+          </li>
+        </ul>
+      </tal:sources>
+
+      <p tal:condition="not:view/sources"
+         i18n:translate="">
+        There is no known code sources is this site.
+        Try to find them with the actions below.
+      </p>
+
+      <h3>Find them</h3>
+
+      <p>You can find all existing code sources using those actions.</p>
+
+      <form action="#" method="post"
+            tal:attributes="action request/URL">
+        <input type="submit" name="find" value="Find"
+               i18n:attributes="value" />
+        <input type="submit" name="clear" value="Clear"
+               i18n:attributes="value" />
+      </form>
+    </div>
+  </body>
+</html>

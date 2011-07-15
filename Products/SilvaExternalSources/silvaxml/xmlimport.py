@@ -46,7 +46,7 @@ class ExternalSourceImportFilter(TransformationFilter):
                 field_id = field_node.attrib['id']
                 field = fields_by_id.get(field_id)
                 if field is None:
-                    logger.warn(u"unknown code source parameter %s in %s" % (
+                    logger.warn(u"unknown external source parameter %s in %s" % (
                             field_id, source_node.attrib['source-identifier']))
                     # This field have been removed. Ignore it.
                     continue

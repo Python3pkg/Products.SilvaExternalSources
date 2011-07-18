@@ -276,8 +276,9 @@ class ManageInstallCodeSources(silvaviews.ZMIView):
     grok.name('manage_install_codesources')
 
     def update(self, install=False, sources=[]):
-
         if install:
+            if not isinstance(sources, list):
+                sources = [sources]
             for source in sources:
                 installable = self.context.get_installable_source(source)
                 installable.install(self.context.get_root())

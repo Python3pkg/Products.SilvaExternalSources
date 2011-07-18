@@ -18,7 +18,7 @@ from Products.SilvaExternalSources.editor.interfaces import (
 from Products.SilvaExternalSources.editor.utils import parse_qs
 from Products.Formulator.interfaces import IBoundForm
 
-logger = logging.getLogger('Products.SilvaExternalSources')
+logger = logging.getLogger('silva.externalsources')
 
 
 class SourceParameters(persistent.Persistent):
@@ -64,17 +64,30 @@ class BindSourceInstance(object):
 
     def clear_parameters(self):
         source, form = self.get_source_and_form()
-        form.erase()
+        if form is not None:
+            form.erase()
+            return
+        logger.error(u"cannot clean document data for missing source %s" % (
+                self.identifier))
 
     def update_parameters(self, parameters):
         save_request = TestRequest(form=parse_qs(parameters))
         source, form = self.get_source_and_form(save_request)
-        if source is None:
-            raise ValueError("A source have been removed or renamed")
-        if form is not None:
-            form.save()
-            # Mark the manager as changed to presist everything.
-            self.__manager._p_changed = True
+        try:
+            if source is None:
+                raise ValueError("A source have been removed or renamed")
+            if form is not None:
+                form.save()
+                # Mark the manager as changed to presist everything.
+                self.__manager._p_changed = True
+        except ValueError as error:
+            # Source failover is a special marker un parameters (where
+            # they all start with field_) saying that it is ok to fail
+            # here. This is used during migration.
+            if 'source_failover' not in parameters:
+                raise
+            logger.error(u'error while saving parameters for source %s: %s' % (
+                    self.identifier, str(error.args)))
 
     def render(self):
         source, form = self.get_source_and_form()

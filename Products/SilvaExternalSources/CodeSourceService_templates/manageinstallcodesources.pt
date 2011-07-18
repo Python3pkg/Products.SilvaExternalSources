@@ -7,6 +7,12 @@
   <body>
     <div metal:fill-slot="body">
 
+      <style type="text/css">
+        .form-checkbox-help {
+           margin: 0.5em 0px 1.5em 2em;
+        }
+      </style>
+
       <h2 i18n:translate="">
         Install new code sources
       </h2>
@@ -28,7 +34,7 @@
                 <span tal:replace="source/title" />
                 (<span tal:replace="id" />)
               </label>
-              <p class="form-help"
+              <p class="form-help form-checkbox-help"
                  tal:define="description source/description"
                  tal:condition="description"
                  tal:content="description">

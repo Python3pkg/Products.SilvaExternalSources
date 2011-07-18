@@ -9,14 +9,17 @@ from pkg_resources import iter_entry_points
 
 from AccessControl import ClassSecurityInfo
 from App.class_init import InitializeClass
+from OFS.interfaces import IObjectWillBeRemovedEvent
+
 
 from Products.SilvaExternalSources.interfaces import ICodeSource
 from Products.SilvaExternalSources.interfaces import ICodeSourceService
 from Products.Formulator.Form import ZMIForm
 
-from zope.component import getUtility
+from zope.component import getUtility, queryUtility
 from zope.intid.interfaces import IIntIds
 from zope.cachedescriptors.property import CachedProperty
+from zope.lifecycleevent.interfaces import IObjectAddedEvent
 
 from five import grok
 from silva.core.services.base import SilvaService
@@ -214,6 +217,37 @@ class CodeSourceService(SilvaService):
 
 
 InitializeClass(CodeSourceService)
+
+
+@grok.subscribe(ICodeSource, IObjectAddedEvent)
+def register_source(source, event):
+    """Register newly created source to the service.
+    """
+    if (event.object is source and
+        not IContainer.providedBy(event.newParent)):
+        # The source is not added in a Silva Container so it won't be usable.
+        return
+    service = queryUtility(ICodeSourceService)
+    if service is not None:
+        source_id = getUtility(IIntIds).register(source)
+        if source_id not in service._installed_sources:
+            service._installed_sources.append(source_id)
+
+
+@grok.subscribe(ICodeSource, IObjectWillBeRemovedEvent)
+def unregister_source(source, event):
+    """Remove deleted sources from the service.
+    """
+    if (event.object is source and
+        event.newName is not None and
+        IContainer.providedBy(event.newParent)):
+        # We are just moving or renaming the source
+        return
+    service = queryUtility(ICodeSourceService)
+    if service is not None:
+        source_id = getUtility(IIntIds).register(source)
+        if source_id in service._installed_sources:
+            service._installed_sources.remove(source_id)
 
 
 class ManageExistingCodeSources(silvaviews.ZMIView):

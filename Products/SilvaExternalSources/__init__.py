@@ -2,6 +2,8 @@
 # See also LICENSE.txt
 # $Id$
 
+import logging
+
 from silva.core import conf as silvaconf
 from silva.core.conf.installer import DefaultInstaller
 from zope.interface import Interface
@@ -10,12 +12,14 @@ silvaconf.extension_name('SilvaExternalSources')
 silvaconf.extension_title('Silva External Sources')
 silvaconf.extension_default()
 
+logger = logging.getLogger('silva.externalsources')
+
 
 class IExtension(Interface):
     """Silva External Sources extension.
     """
 
-class SilvaExternalSourcesInstaller(DefaultInstaller):
+class ExternalSourcesInstaller(DefaultInstaller):
     """Silva External Sources installer
     """
 
@@ -25,15 +29,22 @@ class SilvaExternalSourcesInstaller(DefaultInstaller):
             factory = root.manage_addProduct['SilvaExternalSources']
             factory.manage_addCodeSourceService()
 
+        service = root.service_codesources
         for source_id in ['cs_toc', 'cs_citation',]:
             if source_id not in installed_ids:
-                source = root.service_codesources.get_installable_source(source_id)
-                source.install(root)
+                source = service.get_installable_source(source_id)
+                if source is not None:
+                    source.install(root)
+                else:
+                    logger.error(
+                        u"could not find default source %s to install it." % (
+                            source_id))
 
 
     def uninstall_custom(self, root):
-        if 'service_codesources' in root.objectdIds():
+        installed_ids = root.objectIds()
+        if 'service_codesources' in installed_ids:
             root.manage_delObjects(['service_codesources'])
 
 
-installer = SilvaExternalSourcesInstaller('SilvaExternalSources', IExtension)
+install = ExternalSourcesInstaller('SilvaExternalSources', IExtension)

@@ -5,6 +5,7 @@
 # Zope
 from App.class_init import InitializeClass
 from AccessControl import ClassSecurityInfo
+from Acquisition import aq_base
 from OFS.Folder import Folder
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
@@ -50,9 +51,14 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     def test_source(self):
         # return a list of problems or None
         errors = []
+        # in real life the parent of the form is the document. We try
+        # to do the same here.
+        root = self.get_root()
+        if root.get_default():
+            root = root.get_default()
         if self.parameters is not None:
             try:
-                self.parameters.test_form()
+                aq_base(self.parameters).__of__(root).test_form()
             except ValueError as error:
                 errors.extend(error.args)
         if not self._script_id:

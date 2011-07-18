@@ -147,7 +147,12 @@ class CSVSource(Folder, EditableExternalSource, Asset):
                 lambda v: v.decode(self._data_encoding, 'replace'),
                 line)
 
-        self._data = map(convert_to_unicode, csv.reader(StringIO(data)))
+        try:
+            csv_data = map(convert_to_unicode, csv.reader(StringIO(data)))
+        except csv.Error as error:
+            raise ValueError(u"Invalid CSV file: %s" % error.args[0])
+
+        self._data = csv_data
         self._raw_data = data
         self.update_quota()
 

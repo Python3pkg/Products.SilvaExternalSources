@@ -253,9 +253,7 @@ def unregister_source(source, event):
 class ManageExistingCodeSources(silvaviews.ZMIView):
     grok.name('manage_existing_codesources')
 
-    def update(self, find=False, clear=False):
-        if clear:
-            self.context.clear_installed_sources()
+    def update(self, find=False):
         if find:
             self.context.find_installed_sources()
 

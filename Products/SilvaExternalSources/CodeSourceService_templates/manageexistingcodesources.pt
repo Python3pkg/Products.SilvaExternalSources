@@ -57,15 +57,14 @@
       </h3>
 
       <p i18n:translate="">
-        You can find all existing code sources using those
-        actions. This can take a long time.
+        If no code sources show up here, but you have some created,
+        you can find all existing code sources using this
+        action below. This can take a really long time.
       </p>
 
       <form action="#" method="post"
             tal:attributes="action request/URL">
         <input type="submit" name="find" value="Find"
-               i18n:attributes="value" />
-        <input type="submit" name="clear" value="Clear"
                i18n:attributes="value" />
       </form>
     </div>

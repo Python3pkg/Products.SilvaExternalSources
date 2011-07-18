@@ -117,7 +117,7 @@ class ExternalSource(Acquisition.Implicit):
     security.declareProtected(
         permissions.AccessContentsInformation, 'get_title')
     def get_title (self):
-        return self.title
+        return self.title or self.getId()
 
 
 InitializeClass(ExternalSource)

@@ -182,7 +182,11 @@ class CodeSourceService(SilvaService):
         'Access contents information', 'get_installed_sources')
     def get_installed_sources(self):
         resolve = getUtility(IIntIds).getObject
-        return (resolve(id) for id in self._installed_sources)
+        for source_id in self._installed_sources:
+            try:
+                yield resolve(source_id)
+            except KeyError:
+                pass
 
     security.declareProtected(
         'View management screens', 'clear_installed_sources')
@@ -195,7 +199,8 @@ class CodeSourceService(SilvaService):
         if hasattr(self.aq_base,  '_v_installable_sources'):
             return self._v_installable_sources
         self._v_installable_sources = sources = []
-        for entry_point  in iter_entry_points('Products.SilvaExternalSources.sources'):
+        for entry_point  in iter_entry_points(
+            'Products.SilvaExternalSources.sources'):
             module = entry_point.load()
             directory = os.path.dirname(module.__file__)
             for source_directory, _, source_files in os.walk(directory):
@@ -203,7 +208,8 @@ class CodeSourceService(SilvaService):
                     continue
                 if CONFIGURATION_FILE not in source_files:
                     continue
-                sources.append(CodeSourceInstallable(source_directory, source_files))
+                sources.append(CodeSourceInstallable(
+                        source_directory, source_files))
         return sources
 
     security.declareProtected(

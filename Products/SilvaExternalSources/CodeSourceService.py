@@ -266,7 +266,7 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
         self.sources = []
         for source in self.context.get_installed_sources():
             self.sources.append({'id': source.getId(),
-                                 'broken': source.is_broken(),
+                                 'problems': source.test_source(),
                                  'title': source.get_title(),
                                  'path': '/'.join(source.getPhysicalPath()),
                                  'url': source.absolute_url()})

@@ -47,14 +47,21 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         super(CodeSource, self).__init__(id)
         self._script_id = script_id
 
-    def is_broken(self):
-        # return True if the source is broken and needs maintenance.
+    def test_source(self):
+        # return a list of problems or None
+        errors = []
         if self.parameters is not None:
             try:
-                self.parameters.get_fields()
-            except AttributeError:
-                return True
-        return False
+                self.parameters.test_form()
+            except ValueError as error:
+                errors.extend(error.args)
+        if not self._script_id:
+            errors.append(u'Missing required renderer id.')
+        elif self._script_id not in self.objectIds():
+            errors.append(u'Missing renderer %s. Please a script or template with this id.' % self._script_id)
+        if errors:
+            return errors
+        return None
 
     # ACCESSORS
     security.declareProtected(AccessContentsInformation, 'script_id')

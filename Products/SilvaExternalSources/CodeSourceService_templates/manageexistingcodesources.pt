@@ -36,12 +36,20 @@
         <ul>
           <li class="#"
               tal:repeat="source view/sources"
-              tal:attributes="class python:source['broken'] and 'broken' or None">
+              tal:attributes="class python:source['problems'] and 'broken' or None">
             <a href="#" title="#" target="_blank"
                tal:attributes="href string:${source/url}/editCodeSource;
                                title source/path">
               <span tal:replace="source/id" />
             </a> : <span tal:replace="source/title" />
+            <tal:error tal:condition="source/problems">
+              <p>Error(s) are:</p>
+              <ol tal:condition="source/problems">
+                <li tal:repeat="problem source/problems">
+                  <p tal:content="problem" />
+                </li>
+              </ol>
+            </tal:error>
           </li>
         </ul>
       </tal:sources>

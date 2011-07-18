@@ -11,6 +11,18 @@ Version of this file: $Revision: 1.7 $
 <h3>
   Edit Silva Code Source
 </h3>
+
+<div class="system-msg"
+     tal:define="problems context/test_source"
+     tal:condition="problems">
+  <p>This source have problems. Please fix the following error(s):</p>
+  <ol tal:condition="problems">
+    <li tal:repeat="problem problems">
+      <p tal:content="problem" />
+    </li>
+  </ol>
+</div>
+
 <form action="manage_editCodeSource" name="editform" method="post">
   <table cellspacing="0" cellpadding="2" border="0">
     <tr>
@@ -42,9 +54,6 @@ Version of this file: $Revision: 1.7 $
               href string:${here/absolute_url}/parameters/manage_main">
             manage parameters
           </a>
-          <span style="color: red; text-decoration: blink" tal:condition="here/is_broken">
-            THIS SOURCE IS BROKEN
-          </span>
         </h4>
       </td>
     </tr>

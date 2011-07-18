@@ -98,3 +98,7 @@ class ICodeSource(IEditableExternalSource, IXMLZEXPExportable):
 class ICSVSource(IEditableExternalSource, IAsset):
     """An external source showing the content of a CSV file.
     """
+
+    def test_source():
+        """Test if the source is working or if it has problems.
+        """

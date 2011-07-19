@@ -43,10 +43,12 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     silvaconf.factory('manage_addCodeSource')
 
     _data_encoding = 'UTF-8'
+    _fs_location = None
 
-    def __init__(self, id, script_id=None):
+    def __init__(self, id, script_id=None, fs_location=None):
         super(CodeSource, self).__init__(id)
         self._script_id = script_id
+        self._fs_location = fs_location
 
     def test_source(self):
         # return a list of problems or None
@@ -73,6 +75,10 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     security.declareProtected(AccessContentsInformation, 'script_id')
     def script_id(self):
         return self._script_id
+
+    security.declareProtected(AccessContentsInformation, 'fs_location')
+    def fs_location(self):
+        return self._fs_location
 
     security.declareProtected(AccessContentsInformation, 'to_html')
     def to_html(self, content, request, **parameters):
@@ -152,10 +158,11 @@ manage_addCodeSourceForm = PageTemplateFile(
     __name__='manage_addCodeSourceForm')
 
 
-def manage_addCodeSource(context, id, title, script_id=None, REQUEST=None):
+def manage_addCodeSource(
+    context, id, title, script_id=None, fs_location=None,REQUEST=None):
     """Add a CodeSource object
     """
-    cs = CodeSource(id, script_id)
+    cs = CodeSource(id, script_id, fs_location)
     title = unicode(title, cs.management_page_charset)
     cs.title = title
     context._setObject(id, cs)

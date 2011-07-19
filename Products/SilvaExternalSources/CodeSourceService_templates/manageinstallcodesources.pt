@@ -34,11 +34,10 @@
                 <span tal:replace="source/title" />
                 (<span tal:replace="id" />)
               </label>
-              <p class="form-help form-checkbox-help"
-                 tal:define="description source/description"
-                 tal:condition="description"
-                 tal:content="description">
-                Description
+              <p class="form-help form-checkbox-help">
+                <span tal:replace="source/description" />
+                <br />
+                (File system path : <span tal:replace="source/location" />)
               </p>
             </tal:details>
           </div>

@@ -57,6 +57,20 @@ Version of this file: $Revision: 1.7 $
         </h4>
       </td>
     </tr>
+    <tr tal:define="location context/fs_location"
+        tal:condition="location">
+      <td align="left" valign="top">
+        <div class="form-label">
+          File system location
+        </div>
+      </td>
+      <td align="left" valign="top">
+        <h4 tal:content="location">
+          Location
+        </h4>
+      </td>
+    </tr>
+    <tr>
     <tr>
       <td align="left" valign="top">
         <div class="form-label">

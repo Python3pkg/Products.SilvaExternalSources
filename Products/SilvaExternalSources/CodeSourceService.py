@@ -81,11 +81,12 @@ INSTALLERS = {
 
 class CodeSourceInstallable(object):
 
-    def __init__(self, directory, files):
+    def __init__(self, location, directory, files):
         self.__config = ConfigParser.ConfigParser()
         self.__config.read(os.path.join(directory, CONFIGURATION_FILE))
         self.__directory = directory
         self.__files = files
+        self.__location = location
 
     def validate(self):
         """Return true if the definition is complete.
@@ -117,6 +118,10 @@ class CodeSourceInstallable(object):
             return self.__config.get('source', 'description')
         return None
 
+    @property
+    def location(self):
+        return self.__location
+
     def is_installed(self, folder):
         return self.identifier in folder.objectIds()
 
@@ -126,15 +131,18 @@ class CodeSourceInstallable(object):
 
         render_id = self.__config.get('source', 'render_id')
         factory = folder.manage_addProduct['SilvaExternalSources']
-        factory.manage_addCodeSource(self.identifier, self.title, render_id)
+        factory.manage_addCodeSource(
+            self.identifier, self.title, render_id, self.location)
 
         source = folder._getOb(self.identifier)
         if self.description:
             source.set_description(self.description)
         if self.__config.has_option('source', 'cacheable'):
-            source.set_cacheable(self.__config.getboolean('source', 'cacheable'))
+            value = self.__config.getboolean('source', 'cacheable')
+            source.set_cacheable(value)
         if self.__config.has_option('source', 'previewable'):
-            source.set_previewable(self.__config.getboolean('source', 'previewable'))
+            value = self.__config.getboolean('source', 'previewable')
+            source.set_previewable(value)
 
         for filename in self.__files:
             if filename == CONFIGURATION_FILE:
@@ -161,8 +169,10 @@ class CodeSourceService(SilvaService):
 
     security = ClassSecurityInfo()
     manage_options = (
-        {'label':'Existing Code Sources', 'action':'manage_existing_codesources'},
-        {'label':'Install Code Sources', 'action':'manage_install_codesources'},
+        {'label':'Existing Code Sources',
+         'action':'manage_existing_codesources'},
+        {'label':'Install Code Sources',
+         'action':'manage_install_codesources'},
         ) + SilvaService.manage_options
 
     _installed_sources = []
@@ -208,8 +218,13 @@ class CodeSourceService(SilvaService):
                     continue
                 if CONFIGURATION_FILE not in source_files:
                     continue
+                source_location = (
+                    entry_point.dist.project_name + ':' +
+                    source_directory[len(entry_point.dist.location):])
                 sources.append(CodeSourceInstallable(
-                        source_directory, source_files))
+                        source_location,
+                        source_directory,
+                        source_files))
         return sources
 
     security.declareProtected(

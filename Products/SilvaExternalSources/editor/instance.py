@@ -5,6 +5,9 @@
 
 import uuid
 import logging
+import sys
+
+from zExceptions.ExceptionFormatter import format_exception
 
 import persistent
 from five import grok
@@ -99,7 +102,10 @@ class BindSourceInstance(object):
         try:
             html = source.to_html(self.context, self.request, **values)
         except:
-            logger.exception('Error while rendering the external source')
+            # We use format_exception to get __traceback_supplement__ working
+            logger.error(
+                'Error while rendering the external source:\n' +
+                ''.join(format_exception(*sys.exc_info())))
             html = '<p>Error while rendering the external source</p>'
         return html
 

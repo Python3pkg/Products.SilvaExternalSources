@@ -2,6 +2,9 @@
 # See also LICENSE.txt
 # $Id$
 
+from cgi import escape
+
+
 # Zope
 from App.class_init import InitializeClass
 from AccessControl import ClassSecurityInfo
@@ -22,6 +25,40 @@ from silva.core.interfaces.content import IVersion
 from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf
 from zope.component import getUtility
+
+
+class CodeSourceErrorSupplement(object):
+    """Add more information about an error happening during the
+    rendering of a code source.
+    """
+
+    def __init__(self, source, parameters):
+        print 'build'
+        self.source = source
+        self.parameters = parameters
+
+    def getInfo(self, as_html=0):
+        print 'log'
+        info = list()
+        info.append((u'Source path', '/'.join(self.source.getPhysicalPath())))
+        if 'model' in self.parameters:
+            document = self.parameters['model']
+            info.append((u'Document type', document.meta_type))
+            info.append((u'Document path', '/'.join(document.getPhysicalPath())))
+        if 'version' in self.parameters:
+            version = self.parameters['version']
+            info.append((u'Document version', version.getId()))
+        for name, value in self.parameters.items():
+            if name not in ('model', 'version'):
+                info.append((u'Parameter %s' % name, repr(value)))
+
+        if not as_html:
+            return '   - ' + '\n   - '.join(map(lambda x: '%s: %s' % x, info))
+
+        return u'<p>Extra information:<br /><li>%s</li></p>' % ''.join(map(
+                lambda x: u'<li><b>%s</b>: %s</li>' % (
+                    escape(str(x[0])), escape(str(x[1]))),
+                info))
 
 
 class CodeSource(EditableExternalSource, Folder, ZMIObject):
@@ -52,6 +89,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         self._script_id = script_id
         self._fs_location = fs_location
 
+    security.declareProtected(ViewManagementScreens, 'test_source')
     def test_source(self):
         # return a list of problems or None
         errors = []
@@ -68,7 +106,9 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         if not self._script_id:
             errors.append(u'Missing required renderer id.')
         elif self._script_id not in self.objectIds():
-            errors.append(u'Missing renderer %s. Please a script or template with this id.' % self._script_id)
+            errors.append(
+                u'Missing renderer %s. Please a script or template with this id.' % (
+                    self._script_id))
         if errors:
             return errors
         return None
@@ -94,6 +134,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         parameters['model'] = content.get_content()
         if IVersion.providedBy(content):
             parameters['version'] = content
+        __traceback_supplement__ = (CodeSourceErrorSupplement, self, parameters)
         result = script(**parameters)
         if isinstance(result,  unicode):
             return result

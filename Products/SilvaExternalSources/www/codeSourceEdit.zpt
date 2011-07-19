@@ -57,7 +57,7 @@ Version of this file: $Revision: 1.7 $
         </h4>
       </td>
     </tr>
-    <tr tal:define="location context/fs_location"
+    <tr tal:define="location context/get_fs_location"
         tal:condition="location">
       <td align="left" valign="top">
         <div class="form-label">
@@ -79,19 +79,23 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <input type="text" name="title" size="40" value="" id="title"
-          tal:attributes="value here/title" />
+          tal:attributes="value context/get_title" />
       </td>
     </tr>
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          <label for="script_id">Renderer Id</label><br /><small>The id of the script or template that renders<br />
-          the output of the code source.</small>
+          <label for="script_id">Renderer Id</label>
+          <br />
+          <small>
+            The id of the script or template that renders<br />
+            the output of the code source.
+          </small>
         </div>
       </td>
       <td align="left" valign="top">
         <input type="text" name="script_id" id="script_id" size="40" value=""
-          tal:attributes="value here/script_id" />
+          tal:attributes="value context/script_id" />
       </td>
     </tr>
     <tr>
@@ -108,7 +112,9 @@ Version of this file: $Revision: 1.7 $
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          <label for="description">Description</label><br /><small>This will visible in inserted code sources.</small>
+          <label for="description">Description</label>
+          <br />
+          <small>This will visible in inserted code sources.</small>
         </div>
       </td>
       <td align="left" valign="top">
@@ -133,7 +139,7 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <input type="checkbox" name="cacheable" id="cacheable"
-          tal:attributes="checked python: here.is_cacheable() and 'checked' or nothing" />
+          tal:attributes="checked python: here.is_cacheable() and 'checked' or None" />
       </td>
     </tr>
     <tr>
@@ -144,7 +150,7 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <input type="checkbox" name="previewable"
-          tal:attributes="checked python: here.is_previewable() and 'checked' or nothing" />
+          tal:attributes="checked python: here.is_previewable() and 'checked' or None" />
       </td>
     </tr>
     <tr>
@@ -152,7 +158,11 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <div class="form-element">
-          <input class="form-element" type="submit" name="submit_edit" value="Save changes" />
+          <input class="form-element" type="submit" name="submit_edit"
+                 value="Save changes" />
+          <input class="form-element" type="submit" name="update_source"
+                 value="Update from filesystem"
+                 tal:condition="context/get_fs_location" />
         </div>
       </td>
     </tr>

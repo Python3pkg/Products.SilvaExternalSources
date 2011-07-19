@@ -11,6 +11,7 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.Formulator.Form import ZMIForm
 from Products.SilvaExternalSources.interfaces import ICodeSource
+from Products.SilvaExternalSources.interfaces import ICodeSourceService
 from Products.SilvaExternalSources.ExternalSource import EditableExternalSource
 from Products.Silva.SilvaPermissions import ViewManagementScreens, \
     AccessContentsInformation
@@ -20,6 +21,7 @@ from five import grok
 from silva.core.interfaces.content import IVersion
 from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf
+from zope.component import getUtility
 
 
 class CodeSource(EditableExternalSource, Folder, ZMIObject):
@@ -76,8 +78,8 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     def script_id(self):
         return self._script_id
 
-    security.declareProtected(AccessContentsInformation, 'fs_location')
-    def fs_location(self):
+    security.declareProtected(AccessContentsInformation, 'get_fs_location')
+    def get_fs_location(self):
         return self._fs_location
 
     security.declareProtected(AccessContentsInformation, 'to_html')
@@ -102,9 +104,20 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     security.declareProtected(ViewManagementScreens, 'manage_editCodeSource')
     def manage_editCodeSource(
         self, title, script_id, data_encoding, description=None,
-        cacheable=None, previewable=None):
+        cacheable=None, previewable=None, update_source=None):
         """ Edit CodeSource object
         """
+        if update_source and self.get_fs_location():
+            service = getUtility(ICodeSourceService)
+            installable = service.get_installable_source(
+                location=self.get_fs_location())
+            if installable is not None:
+                installable.update(self)
+                return self.editCodeSource(
+                    manage_tabs_message='Source updated from the filesystem')
+            return self.editCodeSource(
+                manage_tabs_message='Could find the associated definition on the filesystem')
+
         msg = u''
 
         if data_encoding and data_encoding != self._data_encoding:
@@ -143,11 +156,6 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             self.set_previewable(previewable)
             msg += "Previewable setting changed. "
 
-        if not script_id:
-            msg += "<b>Warning</b>: no script id specified!"
-        if script_id not in self.objectIds():
-            msg += '<b>Warning</b>: This code source does not contain ' \
-                'an object with identifier "%s"! ' % script_id
         return self.editCodeSource(manage_tabs_message=msg)
 
 InitializeClass(CodeSource)

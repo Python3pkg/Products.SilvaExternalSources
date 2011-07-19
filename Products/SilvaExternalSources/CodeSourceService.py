@@ -11,7 +11,6 @@ from AccessControl import ClassSecurityInfo
 from App.class_init import InitializeClass
 from OFS.interfaces import IObjectWillBeRemovedEvent
 
-
 from Products.SilvaExternalSources.interfaces import ICodeSource
 from Products.SilvaExternalSources.interfaces import ICodeSourceService
 from Products.Formulator.Form import ZMIForm
@@ -135,6 +134,11 @@ class CodeSourceInstallable(object):
             self.identifier, self.title, render_id, self.location)
 
         source = folder._getOb(self.identifier)
+        return self.update(source)
+
+    def update(self, source):
+        assert ICodeSource.providedBy(source)
+        assert source.get_fs_location() == self.location, u"Invalid source"
         if self.description:
             source.set_description(self.description)
         if self.__config.has_option('source', 'cacheable'):
@@ -154,6 +158,8 @@ class CodeSourceInstallable(object):
                     u"don't know how to install file %s for code source %s" % (
                         filename, self.identifier))
                 continue
+            if name in source.objectIds():
+                source.manage_delObjects([name])
             with open(os.path.join(self.__directory, filename), 'rb') as data:
                 installer(source, data, name)
 
@@ -229,10 +235,16 @@ class CodeSourceService(SilvaService):
 
     security.declareProtected(
         'View management screens', 'get_installable_source')
-    def get_installable_source(self, identifier):
+    def get_installable_source(self, identifier=None, location=None):
+        if identifier is not None:
+            test = lambda s: s.identifier == identifier
+        elif location is not None:
+            test = lambda s: s.location == location
+        else:
+            raise NotImplementedError
         sources = self.get_installable_sources()
         for source in sources:
-            if identifier == source.identifier:
+            if test(source):
                 return source
         return None
 

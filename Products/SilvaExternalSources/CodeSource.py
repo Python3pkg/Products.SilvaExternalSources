@@ -33,12 +33,10 @@ class CodeSourceErrorSupplement(object):
     """
 
     def __init__(self, source, parameters):
-        print 'build'
         self.source = source
         self.parameters = parameters
 
     def getInfo(self, as_html=0):
-        print 'log'
         info = list()
         info.append((u'Source path', '/'.join(self.source.getPhysicalPath())))
         if 'model' in self.parameters:

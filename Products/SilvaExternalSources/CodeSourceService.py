@@ -10,6 +10,7 @@ from pkg_resources import iter_entry_points
 from AccessControl import ClassSecurityInfo
 from App.class_init import InitializeClass
 from OFS.interfaces import IObjectWillBeRemovedEvent
+from ZODB.broken import Broken
 
 from Products.SilvaExternalSources.interfaces import ICodeSource
 from Products.SilvaExternalSources.interfaces import ICodeSourceService
@@ -292,11 +293,19 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
 
         self.sources = []
         for source in self.context.get_installed_sources():
-            self.sources.append({'id': source.getId(),
-                                 'problems': source.test_source(),
-                                 'title': source.get_title(),
-                                 'path': '/'.join(source.getPhysicalPath()),
-                                 'url': source.absolute_url()})
+            if isinstance(source, Broken):
+                self.sources.append(
+                    {'id': source.getId(),
+                     'problems': ['Filesystem code is missing'],
+                     'title': 'Corresponding Source implementation is missing',
+                     'path': '/'.join(source.getPhysicalPath()),
+                     'url': None})
+            else:
+                self.sources.append({'id': source.getId(),
+                                     'problems': source.test_source(),
+                                     'title': source.get_title(),
+                                     'path': '/'.join(source.getPhysicalPath()),
+                                     'url': source.absolute_url()})
 
 
 class ManageInstallCodeSources(silvaviews.ZMIView):

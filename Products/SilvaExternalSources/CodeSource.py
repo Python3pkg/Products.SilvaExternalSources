@@ -101,6 +101,8 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
                 aq_base(self.parameters).__of__(root).test_form()
             except ValueError as error:
                 errors.extend(error.args)
+        if not self.title:
+            errors.append(u'Missing required source title.')
         if not self._script_id:
             errors.append(u'Missing required renderer id.')
         elif self._script_id not in self.objectIds():

@@ -216,8 +216,8 @@ def manage_addCodeSource(
     """Add a CodeSource object
     """
     cs = CodeSource(id, script_id, fs_location)
-    title = unicode(title, cs.management_page_charset)
     if title is not None:
+        title = unicode(title, cs.management_page_charset)
         cs.set_title(title)
     context._setObject(id, cs)
     cs = context._getOb(id)

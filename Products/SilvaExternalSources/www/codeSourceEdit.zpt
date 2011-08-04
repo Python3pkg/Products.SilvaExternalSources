@@ -95,7 +95,7 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <input type="text" name="script_id" id="script_id" size="40" value=""
-          tal:attributes="value context/script_id" />
+          tal:attributes="value context/get_script_id" />
       </td>
     </tr>
     <tr>

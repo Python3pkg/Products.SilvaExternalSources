@@ -41,6 +41,11 @@ def install_pt(context, data, id):
     factory = context.manage_addProduct['PageTemplates']
     factory.manage_addPageTemplate(id, '', data.read())
 
+def install_image(context, data, id):
+    """Install an Image file.
+    """
+    factory = context.manage_addProduct['OFSP']
+    factory.manage_addImage(id, file=data)
 
 def install_py(context, data, id):
     """Install a Python script.
@@ -72,6 +77,10 @@ def install_js(context, data, id):
 
 
 INSTALLERS = {
+    '.png': install_image,
+    '.gif': install_image,
+    '.jpeg': install_image,
+    '.jpg': install_image,
     '.pt': install_pt,
     '.py': install_py,
     '.xml': install_xml,
@@ -113,6 +122,10 @@ class CodeSourceInstallable(object):
         return self.__config.get('source', 'title')
 
     @CachedProperty
+    def script_id(self):
+        return self.__config.get('source', 'render_id')
+
+    @CachedProperty
     def description(self):
         if self.__config.has_option('source', 'description'):
             return self.__config.get('source', 'description')
@@ -129,10 +142,8 @@ class CodeSourceInstallable(object):
         if self.is_installed(folder):
             return False
 
-        render_id = self.__config.get('source', 'render_id')
         factory = folder.manage_addProduct['SilvaExternalSources']
-        factory.manage_addCodeSource(
-            self.identifier, self.title, render_id, self.location)
+        factory.manage_addCodeSource(self.identifier, fs_location=self.location)
 
         source = folder._getOb(self.identifier)
         return self.update(source)
@@ -140,6 +151,8 @@ class CodeSourceInstallable(object):
     def update(self, source):
         assert ICodeSource.providedBy(source)
         assert source.get_fs_location() == self.location, u"Invalid source"
+        source.set_title(self.title)
+        source.set_script_id(self.script_id)
         if self.description:
             source.set_description(self.description)
         if self.__config.has_option('source', 'cacheable'):

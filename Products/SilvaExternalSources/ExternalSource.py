@@ -142,6 +142,13 @@ class EditableExternalSource(ExternalSource):
         self._data_encoding = encoding
 
     security.declareProtected(
+        permissions.ViewManagementScreens, 'set_title')
+    def set_title(self, title):
+        """ set title
+        """
+        self.title = title
+
+    security.declareProtected(
         permissions.ViewManagementScreens, 'set_description')
     def set_description(self, description):
         """ set description of external source's use
@@ -155,7 +162,8 @@ class EditableExternalSource(ExternalSource):
         """
         self._is_cacheable = cacheable
 
-    security.declareProtected(permissions.ViewManagementScreens, 'set_previewable')
+    security.declareProtected(
+        permissions.ViewManagementScreens, 'set_previewable')
     def set_previewable(self, previewable):
         """ set previewablility (in kupu) of source
         """

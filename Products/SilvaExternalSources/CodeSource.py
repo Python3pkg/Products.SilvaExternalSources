@@ -112,8 +112,8 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         return None
 
     # ACCESSORS
-    security.declareProtected(AccessContentsInformation, 'script_id')
-    def script_id(self):
+    security.declareProtected(AccessContentsInformation, 'get_script_id')
+    def get_script_id(self):
         return self._script_id
 
     security.declareProtected(AccessContentsInformation, 'get_fs_location')
@@ -139,6 +139,10 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         return unicode(result, self.get_data_encoding(), 'replace')
 
     # MANAGERS
+
+    security.declareProtected(ViewManagementScreens, 'set_script_id')
+    def set_script_id(self, script_id):
+        self._script_id = script_id
 
     security.declareProtected(ViewManagementScreens, 'manage_editCodeSource')
     def manage_editCodeSource(
@@ -206,12 +210,13 @@ manage_addCodeSourceForm = PageTemplateFile(
 
 
 def manage_addCodeSource(
-    context, id, title, script_id=None, fs_location=None,REQUEST=None):
+    context, id, title=None, script_id=None, fs_location=None,REQUEST=None):
     """Add a CodeSource object
     """
     cs = CodeSource(id, script_id, fs_location)
     title = unicode(title, cs.management_page_charset)
-    cs.title = title
+    if title is not None:
+        cs.set_title(title)
     context._setObject(id, cs)
     cs = context._getOb(id)
     cs.set_form(ZMIForm('form', 'Parameters form', unicode_mode=1))

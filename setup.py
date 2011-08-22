@@ -12,7 +12,7 @@ version = '3.0dev'
 
 setup(name='Products.SilvaExternalSources',
       version=version,
-      description="Externals sources for Silva Document",
+      description="Externals content sources to embed in rich text in Silva.",
       long_description=open(os.path.join("Products", "SilvaExternalSources", "README.txt")).read() + "\n" +
                        open(os.path.join("Products", "SilvaExternalSources", "HISTORY.txt")).read(),
       classifiers=[

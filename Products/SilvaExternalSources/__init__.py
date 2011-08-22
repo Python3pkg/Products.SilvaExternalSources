@@ -10,6 +10,7 @@ from zope.interface import Interface
 
 silvaconf.extension_name('SilvaExternalSources')
 silvaconf.extension_title('Silva External Sources')
+silvaconf.extension_depends(["Silva", "silva.core.editor"])
 silvaconf.extension_default()
 
 logger = logging.getLogger('silva.externalsources')

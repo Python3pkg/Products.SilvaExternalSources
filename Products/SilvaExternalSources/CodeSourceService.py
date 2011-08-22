@@ -27,6 +27,7 @@ from silva.core import conf as silvaconf
 from silva.core.interfaces import IContainer
 from silva.core.views import views as silvaviews
 from silva.core.services.utils import walk_silva_tree
+from silva.translations import translate as _
 
 logger = logging.getLogger('silva.externalsources')
 
@@ -301,8 +302,10 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
     grok.name('manage_existing_codesources')
 
     def update(self, find=False):
+        self.status = None
         if find:
             self.context.find_installed_sources()
+            self.status = _(u"Sources refreshed.")
 
         self.sources = []
         for source in self.context.get_installed_sources():
@@ -325,12 +328,20 @@ class ManageInstallCodeSources(silvaviews.ZMIView):
     grok.name('manage_install_codesources')
 
     def update(self, install=False, sources=[]):
+        self.status = []
         if install:
+            installed = []
             if not isinstance(sources, list):
                 sources = [sources]
             for source in sources:
                 installable = self.context.get_installable_source(source)
-                installable.install(self.context.get_root())
+                if installable.install(self.context.get_root()):
+                    installed.append(installable.title)
+            if installed:
+                self.status = _(u"Installed sources ${sources}.",
+                                mapping=dict(sources=', '.join(installed)))
+            else:
+                self.status = _(u"Could not install anything.")
 
         self.sources = []
         for source in self.context.get_installable_sources():

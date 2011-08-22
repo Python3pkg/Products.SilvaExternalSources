@@ -13,6 +13,13 @@
         }
       </style>
 
+      <div class="system-msg"
+           i18n:translate=""
+           tal:condition="view/status"
+           tal:content="view/status">
+        Form status summary
+      </div>
+
       <h2 i18n:translate="">
         Install new code sources
       </h2>

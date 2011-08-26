@@ -36,14 +36,13 @@ class ExternalSourceExportFilter(TransformationFilter):
         self.sources = ISourceInstances(text)
 
     def __call__(self, tree):
+        request = self.handler.getInfo().request
         for node in tree.xpath(
                 '//html:div[contains(@class, "external-source")]',
                 namespaces={'html': 'http://www.w3.org/1999/xhtml'}):
             identifier = node.attrib['data-source-instance']
             del node.attrib['data-source-instance']
-            settings = self.handler.getSettings()
-            instance = self.sources.bind(
-                identifier, self.context, settings.request)
+            instance = self.sources.bind(identifier, self.context, request)
             source, form = instance.get_source_and_form()
             node.attrib['source-identifier'] = source.getId()
 

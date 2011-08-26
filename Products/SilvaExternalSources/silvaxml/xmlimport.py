@@ -29,7 +29,7 @@ class ExternalSourceImportFilter(TransformationFilter):
 
     def prepare(self, name, text):
         self.sources = ISourceInstances(text)
-        self.request = self.handler.settings().request
+        self.request = self.handler.getInfo().request
 
     def __call__(self, tree):
         for source_node in tree.xpath(

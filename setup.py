@@ -8,6 +8,10 @@ import os
 
 version = '3.0dev'
 
+tests_require = [
+    'silva.app.document [test]',
+    ]
+
 # Products.ZSQLMethods should be as an option ?
 
 setup(name='Products.SilvaExternalSources',
@@ -62,4 +66,6 @@ setup(name='Products.SilvaExternalSources',
       [silva.ui.resources]
       source = Products.SilvaExternalSources.editor:IEditorPluginResources
       """,
+      tests_require = tests_require,
+      extras_require = {'test': tests_require},
       )

@@ -1,6 +1,14 @@
 ChangeLog
 =========
 
+2.3.4-bethel.2 (2011-10-13)
+------------------
+
+Bethel Changes
+--------------
+
+- adjusted the codesource icon
+
 2.3.4-bethel.1 (2011-07-07)
 ------------------
 

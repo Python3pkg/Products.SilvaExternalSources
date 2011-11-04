@@ -38,6 +38,7 @@
             html: '<div class="' + parameters_identifier + '"></div>',
             setup: function(data) {
                 var $container = $('.' + parameters_identifier);
+                var parameters = [];
 
                 this._.source = {};
                 if (data.instance) {
@@ -50,7 +51,7 @@
                 };
                 if (data.parameters) {
                     var extra = [{'name': 'source_inline', 'value':1}];
-                    var parameters = data.parameters;
+                    parameters = data.parameters;
 
                     for (var key in this._.source) {
                         extra.push({'name': key, 'value': this._.source[key]});
@@ -58,7 +59,6 @@
                     parameters = parameters + '&' + $.param(extra);
                     load_parameters($container, parameters);
                 } else if (data.instance) {
-                    var parameters = [];
 
                     for (var key in this._.source) {
                         parameters.push({'name': key, 'value': this._.source[key]});

@@ -1,5 +1,5 @@
 
-(function(CKEDITOR) {
+(function(CKEDITOR, $) {
 
     CKEDITOR.plugins.silvaexternalsource = {
         isSource: function(element) {
@@ -22,7 +22,7 @@
             };
             return null;
         },
-        getSelectedSource: function(editor, select_base_element) {
+        getSelectedSource: function(editor, select_element) {
             var selection = editor.getSelection();
             var element = null;
             var base = null;
@@ -34,17 +34,18 @@
             };
             element = CKEDITOR.plugins.silvaexternalsource.isInsideASource(base);
             if (element != null) {
-                if (base.$ != element.$ && select_base_element) {
+                if (select_element !== false && element.$ !== base.$) {
+                    // Be sure the source is selected
                     selection.selectElement(element);
-                }
+                };
                 return element;
-            }
+            };
             return null;
         },
         loadPreview: function(element, editor) {
             // element is a JQuery element. Editor a CKEditor one.
             var info = element.attr('data-silva-settings');
-            var preview = element.find('.external-source-preview');
+            var $preview = element.find('.external-source-preview');
             var content_url = $('#content-url').attr('href');
             var extra_info = [];
 
@@ -81,13 +82,17 @@
                 success: function(html) {
                     var is_dirty = editor.checkDirty();
 
-                    if (!preview.length) {
+                    if (!$preview.length) {
                         element.empty(); //CKEditor adds an br in empty container.
-                        preview = $('<div class="external-source-preview"></div');
-                        preview.appendTo(element);
+                        $preview = $('<div class="external-source-preview"></div');
+                        $preview.appendTo(element);
+                        $preview.delegate('a', 'click', function(event) {
+                            event.stopPropagation();
+                            event.preventDefault();
+                        });
                     };
 
-                    preview.html(html);
+                    $preview.html(html);
 
                     // If the document was unmodified, the fact to
                     // load the preview should not have modified it, reset the flag.
@@ -103,7 +108,7 @@
     CKEDITOR.externalSourceCommand = function(){};
     CKEDITOR.externalSourceCommand.prototype = {
         exec: function(editor) {
-            var source = API.getSelectedSource(editor, true);
+            var source = API.getSelectedSource(editor);
 
             if (source) {
                 editor.openDialog('silvaexternalsourceedit');
@@ -118,7 +123,7 @@
     CKEDITOR.removeExternalSourceCommand = function() {};
     CKEDITOR.removeExternalSourceCommand.prototype = {
         exec: function(editor) {
-            var source = API.getSelectedSource(editor);
+            var source = API.getSelectedSource(editor, false);
             if (source !== null) {
                 source.remove();
             }
@@ -184,8 +189,8 @@
                 // When a document is loaded, we load code sources previews
                 var document = $(editor.document.getDocumentElement().$);
 
-                document.find('.external-source').each(function (index, element) {
-                    API.loadPreview($(element), editor);
+                document.find('.external-source').each(function () {
+                    API.loadPreview($(this), editor);
                 });
             });
             editor.on('selectionChange', function(event) {
@@ -309,4 +314,4 @@
         }
 
     });
-})(CKEDITOR);
+})(CKEDITOR, jQuery);

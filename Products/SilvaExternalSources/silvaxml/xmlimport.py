@@ -22,6 +22,7 @@ logger = logging.getLogger('silva.xml')
 class ExternalSourceImportFilter(TransformationFilter):
     grok.adapts(IVersion, ISilvaXMLImportHandler)
     grok.provides(ISilvaXMLImportFilter)
+    grok.order(15)
 
     def __init__(self, context, handler):
         self.context = context

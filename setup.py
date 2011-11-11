@@ -6,10 +6,11 @@
 from setuptools import setup, find_packages
 import os
 
-version = '3.0dev'
+version = '3.0b1'
 
 tests_require = [
     'silva.app.document [test]',
+    'Products.Silva [test]',
     ]
 
 # Products.ZSQLMethods should be as an option ?
@@ -35,27 +36,29 @@ setup(name='Products.SilvaExternalSources',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-        'Products.ZSQLMethods',
         'Products.Formulator',
         'Products.Silva',
         'Products.SilvaMetadata',
+        'Products.ZSQLMethods',
         'five.grok',
-        'infrae.rest',
         'lxml',
+        'megrok.chameleon',
         'setuptools',
         'silva.core.conf',
+        'silva.core.editor',
         'silva.core.editor',
         'silva.core.interfaces',
         'silva.core.services',
         'silva.core.views',
-        'silva.core.editor',
-        'silva.core.references',
         'silva.translations',
+        'silva.ui',
         'zeam.form.silva',
         'zeam.utils.batch',
         'zope.component',
         'zope.interface',
+        'zope.intid',
         'zope.lifecycleevent',
+        'zope.publisher',
         'zope.schema',
         ],
       entry_points="""

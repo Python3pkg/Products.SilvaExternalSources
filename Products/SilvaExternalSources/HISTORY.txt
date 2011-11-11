@@ -1,10 +1,25 @@
 ChangeLog
 =========
 
-2.3.2 (unreleased)
+3.0b1 (2011/11/11)
 ------------------
 
-- ...
+- Add support to edit and save sources within CKEditor with
+  ``silva.core.editor``.
+
+- Update code source installation from the service to be less painfull
+  on upgrade.
+
+- Add support to update a code source from its filesystem definition.
+
+- Add a screen on the code source to locate all usuable code source
+  within a Silva site.
+
+- Remove Kupu support.
+
+- Update code sources to work with Silva 3.0.
+
+- Update code to work with Zope 2.13.
 
 2.3.1 (2010/10/18)
 ------------------

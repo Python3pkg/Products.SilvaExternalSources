@@ -4,6 +4,7 @@
 
 from silva.core.interfaces import ISilvaService, ISilvaLocalService, IAsset
 from silva.core.interfaces import IXMLZEXPExportable
+from silva.core.interfaces import IDataManager
 from zope.interface import Interface, Attribute
 
 
@@ -176,7 +177,7 @@ class ISourceParameters(Interface):
         """
 
 
-class IBoundSourceInstance(Interface):
+class IBoundSourceInstance(IDataManager):
     """Bind a request, context and source parameters together, to
     read, update and render a source.
     """
@@ -184,18 +185,6 @@ class IBoundSourceInstance(Interface):
 
     def get_source_and_form(request=None):
         """Return the associated source and form to the instance.
-        """
-
-    def clear():
-        """Erase all set parameters.
-        """
-
-    def update(parmeters):
-        """Update stored parameters using the given HTTP query string.
-        """
-
-    def render():
-        """Render the source.
         """
 
 

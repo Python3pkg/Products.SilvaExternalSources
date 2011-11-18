@@ -11,9 +11,13 @@ from zExceptions.ExceptionFormatter import format_exception
 
 import persistent
 from five import grok
-from silva.core.editor.interfaces import IText
 from zope.component import getMultiAdapter
+from zope.interface import Interface
 from zope.publisher.browser import TestRequest
+from zope.publisher.interfaces.http import IHTTPRequest
+
+from silva.core.editor.interfaces import IText
+from silva.core.interfaces import IDataManager
 
 from Products.SilvaExternalSources.interfaces import IExternalSource
 from Products.SilvaExternalSources.interfaces import ISourceInstances
@@ -35,8 +39,10 @@ class SourceParameters(persistent.Persistent):
         return self.__source_identifier
 
 
-class BoundSourceInstance(object):
+class BoundSourceInstance(grok.MultiAdapter):
     grok.implements(IBoundSourceInstance)
+    grok.adapts(ISourceParameters, Interface, IHTTPRequest)
+    grok.provides(IDataManager)
 
     def __init__(self, parameters, context, request):
         self.__parameters = parameters

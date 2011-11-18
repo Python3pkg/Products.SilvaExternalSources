@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='utf-8'?>
+<silva xmlns="http://infrae.com/namespace/silva" {namespaces} silva_version="{version}">
+ <folder id="folder">
+  <metadata>
+   <set id="silva-content">
+    <silva-content:maintitle>
+     Folder
+    </silva-content:maintitle>
+    <silva-content:shorttitle>
+    </silva-content:shorttitle>
+   </set>
+   <set id="silva-extra">
+    <silva-extra:comment>
+    </silva-extra:comment>
+    <silva-extra:contactemail>
+    </silva-extra:contactemail>
+    <silva-extra:contactname>
+    </silva-extra:contactname>
+    <silva-extra:content_description>
+    </silva-extra:content_description>
+    <silva-extra:creationtime>
+     YYYY-MM-DDTHH:MM:SS
+    </silva-extra:creationtime>
+    <silva-extra:creator>
+     manager
+    </silva-extra:creator>
+    <silva-extra:hide_from_tocs>
+     do not hide
+    </silva-extra:hide_from_tocs>
+    <silva-extra:keywords>
+    </silva-extra:keywords>
+    <silva-extra:language>
+    </silva-extra:language>
+    <silva-extra:lastauthor>
+     manager
+    </silva-extra:lastauthor>
+    <silva-extra:modificationtime>
+     YYYY-MM-DDTHH:MM:SS
+    </silva-extra:modificationtime>
+    <silva-extra:subject>
+    </silva-extra:subject>
+   </set>
+  </metadata>
+  <content>
+   <silva-app-document:document id="example">
+    <workflow>
+     <version id="0">
+      <status>
+       unapproved
+      </status>
+      <publication_datetime>
+      </publication_datetime>
+      <expiration_datetime>
+      </expiration_datetime>
+     </version>
+    </workflow>
+    <content version_id="0">
+     <metadata>
+      <set id="silva-content">
+       <silva-content:maintitle>
+        Example
+       </silva-content:maintitle>
+       <silva-content:shorttitle>
+       </silva-content:shorttitle>
+      </set>
+      <set id="silva-extra">
+       <silva-extra:comment>
+       </silva-extra:comment>
+       <silva-extra:contactemail>
+       </silva-extra:contactemail>
+       <silva-extra:contactname>
+       </silva-extra:contactname>
+       <silva-extra:content_description>
+       </silva-extra:content_description>
+       <silva-extra:creationtime>
+        YYYY-MM-DDTHH:MM:SS
+       </silva-extra:creationtime>
+       <silva-extra:creator>
+        manager
+       </silva-extra:creator>
+       <silva-extra:hide_from_tocs>
+        do not hide
+       </silva-extra:hide_from_tocs>
+       <silva-extra:keywords>
+       </silva-extra:keywords>
+       <silva-extra:language>
+       </silva-extra:language>
+       <silva-extra:lastauthor>
+        manager
+       </silva-extra:lastauthor>
+       <silva-extra:modificationtime>
+        YYYY-MM-DDTHH:MM:SS
+       </silva-extra:modificationtime>
+       <silva-extra:subject>
+       </silva-extra:subject>
+      </set>
+     </metadata>
+     <silva-app-document:body>
+      <silva-core-editor:text>
+       <html:div>
+        <html:p>
+         some paragraph..
+        </html:p>
+        <html:div class="external-source default" source-identifier="cs_citation">
+         <silva-external-sources:fields>
+          <silva-external-sources:field id="field-citation">
+           blahblahblah
+          </silva-external-sources:field>
+          <silva-external-sources:field id="field-author">
+           ouam
+          </silva-external-sources:field>
+          <silva-external-sources:field id="field-source">
+           wikipedia
+          </silva-external-sources:field>
+         </silva-external-sources:fields>
+        </html:div>
+       </html:div>
+      </silva-core-editor:text>
+     </silva-app-document:body>
+    </content>
+   </silva-app-document:document>
+   <unknown_content id="cs_citation" meta_type="Silva Code Source">
+    <zexp id="1.zexp">
+    </zexp>
+   </unknown_content>
+  </content>
+ </folder>
+</silva>
+

@@ -13,7 +13,7 @@ from silva.core.editor.transform.interfaces import ISilvaXMLImportFilter
 from silva.core.editor.transform.base import TransformationFilter
 
 from Products.Formulator.interfaces import IFieldValueWriter
-from Products.SilvaExternalSources.silvaxml import NS_URI
+from Products.SilvaExternalSources.silvaxml import NS_SOURCE_URI
 from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
 
 logger = logging.getLogger('silva.xml')
@@ -43,11 +43,12 @@ class ExternalSourceImportFilter(TransformationFilter):
             source, form = instance.get_source_and_form()
             fields_by_id = dict([(f.id, f) for f in form.fields()])
             for field_node in source_node.xpath(
-                    './cs:fields/cs:field', namespaces={'cs': NS_URI}):
+                    './cs:fields/cs:field', namespaces={'cs': NS_SOURCE_URI}):
                 field_id = field_node.attrib['id']
                 field = fields_by_id.get(field_id)
                 if field is None:
-                    logger.warn(u"unknown external source parameter %s in %s" % (
+                    logger.warn(
+                        u"unknown external source parameter %s in %s" % (
                             field_id, source_node.attrib['source-identifier']))
                     # This field have been removed. Ignore it.
                     continue

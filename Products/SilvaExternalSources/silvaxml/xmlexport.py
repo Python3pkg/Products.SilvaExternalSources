@@ -8,8 +8,9 @@ from five import grok
 from silva.core.interfaces import IVersion, ISilvaXMLExportHandler
 from silva.core.editor.transform.base import TransformationFilter
 from silva.core.editor.transform.interfaces import ISilvaXMLExportFilter
+from Products.Silva.silvaxml import xmlexport
 from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
-from Products.SilvaExternalSources.silvaxml import NS_URI
+from Products.SilvaExternalSources.silvaxml import NS_SOURCE_URI
 from Products.SilvaExternalSources.silvaxml.treehandler import \
     ElementTreeContentHandler
 
@@ -22,6 +23,9 @@ class FieldProducer(ElementTreeContentHandler):
 
     def getHandler(self):
        return self.__handler
+
+
+xmlexport.theXMLExporter.registerNamespace('silva-external-sources', NS_SOURCE_URI)
 
 
 class ExternalSourceExportFilter(TransformationFilter):
@@ -47,7 +51,7 @@ class ExternalSourceExportFilter(TransformationFilter):
             node.attrib['source-identifier'] = source.getId()
 
             producer = FieldProducer(self.handler, root=node)
-            producer.startPrefixMapping(None, NS_URI)
+            producer.startPrefixMapping(None, NS_SOURCE_URI)
             producer.startElement('fields')
             for field in form.fields(ignore_content=False):
                 producer.startElement('field', {(None, 'id'): field.id})

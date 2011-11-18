@@ -180,9 +180,60 @@ class WorkingInstanceTestCase(TestCase):
 """)
 
 
+class BrokenInstanceTestCase(TestCase):
+    layer = FunctionalLayer
+
+    def setUp(self):
+        self.root = self.layer.get_application()
+        self.layer.login('manager')
+        factory = self.root.manage_addProduct['silva.app.document']
+        factory.manage_addDocument('example', 'Example')
+
+        version = self.root.example.get_editable()
+        version.body.save(version, TestRequest(), HTML_BROKEN_SOURCE)
+        self.key = ISourceInstances(version.body).keys()[0]
+
+    def test_render(self):
+        """Render a broken source.
+        """
+        version = self.root.example.get_editable()
+        instances = ISourceInstances(version.body)
+        bound = instances.bind(self.key, version, TestRequest())
+        self.assertXMLEqual(bound.render(), """
+<p>
+ Source is missing
+</p>
+""")
+
+    def test_remove(self):
+        """Remove a broken source.
+        """
+        version = self.root.example.get_editable()
+        instances = ISourceInstances(version.body)
+        instances.remove(self.key, version, TestRequest())
+
+        self.assertEqual(len(instances.keys()), 0)
+        self.assertEqual(len(instances.values()), 0)
+        self.assertEqual(instances.get(self.key), None)
+        with self.assertRaises(KeyError):
+            instances.bind(self.key, version, TestRequest())
+        with self.assertRaises(KeyError):
+            instances[self.key]
+
+    def test_update(self):
+        """Try to upgrade a broken source parameters.
+        """
+        version = self.root.example.get_editable()
+        instances = ISourceInstances(version.body)
+        bound = instances.bind(self.key, version, TestRequest())
+        with self.assertRaises(ValueError):
+            bound.update('field_citation=il fait soleil&amp;field_author=moi')
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(CreateInstanceTestCase))
     suite.addTest(unittest.makeSuite(WorkingInstanceTestCase))
+    suite.addTest(unittest.makeSuite(BrokenInstanceTestCase))
     return suite
 

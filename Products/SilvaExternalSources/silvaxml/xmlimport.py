@@ -41,6 +41,11 @@ class ExternalSourceImportFilter(TransformationFilter):
             instance = self.sources.bind(
                 identifier, self.context, self.request)
             source, form = instance.get_source_and_form()
+            if source is None:
+                logger.warn(
+                    u"unknown external source %s in imported document" % (
+                        source_node.attrib['source-identifier']))
+                continue
             fields_by_id = dict([(f.id, f) for f in form.fields()])
             for field_node in source_node.xpath(
                     './cs:fields/cs:field', namespaces={'cs': NS_SOURCE_URI}):

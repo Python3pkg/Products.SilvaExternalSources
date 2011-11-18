@@ -21,7 +21,7 @@ class CodeSourceDocumentImportTestCase(SilvaXMLTestCase):
         self.root = self.layer.get_application()
         self.layer.login('editor')
 
-    def test_import_code_source(self):
+    def test_document(self):
         self.import_file(
             'test_import_source.silvaxml', globs=globals())
         self.assertEventsAre(
@@ -35,12 +35,33 @@ class CodeSourceDocumentImportTestCase(SilvaXMLTestCase):
 
         version = document.get_editable()
         sources = ISourceInstances(version.body)
-        self.assertEquals(len(sources.keys()), 1)
+        self.assertEquals(len(sources.values()), 1)
         instance = sources.values()[0]
         self.assertEqual(instance.get_source_identifier(), 'cs_citation')
         self.assertEqual(instance.citation, u"héhé l'aime le quéqué")
         self.assertEqual(instance.author, u'ouam')
         self.assertEqual(instance.source, u'wikipedia')
+
+    def test_document_missing_source(self):
+        self.import_file(
+            'test_import_source_missing.silvaxml', globs=globals())
+        self.assertEventsAre(
+            ['ContentImported for /root/example'],
+            IContentImported)
+
+        document = self.root.example
+        self.assertTrue(verifyObject(IDocument, document))
+        self.assertEqual(document.get_viewable(), None)
+        self.assertNotEqual(document.get_editable(), None)
+
+        version = document.get_editable()
+        sources = ISourceInstances(version.body)
+        self.assertEquals(len(sources.values()), 1)
+        instance = sources.values()[0]
+        self.assertEqual(instance.get_source_identifier(), 'cs_ultimate')
+        self.assertFalse(hasattr(instance, 'author'))
+        self.assertFalse(hasattr(instance, 'citation'))
+        self.assertFalse(hasattr(instance, 'source'))
 
 
 def test_suite():

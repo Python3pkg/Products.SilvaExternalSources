@@ -8,7 +8,7 @@ import unittest
 from zope.interface.verify import verifyObject
 
 from Products.Silva.tests.test_xml_import import SilvaXMLTestCase
-from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
+from Products.SilvaExternalSources.interfaces import ISourceInstances
 from Products.SilvaExternalSources.testing import FunctionalLayer
 from silva.core.interfaces.events import IContentImported
 from silva.app.document.interfaces import IDocument

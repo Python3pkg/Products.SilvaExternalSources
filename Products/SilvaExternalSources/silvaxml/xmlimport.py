@@ -14,7 +14,7 @@ from silva.core.editor.transform.base import TransformationFilter
 
 from Products.Formulator.interfaces import IFieldValueWriter
 from Products.SilvaExternalSources.silvaxml import NS_SOURCE_URI
-from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
+from Products.SilvaExternalSources.interfaces import ISourceInstances
 
 logger = logging.getLogger('silva.xml')
 

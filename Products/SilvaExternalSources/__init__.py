@@ -49,3 +49,11 @@ class ExternalSourcesInstaller(DefaultInstaller):
 
 
 install = ExternalSourcesInstaller('SilvaExternalSources', IExtension)
+
+
+CLASS_CHANGES = {
+    'Products.SilvaExternalSources.editor.instance SourceParameters':
+        'Products.SilvaExternalSources.SourceInstance SourceParameters',
+    'Products.SilvaExternalSources.editor.instance SourceInstances':
+        'Products.SilvaExternalSources.SourceInstance SourceInstances'
+    }

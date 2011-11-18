@@ -62,6 +62,8 @@ setup(name='Products.SilvaExternalSources',
         'zope.schema',
         ],
       entry_points="""
+      [zodbupdate]
+      renames = Products.SilvaExternalSources:CLASS_CHANGES
       [Products.SilvaExternalSources.sources]
       defaults = Products.SilvaExternalSources.codesources
       [silva.core.editor.extension]

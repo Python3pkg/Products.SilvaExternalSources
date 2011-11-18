@@ -11,9 +11,9 @@ from zope.interface.verify import verifyObject
 from Products.Formulator.interfaces import IBoundForm
 from Products.Silva.testing import TestCase
 from Products.SilvaExternalSources.testing import FunctionalLayer
-from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
-from Products.SilvaExternalSources.editor.interfaces import ISourceParameters
-from Products.SilvaExternalSources.editor.interfaces import IBoundSourceInstance
+from Products.SilvaExternalSources.interfaces import ISourceInstances
+from Products.SilvaExternalSources.interfaces import ISourceParameters
+from Products.SilvaExternalSources.interfaces import IBoundSourceInstance
 
 HTML_WORKING_SOURCE = u"""
 <div>

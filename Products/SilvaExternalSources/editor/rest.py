@@ -5,14 +5,15 @@
 
 from five import grok
 from megrok.chameleon.components import ChameleonPageTemplate
+from zope.component import getMultiAdapter
+
 from silva.ui.rest import UIREST
 from silva.core.interfaces import ISilvaObject, IVersionedContent
 from silva.core.editor.interfaces import IText
-from zope.component import getMultiAdapter
 
 from Products.SilvaExternalSources.ExternalSource import availableSources
 from Products.SilvaExternalSources.interfaces import IExternalSource
-from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
+from Products.SilvaExternalSources.interfaces import ISourceInstances
 from Products.Formulator.interfaces import IBoundForm
 
 # Define the CSS class names to use with CKE editor.

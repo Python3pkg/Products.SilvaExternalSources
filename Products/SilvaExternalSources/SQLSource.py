@@ -29,7 +29,6 @@ from silva.translations import translate as _
 
 
 class SQLSource(ZMIObject, EditableExternalSource, Folder):
-
     implements(IExternalSource)
 
     meta_type = "Silva SQL Source"

@@ -9,7 +9,7 @@ from silva.core.interfaces import IVersion, ISilvaXMLExportHandler
 from silva.core.editor.transform.base import TransformationFilter
 from silva.core.editor.transform.interfaces import ISilvaXMLExportFilter
 from Products.Silva.silvaxml import xmlexport
-from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
+from Products.SilvaExternalSources.interfaces import ISourceInstances
 from Products.SilvaExternalSources.silvaxml import NS_SOURCE_URI
 from Products.SilvaExternalSources.silvaxml.treehandler import \
     ElementTreeContentHandler
@@ -25,7 +25,8 @@ class FieldProducer(ElementTreeContentHandler):
        return self.__handler
 
 
-xmlexport.theXMLExporter.registerNamespace('silva-external-sources', NS_SOURCE_URI)
+xmlexport.theXMLExporter.registerNamespace(
+    'silva-external-sources', NS_SOURCE_URI)
 
 
 class ExternalSourceExportFilter(TransformationFilter):

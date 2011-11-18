@@ -16,8 +16,9 @@ from zope.component import getMultiAdapter
 from zope.publisher.browser import TestRequest
 
 from Products.SilvaExternalSources.interfaces import IExternalSource
-from Products.SilvaExternalSources.editor.interfaces import (
-    ISourceInstances, IBoundSourceInstance, ISourceParameters)
+from Products.SilvaExternalSources.interfaces import ISourceInstances
+from Products.SilvaExternalSources.interfaces import IBoundSourceInstance
+from Products.SilvaExternalSources.interfaces import ISourceParameters
 from Products.SilvaExternalSources.editor.utils import parse_qs
 from Products.Formulator.interfaces import IBoundForm
 

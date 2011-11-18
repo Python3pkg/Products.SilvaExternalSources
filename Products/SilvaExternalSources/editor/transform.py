@@ -2,17 +2,20 @@
 # Copyright (c) 2010 Infrae. All rights reserved.
 # See also LICENSE.txt
 # $Id$
+
 import lxml.html
 
 from five import grok
-from silva.core.editor.transform.interfaces import (
-    ISaveEditorFilter, IInputEditorFilter, IDisplayFilter)
-from silva.core.editor.transform.base import TransformationFilter
-from silva.core.editor.transform.editor.output import clean_editor_attributes
-from silva.core.interfaces import IVersion
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-from Products.SilvaExternalSources.editor.interfaces import ISourceInstances
+from silva.core.editor.transform.base import TransformationFilter
+from silva.core.editor.transform.editor.output import clean_editor_attributes
+from silva.core.editor.transform.interfaces import IDisplayFilter
+from silva.core.editor.transform.interfaces import IInputEditorFilter
+from silva.core.editor.transform.interfaces import ISaveEditorFilter
+from silva.core.interfaces import IVersion
+
+from Products.SilvaExternalSources.interfaces import ISourceInstances
 
 
 SOURCE_XPATH = '//div[contains(@class, "external-source")]'

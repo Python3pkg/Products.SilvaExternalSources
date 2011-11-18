@@ -4,12 +4,66 @@
 
 from silva.core.interfaces import ISilvaService, ISilvaLocalService, IAsset
 from silva.core.interfaces import IXMLZEXPExportable
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 
 
 class ICodeSourceService(ISilvaService, ISilvaLocalService):
     """Code source service.
     """
+
+    def find_installed_sources():
+        """Find all installed code sources. You can after call
+        ``get_installed_sources`` to get the list of installed code
+        sources.
+        """
+
+    def get_installed_sources():
+        """Return all installed code sources.
+        """
+
+    def clear_installed_sources():
+        """Clear the known list of installed code sources.
+        """
+
+    def get_installable_sources():
+        """Return a list of all known installable code sources in this
+        Silva site.
+        """
+
+    def get_installable_source(identifier=None, location=None):
+        """Return a specific installable code source in this Silva
+        site, defined either by its identifier or location, or return
+        None if no installable code source matches.
+        """
+
+
+class ICodeSourceInstaller(Interface):
+    """Install or update a specific code source.
+    """
+    identifier = Attribute(u"Source identifier")
+    title = Attribute(u"User-friendly source title")
+    script_id = Attribute(u"Script identifier used to render the source")
+    description = Attribute(u"User-friendly source description")
+    location = Attribute(u"Filesystem location, relative to the egg")
+
+    def validate():
+        """Return True if the source is correctly defined on the
+        filesystem, that no required information is missing.
+        """
+
+    def is_installed(folder):
+        """Return True if the source is installed in the given Silva
+        container.
+        """
+
+    def install(folder):
+        """Install in a specific Silva container an instance for this
+        source, from the filesystem.
+        """
+
+    def update(source):
+        """Update from the filesystem a specific source.
+        """
 
 
 class IExternalSource(Interface):

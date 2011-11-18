@@ -14,6 +14,7 @@ from ZODB.broken import Broken
 
 from Products.SilvaExternalSources.interfaces import ICodeSource
 from Products.SilvaExternalSources.interfaces import ICodeSourceService
+from Products.SilvaExternalSources.interfaces import ICodeSourceInstaller
 from Products.Formulator.Form import ZMIForm
 
 from zope.component import getUtility, queryUtility
@@ -90,6 +91,7 @@ INSTALLERS = {
 
 
 class CodeSourceInstallable(object):
+    grok.implements(ICodeSourceInstaller)
 
     def __init__(self, location, directory, files):
         self.__config = ConfigParser.ConfigParser()

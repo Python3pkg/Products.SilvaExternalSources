@@ -43,6 +43,8 @@ class CreateInstanceTestCase(unittest.TestCase):
         factory.manage_addDocument('example', 'Example')
 
     def test_create_instance(self):
+        """Create a new source instance, of an existing code source.
+        """
         content = self.root.example
         request = TestRequest()
         version = content.get_editable()
@@ -75,6 +77,9 @@ class CreateInstanceTestCase(unittest.TestCase):
         self.assertTrue(verifyObject(IBoundForm, form))
 
     def test_create_broken_failover(self):
+        """Create a source that doesn't exists with failover. Test the
+        broken source instance.
+        """
         content = self.root.example
         request = TestRequest()
         version = content.get_editable()
@@ -118,6 +123,8 @@ class WorkingInstanceTestCase(TestCase):
         self.key = ISourceInstances(version.body).keys()[0]
 
     def test_render(self):
+        """Render a defined source.
+        """
         version = self.root.example.get_editable()
         instances = ISourceInstances(version.body)
         bound = instances.bind(self.key, version, TestRequest())
@@ -134,6 +141,8 @@ class WorkingInstanceTestCase(TestCase):
 """)
 
     def test_remove(self):
+        """Remove a defined source.
+        """
         version = self.root.example.get_editable()
         instances = ISourceInstances(version.body)
         instances.remove(self.key, version, TestRequest())
@@ -147,6 +156,8 @@ class WorkingInstanceTestCase(TestCase):
             instances[self.key]
 
     def test_update(self):
+        """Updating source parameters.
+        """
         version = self.root.example.get_editable()
         instances = ISourceInstances(version.body)
         bound = instances.bind(self.key, version, TestRequest())

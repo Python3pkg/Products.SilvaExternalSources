@@ -35,7 +35,7 @@ class CodeSourceDocumentImportTestCase(SilvaXMLTestCase):
 
         version = document.get_editable()
         sources = ISourceInstances(version.body)
-        self.assertEquals(len(sources.values()), 1)
+        self.assertEqual(len(sources.values()), 1)
         instance = sources.values()[0]
         self.assertEqual(instance.get_source_identifier(), 'cs_citation')
         self.assertEqual(instance.citation, u"héhé l'aime le quéqué")

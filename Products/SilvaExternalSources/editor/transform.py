@@ -41,7 +41,7 @@ class ExternalSourceSaveFilter(TransformationFilter):
             if parameters is not None:
                 instance = self.sources.bind(
                     identifier, self.context, self.request)
-                instance.update_parameters(parameters)
+                instance.update(parameters)
             source.attrib['data-source-instance'] = identifier
             self.seen_sources.add(identifier)
             clean_editor_attributes(source)

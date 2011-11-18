@@ -21,7 +21,7 @@ class ISourceParameters(interface.Interface):
         """
 
 
-class IBindSourceInstance(interface.Interface):
+class IBoundSourceInstance(interface.Interface):
     """Bind a request, context and source parameters together, to
     read, update and render a source.
     """
@@ -31,15 +31,15 @@ class IBindSourceInstance(interface.Interface):
         """Return the associated source and form to the instance.
         """
 
-    def clear_parameters(self):
+    def clear():
         """Erase all set parameters.
         """
 
-    def update_parameters(self, parmeters):
+    def update(parmeters):
         """Update stored parameters using the given HTTP query string.
         """
 
-    def render(self):
+    def render():
         """Render the source.
         """
 
@@ -53,7 +53,7 @@ class ISourceInstances(interface.Interface):
         source identifier.
         """
 
-    def remove(instance_identifier):
+    def remove(instance_identifier, context, request):
         """Remove the identifier instance for the list of instances.
         """
 

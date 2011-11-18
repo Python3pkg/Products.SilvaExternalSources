@@ -17,7 +17,7 @@ from zope.publisher.browser import TestRequest
 
 from Products.SilvaExternalSources.interfaces import IExternalSource
 from Products.SilvaExternalSources.editor.interfaces import (
-    ISourceInstances, IBindSourceInstance, ISourceParameters)
+    ISourceInstances, IBoundSourceInstance, ISourceParameters)
 from Products.SilvaExternalSources.editor.utils import parse_qs
 from Products.Formulator.interfaces import IBoundForm
 
@@ -34,13 +34,12 @@ class SourceParameters(persistent.Persistent):
         return self.__source_identifier
 
 
-class BindSourceInstance(object):
-    grok.implements(IBindSourceInstance)
+class BoundSourceInstance(object):
+    grok.implements(IBoundSourceInstance)
 
-    def __init__(self, parameters, context, request, manager):
+    def __init__(self, parameters, context, request):
         self.__parameters = parameters
         self.__identifier = parameters.get_source_identifier()
-        self.__manager = manager
         self.context = context
         self.request = request
 
@@ -65,7 +64,7 @@ class BindSourceInstance(object):
                 return source, form
         return None, None
 
-    def clear_parameters(self):
+    def clear(self):
         source, form = self.get_source_and_form()
         if form is not None:
             form.erase()
@@ -73,7 +72,7 @@ class BindSourceInstance(object):
         logger.error(u"cannot clean document data for missing source %s" % (
                 self.identifier))
 
-    def update_parameters(self, parameters):
+    def update(self, parameters):
         save_request = TestRequest(form=parse_qs(parameters))
         source, form = self.get_source_and_form(save_request)
         try:
@@ -81,8 +80,8 @@ class BindSourceInstance(object):
                 raise ValueError("A source have been removed or renamed")
             if form is not None:
                 form.save()
-                # Mark the manager as changed to presist everything.
-                self.__manager._p_changed = True
+                # Make sure the modification will be saved.
+                self.__parameters._p_changed = True
         except ValueError as error:
             # Source failover is a special marker un parameters (where
             # they all start with field_) saying that it is ok to fail
@@ -104,8 +103,8 @@ class BindSourceInstance(object):
         except:
             # We use format_exception to get __traceback_supplement__ working
             logger.error(
-                'Error while rendering the external source:\n' +
-                ''.join(format_exception(*sys.exc_info())))
+                u'error while rendering the external source:\n' +
+                u''.join(format_exception(*sys.exc_info())))
             html = '<p>Error while rendering the external source</p>'
         return html
 
@@ -139,14 +138,13 @@ class SourceInstances(grok.Annotation):
     def remove(self, instance_identifier, context, request):
         if instance_identifier in self._instances:
             instance = self.bind(instance_identifier, context, request)
-            instance.clear_parameters()
+            instance.clear()
             del self._instances[instance_identifier]
             # Force ZODB changed (dict is not a PersistentDict)
             self._p_changed = True
 
     def bind(self, instance_identifier, context, request):
-        return BindSourceInstance(
-            self[instance_identifier], context, request, self)
+        return BoundSourceInstance(self[instance_identifier], context, request)
 
     @proxy_method
     def items(self):

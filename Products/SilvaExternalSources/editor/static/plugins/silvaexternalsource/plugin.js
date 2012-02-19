@@ -152,8 +152,7 @@
             });
             editor.addCss(
                 'div.external-source {' +
-                    'margin: 5px;' +
-                    'padding: 1px;' +
+                    'margin: 5px 0;' +
                     'color: #444;' +
                     'background-color: #efefef;' +
                     'display: inline-block;' +

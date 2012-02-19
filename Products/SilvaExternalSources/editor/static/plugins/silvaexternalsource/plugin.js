@@ -157,8 +157,8 @@
                     'color: #444;' +
                     'background-color: #efefef;' +
                     'display: inline-block;' +
-                    'min-height: 100px;' +
-                    'min-width: 200px;' +
+                    'min-height: 20px;' +
+                    'min-width: 20px;' +
                     '}');
             editor.addCss(
                 'div.source-float-left {' +

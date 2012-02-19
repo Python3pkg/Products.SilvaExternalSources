@@ -155,7 +155,7 @@
                     'margin: 5px;' +
                     'padding: 1px;' +
                     'color: #444;' +
-                    'background-color: #EEE8AA;' +
+                    'background-color: #efefef;' +
                     'display: inline-block;' +
                     'min-height: 100px;' +
                     'min-width: 200px;' +

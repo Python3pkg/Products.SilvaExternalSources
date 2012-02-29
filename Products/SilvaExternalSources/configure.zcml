@@ -2,6 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     xmlns:grok="http://namespaces.zope.org/grok"
+    xmlns:monkey="http://namespaces.plone.org/monkey"
     xmlns:five="http://namespaces.zope.org/five">
 
   <include package="five.grok" />
@@ -9,8 +10,17 @@
   <include package="silva.core.views" />
   <include package="silva.core.editor" />
   <include package="zeam.form.silva" />
+  <include package="collective.monkeypatcher" />
 
   <include package="Products.Formulator" />
+
+  <!-- monkey patches ZODB things -->
+  <monkey:patch
+     description="Use correct REQUEST in ZODB Zope Page Template"
+     class="Products.PageTemplates.ZopePageTemplate.ZopePageTemplate"
+     original="_exec"
+     replacement=".patches._exec"
+     />
 
   <!-- i18n -->
   <i18n:registerTranslations directory="i18n" />

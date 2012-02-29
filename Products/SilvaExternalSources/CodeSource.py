@@ -130,6 +130,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             script = self[self._script_id]
         except KeyError:
             return None
+        parameters['REQUEST'] = request
         parameters['version'] = None
         parameters['model'] = content.get_content()
         if IVersion.providedBy(content):

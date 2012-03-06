@@ -6,7 +6,7 @@
     xmlns:five="http://namespaces.zope.org/five">
 
   <include package="five.grok" />
-  <include package="megrok.chameleon" />
+  <include package="grokcore.chameleon" />
   <include package="silva.core.views" />
   <include package="silva.core.editor" />
   <include package="zeam.form.silva" />

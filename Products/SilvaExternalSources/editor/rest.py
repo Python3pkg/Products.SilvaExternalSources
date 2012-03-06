@@ -4,7 +4,7 @@
 # $Id$
 
 from five import grok
-from megrok.chameleon.components import ChameleonPageTemplate
+from grokcore.chameleon.components import ChameleonPageTemplate
 from zope.component import getMultiAdapter
 
 from silva.ui.rest import UIREST

@@ -222,3 +222,8 @@ class ISourceInstances(Interface):
 
     def __getitem__(instance_identifier):
         pass
+
+
+class SourceMissingError(KeyError):
+    """Exception raised when some source information are missing.
+    """

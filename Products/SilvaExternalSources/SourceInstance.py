@@ -23,10 +23,12 @@ from Products.SilvaExternalSources.interfaces import IExternalSource
 from Products.SilvaExternalSources.interfaces import ISourceInstances
 from Products.SilvaExternalSources.interfaces import IBoundSourceInstance
 from Products.SilvaExternalSources.interfaces import ISourceParameters
+from Products.SilvaExternalSources.interfaces import SourceMissingError
 from Products.SilvaExternalSources.editor.utils import parse_qs
 from Products.Formulator.interfaces import IBoundForm
 
 logger = logging.getLogger('silva.externalsources')
+_marker = object()
 
 
 class SourceParameters(persistent.Persistent):
@@ -151,7 +153,10 @@ class SourceInstances(grok.Annotation):
             self._p_changed = True
 
     def bind(self, instance_identifier, context, request):
-        return BoundSourceInstance(self[instance_identifier], context, request)
+        parameters  = self.get(instance_identifier, _marker)
+        if parameters is _marker:
+            raise SourceMissingError(instance_identifier)
+        return BoundSourceInstance(parameters, context, request)
 
     @proxy_method
     def items(self):

@@ -16,9 +16,13 @@ from silva.core.editor.transform.interfaces import ISaveEditorFilter
 from silva.core.interfaces import IVersion
 
 from Products.SilvaExternalSources.interfaces import ISourceInstances
+from Products.SilvaExternalSources.interfaces import SourceMissingError
 
 
 SOURCE_XPATH = '//div[contains(@class, "external-source")]'
+
+def broken_source(msg):
+    return '<div class="broken-source">%s</div>' % str(msg)
 
 
 class ExternalSourceSaveFilter(TransformationFilter):
@@ -92,7 +96,12 @@ class ExternalSourceDisplayFilter(TransformationFilter):
         for source in tree.xpath(SOURCE_XPATH):
             identifier = source.attrib['data-source-instance']
             del source.attrib['data-source-instance']
-            instance = self.sources.bind(
-                identifier, self.context, self.request)
-            html = lxml.html.fromstring('<div>' + instance.render() + '</div>')
-            source.insert(0, html)
+            try:
+                instance = self.sources.bind(
+                    identifier, self.context, self.request)
+            except SourceMissingError:
+                html = broken_source(
+                    'External source is broken, the parameters are missing.')
+            else:
+                html = '<div>' + instance.render() + '</div>'
+            source.insert(0, lxml.html.fromstring(html))

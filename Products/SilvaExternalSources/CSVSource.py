@@ -28,6 +28,7 @@ from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 # Silva
 from Products.Silva import SilvaPermissions
 from Products.Silva.Asset import Asset
+from Products.Silva.Asset import AssetEditTab
 from Products.SilvaExternalSources.ExternalSource import EditableExternalSource
 from Products.SilvaExternalSources.interfaces import ICSVSource
 from Products.SilvaMetadata.interfaces import IMetadataService
@@ -40,8 +41,8 @@ from silva.core import conf as silvaconf
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 
-
-class CSVSource(Folder, EditableExternalSource, Asset):
+# Asset must be used inherited before EditableExternalSource
+class CSVSource(Folder, Asset, EditableExternalSource):
     """CSV Source is an asset that displays tabular data from a
     spreadsheet or database. The format of the uploaded text file
     should be &#8216;comma separated values&#8217;. The asset can
@@ -71,24 +72,6 @@ class CSVSource(Folder, EditableExternalSource, Asset):
     # ACCESSORS
 
     security.declareProtected(
-        SilvaPermissions.AccessContentsInformation, 'get_file_size')
-    def get_file_size(self):
-        """Get the size of the file as it will be downloaded.
-        """
-        if self._raw_data:
-            return len(self._raw_data)
-        return 0
-
-    security.declareProtected(
-        SilvaPermissions.AccessContentsInformation, 'raw_data')
-    def raw_data(self):
-        if type(self._raw_data) != type(u''):
-            data = unicode(self._raw_data, self._data_encoding, 'replace')
-        else:
-            data = self._raw_data
-        return data
-
-    security.declareProtected(
         SilvaPermissions.AccessContentsInformation, 'to_html')
     def to_html(self, content, request, **parameters):
         """ render HTML for CSV source
@@ -116,12 +99,30 @@ class CSVSource(Folder, EditableExternalSource, Asset):
         return self.layout(table=rows, batch=batch_nav, parameters=param)
 
     security.declareProtected(
-        SilvaPermissions.AccessContentsInformation, 'get_title')
-    def get_title(self):
-        """Return meta-data title for this instance
+        SilvaPermissions.AccessContentsInformation, 'get_file')
+    def get_file(self):
+        """Return the file content.
         """
-        ms = self.service_metadata
-        return ms.getMetadataValue(self, 'silva-content', 'maintitle')
+        return self._raw_data
+
+    security.declareProtected(
+        SilvaPermissions.AccessContentsInformation, 'get_file_size')
+    def get_file_size(self):
+        """Get the size of the file as it will be downloaded.
+        """
+        if self._raw_data:
+            return len(self._raw_data)
+        return 0
+
+    security.declareProtected(
+        SilvaPermissions.AccessContentsInformation, 'get_mime_type')
+    def get_mime_type(self):
+        return 'text/csv'
+
+    security.declareProtected(
+        SilvaPermissions.AccessContentsInformation, 'get_filename')
+    def get_filename(self):
+        return self.getId() + '.csv'
 
     security.declareProtected(
         SilvaPermissions.ViewManagementScreens, 'get_table_class')
@@ -138,9 +139,7 @@ class CSVSource(Folder, EditableExternalSource, Asset):
 
     # MODIFIERS
 
-    security.declareProtected(
-        SilvaPermissions.ChangeSilvaContent, 'update_data')
-    def update_data(self, data):
+    def _update_data(self, data):
 
         def convert_to_unicode(line):
             return map(
@@ -159,13 +158,13 @@ class CSVSource(Folder, EditableExternalSource, Asset):
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'set_file')
     def set_file(self, file):
-        return self.update_data(file.read())
+        return self._update_data(file.read())
 
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'set_data_encoding')
     def set_data_encoding(self, encoding):
         self._data_encoding = encoding
-        self.update_data(self._raw_data)
+        self._update_data(self._raw_data)
 
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'set_table_class')
@@ -229,7 +228,7 @@ def encoding_source():
     return SimpleVocabulary(encodings)
 
 
-class ICSVSourceSchema(ITitledContent):
+class ICSVSourceFields(ITitledContent):
 
     file = silvaschema.Bytes(
         title=_(u"file"),
@@ -248,7 +247,25 @@ class CSVSourceAddForm(silvaforms.SMIAddForm):
     grok.context(ICSVSource)
     grok.name(u'Silva CSV Source')
 
-    fields = silvaforms.Fields(ICSVSourceSchema)
+    fields = silvaforms.Fields(ICSVSourceFields)
+
+
+class CSVSourceEditForm(silvaforms.SMISubForm):
+    """CSVSource Edit Form.
+    """
+    grok.view(AssetEditTab)
+    grok.order(10)
+
+    label = _(u'Edit file content')
+    ignoreContent = False
+    dataManager = silvaforms.SilvaDataManager
+
+    fields = silvaforms.Fields(ICSVSourceFields).omit('id')
+    fields['file'].fileSetLabel = _(
+        u"Click the Upload button to replace the current CSV with a new one.")
+    actions  = silvaforms.Actions(
+        silvaforms.CancelEditAction(),
+        silvaforms.EditAction())
 
 
 class CSVSourceView(silvaviews.View):

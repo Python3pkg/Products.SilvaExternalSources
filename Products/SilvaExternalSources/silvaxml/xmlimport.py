@@ -6,15 +6,16 @@
 import logging
 
 from five import grok
-from zope.component import getMultiAdapter
 
 from silva.core.interfaces import IVersion, ISilvaXMLImportHandler
 from silva.core.editor.transform.interfaces import ISilvaXMLImportFilter
 from silva.core.editor.transform.base import TransformationFilter
+from zeam.component import getWrapper
+from zeam.form.silva.interfaces import IXMLFormSerialization
 
-from Products.Formulator.interfaces import IFieldValueWriter
 from Products.SilvaExternalSources.silvaxml import NS_SOURCE_URI
-from Products.SilvaExternalSources.interfaces import ISourceInstances
+from Products.SilvaExternalSources.interfaces import IExternalSourceManager
+from Products.SilvaExternalSources.interfaces import SourceError
 
 logger = logging.getLogger('silva.xml')
 
@@ -29,42 +30,42 @@ class ExternalSourceImportFilter(TransformationFilter):
         self.handler = handler
 
     def prepare(self, name, text):
-        self.sources = ISourceInstances(text)
-        self.request = self.handler.getInfo().request
+        self.sources = getWrapper(self.context, IExternalSourceManager)
 
     def __call__(self, tree):
-        for source_node in tree.xpath(
+        request = self.handler.getInfo().request
+        for node in tree.xpath(
                 '//html:div[contains(@class, "external-source")]',
                 namespaces={'html': 'http://www.w3.org/1999/xhtml'}):
-            identifier = self.sources.new(
-                source_node.attrib['source-identifier'])
-            instance = self.sources.bind(
-                identifier, self.context, self.request)
-            source, form = instance.get_source_and_form()
-            if source is None:
+            name = node.attrib['source-identifier']
+            try:
+                source = self.sources(request, name=name)
+            except SourceError:
                 logger.warn(
-                    u"unknown external source %s in imported document" % (
-                        source_node.attrib['source-identifier']))
+                    u"unknown external source %r in import", name)
                 continue
-            fields_by_id = dict([(f.id, f) for f in form.fields()])
-            for field_node in source_node.xpath(
-                    './cs:fields/cs:field', namespaces={'cs': NS_SOURCE_URI}):
+            identifier = source.new()
+
+            deserializers = getWrapper(
+                source, IXMLFormSerialization).getDeserializers()
+            for field_node in node.xpath(
+                './cs:fields/cs:field', namespaces={'cs': NS_SOURCE_URI}):
                 field_id = field_node.attrib['id']
-                field = fields_by_id.get(field_id)
-                if field is None:
+                if field_id.startswith('field-'):
+                    # XXX Backward compatiblity 3.0b1
+                    field_id = field_id[6:].replace('-', '_')
+                deserializer = deserializers.get(field_id)
+                if deserializer is None:
+                    # This field have been removed. Ignore it.
                     logger.warn(
                         u"unknown external source parameter %s in %s" % (
-                            field_id, source_node.attrib['source-identifier']))
-                    # This field have been removed. Ignore it.
+                            field_id, node.attrib['source-identifier']))
                     continue
-                # The value is composed of sub-tags
-                value = field.deserialize(field_node, self.handler)
-                writer = getMultiAdapter(
-                    (field._field, form), IFieldValueWriter)
-                writer(value)
+                # Deserialize the value
+                deserializer(field_node, self.handler)
 
-            del source_node[:]
-            del source_node.attrib['source-identifier']
-            source_node.attrib['data-source-instance'] = identifier
+            del node[:]
+            del node.attrib['source-identifier']
+            node.attrib['data-source-instance'] = identifier
 
 

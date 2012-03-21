@@ -2,43 +2,38 @@
 # See also LICENSE.txt
 # $Id$
 
-# Python
-from zope.interface import implements
+import logging
+import sys
+import uuid
+
+from five import grok
+from zope.annotation.interfaces import IAnnotatable, IAnnotations
+import persistent
 
 # Zope
-from DocumentTemplate import sequence
-from AccessControl import ClassSecurityInfo, ModuleSecurityInfo
+from AccessControl import ClassSecurityInfo
 from App.class_init import InitializeClass
+from zExceptions.ExceptionFormatter import format_exception
 import Acquisition
 
 # Silva
 from Products.Silva import SilvaPermissions as permissions
 from Products.SilvaExternalSources.interfaces import IExternalSource
+from Products.SilvaExternalSources.interfaces import IExternalSourceManager
 from Products.SilvaExternalSources.interfaces import IEditableExternalSource
+from Products.SilvaExternalSources.interfaces import IExternalSourceParameters
+from Products.SilvaExternalSources.interfaces import availableSources # BBB
 
-from silva.core.interfaces import IRoot
+from Products.SilvaExternalSources import interfaces as err
 
+from silva.translations import translate as _
+from zeam.component import component
+from zeam.form import silva as silvaforms
 
-module_security = ModuleSecurityInfo(
-    'Products.SilvaExternalSources.ExternalSource')
-
-
-module_security.declarePublic('availableSources')
-def availableSources(context):
-    """List available sources in the site starting at context.
-    """
-    sources = {}
-    while context is not None:
-        for item in context.objectValues():
-            if IExternalSource.providedBy(item) and item.id not in sources:
-                sources[item.id] = item
-        if IRoot.providedBy(context):
-            break
-        context = Acquisition.aq_parent(context)
-    return sequence.sort(sources.items(), (('title', 'nocase', 'asc'),))
+logger = logging.getLogger('silva.externalsources')
 
 
-module_security.declarePublic('getSourceForId')
+# BBB
 def getSourceForId(context, identifier):
     """ Look for an Source with given id. Mimic normal aqcuisition,
     but skip objects which have given id but do not implement the
@@ -51,16 +46,8 @@ def getSourceForId(context, identifier):
 
 
 class ExternalSource(Acquisition.Implicit):
-    implements(IExternalSource)
+    grok.implements(IExternalSource)
     security = ClassSecurityInfo()
-
-    # XXX was management_page_charset = Converters.default_encoding
-    # that doesn't work, because the add screens DON'T USE THE ZOPE
-    # DEFAULT ENCODING! AAAAAAARGH
-
-    management_page_charset = 'UTF-8'
-
-    # Cannot make it 'private'; the form won't work in the ZMI if it was.
     parameters = None
 
     _data_encoding = 'UTF-8'
@@ -73,7 +60,7 @@ class ExternalSource(Acquisition.Implicit):
     security.declareProtected(
         permissions.AccessContentsInformation, 'get_parameters_form')
     def get_parameters_form(self):
-        """ get to the parameters form
+        """ Return the parameters fields.
         """
         return self.parameters
 
@@ -124,7 +111,7 @@ InitializeClass(ExternalSource)
 
 
 class EditableExternalSource(ExternalSource):
-    implements(IEditableExternalSource)
+    grok.implements(IEditableExternalSource)
     security = ClassSecurityInfo()
 
     security.declareProtected(
@@ -171,3 +158,169 @@ class EditableExternalSource(ExternalSource):
 
 
 InitializeClass(EditableExternalSource)
+
+
+class ExternalSourceParameters(persistent.Persistent):
+    grok.implements(IExternalSourceParameters)
+
+    def __init__(self, parameter_identifier, source_identifier):
+        self.__source_identifier = source_identifier
+        self.__parameter_identifier = parameter_identifier
+
+    def get_parameter_identifier(self):
+        return self.__parameter_identifier
+
+    def get_source_identifier(self):
+        return self.__source_identifier
+
+
+
+@component(IAnnotatable, provides=IExternalSourceManager)
+class ExternalSourceManager(object):
+    grok.implements(IExternalSourceManager)
+    KEY = 'Products.SilvaExternalSources'
+
+    def __init__(self, context):
+        self.context = context
+        self.sources = IAnnotations(context).setdefault(
+            self.KEY, persistent.mapping.PersistentMapping())
+
+    def new(self, source):
+        assert IExternalSource.providedBy(source)
+        identifier = str(uuid.uuid1())
+        parameters = ExternalSourceParameters(identifier, source.id)
+        self.sources[identifier] = parameters
+        return parameters
+
+    def remove(self, identifier):
+        del self.sources[identifier]
+
+    def all(self):
+        return set(self.sources.keys())
+
+    def __call__(self, request, instance=None, name=None):
+        parameters = None
+        if instance is not None:
+            parameters = self.sources.get(instance)
+            if parameters is None:
+                raise err.ParametersMissingError(instance)
+            name = parameters.get_source_identifier()
+        source = getattr(self.context, name, None)
+        if source is not None and IExternalSource.providedBy(source):
+            return ExternalSourceController(source, self, request, parameters)
+        raise err.SourceMissingError(source)
+
+
+class ExternalSourceController(silvaforms.FormData):
+    security = ClassSecurityInfo()
+
+    actions = silvaforms.Actions()
+    fields = silvaforms.Fields()
+    dataManager = silvaforms.FieldValueDataManagerFactory
+    ignoreRequest = True
+    ignoreContent = False
+
+    def __init__(self, source, manager, request, instance):
+        super(ExternalSourceController, self).__init__(
+            manager.context, request, instance)
+        self.manager = manager
+        self.source = source
+        self.__parent__ = manager.context # Enable security checks.
+        fields = source.get_parameters_form()
+        if fields is not None:
+            self.fields = silvaforms.Fields(fields)
+
+    def getId(self):
+        content = self.getContent()
+        if content is not None:
+            return content.get_parameter_identifier()
+        return None
+
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'getSourceId')
+    def getSourceId(self):
+        return self.source.id
+
+    def extractData(self, fields=None):
+        if fields is None:
+            fields = self.fields
+        return super(ExternalSourceController, self).extractData(fields)
+
+    @property
+    def label(self):
+        return self.source.get_title()
+
+    @property
+    def description(self):
+        return self.source.get_description()
+
+    def new(self):
+        assert self.getContent() is None
+        self.setContentData(self.manager.new(self.source))
+        return self.getId()
+
+    @silvaforms.action(_(u"Create"))
+    def create(self):
+        self.new()
+        return self.save()
+
+    @silvaforms.action(_(u"Save"))
+    def save(self):
+        assert self.getContent() is not None
+        data, errors = self.extractData()
+        if errors:
+            return silvaforms.FAILURE
+        manager = self.getContentData()
+        for field in self.fields:
+            value = data.getWithDefault(field.identifier)
+            if value is not silvaforms.NO_CHANGE:
+                manager.set(field.identifier, value)
+        return silvaforms.SUCCESS
+
+    @silvaforms.action(_(u"Remove"))
+    def remove(self):
+        assert self.getContent() is not None
+        manager = self.getContentData()
+        identifier = self.getId()
+        for field in self.fields:
+            manager.delete(field.identifier)
+        self.manager.remove(identifier)
+        return silvaforms.SUCCESS
+
+    def widgets(self):
+        widgets = silvaforms.Widgets(form=self, request=self.request)
+        widgets.extend(self.fields)
+        widgets.update()
+        return widgets
+
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'render')
+    def render(self, preview=False):
+        if preview and not self.source.is_previewable():
+            return u'<b>This Code source is not previewable.</b>'
+        values = {}
+        if self.fields:
+            if not self.ignoreRequest:
+                values, errors = self.extractData()
+                if errors:
+                    raise err.ParametersError(errors)
+            elif not self.ignoreContent and self.getContent() is not None :
+                manager = self.getContentData()
+                for field in self.fields:
+                    try:
+                        value = manager.get(field.identifier)
+                    except KeyError:
+                        value = field.getDefaultValue(self)
+                    values[field.identifier] = value
+            else:
+                raise err.ParametersError()
+
+        try:
+            return self.source.to_html(self.context, self.request, **values)
+        except:
+            info = u''.join(format_exception(*sys.exc_info()))
+            logger.error(info)
+            raise err.SourceError(info)
+
+
+InitializeClass(ExternalSourceController)

@@ -1,11 +1,11 @@
-<form class="external_source_fields"
+<form class="external_source_fields form-content form-fields-container"
       i18n:domain="silva">
   <div role="presentation"
        class="cke_dialog_ui_vbox_child external_source_field"
        tal:repeat="field rest.fields">
     <label class="#" for="#"
            tal:attributes="class field.label_class;
-                           for field.id">
+                           for field.identifier">
       <span class="description cke_light_background"
             tal:content="field.description"
             tal:condition="field.description">

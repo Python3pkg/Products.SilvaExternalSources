@@ -131,10 +131,12 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         except KeyError:
             return None
         parameters['REQUEST'] = request
-        parameters['version'] = None
-        parameters['model'] = content.get_content()
         if IVersion.providedBy(content):
             parameters['version'] = content
+            parameters['model'] = content.get_content()
+        else:
+            parameters['version'] = None
+            parameters['model'] = content
         __traceback_supplement__ = (CodeSourceErrorSupplement, self, parameters)
         result = script(**parameters)
         if isinstance(result,  unicode):

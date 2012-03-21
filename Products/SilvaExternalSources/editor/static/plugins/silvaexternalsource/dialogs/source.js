@@ -21,6 +21,8 @@
             type: 'POST',
             success: function(html) {
                 $container.html(html);
+                var $form = $container.children('form');
+                $form.trigger('load-smiform', {form: $form, container: $form});
             },
             error: function() {
                 $container.html('');

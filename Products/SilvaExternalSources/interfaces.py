@@ -2,10 +2,44 @@
 # See also LICENSE.txt
 # $Id$
 
-from silva.core.interfaces import ISilvaService, ISilvaLocalService, IAsset
-from silva.core.interfaces import IXMLZEXPExportable
-from silva.core.interfaces import IDataManager
+import Acquisition
+
+from five import grok
 from zope.interface import Interface, Attribute
+from zope.schema.interfaces import IContextSourceBinder
+from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
+
+from silva.core.interfaces import ISilvaService, ISilvaLocalService
+from silva.core.interfaces import IXMLZEXPExportable
+from silva.core.interfaces import INonPublishable, IViewableObject
+from silva.core.interfaces import IAsset, IRoot
+
+
+def availableSources(context):
+    """List available sources in the site starting at context.
+    """
+    sources = {}
+    while context is not None:
+        for item in context.objectValues():
+            if IExternalSource.providedBy(item) and item.id not in sources:
+                sources[item.id] = item
+        if IRoot.providedBy(context):
+            break
+        context = Acquisition.aq_parent(context)
+    sources = sources.items()
+    sources.sort(key=lambda i: i[1].get_title().lower())
+    return sources
+
+
+@grok.provider(IContextSourceBinder)
+def source_source(context):
+
+    def make_term(identifier, source):
+        return SimpleTerm(value=source,
+                          token=identifier,
+                          title=unicode(source.get_title()))
+
+    return SimpleVocabulary([make_term(*t) for t in availableSources(context)])
 
 
 class IExternalSource(Interface):
@@ -51,17 +85,6 @@ class IExternalSource(Interface):
         called once.
         """
 
-    def get_data_encoding():
-        """ Returns the encoding of source's data.
-
-        Silva expects unicode for its document data. This parameter
-        specifies the encoding of the original data so it can be properly
-        converted to unicode when passing the data to the Silva Document.
-
-        NOTE: This is usually only used *within* the external source
-        implementation.
-        """
-
 
 class IEditableExternalSource(IExternalSource):
     """An external source where settings can be edited.
@@ -89,9 +112,35 @@ class ICodeSource(IEditableExternalSource, IXMLZEXPExportable):
     """Code source: an external source built in ZMI.
     """
 
+    def get_data_encoding():
+        """ Returns the encoding of source's data.
+
+        Silva expects unicode for its document data. This parameter
+        specifies the encoding of the original data so it can be properly
+        converted to unicode when passing the data to the Silva Document.
+
+        NOTE: This is usually only used *within* the code source
+        implementation.
+        """
+
     def test_source():
         """Test if the source is working or if it has problems. It
         should return None if there are no problems.
+        """
+
+
+class ISourceAsset(INonPublishable, IViewableObject, IExternalSource):
+    """Source asset store a code and parameters to render it.
+    """
+
+    def get_controller(request):
+        """Return the external source controller used to manage this
+        instance.
+        """
+
+    def set_parameters_identifier(identifier):
+        """Set the external source instance identifier used for this
+        source asset.
         """
 
 
@@ -163,67 +212,52 @@ class ICSVSource(IEditableExternalSource, IAsset):
 
 # This define a parameter instance of a source.
 
-class ISourceParameters(Interface):
-    """Store parameters for a given source instance.
+
+class IExternalSourceManager(Interface):
+    """Manage external source buisness.
     """
 
-    def __init__(source_identifier):
-        """Create a new instance of the given source.
-        """
+class IExternalSourceParameters(Interface):
+    """Store parameters for a given source instance.
+    """
 
     def get_source_identifier():
         """Return the source identifier corresponding to this
         source parameters.
         """
 
-
-class IBoundSourceInstance(IDataManager):
-    """Bind a request, context and source parameters together, to
-    read, update and render a source.
-    """
-    identifier = Attribute(u"Source identifier")
-
-    def get_source_and_form(request=None):
-        """Return the associated source and form to the instance.
+    def get_parameter_identifier():
+        """Return an identfier that identifies those parameters.
         """
 
 
-class ISourceInstances(Interface):
-    """Manage a set of source instances.
+class SourceError(ValueError):
+    """Error related with the handling of source objects.
     """
 
-    def new(source_identifier):
-        """Return a new source instance identifier for the given
-        source identifier.
-        """
-
-    def remove(instance_identifier, context, request):
-        """Remove the identifier instance for the list of instances.
-        """
-
-    def bind(instance_identifier, context, request):
-        """Bind the source to the given context and request.
-        """
-
-    # All the following methods let you access the instances like in
-    # dictionnary.
-
-    def items():
-        pass
-
-    def keys():
-        pass
-
-    def values():
-        pass
-
-    def get(instance_identifier):
-        pass
-
-    def __getitem__(instance_identifier):
-        pass
+    def to_html(self):
+        return "Error while rendering the External Source."
 
 
-class SourceMissingError(KeyError):
-    """Exception raised when some source information are missing.
+class SourceMissingError(SourceError):
+    """The source is not available.
     """
+
+    def to_html(self):
+        return "External Source %s is not available." % self.args
+
+
+class ParametersError(SourceError):
+    """The parameters are broken.
+    """
+
+    def to_html(self):
+        return "Error while validating the External Source parameters."
+
+
+class ParametersMissingError(ParametersError):
+    """The parameters are missing.
+    """
+
+    def to_html(self):
+        return "External Source parameters are missing."

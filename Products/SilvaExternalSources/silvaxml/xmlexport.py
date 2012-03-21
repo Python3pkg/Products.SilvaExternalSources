@@ -5,11 +5,14 @@
 
 from five import grok
 
-from silva.core.interfaces import IVersion, ISilvaXMLExportHandler
 from silva.core.editor.transform.base import TransformationFilter
 from silva.core.editor.transform.interfaces import ISilvaXMLExportFilter
+from silva.core.interfaces import IVersion, ISilvaXMLExportHandler
+from zeam.component import getWrapper
+from zeam.form.silva.interfaces import IXMLFormSerialization
+
 from Products.Silva.silvaxml import xmlexport
-from Products.SilvaExternalSources.interfaces import ISourceInstances
+from Products.SilvaExternalSources.interfaces import IExternalSourceManager
 from Products.SilvaExternalSources.silvaxml import NS_SOURCE_URI
 from Products.SilvaExternalSources.silvaxml.treehandler import \
     ElementTreeContentHandler
@@ -38,7 +41,7 @@ class ExternalSourceExportFilter(TransformationFilter):
         self.handler = handler
 
     def prepare(self, name, text):
-        self.sources = ISourceInstances(text)
+        self.sources = getWrapper(self.context, IExternalSourceManager)
 
     def __call__(self, tree):
         request = self.handler.getInfo().request
@@ -47,16 +50,19 @@ class ExternalSourceExportFilter(TransformationFilter):
                 namespaces={'html': 'http://www.w3.org/1999/xhtml'}):
             identifier = node.attrib['data-source-instance']
             del node.attrib['data-source-instance']
-            instance = self.sources.bind(identifier, self.context, request)
-            source, form = instance.get_source_and_form()
-            node.attrib['source-identifier'] = source.getId()
 
+            source = self.sources(request, instance=identifier)
+            node.attrib['source-identifier'] = source.getSourceId()
+
+            # Fix this.
             producer = FieldProducer(self.handler, root=node)
             producer.startPrefixMapping(None, NS_SOURCE_URI)
             producer.startElement('fields')
-            for field in form.fields(ignore_content=False):
-                producer.startElement('field', {(None, 'id'): field.id})
-                field.serialize(producer)
+            for serializer in getWrapper(
+                source, IXMLFormSerialization).getSerializers():
+                producer.startElement(
+                    'field', {(None, 'id'): serializer.identifier})
+                serializer(producer)
                 producer.endElement('field')
             producer.endElement('fields')
 

@@ -4,7 +4,8 @@ ChangeLog
 3.0 (unreleased)
 ----------------
 
-- ...
+- fix code source pop-up for small screens.
+  [wim]
 
 3.0b1 (2011/11/11)
 ------------------

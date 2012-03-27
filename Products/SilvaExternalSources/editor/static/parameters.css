@@ -1,7 +1,7 @@
 /* Code source dialog */
 .cke_dialog_contents .external_source_edit,
 .cke_dialog_contents .external_source_add {
-  max-height: 500px;
+  max-height: 360px;
   overflow-y: auto;
 }
 .cke_dialog_contents .external_source_field {

@@ -246,6 +246,9 @@ class ExternalSourceController(silvaforms.FormData):
             fields = self.fields
         return super(ExternalSourceController, self).extractData(fields)
 
+    def editable(self):
+        return len(self.fields) != 0
+
     @property
     def label(self):
         return self.source.get_title()

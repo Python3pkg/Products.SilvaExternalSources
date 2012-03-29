@@ -15,9 +15,9 @@ from silva.core.editor.transform.editor.output import clean_editor_attributes
 from silva.core.editor.transform.interfaces import IDisplayFilter
 from silva.core.editor.transform.interfaces import IInputEditorFilter
 from silva.core.editor.transform.interfaces import ISaveEditorFilter
-from silva.core.interfaces import IVersion
 
 from Products.SilvaExternalSources.interfaces import IExternalSourceManager
+from Products.SilvaExternalSources.interfaces import ISourceEditableVersion
 from Products.SilvaExternalSources.interfaces import SourceError
 from Products.SilvaExternalSources.editor.utils import parse_qs
 
@@ -34,7 +34,7 @@ class ExternalSourceSaveFilter(TransformationFilter):
     grok.implements(ISaveEditorFilter)
     grok.provides(ISaveEditorFilter)
     grok.order(20)
-    grok.adapts(IVersion, IBrowserRequest)
+    grok.adapts(ISourceEditableVersion, IBrowserRequest)
 
     def prepare(self, name, text):
         self.sources = getComponent(
@@ -73,7 +73,7 @@ class ExternalSourceInputFilter(TransformationFilter):
     grok.implements(IInputEditorFilter)
     grok.provides(IInputEditorFilter)
     grok.order(20)
-    grok.adapts(IVersion, IBrowserRequest)
+    grok.adapts(ISourceEditableVersion, IBrowserRequest)
 
     def __call__(self, tree):
         for node in tree.xpath(SOURCE_XPATH):
@@ -88,7 +88,7 @@ class ExternalSourceDisplayFilter(TransformationFilter):
     grok.implements(IDisplayFilter)
     grok.provides(IDisplayFilter)
     grok.order(20)
-    grok.adapts(IVersion, IBrowserRequest)
+    grok.adapts(ISourceEditableVersion, IBrowserRequest)
 
     def prepare(self, name, text):
         self.sources = getComponent(

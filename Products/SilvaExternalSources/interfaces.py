@@ -12,7 +12,7 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from silva.core.interfaces import ISilvaService, ISilvaLocalService
 from silva.core.interfaces import IXMLZEXPExportable
 from silva.core.interfaces import INonPublishable, IViewableObject
-from silva.core.interfaces import IAsset, IRoot
+from silva.core.interfaces import IAsset, IRoot, IVersion
 
 
 def availableSources(context):
@@ -130,7 +130,7 @@ class ICodeSource(IEditableExternalSource, IXMLZEXPExportable):
 
 
 class ISourceAsset(INonPublishable, IViewableObject, IExternalSource):
-    """Source asset store a code and parameters to render it.
+    """Source asset store a external source and parameters to render it
     """
 
     def get_controller(request):
@@ -143,6 +143,10 @@ class ISourceAsset(INonPublishable, IViewableObject, IExternalSource):
         source asset.
         """
 
+
+class ISourceEditableVersion(IVersion):
+    """A version of a content using the editor external source features
+    """
 
 # Code source Service support.
 

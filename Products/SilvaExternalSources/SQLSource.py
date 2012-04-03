@@ -43,6 +43,7 @@ class SQLSource(ZMIObject, EditableExternalSource, Folder):
     manage_options = (
         {'label':'Edit', 'action':'editSQLSource'},
         ) + Folder.manage_options
+    management_page_charset = 'utf-8'
 
     security.declareProtected(ViewManagementScreens, 'editSQLSource')
     editSQLSource = PageTemplateFile(

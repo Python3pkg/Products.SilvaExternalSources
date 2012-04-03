@@ -164,6 +164,9 @@ class CodeSourceInstallable(object):
         if self.__config.has_option('source', 'previewable'):
             value = self.__config.getboolean('source', 'previewable')
             source.set_previewable(value)
+        if self.__config.has_option('source', 'usable'):
+            value = self.__config.getboolean('source', 'usable')
+            source.set_usable(value)
 
         for filename in self.__files:
             if filename == CONFIGURATION_FILE:

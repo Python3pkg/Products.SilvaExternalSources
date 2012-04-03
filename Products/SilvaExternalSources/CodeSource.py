@@ -69,6 +69,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     manage_options = (
         {'label':'Edit', 'action':'editCodeSource'},
         ) + Folder.manage_options
+    management_page_charset = 'utf-8'
 
     security.declareProtected(ViewManagementScreens, 'editCodeSource')
     editCodeSource = PageTemplateFile(
@@ -152,7 +153,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     security.declareProtected(ViewManagementScreens, 'manage_editCodeSource')
     def manage_editCodeSource(
         self, title, script_id, data_encoding, description=None,
-        cacheable=None, previewable=None, update_source=None):
+        cacheable=None, previewable=None, usable=None, update_source=None):
         """ Edit CodeSource object
         """
         if update_source and self.get_fs_location():
@@ -196,12 +197,16 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             self.set_description(description)
             msg += "Description changed. "
 
-        if not (not not cacheable) is (not not self._is_cacheable):
-            self.set_cacheable(cacheable)
+        if not bool(cacheable) is self.is_cacheable():
+            self.set_cacheable(bool(cacheable))
             msg += "Cacheability setting changed. "
 
-        if not (not not previewable) is (not not self.is_previewable()):
-            self.set_previewable(previewable)
+        if not bool(usable) is self.is_usable():
+            self.set_usable(bool(usable))
+            msg += "Usability setting changed. "
+
+        if not bool(previewable) is self.is_previewable():
+            self.set_previewable(bool(previewable))
             msg += "Previewable setting changed. "
 
         return self.editCodeSource(manage_tabs_message=msg)

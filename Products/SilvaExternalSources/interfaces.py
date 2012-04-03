@@ -21,7 +21,8 @@ def availableSources(context):
     sources = {}
     while context is not None:
         for item in context.objectValues():
-            if IExternalSource.providedBy(item) and item.id not in sources:
+            if (IExternalSource.providedBy(item) and
+                item.id not in sources and item.is_usable()):
                 sources[item.id] = item
         if IRoot.providedBy(context):
             break
@@ -65,7 +66,7 @@ class IExternalSource(Interface):
         """
 
     def get_description():
-        """ Returns the purpose of this external source.
+        """Returns the purpose of this external source.
 
         The description is shown in the 'external data' element's editor.
         It can contain a description of the use of its parameters and the
@@ -73,16 +74,20 @@ class IExternalSource(Interface):
         """
 
     def is_previewable(**parameters):
-        """ Specify the previewability (in kupu) of the source
+        """Specify the previewability (in kupu) of the source
         """
 
     def is_cacheable(**parameters):
-        """ Returns the cacheability (true or false) for this source.
+        """Returns the cacheability (true or false) for this source.
 
         Silva Document atempts to cache the public rendering. If a document
         references this external source, it will check for its cachability.
         If the data from this source can be cached this source will only be
         called once.
+        """
+
+    def is_usable():
+        """Returns True if the source is usable in new contents.
         """
 
 
@@ -105,6 +110,10 @@ class IEditableExternalSource(IExternalSource):
 
     def set_previewable(previewable):
         """Set previewablility of the external source in the WYSIWYG (boolean).
+        """
+
+    def set_usable(usable):
+        """Set if the source is usable in new content.
         """
 
 

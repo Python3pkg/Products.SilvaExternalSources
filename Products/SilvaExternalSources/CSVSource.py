@@ -53,8 +53,6 @@ class CSVSource(Folder, Asset, EditableExternalSource):
     grok.implements(ICSVSource)
 
     meta_type = "Silva CSV Source"
-    management_page_charset = 'utf-8'
-
     security = ClassSecurityInfo()
 
     _layout_id = 'layout'

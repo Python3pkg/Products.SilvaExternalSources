@@ -54,6 +54,7 @@ class ExternalSource(Acquisition.Implicit):
     _description = ''
     _is_cacheable = False
     _is_previewable = True
+    _is_usable = True
 
     # ACCESSORS
 
@@ -70,6 +71,13 @@ class ExternalSource(Acquisition.Implicit):
         """ Render the HTML for inclusion in the rendered Silva HTML.
         """
         raise NotImplementedError
+
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'is_usable')
+    def is_usable(self):
+        """ Return true if the external source must be usable.
+        """
+        return self._is_usable
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'is_cacheable')
@@ -117,45 +125,51 @@ class EditableExternalSource(ExternalSource):
     security.declareProtected(
         permissions.ViewManagementScreens, 'set_form')
     def set_form(self, form):
-        """ Set Formulator parameters form
+        """Set Formulator parameters form
         """
         self.parameters = form
 
     security.declareProtected(
         permissions.ViewManagementScreens, 'set_data_encoding')
     def set_data_encoding(self, encoding):
-        """ set encoding of data
+        """Set encoding of data.
         """
         self._data_encoding = encoding
 
     security.declareProtected(
         permissions.ViewManagementScreens, 'set_title')
     def set_title(self, title):
-        """ set title
+        """Set title
         """
         self.title = title
 
     security.declareProtected(
         permissions.ViewManagementScreens, 'set_description')
     def set_description(self, description):
-        """ set description of external source's use
+        """Set description of external source's use.
         """
         self._description = description
 
     security.declareProtected(
         permissions.ViewManagementScreens, 'set_cacheable')
     def set_cacheable(self, cacheable):
-        """ set cacheablility of source
+        """Set cacheablility of source.
         """
         self._is_cacheable = cacheable
 
     security.declareProtected(
         permissions.ViewManagementScreens, 'set_previewable')
     def set_previewable(self, previewable):
-        """ set previewablility (in kupu) of source
+        """Set previewablility of source.
         """
-        self._is_previewable = not not previewable
+        self._is_previewable = bool(previewable)
 
+    security.declareProtected(
+        permissions.ViewManagementScreens, 'set_usable')
+    def set_usable(self, usable):
+        """Set usability.
+        """
+        self._is_usable = bool(usable)
 
 InitializeClass(EditableExternalSource)
 

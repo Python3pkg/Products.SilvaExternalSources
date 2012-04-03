@@ -60,6 +60,9 @@ class SourceAsset(NonPublishable, ViewableObject, SimpleItem.SimpleItem):
         # XXX Need to proxy info
         return ''
 
+    def is_usable(self):
+        return True
+
     def is_previewable(self):
         # XXX Need to proxy info
         return True

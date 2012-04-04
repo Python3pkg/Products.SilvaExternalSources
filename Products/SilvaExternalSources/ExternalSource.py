@@ -271,6 +271,13 @@ class ExternalSourceController(silvaforms.FormData):
     def description(self):
         return self.source.get_description()
 
+    def index(self):
+        # Return index entries for Silva Indexer.
+        return []
+
+    def fulltext(self):
+        return []
+
     def new(self):
         assert self.getContent() is None
         self.setContentData(self.manager.new(self.source))

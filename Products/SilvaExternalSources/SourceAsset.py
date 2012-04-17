@@ -7,6 +7,7 @@ from zope.interface import Interface
 
 from AccessControl import ClassSecurityInfo
 from App.class_init import InitializeClass
+from Acquisition import aq_base
 from OFS import SimpleItem
 
 from Products.Silva.Publishable import NonPublishable
@@ -39,12 +40,21 @@ class SourceAsset(NonPublishable, ViewableObject, SimpleItem.SimpleItem):
     security.declarePrivate('set_parameter_identifier')
     def set_parameters_identifier(self, identifier):
         self._parameter_identifier = identifier
+        if hasattr(aq_base(self), '_v_original_source'):
+            delattr(self, '_v_original_source')
 
-    security.declareProtected(
-        permissions.AccessContentsInformation, 'get_controller')
+    security.declarePrivate('get_controller')
     def get_controller(self, request):
         factory = getWrapper(self, IExternalSourceManager)
         return factory(request, instance=self._parameter_identifier)
+
+    security.declarePrivate('get_original_source')
+    def get_original_source(self):
+        if not hasattr(aq_base(self), '_v_original_source'):
+            manager = getWrapper(self, IExternalSourceManager)
+            _, source = manager.get_parameters(self._parameter_identifier)
+            self._v_original_source = source
+        return self._v_original_source
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'get_parameters_form')
@@ -57,19 +67,43 @@ class SourceAsset(NonPublishable, ViewableObject, SimpleItem.SimpleItem):
         return self.get_controller(request).render()
 
     def get_description(self):
-        # XXX Need to proxy info
-        return ''
+        try:
+            source = self.get_original_source()
+            return source.get_description()
+        except SourceError:
+            return _('Broken or missing source.')
 
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'get_icon')
+    def get_icon(self):
+        try:
+            source = self.get_original_source()
+            return source.get_icon()
+        except SourceError:
+            return None
+
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'is_usable')
     def is_usable(self):
         return True
 
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'is_previewable')
     def is_previewable(self):
-        # XXX Need to proxy info
-        return True
+        try:
+            source = self.get_original_source()
+            return source.is_previewable()
+        except SourceError:
+            return False
 
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'is_cacheable')
     def is_cacheable(self):
-        # XXX Need to proxy info
-        return True
+        try:
+            source = self.get_original_source()
+            return source.is_cacheable()
+        except SourceError:
+            return False
 
 
 InitializeClass(SourceAsset)

@@ -41,7 +41,7 @@ class ListAvailableSources(UIREST):
         sources = []
         for identifier, source in availableSources(self.context):
             sources.append({'identifier': identifier,
-                            'title': source.title})
+                            'title': source.get_title()})
         return self.json_response(sources)
 
 

@@ -65,6 +65,11 @@ class IExternalSource(Interface):
         """Returns the title of this instance.
         """
 
+    def get_icon():
+        """Returns an icon associated to the code source. This would
+        be a ZODB object.
+        """
+
     def get_description():
         """Returns the purpose of this external source.
 
@@ -142,14 +147,17 @@ class ISourceAsset(INonPublishable, IViewableObject, IExternalSource):
     """Source asset store a external source and parameters to render it
     """
 
-    def get_controller(request):
-        """Return the external source controller used to manage this
-        instance.
-        """
-
     def set_parameters_identifier(identifier):
         """Set the external source instance identifier used for this
         source asset.
+        """
+
+    def get_controller(request):
+        """Return the controller associated to the source.
+        """
+
+    def get_original_source():
+        """Return the original source object associated to this asset.
         """
 
 
@@ -229,6 +237,11 @@ class ICSVSource(IEditableExternalSource, IAsset):
 class IExternalSourceManager(Interface):
     """Manage external source buisness.
     """
+
+    def get_parameters(instance=None, name=None):
+        """Return the parameters and the source associated to this
+        instance or source.
+        """
 
 class IExternalSourceParameters(Interface):
     """Store parameters for a given source instance.

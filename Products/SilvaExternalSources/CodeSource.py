@@ -114,6 +114,10 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             return errors
         return None
 
+    security.declareProtected(AccessContentsInformation, 'get_icon')
+    def get_icon(self):
+        return self._getOb('icon.png', None)
+
     # ACCESSORS
     security.declareProtected(AccessContentsInformation, 'get_script_id')
     def get_script_id(self):

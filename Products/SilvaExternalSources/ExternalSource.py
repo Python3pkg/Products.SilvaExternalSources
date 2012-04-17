@@ -114,6 +114,11 @@ class ExternalSource(Acquisition.Implicit):
     def get_title (self):
         return self.title or self.getId()
 
+    security.declareProtected(
+        permissions.AccessContentsInformation, 'get_icon')
+    def get_icon(self):
+        return None
+
 
 InitializeClass(ExternalSource)
 
@@ -212,7 +217,7 @@ class ExternalSourceManager(object):
     def all(self):
         return set(self.sources.keys())
 
-    def __call__(self, request, instance=None, name=None):
+    def get_parameters(self, instance=None, name=None):
         parameters = None
         if instance is not None:
             parameters = self.sources.get(instance)
@@ -221,8 +226,12 @@ class ExternalSourceManager(object):
             name = parameters.get_source_identifier()
         source = getattr(self.context, name, None)
         if source is not None and IExternalSource.providedBy(source):
-            return ExternalSourceController(source, self, request, parameters)
+            return parameters, source
         raise err.SourceMissingError(source)
+
+    def __call__(self, request, instance=None, name=None):
+        parameters, source = self.get_parameters(instance=instance, name=name)
+        return ExternalSourceController(source, self, request, parameters)
 
 
 class ExternalSourceController(silvaforms.FormData):

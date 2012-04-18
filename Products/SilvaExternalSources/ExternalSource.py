@@ -320,7 +320,9 @@ class ExternalSourceController(silvaforms.FormData):
         self.manager.remove(identifier)
         return silvaforms.SUCCESS
 
-    def widgets(self):
+    def fieldWidgets(self, ignoreRequest=False, ignoreContent=True):
+        self.ignoreRequest = ignoreRequest
+        self.ignoreContent = ignoreContent
         widgets = silvaforms.Widgets(form=self, request=self.request)
         widgets.extend(self.fields)
         widgets.update()

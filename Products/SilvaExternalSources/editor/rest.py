@@ -111,7 +111,8 @@ class SourceParameters(SourceAPI):
                     if field.meta_type in STYLES:
                         field.customize(STYLES[field.meta_type])
 
-            for widget in source.widgets():
+            for widget in source.fieldWidgets(
+                ignoreRequest=False, ignoreContent=False):
                 label_class = ['cke_dialog_ui_labeled_label']
                 if widget.required:
                     label_class.append('cke_required')

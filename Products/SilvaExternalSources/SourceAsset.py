@@ -138,10 +138,18 @@ class SourceAssetAddForm(silvaforms.SMIAddForm):
         self.__name__ = '/'.join((self.__name__, name))
         return self
 
+    @property
+    def formErrors(self):
+        if self.source is not None:
+            return self.source.formErrors
+        return []
+
     def updateWidgets(self):
         super(SourceAssetAddForm, self).updateWidgets()
         if self.source is not None:
-            self.fieldWidgets.extend(self.source.widgets())
+            self.fieldWidgets.extend(
+                self.source.fieldWidgets(
+                    ignoreRequest=False, ignoreContent=True))
 
     @silvaforms.action(
         _(u"Select source"),
@@ -173,6 +181,7 @@ class SourceAssetAddForm(silvaforms.SMIAddForm):
         source = factory(self.request, name=self.source.getSourceId())
         source.create()
         content.set_parameters_identifier(source.getId())
+        self.send_message(_(u"Source Asset added."), type="feedback")
         raise RedirectToPage(content=content)
 
 
@@ -182,20 +191,32 @@ class SourceAssetEditForm(silvaforms.SMIEditForm):
     actions = silvaforms.Actions(silvaforms.CancelEditAction())
 
     def __init__(self, context, request):
-        super(SourceAssetEditForm, self).__init__(context, request)
         self.controller = context.get_controller(request)
+        super(SourceAssetEditForm, self).__init__(context, request)
 
     def updateWidgets(self):
         super(SourceAssetEditForm, self).updateWidgets()
         if self.controller is not None:
-            self.fieldWidgets.extend(self.controller.widgets())
+            self.fieldWidgets.extend(
+                self.controller.fieldWidgets(
+                    ignoreRequest=False, ignoreContent=False))
+
+    @property
+    def formErrors(self):
+        if self.controller is not None:
+            return self.controller.formErrors
+        return []
 
     @silvaforms.action(
         _(u"Save"),
+        available=lambda form: form.controller is not None,
         implements=silvaforms.IDefaultAction,
         accesskey=u'ctrl+s')
     def save(self):
-        return self.controller.save()
+        status = self.controller.save()
+        if status is silvaforms.SUCCESS:
+            self.send_message(_(u"Changes saved."), type="feedback")
+        return status
 
 
 class SourceAssetView(silvaviews.View):

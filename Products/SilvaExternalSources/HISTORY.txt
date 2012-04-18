@@ -1,7 +1,7 @@
 ChangeLog
 =========
 
-2.3.4-bethel.3 (unreleased)
+2.3.4-bethel.3 (2012-04-18)
 ---------------------------
 
 Bethel Changes

@@ -1,6 +1,17 @@
 ChangeLog
 =========
 
+2.3.4-bethel.3 (unreleased)
+---------------------------
+
+Bethel Changes
+--------------
+
+- the renderer script can now be a zope view.  For the renderer id, 
+  prefix the view name with '@@'.  The view should be registered with 
+  IExternalSource or ICodeSource as the context.
+  
+
 2.3.4-bethel.2 (2011-10-13)
 ------------------
 

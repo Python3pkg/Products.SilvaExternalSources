@@ -60,7 +60,7 @@ Version of this file: $Revision: 1.7 $
       <td align="left" valign="top">
         <div class="form-label">
           <label for="script_id">Renderer Id</label><br /><small>The id of the script or template that renders<br />
-          the output of the code source.</small>
+          the output of the code source.  When the id starts with '@@', a zope view is searched for.</small>
         </div>
       </td>
       <td align="left" valign="top">

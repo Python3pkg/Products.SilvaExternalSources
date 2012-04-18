@@ -6,7 +6,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '2.3.4-bethel.2'
+version = '2.3.4-bethel.3'
 
 setup(name='Products.SilvaExternalSources',
       version=version,

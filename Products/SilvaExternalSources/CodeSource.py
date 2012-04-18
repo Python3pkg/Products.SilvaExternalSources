@@ -7,6 +7,7 @@ from App.class_init import InitializeClass
 from AccessControl import ClassSecurityInfo
 from OFS.Folder import Folder
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from zope.component import getMultiAdapter, queryMultiAdapter
 
 from Products.Formulator.Form import ZMIForm
 from Products.SilvaExternalSources.interfaces import ICodeSource
@@ -128,10 +129,17 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     def to_html(self, content, request, **parameters):
         """Render HTML for code source
         """
-        try:
-            script = self[self._script_id]
-        except KeyError:
-            return None
+        if self._script_id.startswith('@@'):
+            #try to get a view
+            script = queryMultiAdapter((self, request),
+                                     name=self._script_id.replace('@@',''))
+            if not script:
+                return u''
+        else:
+            try:
+                script = self[self._script_id]
+            except KeyError:
+                return u''
         self._prepare_parameters(parameters)
         parameters['version'] = None
         parameters['model'] = content.get_content()
@@ -224,12 +232,11 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
 
         if not script_id:
             msg += "<b>Warning</b>: no script id specified!"
-        if script_id not in self.objectIds():
+        if script_id not in self.objectIds() and not script_id.startswith('@@'):
             msg += '<b>Warning</b>: This code source does not contain ' \
                 'an object with identifier "%s"! ' % script_id
-        if icon_id not in self.objectIds():
-            msg += '<b>Warning</b>: This code source does not contain ' \
-                'an object with identifier "%s"! ' % icon_id
+        if icon_id and icon_id not in self.objectIds():
+            msg += '<b>Warning</b>: invalid icon id: "%s"! ' % icon_id
         return self.editCodeSource(manage_tabs_message=msg)
 
 InitializeClass(CodeSource)

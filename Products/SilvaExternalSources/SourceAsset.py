@@ -185,6 +185,16 @@ class SourceAssetAddForm(silvaforms.SMIAddForm):
         raise RedirectToPage(content=content)
 
 
+class SourceAssetAddFormLookup(silvaforms.DefaultFormLookup):
+    grok.context(SourceAssetAddForm)
+
+    def fields(self):
+        fields = self.form.fields
+        if self.form.source is not None:
+            fields += self.form.source.fields
+        return fields
+
+
 class SourceAssetEditForm(silvaforms.SMIEditForm):
     grok.context(ISourceAsset)
 
@@ -217,6 +227,15 @@ class SourceAssetEditForm(silvaforms.SMIEditForm):
         if status is silvaforms.SUCCESS:
             self.send_message(_(u"Changes saved."), type="feedback")
         return status
+
+
+class SourceAssetEditFormLookup(silvaforms.DefaultFormLookup):
+    grok.context(SourceAssetEditForm)
+
+    def fields(self):
+        if self.form.controller is not None:
+            return self.form.controller.fields
+        return silvaforms.Fields()
 
 
 class SourceAssetView(silvaviews.View):

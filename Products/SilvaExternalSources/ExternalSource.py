@@ -201,18 +201,27 @@ class ExternalSourceManager(object):
 
     def __init__(self, context):
         self.context = context
-        self.sources = IAnnotations(context).setdefault(
-            self.KEY, persistent.mapping.PersistentMapping())
+        self.annotations = IAnnotations(self.context)
+        self.sources = self.annotations.get(self.KEY)
+
+    def editable_sources(self):
+        # Add the annotations if missing, and return the sources.
+        # This is not done in the __init__ because it can be built
+        # during tranversing (read-only).
+        if self.KEY not in self.annotations:
+            self.sources = self.annotations[self.KEY] = \
+                persistent.mapping.PersistentMapping()
+        return self.sources
 
     def new(self, source):
         assert IExternalSource.providedBy(source)
         identifier = str(uuid.uuid1())
         parameters = ExternalSourceParameters(identifier, source.id)
-        self.sources[identifier] = parameters
+        self.editable_sources()[identifier] = parameters
         return parameters
 
     def remove(self, identifier):
-        del self.sources[identifier]
+        del self.editable_sources()[identifier]
 
     def all(self):
         return set(self.sources.keys())
@@ -330,7 +339,7 @@ class ExternalSourceController(silvaforms.FormData):
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'render')
-    def render(self, preview=False):
+    def render(self, view=False, preview=False):
         if preview and not self.source.is_previewable():
             return u'<b>This Code source is not previewable.</b>'
         values = {}

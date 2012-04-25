@@ -224,12 +224,15 @@ class ExternalSourceManager(object):
         del self.editable_sources()[identifier]
 
     def all(self):
-        return set(self.sources.keys())
+        if self.sources is not None:
+            return set(self.sources.keys())
+        return []
 
     def get_parameters(self, instance=None, name=None):
         parameters = None
         if instance is not None:
-            parameters = self.sources.get(instance)
+            if self.sources is not None:
+                parameters = self.sources.get(instance)
             if parameters is None:
                 raise err.ParametersMissingError(instance)
             name = parameters.get_source_identifier()

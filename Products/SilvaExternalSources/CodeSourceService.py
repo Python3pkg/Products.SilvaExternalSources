@@ -37,19 +37,19 @@ CONFIGURATION_FILE = 'source.ini'
 # All the code following are default helper to help you to install
 # your code-soruces packaged on the file system.
 
-def install_pt(context, data, id):
+def install_pt(context, data, id, extension):
     """Install a page template.
     """
     factory = context.manage_addProduct['PageTemplates']
     factory.manage_addPageTemplate(id, '', data.read())
 
-def install_image(context, data, id):
+def install_image(context, data, id, extension):
     """Install an Image file.
     """
     factory = context.manage_addProduct['OFSP']
-    factory.manage_addImage(id, file=data)
+    factory.manage_addImage(id + extension, file=data)
 
-def install_py(context, data, id):
+def install_py(context, data, id, extension):
     """Install a Python script.
     """
     factory = context.manage_addProduct['PythonScripts']
@@ -57,8 +57,7 @@ def install_py(context, data, id):
     script = getattr(context, id)
     script.write(data.read())
 
-
-def install_xml(context, data, id):
+def install_xml(context, data, id, extension):
     """Install an XML file.
     """
     form = ZMIForm('form', 'Parameters form')
@@ -70,9 +69,8 @@ def install_xml(context, data, id):
             'Error while installing Formulator form id "%s" in "%s"' % (
                 id, '/'.join(context.getPhysicalPath())))
 
-
-def install_js(context, data, id):
-    """Install a JS script as a dtml file.
+def install_js(context, data, id, extension):
+    """Install a JS script as a DTML file.
     """
     factory = context.manage_addProduct['OFSP']
     factory.manage_addDTMLMethod(id + '.js', '', data.read())
@@ -181,7 +179,7 @@ class CodeSourceInstallable(object):
             if name in source.objectIds():
                 source.manage_delObjects([name])
             with open(os.path.join(self.__directory, filename), 'rb') as data:
-                installer(source, data, name)
+                installer(source, data, name, extension)
 
         return True
 

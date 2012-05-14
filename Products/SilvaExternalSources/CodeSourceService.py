@@ -43,11 +43,11 @@ def install_pt(context, data, id, extension):
     factory = context.manage_addProduct['PageTemplates']
     factory.manage_addPageTemplate(id, '', data.read())
 
-def install_image(context, data, id, extension):
+def install_file(context, data, id, extension):
     """Install an Image file.
     """
     factory = context.manage_addProduct['OFSP']
-    factory.manage_addImage(id + extension, file=data)
+    factory.manage_addImage(id, file=data)
 
 def install_py(context, data, id, extension):
     """Install a Python script.
@@ -69,72 +69,68 @@ def install_xml(context, data, id, extension):
             'Error while installing Formulator form id "%s" in "%s"' % (
                 id, '/'.join(context.getPhysicalPath())))
 
-def install_js(context, data, id, extension):
-    """Install a JS script as a DTML file.
-    """
-    factory = context.manage_addProduct['OFSP']
-    factory.manage_addDTMLMethod(id + '.js', '', data.read())
 
 
 INSTALLERS = {
-    '.png': install_image,
-    '.gif': install_image,
-    '.jpeg': install_image,
-    '.jpg': install_image,
+    '.png': install_file,
+    '.gif': install_file,
+    '.jpeg': install_file,
+    '.jpg': install_file,
     '.pt': install_pt,
     '.py': install_py,
     '.xml': install_xml,
-    '.js': install_js,
+    '.js': install_file,
+    '.css': install_file,
     '.txt': install_pt}
-
+KEEP_EXTENSION_OF = ['.png', '.gif', '.jpg', '.jpeg', '.js', '.css']
 
 class CodeSourceInstallable(object):
     grok.implements(ICodeSourceInstaller)
 
     def __init__(self, location, directory, files):
-        self.__config = ConfigParser.ConfigParser()
-        self.__config.read(os.path.join(directory, CONFIGURATION_FILE))
-        self.__directory = directory
-        self.__files = files
-        self.__location = location
+        self._config = ConfigParser.ConfigParser()
+        self._config.read(os.path.join(directory, CONFIGURATION_FILE))
+        self._directory = directory
+        self._files = files
+        self._location = location
 
     def validate(self):
         """Return true if the definition is complete.
         """
         valid = True
-        if not self.__config.has_section('source'):
+        if not self._config.has_section('source'):
             valid = False
-        elif not self.__config.has_option('source', 'id'):
+        elif not self._config.has_option('source', 'id'):
             valid = False
-        elif not self.__config.has_option('source', 'title'):
+        elif not self._config.has_option('source', 'title'):
             valid = False
-        elif not self.__config.has_option('source', 'render_id'):
+        elif not self._config.has_option('source', 'render_id'):
             valid = False
         if not valid:
-            logger.error('invalid source definition at %s' % self.__directory)
+            logger.error('invalid source definition at %s' % self._directory)
         return valid
 
     @CachedProperty
     def identifier(self):
-        return self.__config.get('source', 'id')
+        return self._config.get('source', 'id')
 
     @CachedProperty
     def title(self):
-        return self.__config.get('source', 'title')
+        return self._config.get('source', 'title')
 
     @CachedProperty
     def script_id(self):
-        return self.__config.get('source', 'render_id')
+        return self._config.get('source', 'render_id')
 
     @CachedProperty
     def description(self):
-        if self.__config.has_option('source', 'description'):
-            return self.__config.get('source', 'description')
+        if self._config.has_option('source', 'description'):
+            return self._config.get('source', 'description')
         return None
 
     @property
     def location(self):
-        return self.__location
+        return self._location
 
     def is_installed(self, folder):
         return self.identifier in folder.objectIds()
@@ -156,17 +152,17 @@ class CodeSourceInstallable(object):
         source.set_script_id(self.script_id)
         if self.description:
             source.set_description(self.description)
-        if self.__config.has_option('source', 'cacheable'):
-            value = self.__config.getboolean('source', 'cacheable')
+        if self._config.has_option('source', 'cacheable'):
+            value = self._config.getboolean('source', 'cacheable')
             source.set_cacheable(value)
-        if self.__config.has_option('source', 'previewable'):
-            value = self.__config.getboolean('source', 'previewable')
+        if self._config.has_option('source', 'previewable'):
+            value = self._config.getboolean('source', 'previewable')
             source.set_previewable(value)
-        if self.__config.has_option('source', 'usable'):
-            value = self.__config.getboolean('source', 'usable')
+        if self._config.has_option('source', 'usable'):
+            value = self._config.getboolean('source', 'usable')
             source.set_usable(value)
 
-        for filename in self.__files:
+        for filename in self._files:
             if filename == CONFIGURATION_FILE:
                 continue
             name, extension = os.path.splitext(filename)
@@ -176,9 +172,11 @@ class CodeSourceInstallable(object):
                     u"don't know how to install file %s for code source %s" % (
                         filename, self.identifier))
                 continue
+            if extension in KEEP_EXTENSION_OF:
+                name = filename
             if name in source.objectIds():
                 source.manage_delObjects([name])
-            with open(os.path.join(self.__directory, filename), 'rb') as data:
+            with open(os.path.join(self._directory, filename), 'rb') as data:
                 installer(source, data, name, extension)
 
         return True

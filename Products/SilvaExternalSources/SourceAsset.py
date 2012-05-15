@@ -3,7 +3,9 @@ import urllib
 
 from five import grok
 from zope import schema
+from zope.event import notify
 from zope.interface import Interface
+from zope.lifecycleevent import ObjectModifiedEvent
 
 from AccessControl import ClassSecurityInfo
 from App.class_init import InitializeClass
@@ -181,6 +183,7 @@ class SourceAssetAddForm(silvaforms.SMIAddForm):
         source = factory(self.request, name=self.source.getSourceId())
         source.create()
         content.set_parameters_identifier(source.getId())
+        notify(ObjectModifiedEvent(content))
         self.send_message(_(u"Source Asset added."), type="feedback")
         raise RedirectToPage(content=content)
 

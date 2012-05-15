@@ -304,6 +304,16 @@ class ExternalSourceController(silvaforms.FormData):
         self.setContentData(self.manager.new(self.source))
         return self.getId()
 
+    def copy(self, destination):
+        assert self.getSourceId() == destination.getSourceId()
+        source = self.getContentData()
+        target = destination.getContentData()
+        for field in self.fields:
+            try:
+                target.set(field.identifier, source.get(field.identifier))
+            except KeyError:
+                pass
+
     @silvaforms.action(_(u"Create"))
     def create(self):
         self.new()

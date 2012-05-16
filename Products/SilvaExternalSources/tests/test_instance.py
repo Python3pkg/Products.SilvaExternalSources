@@ -7,13 +7,14 @@ import unittest
 
 from zope.publisher.browser import TestRequest
 from zope.interface.verify import verifyObject
+from zeam.component import getWrapper
 
-from Products.Formulator.interfaces import IBoundForm
 from Products.Silva.testing import TestCase
-from Products.SilvaExternalSources.testing import FunctionalLayer
-from Products.SilvaExternalSources.interfaces import ISourceInstances
-from Products.SilvaExternalSources.interfaces import ISourceParameters
-from Products.SilvaExternalSources.interfaces import IBoundSourceInstance
+
+from ..interfaces import IExternalSourceController
+from ..interfaces import IExternalSourceManager, IExternalSourceInstance
+from ..interfaces import ParametersMissingError
+from ..testing import FunctionalLayer
 
 HTML_WORKING_SOURCE = u"""
 <div>
@@ -51,30 +52,24 @@ class CreateInstanceTestCase(unittest.TestCase):
         version.body.save(version, request, HTML_WORKING_SOURCE)
 
         # This gives access to all the sources
-        sources = ISourceInstances(version.body)
-        self.assertTrue(verifyObject(ISourceInstances, sources))
-        self.assertEqual(len(sources.keys()), 1)
-        self.assertEqual(len(sources.values()), 1)
-        key = sources.keys()[0]
+        sources = getWrapper(version, IExternalSourceManager)
+        self.assertTrue(verifyObject(IExternalSourceManager, sources))
+        self.assertEqual(len(sources.all()), 1)
+        instance_key = list(sources.all())[0]
 
-        parameters = sources[key]
-        self.assertTrue(verifyObject(ISourceParameters, parameters))
-        self.assertIs(sources.values()[0], parameters)
-        self.assertIs(sources.get(key), parameters)
+        parameters, source = sources.get_parameters(instance=instance_key)
+        self.assertTrue(verifyObject(IExternalSourceInstance, parameters))
 
         # A parameters store data
         self.assertEqual(parameters.get_source_identifier(), 'cs_citation')
+        self.assertEqual(source.id, 'cs_citation')
         self.assertEqual(parameters.citation, u'je bent een klootzak')
         self.assertEqual(parameters.author, u'jou')
         self.assertEqual(parameters.source, u'wikipedia')
 
         # You can bind parameters to a content and a request
-        bound = sources.bind(key, version, request)
-        self.assertTrue(verifyObject(IBoundSourceInstance, bound))
-        self.assertEqual(bound.identifier, 'cs_citation')
-        source, form = bound.get_source_and_form()
-        self.assertEqual(source, self.root.cs_citation)
-        self.assertTrue(verifyObject(IBoundForm, form))
+        controller = sources(request, instance=instance_key)
+        self.assertTrue(verifyObject(IExternalSourceController, controller))
 
     def test_create_broken_failover(self):
         """Create a source that doesn't exists with failover. Test the
@@ -86,11 +81,10 @@ class CreateInstanceTestCase(unittest.TestCase):
         version.body.save(version, request, HTML_BROKEN_SOURCE)
 
         # This gives access to all the sources
-        sources = ISourceInstances(version.body)
-        self.assertTrue(verifyObject(ISourceInstances, sources))
-        self.assertEqual(len(sources.keys()), 1)
-        self.assertEqual(len(sources.values()), 1)
-        key = sources.keys()[0]
+        sources = getWrapper(version, IExternalSourceManager)
+        self.assertTrue(verifyObject(IExternalSourceManager, sources))
+        self.assertEqual(len(sources.all()), 1)
+        instance_key = list(sources.all())[0]
 
         parameters = sources[key]
         self.assertTrue(verifyObject(ISourceParameters, parameters))
@@ -120,15 +114,14 @@ class WorkingInstanceTestCase(TestCase):
 
         version = self.root.example.get_editable()
         version.body.save(version, TestRequest(), HTML_WORKING_SOURCE)
-        self.key = ISourceInstances(version.body).keys()[0]
+        self.sources = getWrapper(version, IExternalSourceManager)
+        self.identifier = list(self.sources.all())[0]
 
     def test_render(self):
         """Render a defined source.
         """
-        version = self.root.example.get_editable()
-        instances = ISourceInstances(version.body)
-        bound = instances.bind(self.key, version, TestRequest())
-        self.assertXMLEqual(bound.render(), """
+        controller = self.sources(TestRequest(), instance=self.identifier)
+        self.assertXMLEqual(controller.render(), """
 <div class="citation">
  je bent een klootzak
  <div class="author">
@@ -143,32 +136,35 @@ class WorkingInstanceTestCase(TestCase):
     def test_remove(self):
         """Remove a defined source.
         """
-        version = self.root.example.get_editable()
-        instances = ISourceInstances(version.body)
-        instances.remove(self.key, version, TestRequest())
+        controller = self.sources(TestRequest(), instance=self.identifier)
+        controller.remove()
 
-        self.assertEqual(len(instances.keys()), 0)
-        self.assertEqual(len(instances.values()), 0)
-        self.assertEqual(instances.get(self.key), None)
-        with self.assertRaises(KeyError):
-            instances.bind(self.key, version, TestRequest())
-        with self.assertRaises(KeyError):
-            instances[self.key]
+        self.assertEqual(len(self.sources.all()), 0)
+        with self.assertRaises(ParametersMissingError):
+            self.sources.get_parameters(instance=self.identifier)
+        with self.assertRaises(ParametersMissingError):
+            self.sources(TestRequest(), instance=self.identifier)
 
     def test_update(self):
         """Updating source parameters.
         """
-        version = self.root.example.get_editable()
-        instances = ISourceInstances(version.body)
-        bound = instances.bind(self.key, version, TestRequest())
-        bound.update('field_citation=il fait soleil&amp;field_author=moi')
+        request = TestRequest(form={
+                'field_citation': 'il fait soleil',
+                'field_author': 'moi',
+                'marker_field_citation': '1',
+                'marker_field_author': '1',
+                'marker_field_source': '1'})
+        controller = self.sources(request, instance=self.identifier)
+        controller.save()
 
-        parameters = instances[self.key]
+        parameters, source = self.sources.get_parameters(
+            instance=self.identifier)
+
         self.assertEqual(parameters.get_source_identifier(), 'cs_citation')
         self.assertEqual(parameters.citation, u'il fait soleil')
         self.assertEqual(parameters.author, u'moi')
         self.assertEqual(parameters.source, u'')
-        self.assertXMLEqual(bound.render(), """
+        self.assertXMLEqual(controller.render(), """
 <div class="citation">
  il fait soleil
  <div class="author">

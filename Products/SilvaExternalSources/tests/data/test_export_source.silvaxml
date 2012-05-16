@@ -103,13 +103,13 @@
         </html:p>
         <html:div class="external-source default" source-identifier="cs_citation">
          <silva-external-sources:fields>
-          <silva-external-sources:field id="field-citation">
+          <silva-external-sources:field id="citation">
            blahblahblah
           </silva-external-sources:field>
-          <silva-external-sources:field id="field-author">
+          <silva-external-sources:field id="author">
            ouam
           </silva-external-sources:field>
-          <silva-external-sources:field id="field-source">
+          <silva-external-sources:field id="source">
            wikipedia
           </silva-external-sources:field>
          </silva-external-sources:fields>

@@ -8,9 +8,8 @@ import unittest
 from zope.interface.verify import verifyObject
 from zope.component import queryUtility
 
-from Products.SilvaExternalSources.testing import FunctionalLayer
-from Products.SilvaExternalSources.interfaces import ICodeSourceService
-from Products.SilvaExternalSources.interfaces import ICodeSourceInstaller
+from ..interfaces import ICodeSourceService, ICodeSourceInstaller
+from ..testing import FunctionalLayer
 
 
 class ServiceTestCase(unittest.TestCase):

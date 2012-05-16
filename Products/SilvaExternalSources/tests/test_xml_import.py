@@ -6,12 +6,14 @@
 import unittest
 
 from zope.interface.verify import verifyObject
+from zeam.component import getWrapper
 
 from Products.Silva.tests.test_xml_import import SilvaXMLTestCase
-from Products.SilvaExternalSources.interfaces import ISourceInstances
-from Products.SilvaExternalSources.testing import FunctionalLayer
-from silva.core.interfaces.events import IContentImported
 from silva.app.document.interfaces import IDocument
+from silva.core.interfaces.events import IContentImported
+
+from ..interfaces import IExternalSourceManager
+from ..testing import FunctionalLayer
 
 
 class CodeSourceDocumentImportTestCase(SilvaXMLTestCase):
@@ -22,6 +24,8 @@ class CodeSourceDocumentImportTestCase(SilvaXMLTestCase):
         self.layer.login('editor')
 
     def test_document(self):
+        """Import a document that uses a source.
+        """
         self.import_file(
             'test_import_source.silvaxml', globs=globals())
         self.assertEventsAre(
@@ -34,15 +38,22 @@ class CodeSourceDocumentImportTestCase(SilvaXMLTestCase):
         self.assertNotEqual(document.get_editable(), None)
 
         version = document.get_editable()
-        sources = ISourceInstances(version.body)
-        self.assertEqual(len(sources.values()), 1)
-        instance = sources.values()[0]
-        self.assertEqual(instance.get_source_identifier(), 'cs_citation')
-        self.assertEqual(instance.citation, u"héhé l'aime le quéqué")
-        self.assertEqual(instance.author, u'ouam')
-        self.assertEqual(instance.source, u'wikipedia')
+        sources = getWrapper(version, IExternalSourceManager)
+        keys = list(sources.all())
+        self.assertEqual(len(keys), 1)
+        parameters, source = sources.get_parameters(instance=keys[0])
+        self.assertEqual(parameters.get_source_identifier(), 'cs_citation')
+        self.assertEqual(source.id, 'cs_citation')
+        self.assertEqual(parameters.citation, u"héhé l'aime le quéqué")
+        self.assertEqual(parameters.author, u'ouam')
+        self.assertEqual(parameters.source, u'wikipedia')
 
     def test_document_missing_source(self):
+        """Import a document that uses a source that is missing on the
+        system.
+
+        The document is imported, but not the source.
+        """
         self.import_file(
             'test_import_source_missing.silvaxml', globs=globals())
         self.assertEventsAre(
@@ -55,13 +66,8 @@ class CodeSourceDocumentImportTestCase(SilvaXMLTestCase):
         self.assertNotEqual(document.get_editable(), None)
 
         version = document.get_editable()
-        sources = ISourceInstances(version.body)
-        self.assertEquals(len(sources.values()), 1)
-        instance = sources.values()[0]
-        self.assertEqual(instance.get_source_identifier(), 'cs_ultimate')
-        self.assertFalse(hasattr(instance, 'author'))
-        self.assertFalse(hasattr(instance, 'citation'))
-        self.assertFalse(hasattr(instance, 'source'))
+        sources = getWrapper(version, IExternalSourceManager)
+        self.assertEqual(len(sources.all()), 0)
 
 
 def test_suite():

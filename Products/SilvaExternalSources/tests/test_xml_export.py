@@ -7,8 +7,9 @@ import unittest
 
 from Products.Silva.silvaxml.xmlexport import exportToString
 from Products.Silva.tests.test_xml_export import SilvaXMLTestCase
-from Products.SilvaExternalSources.testing import FunctionalLayer
 from zope.publisher.browser import TestRequest
+
+from ..testing import FunctionalLayer
 
 
 HTML_CODE_SOURCE = u"""

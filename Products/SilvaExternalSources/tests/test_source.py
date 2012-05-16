@@ -7,9 +7,8 @@ import unittest
 
 from zope.interface.verify import verifyObject
 
-from Products.SilvaExternalSources.interfaces import ICodeSource
-from Products.SilvaExternalSources.interfaces import IExternalSource
-from Products.SilvaExternalSources.testing import FunctionalLayer
+from ..interfaces import ICodeSource, IExternalSource
+from ..testing import FunctionalLayer
 
 
 class SourceTestCase(unittest.TestCase):

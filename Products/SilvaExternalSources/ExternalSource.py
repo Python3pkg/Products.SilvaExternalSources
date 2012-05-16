@@ -18,17 +18,16 @@ import Acquisition
 
 # Silva
 from Products.Silva import SilvaPermissions as permissions
-from Products.SilvaExternalSources.interfaces import IExternalSource
-from Products.SilvaExternalSources.interfaces import IExternalSourceManager
-from Products.SilvaExternalSources.interfaces import IEditableExternalSource
-from Products.SilvaExternalSources.interfaces import IExternalSourceParameters
-from Products.SilvaExternalSources.interfaces import availableSources # BBB
-
-from Products.SilvaExternalSources import interfaces as err
 
 from silva.translations import translate as _
 from zeam.component import component
 from zeam.form import silva as silvaforms
+
+from . import interfaces as error
+from .interfaces import IExternalSource, IEditableExternalSource
+from .interfaces import IExternalSourceController
+from .interfaces import IExternalSourceManager, IExternalSourceInstance
+from .interfaces import availableSources # BB
 
 logger = logging.getLogger('silva.externalsources')
 
@@ -180,7 +179,7 @@ InitializeClass(EditableExternalSource)
 
 
 class ExternalSourceParameters(persistent.Persistent):
-    grok.implements(IExternalSourceParameters)
+    grok.implements(IExternalSourceInstance)
 
     def __init__(self, parameter_identifier, source_identifier):
         self.__source_identifier = source_identifier
@@ -234,12 +233,12 @@ class ExternalSourceManager(object):
             if self.sources is not None:
                 parameters = self.sources.get(instance)
             if parameters is None:
-                raise err.ParametersMissingError(instance)
+                raise error.ParametersMissingError(instance)
             name = parameters.get_source_identifier()
         source = getattr(self.context, name, None)
         if source is not None and IExternalSource.providedBy(source):
             return parameters, source
-        raise err.SourceMissingError(source)
+        raise error.SourceMissingError(source)
 
     def __call__(self, request, instance=None, name=None):
         parameters, source = self.get_parameters(instance=instance, name=name)
@@ -247,6 +246,7 @@ class ExternalSourceManager(object):
 
 
 class ExternalSourceController(silvaforms.FormData):
+    grok.implements(IExternalSourceController)
     security = ClassSecurityInfo()
 
     actions = silvaforms.Actions()
@@ -360,7 +360,7 @@ class ExternalSourceController(silvaforms.FormData):
             if not self.ignoreRequest:
                 values, errors = self.extractData()
                 if errors:
-                    raise err.ParametersError(errors)
+                    raise error.ParametersError(errors)
             elif not self.ignoreContent and self.getContent() is not None :
                 manager = self.getContentData()
                 for field in self.fields:
@@ -370,14 +370,14 @@ class ExternalSourceController(silvaforms.FormData):
                         value = field.getDefaultValue(self)
                     values[field.identifier] = value
             else:
-                raise err.ParametersError()
+                raise error.ParametersError()
 
         try:
             return self.source.to_html(self.context, self.request, **values)
         except:
             info = u''.join(format_exception(*sys.exc_info()))
             logger.error(info)
-            raise err.SourceError(info)
+            raise error.SourceError(info)
 
 
 InitializeClass(ExternalSourceController)

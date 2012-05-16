@@ -234,16 +234,7 @@ class ICSVSource(IEditableExternalSource, IAsset):
 # This define a parameter instance of a source.
 
 
-class IExternalSourceManager(Interface):
-    """Manage external source buisness.
-    """
-
-    def get_parameters(instance=None, name=None):
-        """Return the parameters and the source associated to this
-        instance or source.
-        """
-
-class IExternalSourceParameters(Interface):
+class IExternalSourceInstance(Interface):
     """Store parameters for a given source instance.
     """
 
@@ -253,7 +244,85 @@ class IExternalSourceParameters(Interface):
         """
 
     def get_parameter_identifier():
-        """Return an identfier that identifies those parameters.
+        """Return an identfier that identifies uniquely those
+        parameters.
+        """
+
+
+class IExternalSourceController(Interface):
+    """This control an instance of a code source.
+
+    This behave and follow the same API than a Silva form.
+    """
+    label = Attribute(u'Title of the code source instance')
+    description = Attribute(u'Description of the code source instance')
+
+    def new():
+        """Create a new instance of the code source on the context
+        object.
+        """
+
+    def copy(destination):
+        """This copy the current instance of the code source into a
+        another external source controller.
+        """
+
+    def create():
+        """Create a new instance of the code source on the context
+        object, and save the code source parameters from the current
+        request into this new instance.
+        """
+
+    def save():
+        """Save the code source parameters from the current request.
+        """
+
+    def remove():
+        """This remove the current instance of the code source from
+        the context object.
+        """
+
+    def render(view=False, preview=False):
+        """Render the instance of the code source, with its parameters.
+
+        ``preview`` if true will render the code source in preview
+        mode (paying attention if the code source provides parameters
+        in the request, and if it is previewable).
+
+        ``view`` is an option for compatiblity with the content layout
+        extension.
+        """
+
+
+class IExternalSourceManager(Interface):
+    """Manage external source instances on an context object.
+    """
+
+    def new(source):
+        """Create and return a new external source instance object to
+        store a parameters for a new instance of this source on the
+        context object.
+        """
+
+    def all():
+        """Return all the identifiers of each parameter object
+        available on the context object.
+        """
+
+    def remove(identifier):
+        """Remove the parameter object associated with the given
+        ``identifier`` from the context object.
+        """
+
+    def get_parameters(instance=None, name=None):
+        """Return the parameters and the source associated to this
+        instance or source.
+        """
+
+    def __call__(request, instance=None, name=None):
+        """Retrieve the parameters and the source associated to this
+        instance or source, and bind them into a controller together
+        with a request.
         """
 
 

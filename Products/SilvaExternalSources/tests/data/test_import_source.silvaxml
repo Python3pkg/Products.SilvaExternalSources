@@ -49,9 +49,9 @@
                 <html:div class="external-source default"
                           source-identifier="cs_citation">
                   <silva-external-sources:fields>
-                    <silva-external-sources:field id="field-citation">héhé l'aime le quéqué</silva-external-sources:field>
-                    <silva-external-sources:field id="field-author">ouam</silva-external-sources:field>
-                    <silva-external-sources:field id="field-source">wikipedia</silva-external-sources:field>
+                    <silva-external-sources:field id="citation">héhé l'aime le quéqué</silva-external-sources:field>
+                    <silva-external-sources:field id="author">ouam</silva-external-sources:field>
+                    <silva-external-sources:field id="source">wikipedia</silva-external-sources:field>
                   </silva-external-sources:fields>
                 </html:div>
               </html:div>

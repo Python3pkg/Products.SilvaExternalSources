@@ -11,7 +11,7 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 
 from silva.core.interfaces import ISilvaService, ISilvaLocalService
 from silva.core.interfaces import IXMLZEXPExportable
-from silva.core.interfaces import INonPublishable, IViewableObject
+from silva.core.interfaces import IVersionedNonPublishable
 from silva.core.interfaces import IAsset, IRoot, IVersion
 
 
@@ -143,14 +143,9 @@ class ICodeSource(IEditableExternalSource, IXMLZEXPExportable):
         """
 
 
-class ISourceAsset(INonPublishable, IViewableObject, IExternalSource):
+class ISourceAsset(IVersionedNonPublishable, IExternalSource):
     """Source asset store a external source and parameters to render it
     """
-
-    def set_parameters_identifier(identifier):
-        """Set the external source instance identifier used for this
-        source asset.
-        """
 
     def get_controller(request):
         """Return the controller associated to the source.

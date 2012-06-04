@@ -138,7 +138,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         parameters['REQUEST'] = request
         if IVersion.providedBy(content):
             parameters['version'] = content
-            parameters['model'] = content.get_content()
+            parameters['model'] = content.get_silva_object()
         else:
             parameters['version'] = None
             parameters['model'] = content

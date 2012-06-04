@@ -10,10 +10,9 @@ from zope.lifecycleevent import ObjectModifiedEvent
 from AccessControl import ClassSecurityInfo
 from App.class_init import InitializeClass
 from Acquisition import aq_base
-from OFS import SimpleItem
 
-from Products.Silva.Publishable import NonPublishable
-from Products.Silva.SilvaObject import ViewableObject
+from Products.Silva.Version import Version
+from Products.Silva.VersionedContent import VersionedNonPublishable
 from Products.Silva import SilvaPermissions as permissions
 from Products.SilvaExternalSources.interfaces import IExternalSourceManager
 from Products.SilvaExternalSources.interfaces import SourceError
@@ -29,13 +28,9 @@ from zeam.form import silva as silvaforms
 from zeam.component import getWrapper
 
 
-class SourceAsset(NonPublishable, ViewableObject, SimpleItem.SimpleItem):
-    """A source asset stores a external source and a set of its parameters.x
-    """
-    meta_type = "Silva Source Asset"
-    grok.implements(ISourceAsset)
-    silvaconf.icon('www/codesource.png')
+class SourceAssetVersion(Version):
     security = ClassSecurityInfo()
+    meta_type = "Silva Source Asset Version"
 
     _parameter_identifier = None
 
@@ -58,15 +53,31 @@ class SourceAsset(NonPublishable, ViewableObject, SimpleItem.SimpleItem):
             self._v_original_source = source
         return self._v_original_source
 
+InitializeClass(SourceAssetVersion)
+
+
+class SourceAsset(VersionedNonPublishable):
+    """A source asset stores a external source and a set of its parameters.x
+    """
+    meta_type = "Silva Source Asset"
+    grok.implements(ISourceAsset)
+    silvaconf.icon('www/codesource.png')
+    silvaconf.version_class(SourceAssetVersion)
+    security = ClassSecurityInfo()
+
     security.declareProtected(
         permissions.AccessContentsInformation, 'get_parameters_form')
     def get_parameters_form(self):
         return None
 
+    security.declarePrivate('get_original_source')
+    def get_original_source(self):
+        return self.get_viewable().get_original_source()
+
     security.declareProtected(
         permissions.AccessContentsInformation, 'to_html')
     def to_html(self, content, request, **parameters):
-        return self.get_controller(request).render()
+        return self.get_viewable().get_controller(request).render()
 
     def get_description(self):
         try:
@@ -179,10 +190,11 @@ class SourceAssetAddForm(silvaforms.SMIAddForm):
         except ValueError, error:
             self.send_message(error.args[0], type=u"error")
             return silvaforms.FAILURE
-        factory = getWrapper(content, IExternalSourceManager)
+        editable = content.get_editable()
+        factory = getWrapper(editable, IExternalSourceManager)
         source = factory(self.request, name=self.source.getSourceId())
         source.create()
-        content.set_parameters_identifier(source.getId())
+        editable.set_parameters_identifier(source.getId())
         notify(ObjectModifiedEvent(content))
         self.send_message(_(u"Source Asset added."), type="feedback")
         raise RedirectToPage(content=content)
@@ -204,7 +216,12 @@ class SourceAssetEditForm(silvaforms.SMIEditForm):
     actions = silvaforms.Actions(silvaforms.CancelEditAction())
 
     def __init__(self, context, request):
-        self.controller = context.get_controller(request)
+        editable = context.get_editable()
+        if editable is not None:
+            self.controller = editable.get_controller(request)
+        else:
+            self.controller = context.get_viewable().get_controller(request)
+            self.controller.mode = silvaforms.DISPLAY
         super(SourceAssetEditForm, self).__init__(context, request)
 
     def updateWidgets(self):
@@ -220,9 +237,13 @@ class SourceAssetEditForm(silvaforms.SMIEditForm):
             return self.controller.formErrors
         return []
 
+    def isEditable(self):
+        return (self.controller is not None and
+                self.controller.mode != silvaforms.DISPLAY)
+
     @silvaforms.action(
         _(u"Save"),
-        available=lambda form: form.controller is not None,
+        available=isEditable,
         implements=silvaforms.IDefaultAction,
         accesskey=u'ctrl+s')
     def save(self):

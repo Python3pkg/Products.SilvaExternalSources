@@ -72,12 +72,14 @@ class ExternalSourceExportFilter(TransformationFilter):
 
 
 class SourceParametersProducer(object):
+    """ A Mixin class for exporting a source parameters.
+    """
 
     def getHandler(self):
         return self
 
     def source_parameters(self, source_manager):
-        """Source manager should be a IExtenalSourceManager bounded to
+        """`source_manager` should be a IExtenalSourceManager bounded to
         an instance.
         """
         self.startElementNS(NS_SOURCE_URI, 'fields')

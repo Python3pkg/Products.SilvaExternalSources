@@ -76,6 +76,10 @@ class ExternalSourceImportFilter(TransformationFilter):
 
 
 class SourceParameterHandler(xmlimport.SilvaBaseHandler):
+    """ Handle source parameter.
+
+    Only to be used by a SourceParametersHandler
+    """
 
     proxy = None
     field_id = None
@@ -104,6 +108,13 @@ class SourceParameterHandler(xmlimport.SilvaBaseHandler):
 
 
 class SourceParametersHandler(xmlimport.SilvaBaseHandler):
+    """Handler for importing source parameters.
+
+    The parent handler must define a `source` property
+    (IExternalSourceManager) to be used by this handler.
+
+    see SourceAssetVersionHandler for example usage.
+    """
 
     deserializers = None
 

@@ -29,7 +29,7 @@ class FieldProducer(ElementTreeContentHandler):
         self.__handler = handler
 
     def getHandler(self):
-       return self.__handler
+        return self.__handler
 
 
 xmlexport.theXMLExporter.registerNamespace(
@@ -79,7 +79,7 @@ class SourceParametersProducer(object):
         return self
 
     def source_parameters(self, source_manager):
-        """`source_manager` should be a IExtenalSourceManager bounded to
+        """`source_manager` should be a IExternalSourceManager bounded to
         an instance.
         """
         self.startElementNS(NS_SOURCE_URI, 'fields')

@@ -14,21 +14,22 @@ from Acquisition import aq_base
 from Products.Silva.Version import Version
 from Products.Silva.VersionedContent import VersionedNonPublishable
 from Products.Silva import SilvaPermissions as permissions
-from Products.SilvaExternalSources.interfaces import IExternalSourceManager
-from Products.SilvaExternalSources.interfaces import SourceError
-from Products.SilvaExternalSources.interfaces import ISourceAsset, source_source
 
 from silva.core import conf as silvaconf
 from silva.core.conf.interfaces import ITitledContent
+from silva.core.views import views as silvaviews
 from silva.translations import translate as _
 from silva.ui.rest import RedirectToPage
-from silva.core.views import views as silvaviews
-
-from zeam.form import silva as silvaforms
 from zeam.component import getWrapper
+from zeam.form import silva as silvaforms
+
+from .interfaces import IExternalSourceManager
+from .interfaces import SourceError
+from .interfaces import ISourceAsset, ISourceAssetVersion, source_source
 
 
 class SourceAssetVersion(Version):
+    grok.implements(ISourceAssetVersion)
     security = ClassSecurityInfo()
     meta_type = "Silva Source Asset Version"
 

@@ -3,9 +3,12 @@
 # See also LICENSE.txt
 # $Id$
 
-from five import grok
+import logging
 
+from five import grok
 from zope.interface import Interface
+
+from Products.Silva.silvaxml import xmlexport, NS_SILVA_URI
 
 from silva.core.editor.transform.base import TransformationFilter
 from silva.core.editor.transform.interfaces import ISilvaXMLExportFilter
@@ -13,13 +16,13 @@ from silva.core.interfaces import IVersion, ISilvaXMLExportHandler
 from zeam.component import getWrapper
 from zeam.form.silva.interfaces import IXMLFormSerialization
 
-from Products.Silva.silvaxml import xmlexport, NS_SILVA_URI
-from Products.SilvaExternalSources.interfaces import IExternalSourceManager
-from Products.SilvaExternalSources.silvaxml import NS_SOURCE_URI
-from Products.SilvaExternalSources.silvaxml.treehandler import \
-    ElementTreeContentHandler
-from Products.SilvaExternalSources.SourceAsset import \
-    SourceAsset, SourceAssetVersion
+from . import NS_SOURCE_URI
+from ..interfaces import IExternalSourceManager, SourceError
+from ..interfaces import ISourceAsset, ISourceAssetVersion
+from .treehandler import ElementTreeContentHandler
+
+
+logger = logging.getLogger('silva.core.xml')
 
 
 class FieldProducer(ElementTreeContentHandler):
@@ -55,7 +58,13 @@ class ExternalSourceExportFilter(TransformationFilter):
             identifier = node.attrib['data-source-instance']
             del node.attrib['data-source-instance']
 
-            source = self.sources(request, instance=identifier)
+            try:
+                source = self.sources(request, instance=identifier)
+            except SourceError:
+                logger.error(
+                    u'Broken source in document %s',
+                    '/'.join(self.context.getPhysicalPath()))
+                continue
             node.attrib['source-identifier'] = source.getSourceId()
 
             # Fix this.
@@ -95,7 +104,7 @@ class SourceParametersProducer(object):
 
 
 class SourceAssetProducer(xmlexport.SilvaVersionedContentProducer):
-    grok.adapts(SourceAsset, Interface)
+    grok.adapts(ISourceAsset, Interface)
 
     def sax(self):
         self.startElementNS(NS_SOURCE_URI, 'source-asset',
@@ -107,15 +116,16 @@ class SourceAssetProducer(xmlexport.SilvaVersionedContentProducer):
 
 class SourceAssetVersionProducer(xmlexport.SilvaBaseProducer,
                                  SourceParametersProducer):
-
-    grok.adapts(SourceAssetVersion, Interface)
+    grok.adapts(ISourceAssetVersion, Interface)
 
     def sax(self):
-        source_manager = self.context.get_controller(self.getInfo().request)
-        self.startElementNS(NS_SILVA_URI, 'content',
-                            {'version_id': self.context.id,
-                             'source-identifier': source_manager.getSourceId()})
+        manager = self.context.get_controller(self.getInfo().request)
+        self.startElementNS(
+            NS_SILVA_URI,
+            'content',
+            {'version_id': self.context.id,
+             'source-identifier': manager.getSourceId()})
         self.metadata()
-        self.source_parameters(source_manager)
+        self.source_parameters(manager)
         self.endElementNS(NS_SILVA_URI, 'content')
 

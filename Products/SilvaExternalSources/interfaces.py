@@ -11,8 +11,8 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 
 from silva.core.interfaces import ISilvaService, ISilvaLocalService
 from silva.core.interfaces import IXMLZEXPExportable
-from silva.core.interfaces import IVersionedNonPublishable
-from silva.core.interfaces import IAsset, IRoot, IVersion
+from silva.core.interfaces import IVersionedNonPublishable, IVersion
+from silva.core.interfaces import IAsset, IRoot
 
 
 def availableSources(context):
@@ -141,6 +141,11 @@ class ICodeSource(IEditableExternalSource, IXMLZEXPExportable):
         """Test if the source is working or if it has problems. It
         should return None if there are no problems.
         """
+
+
+class ISourceAssetVersion(IVersion):
+    """A version of a source asset.
+    """
 
 
 class ISourceAsset(IVersionedNonPublishable, IExternalSource):

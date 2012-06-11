@@ -46,8 +46,8 @@ class SourceAssetVersion(Version):
         factory = getWrapper(self, IExternalSourceManager)
         return factory(request, instance=self._parameter_identifier)
 
-    security.declarePrivate('get_original_source')
-    def get_original_source(self):
+    security.declarePrivate('get_source')
+    def get_source(self):
         if not hasattr(aq_base(self), '_v_original_source'):
             manager = getWrapper(self, IExternalSourceManager)
             _, source = manager.get_parameters(self._parameter_identifier)
@@ -71,9 +71,9 @@ class SourceAsset(VersionedNonPublishable):
     def get_parameters_form(self):
         return None
 
-    security.declarePrivate('get_original_source')
-    def get_original_source(self):
-        return self.get_viewable().get_original_source()
+    security.declarePrivate('get_source')
+    def get_source(self):
+        return self.get_viewable().get_source()
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'to_html')
@@ -82,7 +82,7 @@ class SourceAsset(VersionedNonPublishable):
 
     def get_description(self):
         try:
-            source = self.get_original_source()
+            source = self.get_source()
             return source.get_description()
         except SourceError:
             return _('Broken or missing source.')
@@ -91,7 +91,7 @@ class SourceAsset(VersionedNonPublishable):
         permissions.AccessContentsInformation, 'get_icon')
     def get_icon(self):
         try:
-            source = self.get_original_source()
+            source = self.get_source()
             return source.get_icon()
         except SourceError:
             return None
@@ -103,18 +103,18 @@ class SourceAsset(VersionedNonPublishable):
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'is_previewable')
-    def is_previewable(self):
+    def is_previewable(self, **parameters):
         try:
-            source = self.get_original_source()
+            source = self.get_source()
             return source.is_previewable()
         except SourceError:
             return False
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'is_cacheable')
-    def is_cacheable(self):
+    def is_cacheable(self, **parameters):
         try:
-            source = self.get_original_source()
+            source = self.get_source()
             return source.is_cacheable()
         except SourceError:
             return False

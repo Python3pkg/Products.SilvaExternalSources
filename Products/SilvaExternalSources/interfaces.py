@@ -147,17 +147,22 @@ class ISourceAssetVersion(IVersion):
     """A version of a source asset.
     """
 
+    def get_controller(request):
+        """Return the controller associated to the source.
+        """
+
+    def get_source():
+        """Return the original source object associated to this asset.
+        """
+
 
 class ISourceAsset(IVersionedNonPublishable, IExternalSource):
     """Source asset store a external source and parameters to render it
     """
 
-    def get_controller(request):
-        """Return the controller associated to the source.
-        """
-
-    def get_original_source():
-        """Return the original source object associated to this asset.
+    def get_source():
+        """Return the original source object associated to the current
+        viewable version of this asset.
         """
 
 

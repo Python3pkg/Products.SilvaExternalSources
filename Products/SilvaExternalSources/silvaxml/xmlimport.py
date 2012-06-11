@@ -16,12 +16,11 @@ from zeam.component import getWrapper
 from zeam.form.silva.interfaces import IXMLFormSerialization
 
 from Products.Silva.silvaxml import xmlimport, NS_SILVA_URI
-from Products.SilvaExternalSources.silvaxml import NS_SOURCE_URI
-from Products.SilvaExternalSources.interfaces import IExternalSourceManager
-from Products.SilvaExternalSources.interfaces import SourceError
 
-logger = logging.getLogger('silva.xml')
+from . import NS_SOURCE_URI
+from ..interfaces import IExternalSourceManager, SourceError
 
+logger = logging.getLogger('silva.core.xml')
 
 silvaconf.namespace(NS_SOURCE_URI)
 
@@ -43,12 +42,16 @@ class ExternalSourceImportFilter(TransformationFilter):
         for node in tree.xpath(
                 '//html:div[contains(@class, "external-source")]',
                 namespaces={'html': 'http://www.w3.org/1999/xhtml'}):
-            name = node.attrib['source-identifier']
+            name = node.attrib.get('source-identifier')
+            if name is None:
+                logger.warn(
+                    u"Broken external source in import.", name)
+                continue
             try:
                 source = self.sources(request, name=name)
             except SourceError:
                 logger.warn(
-                    u"unknown external source %r in import", name)
+                    u"Unknown external source %r in import", name)
                 continue
             identifier = source.new()
 

@@ -44,8 +44,8 @@ class ExternalSourceImportFilter(TransformationFilter):
                 namespaces={'html': 'http://www.w3.org/1999/xhtml'}):
             name = node.attrib.get('source-identifier')
             if name is None:
-                logger.warn(
-                    u"Broken external source in import.", name)
+                logger.error(
+                    u"Broken external source in import.")
                 continue
             try:
                 source = self.sources(request, name=name)

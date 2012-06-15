@@ -41,6 +41,7 @@ from silva.core import conf as silvaconf
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
 
+
 # Asset must be used inherited before EditableExternalSource
 class CSVSource(Folder, Asset, EditableExternalSource):
     """CSV Source is an asset that displays tabular data from a

@@ -17,7 +17,6 @@ from zope import component
 
 # Zope
 from AccessControl import ClassSecurityInfo
-from App.Common import package_home
 from App.class_init import InitializeClass
 from OFS.Folder import Folder
 
@@ -40,6 +39,8 @@ from silva.core.conf.interfaces import ITitledContent
 from silva.core import conf as silvaconf
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
+
+DATA_PATH = os.path.join(os.path.dirname(__file__), 'layout')
 
 
 # Asset must be used inherited before EditableExternalSource
@@ -184,29 +185,22 @@ InitializeClass(CSVSource)
 
 
 def reset_parameter_form(csvsource):
-    filename = os.path.join(package_home(globals()),
-                            'layout',
-                            'csvparameters.xml')
-    f = open(filename, 'rb')
-    form = ZMIForm('form', 'Parameters form', unicode_mode=1)
-    XMLToForm(f.read(), form)
-    f.close()
-    csvsource.set_form(form)
+    with open(os.path.join(DATA_PATH, 'csvparameters.xml')) as data:
+        form = ZMIForm('form', 'Parameters form', unicode_mode=1)
+        XMLToForm(data.read(), form)
+        csvsource.set_form(form)
 
-def reset_table_layout(cs):
+def reset_table_layout(csvsource):
     # Works for Zope object implementing a 'write()" method...
     layout = [
         ('layout', ZopePageTemplate, 'csvtable.zpt'),
     ]
 
-    for id, factory, file in layout:
-        filename = os.path.join(package_home(globals()), 'layout', file)
-        f = open(filename, 'rb')
-        if not id in cs.objectIds():
-            cs._setObject(id, factory(id))
-        cs[id].write(f.read())
-        f.close()
-
+    for id, klass, filename in layout:
+        with open(os.path.join(DATA_PATH, filename), 'rb') as data:
+            if not id in csvsource.objectIds():
+                csvsource._setObject(id, klass(id))
+            csvsource._getOb(id).write(data.read())
 
 @grok.subscribe(ICSVSource, IObjectCreatedEvent)
 def source_created(source, event):

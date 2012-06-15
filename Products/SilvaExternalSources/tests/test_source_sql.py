@@ -3,26 +3,25 @@ import unittest
 
 from zope.interface.verify import verifyObject
 
-from ..interfaces import ICSVSource, IExternalSource
+from ..interfaces import IExternalSource
 from ..testing import FunctionalLayer
 
 
-class CSVSourceTestCase(unittest.TestCase):
+class SQLSourceTestCase(unittest.TestCase):
     layer = FunctionalLayer
 
     def setUp(self):
         self.root = self.layer.get_application()
-        self.layer.login('author')
+        self.layer.login('manager')
 
     def test_source(self):
-        """Simply add and verify a CSV Source.
+        """Simply add and verify a SQL Source.
         """
         factory = self.root.manage_addProduct['SilvaExternalSources']
-        factory.manage_addCSVSource('csv_data', 'CSV Data')
-        source = self.root._getOb('csv_data', None)
+        factory.manage_addSQLSource('sql_data', 'SQL Data')
+        source = self.root._getOb('sql_data', None)
         self.assertNotEqual(source, None)
-        self.assertTrue(verifyObject(ICSVSource, source))
-        self.assertTrue(ICSVSource.extends(IExternalSource))
+        self.assertTrue(verifyObject(IExternalSource, source))
 
     def test_render(self):
         assert False, 'TBD'
@@ -30,5 +29,5 @@ class CSVSourceTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(CSVSourceTestCase))
+    suite.addTest(unittest.makeSuite(SQLSourceTestCase))
     return suite

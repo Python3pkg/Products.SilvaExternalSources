@@ -2,13 +2,14 @@
 # See also LICENSE.txt
 # $Id$
 
+import os
+
 from Products.SilvaExternalSources.interfaces import IExternalSource
 from Products.SilvaExternalSources.ExternalSource import EditableExternalSource
 from zope.interface import implements
 
 # Zope
 from AccessControl import ClassSecurityInfo
-from App.Common import package_home
 from App.class_init import InitializeClass
 from OFS.Folder import Folder
 
@@ -23,16 +24,17 @@ from Products.Silva.SilvaPermissions import ViewManagementScreens, \
     AccessContentsInformation
 from Products.Silva.helpers import add_and_edit
 
-from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf
+from silva.core.services.base import ZMIObject
 from silva.translations import translate as _
+
+DATA_PATH = os.path.join(os.path.dirname(__file__), 'layout')
 
 
 class SQLSource(ZMIObject, EditableExternalSource, Folder):
     implements(IExternalSource)
 
     meta_type = "Silva SQL Source"
-
     security = ClassSecurityInfo()
 
     _sql_method_id = 'sql_method'
@@ -75,10 +77,10 @@ class SQLSource(ZMIObject, EditableExternalSource, Folder):
         return SQLConnectionIDs(self)
 
     security.declareProtected(AccessContentsInformation, 'to_html')
-    def to_html(self, REQUEST, **kw):
+    def to_html(self, content, request, **parameters):
         """ render HTML for SQL source
         """
-        brains = self._get_data(kw)
+        brains = self._get_data(parameters)
         names = brains.names()
         layout = self[self._layout_id]
         # XXX: we're materializing all data in the resultset here which
@@ -92,7 +94,7 @@ class SQLSource(ZMIObject, EditableExternalSource, Folder):
         # We don't need to pass in the request explicitly (how would I do
         # that anyway) since we're calling the layout (e.g. a ZPT or Python
         # Script) which can get to the request itself.
-        return layout(table=data, names=names, parameters=kw)
+        return layout(table=data, names=names, parameters=parameters)
 
     def _get_data(self, args):
         if not self._sql_method:
@@ -222,35 +224,11 @@ class SQLSource(ZMIObject, EditableExternalSource, Folder):
 
 InitializeClass(SQLSource)
 
+
 manage_addSQLSourceForm = PageTemplateFile(
     "www/sqlSourceAdd", globals(), __name__='manage_addSQLSourceForm')
 
-import os
-
-def reset_table_layout(sqlsource):
-    # Works for Zope object implementing a 'write()" method...
-    layout = [
-        ('layout', ZopePageTemplate, 'table.zpt'),
-        ('macro', ZopePageTemplate, 'macro.zpt'),
-    ]
-
-    for id, klass, file in layout:
-        filename = os.path.join(package_home(globals()), 'layout', file)
-        f = open(filename, 'rb')
-        if not id in sqlsource.objectIds():
-            sqlsource._setObject(id, klass(id))
-        sqlsource[id].write(f.read())
-        f.close()
-
-def reset_parameter_form(sqlsource):
-    filename = os.path.join(package_home(globals()), 'layout', 'parameters.xml')
-    f = open(filename, 'rb')
-    form = ZMIForm('form', 'Parameters form', unicode_mode=1)
-    XMLToForm(f.read(), form)
-    f.close()
-    sqlsource.set_form(form)
-
-def manage_addSQLSource(context, id, title, REQUEST=None):
+def manage_addSQLSource(context, id, title=None, REQUEST=None):
     """Add a SQLSource object
     """
     datasource = SQLSource(id)
@@ -265,3 +243,21 @@ def manage_addSQLSource(context, id, title, REQUEST=None):
     reset_table_layout(datasource)
     add_and_edit(context, id, REQUEST, screen='editSQLSource')
     return ''
+
+def reset_table_layout(sqlsource):
+    # Works for Zope object implementing a 'write()" method...
+    layout = [
+        ('layout', ZopePageTemplate, 'sqltable.zpt'),
+    ]
+
+    for id, klass, filename in layout:
+        with open(os.path.join(DATA_PATH, filename), 'rb') as data:
+            if not id in sqlsource.objectIds():
+                sqlsource._setObject(id, klass(id))
+            sqlsource._getOb(id).write(data.read())
+
+def reset_parameter_form(sqlsource):
+    with open(os.path.join(DATA_PATH, 'sqlparameters.xml')) as data:
+        form = ZMIForm('form', 'Parameters form', unicode_mode=1)
+        XMLToForm(data.read(), form)
+        sqlsource.set_form(form)

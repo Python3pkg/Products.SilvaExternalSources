@@ -238,6 +238,8 @@ class ExternalSourceManager(object):
         source = getattr(self.context, name, None)
         if source is not None and IExternalSource.providedBy(source):
             return parameters, source
+        if parameters is not None:
+            return parameters, None
         raise error.SourceMissingError(source)
 
     def __call__(self, request, instance=None, name=None):
@@ -261,9 +263,10 @@ class ExternalSourceController(silvaforms.FormData):
         self.manager = manager
         self.source = source
         self.__parent__ = manager.context # Enable security checks.
-        fields = source.get_parameters_form()
-        if fields is not None:
-            self.fields = silvaforms.Fields(fields)
+        if source is not None:
+            fields = source.get_parameters_form()
+            if fields is not None:
+                self.fields = silvaforms.Fields(fields)
 
     def getId(self):
         content = self.getContent()
@@ -286,11 +289,15 @@ class ExternalSourceController(silvaforms.FormData):
 
     @property
     def label(self):
-        return self.source.get_title()
+        if self.source is not None:
+            return self.source.get_title()
+        return _(u"Broken source")
 
     @property
     def description(self):
-        return self.source.get_description()
+        if self.source is not None:
+            return self.source.get_description()
+        return u''
 
     def indexes(self):
         # Return index entries for Silva Indexer.
@@ -301,11 +308,13 @@ class ExternalSourceController(silvaforms.FormData):
         return []
 
     def new(self):
-        assert self.getContent() is None
+        assert self.source is not None, u'Cannot create broken source'
+        assert self.getContent() is None, u'Cannot override existing source'
         self.setContentData(self.manager.new(self.source))
         return self.getId()
 
     def copy(self, destination):
+        assert self.source is not None, u'Cannot copy broken source'
         assert self.getSourceId() == destination.getSourceId()
         source = self.getContentData()
         target = destination.getContentData()
@@ -322,7 +331,9 @@ class ExternalSourceController(silvaforms.FormData):
 
     @silvaforms.action(_(u"Save"))
     def save(self):
-        assert self.getContent() is not None
+        assert self.getContent() is not None, u'Cannot save to missing source'
+        if self.source is None:
+            raise error.SourceMissingError('unknown')
         data, errors = self.extractData()
         if errors:
             return silvaforms.FAILURE
@@ -335,7 +346,7 @@ class ExternalSourceController(silvaforms.FormData):
 
     @silvaforms.action(_(u"Remove"))
     def remove(self):
-        assert self.getContent() is not None
+        assert self.getContent() is not None, u'Cannot remove missing source'
         manager = self.getContentData()
         identifier = self.getId()
         for field in self.fields:
@@ -354,8 +365,10 @@ class ExternalSourceController(silvaforms.FormData):
     security.declareProtected(
         permissions.AccessContentsInformation, 'render')
     def render(self, view=False, preview=False):
+        if self.source is None:
+            raise error.SourceMissingError('unknown')
         if preview and not self.source.is_previewable():
-            return u'<b>This Code source is not previewable.</b>'
+            raise error.SourcePreviewError(self.source.getId())
         values = {}
         if self.fields:
             if not self.ignoreRequest:

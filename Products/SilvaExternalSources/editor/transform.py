@@ -4,6 +4,7 @@
 # $Id$
 
 import lxml.html
+import logging
 
 from five import grok
 from zeam.component import getComponent
@@ -21,7 +22,7 @@ from Products.SilvaExternalSources.interfaces import ISourceEditableVersion
 from Products.SilvaExternalSources.interfaces import SourceError
 from Products.SilvaExternalSources.editor.utils import parse_qs
 
-
+logger = logging.getLogger('silva.externalsources')
 SOURCE_XPATH = '//div[contains(@class, "external-source")]'
 
 def broken_source(msg):
@@ -43,19 +44,24 @@ class ExternalSourceSaveFilter(TransformationFilter):
 
     def __call__(self, tree):
         for node in tree.xpath(SOURCE_XPATH):
+            name = node.attrib.get('data-silva-name')
             instance = node.attrib.get('data-silva-instance')
             parameters = parse_qs(node.attrib.get('data-silva-settings', ''))
-            source = self.sources(
-                TestRequest(form=parameters),
-                instance=instance,
-                name=node.attrib.get('data-silva-name'))
-            if instance is None:
-                source.create()
-                instance = source.getId()
+            try:
+                source = self.sources(
+                    TestRequest(form=parameters), instance=instance, name=name)
+            except SourceError:
+                logger.error(
+                    'Broken source %s in text %s',
+                    name, '/'.join(self.context.getPhysicalPath()))
             else:
-                source.save()
-            node.attrib['data-source-instance'] = instance
-            self.seen.add(instance)
+                if instance is None:
+                    source.create()
+                    instance = source.getId()
+                else:
+                    source.save()
+                node.attrib['data-source-instance'] = instance
+                self.seen.add(instance)
             clean_editor_attributes(node)
 
     def finalize(self):
@@ -65,7 +71,10 @@ class ExternalSourceSaveFilter(TransformationFilter):
                 source = self.sources(self.request, instance=identifier)
                 source.remove()
             except SourceError:
-                pass
+                logger.error(
+                    'Error while removing source %s from text %s',
+                    identifier, '/'.join(self.context.getPhysicalPath()))
+
 
 class ExternalSourceInputFilter(TransformationFilter):
     """Updater External Source information on edit.

@@ -38,8 +38,8 @@ class ExternalSourcesInstaller(DefaultInstaller):
                     source.install(root)
                 else:
                     logger.error(
-                        u"could not find default source %s to install it." % (
-                            source_id))
+                        u"Could not find default source %s to install it.",
+                        source_id)
 
 
     def uninstall_custom(self, root):

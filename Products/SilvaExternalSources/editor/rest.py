@@ -79,7 +79,7 @@ class PreviewSource(SourceAPI):
     def POST(self):
         try:
             return self.get_source().render(preview=True)
-        except SourceError, error:
+        except SourceError as error:
             return error.to_html()
 
 

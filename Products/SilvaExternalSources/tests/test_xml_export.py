@@ -5,19 +5,18 @@
 
 import unittest
 
-from zope.intid.interfaces import IIntIds
 from zope.component import getUtility
+from zope.intid.interfaces import IIntIds
 
+from Products.Silva.testing import TestRequest
 from Products.Silva.silvaxml.xmlexport import exportToString
 from Products.Silva.tests.test_xml_export import SilvaXMLTestCase
-from zope.publisher.browser import TestRequest
 
 from zeam.form import silva as silvaforms
+from zeam.component import getWrapper
 
 from ..testing import FunctionalLayer
-from zeam.component import getWrapper
-from Products.SilvaExternalSources.interfaces import IExternalSourceManager
-
+from ..interfaces import IExternalSourceManager
 
 
 HTML_CODE_SOURCE = u"""
@@ -62,7 +61,7 @@ class SourceAssertExportTestCase(SilvaXMLTestCase):
     def setUp(self):
         self.root = self.layer.get_application()
         self.layer.login('editor')
-        
+
         factory = self.root.manage_addProduct['Silva']
         factory.manage_addFolder('folder', 'Folder')
         self.folder = self.root._getOb('folder')
@@ -73,14 +72,13 @@ class SourceAssertExportTestCase(SilvaXMLTestCase):
         self.source_asset = self.folder._getOb('asset')
         self.source_asset_version = self.source_asset.get_editable()
 
-        intids = getUtility(IIntIds)
-        folder_id = intids.register(self.folder)
-        parameters = dict(field_paths=str(folder_id),
-                          field_toc_types="Silva Folder",
-                          field_depth="0",
-                          field_sort_on="silva",
-                          field_order="normal")
-        request = TestRequest(form=parameters)        
+        folder_id = getUtility(IIntIds).register(self.folder)
+        request = TestRequest(
+            form={'field_paths': str(folder_id),
+                  'field_toc_types': "Silva Folder",
+                  'field_depth': "0",
+                  'field_sort_on': "silva",
+                  'field_order': "normal"})
         factory = getWrapper(self.source_asset_version,
                              IExternalSourceManager)
         source = factory(request, name='cs_toc')

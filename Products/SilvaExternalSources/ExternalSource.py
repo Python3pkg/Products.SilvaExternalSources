@@ -207,7 +207,7 @@ class ExternalSourceManager(object):
         # Add the annotations if missing, and return the sources.
         # This is not done in the __init__ because it can be built
         # during tranversing (read-only).
-        if self.KEY not in self.annotations:
+        if self.sources is None:
             self.sources = self.annotations[self.KEY] = \
                 persistent.mapping.PersistentMapping()
         return self.sources

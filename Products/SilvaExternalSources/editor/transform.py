@@ -16,6 +16,7 @@ from silva.core.editor.transform.editor.output import clean_editor_attributes
 from silva.core.editor.transform.interfaces import IDisplayFilter
 from silva.core.editor.transform.interfaces import IInputEditorFilter
 from silva.core.editor.transform.interfaces import ISaveEditorFilter
+from zeam.form import silva as silvaforms
 
 from Products.SilvaExternalSources.interfaces import IExternalSourceManager
 from Products.SilvaExternalSources.interfaces import ISourceEditableVersion
@@ -52,14 +53,20 @@ class ExternalSourceSaveFilter(TransformationFilter):
                     TestRequest(form=parameters), instance=instance, name=name)
             except SourceError:
                 logger.error(
-                    'Broken source %s in text %s',
-                    name, '/'.join(self.context.getPhysicalPath()))
+                    u'Broken source %s(%s) on content %s',
+                    name, instance, '/'.join(self.context.getPhysicalPath()))
             else:
                 if instance is None:
-                    source.create()
+                    status = source.create()
                     instance = source.getId()
                 else:
-                    source.save()
+                    status = source.save()
+                if status is silvaforms.FAILURE:
+                    logger.error(
+                        u"Error while saving source parameters %s for %s(%s) "
+                        u"on content %s",
+                        parameters, name, instance,
+                        '/'.join(self.context.getPhysicalPath()))
                 node.attrib['data-source-instance'] = instance
                 self.seen.add(instance)
             clean_editor_attributes(node)

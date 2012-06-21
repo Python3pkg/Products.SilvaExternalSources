@@ -60,7 +60,7 @@ def install_py(context, data, id, extension):
 def install_xml(context, data, id, extension):
     """Install an XML file.
     """
-    form = ZMIForm('form', 'Parameters form')
+    form = ZMIForm(id, 'Parameters form')
     try:
         form.set_xml(data.read())
         context.set_form(form)

@@ -7,6 +7,7 @@ import sys
 import uuid
 
 from five import grok
+from zope.component import getUtility
 from zope.annotation.interfaces import IAnnotatable, IAnnotations
 import persistent
 
@@ -27,6 +28,7 @@ from . import interfaces as error
 from .interfaces import IExternalSource, IEditableExternalSource
 from .interfaces import IExternalSourceController
 from .interfaces import IExternalSourceManager, IExternalSourceInstance
+from .interfaces import ISourceErrors
 from .interfaces import availableSources # BB
 
 logger = logging.getLogger('silva.externalsources')
@@ -390,7 +392,7 @@ class ExternalSourceController(silvaforms.FormData):
             return self.source.to_html(self.context, self.request, **values)
         except:
             info = u''.join(format_exception(*sys.exc_info()))
-            logger.error(info)
+            getUtility(ISourceErrors).report(info)
             raise error.SourceError(info)
 
 

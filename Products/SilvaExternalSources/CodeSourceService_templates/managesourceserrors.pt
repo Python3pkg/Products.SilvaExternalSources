@@ -1,0 +1,32 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/@@standard_macros/page"
+      i18n:domain="silva">
+  <body>
+    <div metal:fill-slot="body">
+
+      <h2 i18n:translate="">
+        External sources errors
+      </h2>
+
+      <p i18n:translate="">
+        This screen reports the recently triggered errors by external
+        sources during their rendering.
+      </p>
+
+      <p tal:condition="not:view/errors"
+         i18n:translate="">
+        There are no errors at the moment.
+      </p>
+
+      <ul tal:condition="view/errors">
+        <li tal:repeat="error view/errors">
+            <pre tal:content="error">
+            </pre>
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

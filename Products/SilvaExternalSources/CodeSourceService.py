@@ -2,6 +2,7 @@
 # See also LICENSE.txt
 # $Id$
 
+import collections
 import os
 import logging
 import ConfigParser
@@ -12,23 +13,23 @@ from App.class_init import InitializeClass
 from OFS.interfaces import IObjectWillBeRemovedEvent
 from ZODB.broken import Broken
 
-from Products.SilvaExternalSources.interfaces import ICodeSource
-from Products.SilvaExternalSources.interfaces import ICodeSourceService
-from Products.SilvaExternalSources.interfaces import ICodeSourceInstaller
 from Products.Formulator.Form import ZMIForm
 
+from five import grok
+from zope.cachedescriptors.property import CachedProperty
 from zope.component import getUtility, queryUtility
 from zope.intid.interfaces import IIntIds
-from zope.cachedescriptors.property import CachedProperty
 from zope.lifecycleevent.interfaces import IObjectAddedEvent
 
-from five import grok
 from silva.core.services.base import SilvaService
 from silva.core import conf as silvaconf
 from silva.core.interfaces import IContainer
 from silva.core.views import views as silvaviews
 from silva.core.services.utils import walk_silva_tree
 from silva.translations import translate as _
+
+from .interfaces import ICodeSource, ICodeSourceService, ICodeSourceInstaller
+from .interfaces import ISourceErrors
 
 logger = logging.getLogger('silva.externalsources')
 
@@ -195,6 +196,8 @@ class CodeSourceService(SilvaService):
          'action':'manage_existing_codesources'},
         {'label':'Install Code Sources',
          'action':'manage_install_codesources'},
+        {'label': 'External Sources Errors',
+         'action': 'manage_sources_errors'}
         ) + SilvaService.manage_options
 
     _installed_sources = []
@@ -299,6 +302,24 @@ def unregister_source(source, event):
             service._installed_sources.remove(source_id)
 
 
+class SourcesErrorsReporter(grok.GlobalUtility):
+    grok.implements(ISourceErrors)
+    grok.provides(ISourceErrors)
+
+    def __init__(self):
+        self.__errors = collections.deque([], 25)
+
+    def report(self, info):
+        logger.error(info)
+        self.__errors.append(info)
+
+    def __len__(self):
+        return len(self.__errors)
+
+    def fetch(self):
+        return list(self.__errors)
+
+
 class ManageExistingCodeSources(silvaviews.ZMIView):
     grok.name('manage_existing_codesources')
 
@@ -347,3 +368,10 @@ class ManageInstallCodeSources(silvaviews.ZMIView):
         self.sources = []
         for source in self.context.get_installable_sources():
             self.sources.append(source)
+
+
+class ManageSourcesErrors(silvaviews.ZMIView):
+    grok.name('manage_sources_errors')
+
+    def update(self):
+        self.errors = getUtility(ISourceErrors).fetch()

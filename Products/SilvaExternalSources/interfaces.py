@@ -332,6 +332,17 @@ class IExternalSourceManager(Interface):
         """
 
 
+class ISourceErrors(Interface):
+
+    def report(info):
+        """Report an error.
+        """
+
+    def fetch():
+        """Return a list of all reported errors.
+        """
+
+
 class SourceError(ValueError):
     """Error related with the handling of source objects.
     """

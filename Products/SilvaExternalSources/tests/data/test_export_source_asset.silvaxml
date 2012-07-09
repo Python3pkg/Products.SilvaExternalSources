@@ -1,84 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <silva xmlns="http://infrae.com/namespace/silva"
-{namespaces}
-silva_version="{version}">
-<folder id="folder">
-<metadata>
-<set id="silva-content">
-<silva-content:maintitle>Folder</silva-content:maintitle>
-<silva-content:shorttitle />
-</set>
-<set id="silva-extra">
-<silva-extra:comment />
-<silva-extra:contactemail />
-<silva-extra:contactname />
-<silva-extra:content_description />
-<silva-extra:creationtime>
-YYYY-MM-DDTHH:MM:SS</silva-extra:creationtime>
-<silva-extra:creator>editor</silva-extra:creator>
-<silva-extra:hide_from_tocs>do not hide</silva-extra:hide_from_tocs>
-<silva-extra:keywords />
-<silva-extra:language />
-<silva-extra:lastauthor>editor</silva-extra:lastauthor>
-<silva-extra:modificationtime>
-YYYY-MM-DDTHH:MM:SS</silva-extra:modificationtime>
-<silva-extra:subject />
-</set>
-</metadata>
-<content>
-<silva-external-sources:source-asset id="asset">
-<workflow>
-<version id="0">
-<status>unapproved</status>
-<publication_datetime />
-<expiration_datetime />
-</version>
-</workflow>
-<content source-identifier="cs_toc" version_id="0">
-<metadata>
-<set id="silva-content">
-<silva-content:maintitle>A source asset</silva-content:maintitle>
-<silva-content:shorttitle />
-</set>
-<set id="silva-extra">
-<silva-extra:comment />
-<silva-extra:contactemail />
-<silva-extra:contactname />
-<silva-extra:content_description />
-<silva-extra:creationtime>
-YYYY-MM-DDTHH:MM:SS</silva-extra:creationtime>
-<silva-extra:creator>editor</silva-extra:creator>
-<silva-extra:hide_from_tocs>do not hide</silva-extra:hide_from_tocs>
-<silva-extra:keywords />
-<silva-extra:language />
-<silva-extra:lastauthor>editor</silva-extra:lastauthor>
-<silva-extra:modificationtime>
-YYYY-MM-DDTHH:MM:SS</silva-extra:modificationtime>
-<silva-extra:subject />
-</set>
-</metadata>
-<silva-external-sources:fields>
-<silva-external-sources:field xmlns="http://infrae.com/namespace/silva-references"
-id="paths">
-<path>folder</path>
-</silva-external-sources:field>
-<silva-external-sources:field xmlns="http://infrae.com/namespace/formulator"
-id="toc_types">
-<value>Silva Folder</value>
-</silva-external-sources:field>
-<silva-external-sources:field id="depth">0</silva-external-sources:field>
-<silva-external-sources:field id="sort_on">silva</silva-external-sources:field>
-<silva-external-sources:field id="order">normal</silva-external-sources:field>
-<silva-external-sources:field id="show_icon">False</silva-external-sources:field>
-<silva-external-sources:field id="show_desc">False</silva-external-sources:field>
-<silva-external-sources:field id="display_headings">False</silva-external-sources:field>
-<silva-external-sources:field id="link_headings">False</silva-external-sources:field>
-<silva-external-sources:field id="capsule_title" />
-<silva-external-sources:field id="css_class" />
-<silva-external-sources:field id="css_style" />
-</silva-external-sources:fields>
-</content>
-</silva-external-sources:source-asset>
-</content>
-</folder>
+  {namespaces}
+  silva_version="{version}">
+  <folder id="folder">
+    <metadata>
+      <set id="silva-content">
+        <silva-content:maintitle>Folder</silva-content:maintitle>
+        <silva-content:shorttitle />
+      </set>
+      <set id="silva-extra">
+        <silva-extra:comment />
+        <silva-extra:contactemail />
+        <silva-extra:contactname />
+        <silva-extra:content_description />
+        <silva-extra:creationtime>
+        YYYY-MM-DDTHH:MM:SS</silva-extra:creationtime>
+        <silva-extra:creator>editor</silva-extra:creator>
+        <silva-extra:keywords />
+        <silva-extra:language />
+        <silva-extra:lastauthor>editor</silva-extra:lastauthor>
+        <silva-extra:modificationtime>
+        YYYY-MM-DDTHH:MM:SS</silva-extra:modificationtime>
+        <silva-extra:subject />
+      </set>
+      <set xmlns:silvasettings="http://infrae.com/namespace/metadata/silva-settings" id="silva-settings">
+       <silvasettings:hide_from_tocs>
+        do not hide
+       </silvasettings:hide_from_tocs>
+       </set>
+      </set>
+    </metadata>
+    <content>
+      <silva-external-sources:source-asset id="asset">
+        <workflow>
+          <version id="0">
+            <status>unapproved</status>
+            <publication_datetime />
+            <expiration_datetime />
+          </version>
+        </workflow>
+        <content source-identifier="cs_toc" version_id="0">
+          <metadata>
+            <set id="silva-content">
+              <silva-content:maintitle>A source asset</silva-content:maintitle>
+              <silva-content:shorttitle />
+            </set>
+            <set id="silva-extra">
+              <silva-extra:comment />
+              <silva-extra:contactemail />
+              <silva-extra:contactname />
+              <silva-extra:content_description />
+              <silva-extra:creationtime>
+              YYYY-MM-DDTHH:MM:SS</silva-extra:creationtime>
+              <silva-extra:creator>editor</silva-extra:creator>
+              <silva-extra:keywords />
+              <silva-extra:language />
+              <silva-extra:lastauthor>editor</silva-extra:lastauthor>
+              <silva-extra:modificationtime>
+              YYYY-MM-DDTHH:MM:SS</silva-extra:modificationtime>
+              <silva-extra:subject />
+            </set>
+            <set xmlns:silvasettings="http://infrae.com/namespace/metadata/silva-settings" id="silva-settings">
+              <silvasettings:hide_from_tocs>
+                do not hide
+              </silvasettings:hide_from_tocs>
+            </set>
+          </metadata>
+          <silva-external-sources:fields>
+            <silva-external-sources:field xmlns="http://infrae.com/namespace/silva-references"
+                                          id="paths">
+              <path>folder</path>
+            </silva-external-sources:field>
+            <silva-external-sources:field xmlns="http://infrae.com/namespace/formulator"
+                                          id="toc_types">
+              <value>Silva Folder</value>
+            </silva-external-sources:field>
+            <silva-external-sources:field id="depth">0</silva-external-sources:field>
+            <silva-external-sources:field id="sort_on">silva</silva-external-sources:field>
+            <silva-external-sources:field id="order">normal</silva-external-sources:field>
+            <silva-external-sources:field id="show_icon">False</silva-external-sources:field>
+            <silva-external-sources:field id="show_desc">False</silva-external-sources:field>
+            <silva-external-sources:field id="display_headings">False</silva-external-sources:field>
+            <silva-external-sources:field id="link_headings">False</silva-external-sources:field>
+            <silva-external-sources:field id="capsule_title" />
+            <silva-external-sources:field id="css_class" />
+            <silva-external-sources:field id="css_style" />
+          </silva-external-sources:fields>
+        </content>
+      </silva-external-sources:source-asset>
+    </content>
+  </folder>
 </silva>

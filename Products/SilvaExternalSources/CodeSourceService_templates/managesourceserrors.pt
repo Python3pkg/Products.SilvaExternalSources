@@ -21,12 +21,29 @@
         There are no errors at the moment.
       </p>
 
-      <ul tal:condition="view/errors">
-        <li tal:repeat="error view/errors">
-            <pre tal:content="error">
+      <tal:errors tal:condition="view/errors">
+        <p i18n:translate="">
+          There is(are) <span tal:content="python:len(view.errors)"
+          i18n:name="count"/> error(s) reported.
+        </p>
+        <ul>
+          <li tal:repeat="error view/errors">
+            <p i18n:translate="">
+              An error happened <span tal:content="error/count"
+              i18n:name="count" /> times, first seen the
+              <span tal:content="error/when" i18n:name="when" />:
+            </p>
+            <pre tal:content="error/info">
             </pre>
-        </li>
-      </ul>
+          </li>
+        </ul>
+
+      <form action="#" method="post"
+            tal:attributes="action request/URL">
+        <input type="submit" name="clear" value="Clear"
+               i18n:attributes="value" />
+      </form>
+      </tal:errors>
     </div>
   </body>
 </html>

@@ -4,8 +4,10 @@
 
 import collections
 import os
+import re
 import logging
 import ConfigParser
+from datetime import datetime
 from pkg_resources import iter_entry_points
 
 from AccessControl import ClassSecurityInfo
@@ -302,22 +304,53 @@ def unregister_source(source, event):
             service._installed_sources.remove(source_id)
 
 
+OBJECT_ADDRESS = re.compile('0x([0-9a-f])*')
+
+class SourcesError(object):
+    """Describe a code source error.
+    """
+
+    def __init__(self, info, cleaned):
+        self.info = info
+        self._cleaned = cleaned
+        self.count = 1
+        self.when = datetime.now()
+
+    def is_duplicate(self, other):
+        if other == self._cleaned:
+            self.count += 1
+            return True
+        return False
+
+    def __getitem__(self, key):
+        if key in self.__dict__:
+            return self.__dict__[key]
+        raise KeyError(key)
+
+
 class SourcesErrorsReporter(grok.GlobalUtility):
     grok.implements(ISourceErrors)
     grok.provides(ISourceErrors)
 
     def __init__(self):
-        self.__errors = collections.deque([], 25)
+        self.clear()
 
     def report(self, info):
         logger.error(info)
-        self.__errors.append(info)
+        cleaned = OBJECT_ADDRESS.sub('0xXXXXXXX', info)
+        for error in self.__errors:
+            if error.is_duplicate(cleaned):
+                return
+        self.__errors.append(SourcesError(info, cleaned))
 
     def __len__(self):
         return len(self.__errors)
 
     def fetch(self):
-        return list(self.__errors)
+        return list(reversed(self.__errors))
+
+    def clear(self):
+        self.__errors = collections.deque([], 25)
 
 
 class ManageExistingCodeSources(silvaviews.ZMIView):
@@ -374,4 +407,7 @@ class ManageSourcesErrors(silvaviews.ZMIView):
     grok.name('manage_sources_errors')
 
     def update(self):
-        self.errors = getUtility(ISourceErrors).fetch()
+        errors = getUtility(ISourceErrors)
+        if 'clear' in self.request.form:
+            errors.clear()
+        self.errors = errors.fetch()

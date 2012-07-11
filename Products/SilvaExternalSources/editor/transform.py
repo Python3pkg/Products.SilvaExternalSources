@@ -39,7 +39,7 @@ class ExternalSourceSaveFilter(TransformationFilter):
     grok.adapts(ISourceEditableVersion, IBrowserRequest)
 
     def prepare(self, name, text):
-        self.sources = getComponent(
+        self.manager = getComponent(
             self.context, IExternalSourceManager)(self.context)
         self.seen = set()
 
@@ -49,7 +49,7 @@ class ExternalSourceSaveFilter(TransformationFilter):
             instance = node.attrib.get('data-silva-instance')
             parameters = parse_qs(node.attrib.get('data-silva-settings', ''))
             try:
-                source = self.sources(
+                source = self.manager(
                     TestRequest(form=parameters), instance=instance, name=name)
             except SourceError:
                 logger.error(
@@ -73,9 +73,21 @@ class ExternalSourceSaveFilter(TransformationFilter):
 
     def finalize(self):
         # Remove all sources that we didn't see.
-        for identifier in set(self.sources.all()).difference(self.seen):
+        for identifier in set(self.manager.all()).difference(self.seen):
             try:
-                source = self.sources(self.request, instance=identifier)
+                source = self.manager(self.request, instance=identifier)
+                source.remove()
+            except SourceError:
+                logger.error(
+                    'Error while removing source %s from text %s',
+                    identifier, '/'.join(self.context.getPhysicalPath()))
+
+    def truncate(self, name, text):
+        manager = getComponent(
+            self.context, IExternalSourceManager)(self.context)
+        for identifier in manager.all():
+            try:
+                source = manager(self.request, instance=identifier)
                 source.remove()
             except SourceError:
                 logger.error(

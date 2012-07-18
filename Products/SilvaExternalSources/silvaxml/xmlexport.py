@@ -27,8 +27,9 @@ logger = logging.getLogger('silva.core.xml')
 
 class FieldProducer(ElementTreeContentHandler):
 
-    def __init__(self, handler, **kwargs):
+    def __init__(self, context, handler, **kwargs):
         ElementTreeContentHandler.__init__(self, **kwargs)
+        self.context = context
         self.__handler = handler
 
     def getHandler(self):
@@ -68,7 +69,7 @@ class ExternalSourceExportFilter(TransformationFilter):
             node.attrib['source-identifier'] = source.getSourceId()
 
             # Fix this.
-            producer = FieldProducer(self.handler, root=node)
+            producer = FieldProducer(self.context, self.handler, root=node)
             producer.startPrefixMapping(None, NS_SOURCE_URI)
             producer.startElement('fields')
             for serializer in getWrapper(

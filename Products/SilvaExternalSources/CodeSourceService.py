@@ -202,7 +202,7 @@ class CodeSourceService(SilvaService):
          'action': 'manage_sources_errors'}
         ) + SilvaService.manage_options
 
-    _installed_sources = []
+    _installed_sources = None
 
     security.declareProtected(
         'View management screens', 'find_installed_sources')
@@ -218,12 +218,13 @@ class CodeSourceService(SilvaService):
     security.declareProtected(
         'Access contents information', 'get_installed_sources')
     def get_installed_sources(self):
-        resolve = getUtility(IIntIds).getObject
-        for source_id in self._installed_sources:
-            try:
-                yield resolve(source_id)
-            except KeyError:
-                pass
+        if self._installed_sources is not None:
+            resolve = getUtility(IIntIds).getObject
+            for source_id in self._installed_sources:
+                try:
+                    yield resolve(source_id)
+                except KeyError:
+                    pass
 
     security.declareProtected(
         'View management screens', 'clear_installed_sources')
@@ -284,8 +285,11 @@ def register_source(source, event):
     service = queryUtility(ICodeSourceService)
     if service is not None:
         source_id = getUtility(IIntIds).register(source)
+        if service._installed_sources is None:
+            service._installed_sources = []
         if source_id not in service._installed_sources:
             service._installed_sources.append(source_id)
+            service._p_changed = True
 
 
 @grok.subscribe(ICodeSource, IObjectWillBeRemovedEvent)
@@ -298,10 +302,11 @@ def unregister_source(source, event):
         # We are just moving or renaming the source
         return
     service = queryUtility(ICodeSourceService)
-    if service is not None:
+    if service is not None and service._installed_sources is not None:
         source_id = getUtility(IIntIds).register(source)
         if source_id in service._installed_sources:
             service._installed_sources.remove(source_id)
+            service._p_changed = True
 
 
 OBJECT_ADDRESS = re.compile('0x([0-9a-f])*')

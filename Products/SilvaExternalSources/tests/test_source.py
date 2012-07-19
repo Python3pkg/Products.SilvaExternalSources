@@ -18,10 +18,17 @@ class SourceTestCase(unittest.TestCase):
         self.root = self.layer.get_application()
         self.layer.login('manager')
 
-    def test_code_source(self):
+    def test_default_code_source(self):
         """Test default code source implementation.
         """
-        source = self.root.cs_citation
+        source = self.root._getOb('cs_citation')
+        self.assertTrue(verifyObject(ICodeSource, source))
+        self.assertTrue(verifyObject(IExternalSource, source))
+
+        # By default this source should work
+        self.assertEqual(source.test_source(), None)
+
+        source = self.root._getOb('cs_toc')
         self.assertTrue(verifyObject(ICodeSource, source))
         self.assertTrue(verifyObject(IExternalSource, source))
 

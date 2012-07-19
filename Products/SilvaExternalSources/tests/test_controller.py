@@ -10,7 +10,7 @@ from zeam.component import getWrapper
 
 from Products.Silva.testing import TestCase, TestRequest
 
-from .. import interfaces as errors
+from .. import errors
 from ..interfaces import IExternalSourceController
 from ..interfaces import IExternalSourceManager, IExternalSourceInstance
 from ..testing import FunctionalLayer

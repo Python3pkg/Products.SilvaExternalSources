@@ -1,0 +1,10 @@
+<div tal:condition="view.preview"
+     i18n:domain="silva">
+  <h3>Error while rendering ${view.title}</h3>
+  <p i18n:translate="">
+    A programmation error happened while rendering the source.
+  </p>
+  <pre tal:condition="view.manage"
+       tal:content="view.info">
+  </pre>
+</div>

@@ -9,10 +9,11 @@ from zeam.component import getComponent
 
 from silva.ui.rest import UIREST
 from silva.core.interfaces import ISilvaObject, IVersionedContent
+from silva.core.views import views as silvaviews
 
-from Products.SilvaExternalSources.interfaces import availableSources
-from Products.SilvaExternalSources.interfaces import IExternalSourceManager
-from Products.SilvaExternalSources.interfaces import SourceError
+from ..interfaces import availableSources
+from ..interfaces import IExternalSourceManager
+from ..errors import SourceError
 
 from Products.Formulator.zeamsupport import IFormulatorField
 
@@ -80,7 +81,7 @@ class PreviewSource(SourceAPI):
         try:
             return self.get_source().render(preview=True)
         except SourceError as error:
-            return error.to_html()
+            return silvaviews.render(error, self.request)
 
 
 class SourceParameters(SourceAPI):

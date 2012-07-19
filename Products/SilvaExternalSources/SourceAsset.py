@@ -24,8 +24,8 @@ from zeam.component import getWrapper
 from zeam.form import silva as silvaforms
 
 from .interfaces import IExternalSourceManager
-from .interfaces import SourceError
 from .interfaces import ISourceAsset, ISourceAssetVersion, source_source
+from .errors import SourceError
 
 
 class SourceAssetVersion(Version):
@@ -272,7 +272,7 @@ class SourceAssetView(silvaviews.View):
         try:
             self.controller = self.content.get_controller(self.request)
         except SourceError, error:
-            self.msg = error.to_html()
+            self.msg = silvaviews.render(error, self.request)
 
     def render(self):
         if self.msg:

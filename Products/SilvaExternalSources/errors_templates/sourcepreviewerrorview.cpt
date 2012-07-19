@@ -1,0 +1,18 @@
+<div>
+  <h3 tal:content="view.title">Title</h3>
+  <p tal:condition="view.editable"
+     i18n:translate="">
+    This external source is not previewable in the editor.
+  </p>
+  <ul tal:condition="view.editable">
+    <li tal:repeat="widget view.widgets">
+      <span tal:content="widget.title" />:
+      <tal:value tal:content="structure widget.render()" />
+    </li>
+  </ul>
+  <p tal:condition="not view.editable"
+     i18n:translate="">
+    This external source is not previewable in the editor, and doesn't
+    have any editable parameters.
+  </p>
+</div>

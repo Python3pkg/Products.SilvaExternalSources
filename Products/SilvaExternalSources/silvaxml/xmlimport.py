@@ -18,7 +18,8 @@ from zeam.form.silva.interfaces import IXMLFormSerialization
 from Products.Silva.silvaxml import xmlimport, NS_SILVA_URI
 
 from . import NS_SOURCE_URI
-from ..interfaces import IExternalSourceManager, SourceError
+from ..interfaces import IExternalSourceManager
+from ..errors import SourceError
 
 logger = logging.getLogger('silva.core.xml')
 

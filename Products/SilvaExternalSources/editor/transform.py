@@ -11,6 +11,7 @@ from zeam.component import getComponent
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.browser import TestRequest
 
+from silva.core.views import views as silvaviews
 from silva.core.editor.transform.base import TransformationFilter
 from silva.core.editor.transform.editor.output import clean_editor_attributes
 from silva.core.editor.transform.interfaces import IDisplayFilter
@@ -18,10 +19,10 @@ from silva.core.editor.transform.interfaces import IInputEditorFilter
 from silva.core.editor.transform.interfaces import ISaveEditorFilter
 from zeam.form import silva as silvaforms
 
-from Products.SilvaExternalSources.interfaces import IExternalSourceManager
-from Products.SilvaExternalSources.interfaces import ISourceEditableVersion
-from Products.SilvaExternalSources.interfaces import SourceError
-from Products.SilvaExternalSources.editor.utils import parse_qs
+from ..interfaces import IExternalSourceManager
+from ..interfaces import ISourceEditableVersion
+from ..errors import SourceError
+from ..editor.utils import parse_qs
 
 logger = logging.getLogger('silva.externalsources')
 SOURCE_XPATH = '//div[contains(@class, "external-source")]'
@@ -130,6 +131,9 @@ class ExternalSourceDisplayFilter(TransformationFilter):
                 source = self.sources(self.request, instance=instance)
                 html = '<div>' + source.render() + '</div>'
             except SourceError, error:
-                html = broken_source(error.to_html())
+                html = silvaviews.render(error, self.request).strip()
+                if not html:
+                    continue
+                html = broken_source(html)
 
             node.insert(0, lxml.html.fromstring(html))

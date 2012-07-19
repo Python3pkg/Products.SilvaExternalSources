@@ -13,7 +13,6 @@ from silva.core.interfaces import ISilvaService, ISilvaLocalService
 from silva.core.interfaces import IXMLZEXPExportable
 from silva.core.interfaces import IVersionedNonPublishable, IVersion
 from silva.core.interfaces import IAsset, IRoot
-from silva.translations import translate as _
 
 
 def availableSources(context):
@@ -342,41 +341,3 @@ class ISourceErrors(Interface):
         """Return a list of all reported errors.
         """
 
-
-class SourceError(ValueError):
-    """Error related with the handling of source objects.
-    """
-
-    def to_html(self):
-        return _(u"Error while rendering the External Source.")
-
-
-class SourcePreviewError(SourceError):
-
-    def to_html(self):
-        return _(u"External Source ${identifier} is not previewable.")
-
-
-class SourceMissingError(SourceError):
-    """The source is not available.
-    """
-
-    def to_html(self):
-        return _(u"External Source ${identifier} is not available.",
-                 mapping=dict(identifier=self.args[0]))
-
-
-class ParametersError(SourceError):
-    """The parameters are broken.
-    """
-
-    def to_html(self):
-        return _("Error while validating the External Source parameters.")
-
-
-class ParametersMissingError(ParametersError):
-    """The parameters are missing.
-    """
-
-    def to_html(self):
-        return _("External Source parameters are missing.")

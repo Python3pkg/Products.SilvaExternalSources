@@ -17,8 +17,9 @@ from zeam.component import getWrapper
 from zeam.form.silva.interfaces import IXMLFormSerialization
 
 from . import NS_SOURCE_URI
-from ..interfaces import IExternalSourceManager, SourceError
+from ..interfaces import IExternalSourceManager
 from ..interfaces import ISourceAsset, ISourceAssetVersion
+from ..errors import SourceError
 from .treehandler import ElementTreeContentHandler
 
 

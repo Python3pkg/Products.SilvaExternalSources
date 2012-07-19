@@ -202,6 +202,7 @@ class CodeSourceService(SilvaService):
          'action': 'manage_sources_errors'}
         ) + SilvaService.manage_options
 
+    # This is used a marker in to be backward compatible.
     _installed_sources = None
 
     security.declareProtected(

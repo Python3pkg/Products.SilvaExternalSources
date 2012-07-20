@@ -392,17 +392,30 @@ class ManageInstallCodeSources(silvaviews.ZMIView):
         self.status = []
         if install:
             installed = []
+            notinstalled = []
             if not isinstance(sources, list):
                 sources = [sources]
             for source in sources:
                 installable = self.context.get_installable_source(source)
                 if installable.install(self.context.get_root()):
                     installed.append(installable.title)
+                else:
+                    notinstalled.append(installable.title)
             if installed:
-                self.status = _(u"Installed sources ${sources}.",
-                                mapping=dict(sources=', '.join(installed)))
+                if notinstalled:
+                    self.status = _(
+                        u"Installed sources ${installed} but ${notinstalled} "
+                        u"where already installed.",
+                        mapping=dict(installed=', '.join(installed),
+                                     notinstalled=', '.join(notinstalled)))
+                else:
+                    self.status = _(
+                        u"Installed sources ${installed}.",
+                        mapping=dict(installed=', '.join(installed)))
             else:
-                self.status = _(u"Could not install anything.")
+                self.status = _(
+                    u"Sources ${notinstalled} are already installed.",
+                    mapping=dict(notinstalled=', '.join(notinstalled)))
 
         self.sources = []
         for source in self.context.get_installable_sources():

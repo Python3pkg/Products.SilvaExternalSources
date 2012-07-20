@@ -29,6 +29,9 @@ class SourceErrorView(silvaviews.Render):
 
 
 class SourceRenderingError(SourceError):
+    """A Python error happened during the rendering of the code
+    source.
+    """
 
     def __init__(self, manager, info):
         super(SourceRenderingError, self).__init__(manager, info)

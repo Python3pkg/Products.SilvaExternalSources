@@ -7,13 +7,13 @@ import csv
 import os
 
 from five import grok
-from zope.component import getUtility
-from zope import schema
-from zope.lifecycleevent.interfaces import IObjectCreatedEvent
-from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
-from zeam.utils.batch import batch
-from zeam.utils.batch.interfaces import IBatching
 from zope import component
+from zope import schema
+from zope.component import getUtility
+from zope.event import notify
+from zope.lifecycleevent import ObjectModifiedEvent
+from zope.lifecycleevent.interfaces import IObjectCreatedEvent, IObjectModifiedEvent
+from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
 # Zope
 from AccessControl import ClassSecurityInfo
@@ -39,6 +39,9 @@ from silva.core.conf.interfaces import ITitledContent
 from silva.core import conf as silvaconf
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
+from zeam.utils.batch import batch
+from zeam.utils.batch.interfaces import IBatching
+
 
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'layout')
 
@@ -153,7 +156,7 @@ class CSVSource(Folder, Asset, EditableExternalSource):
 
         self._data = csv_data
         self._raw_data = data
-        self.update_quota()
+        notify(ObjectModifiedEvent(self))
 
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'set_file')
@@ -206,6 +209,10 @@ def reset_table_layout(csvsource):
 def source_created(source, event):
     reset_table_layout(source)
     reset_parameter_form(source)
+
+@grok.subscribe(ICSVSource, IObjectModifiedEvent)
+def source_modified(source, event):
+    source.update_quota()
 
 
 @apply

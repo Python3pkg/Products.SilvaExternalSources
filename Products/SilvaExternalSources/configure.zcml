@@ -7,9 +7,11 @@
 
   <include package="five.grok" />
   <include package="grokcore.chameleon" />
+  <include package="silva.core.conf" />
   <include package="silva.core.views" />
   <include package="silva.core.editor" />
   <include package="zeam.form.silva" />
+  <include package="zeam.utils.batch" />
   <include package="collective.monkeypatcher" />
 
   <include package="Products.Formulator" />

@@ -27,9 +27,6 @@ from ..editor.utils import parse_qs
 logger = logging.getLogger('silva.externalsources')
 SOURCE_XPATH = '//div[contains(@class, "external-source")]'
 
-def broken_source(msg):
-    return '<div class="broken-source">%s</div>' % str(msg)
-
 
 class ExternalSourceSaveFilter(TransformationFilter):
     """Process External Source information on save.
@@ -130,11 +127,13 @@ class ExternalSourceDisplayFilter(TransformationFilter):
             del node.attrib['data-source-instance']
             try:
                 source = self.sources(self.request, instance=instance)
-                html = '<div>' + source.render() + '</div>'
+                html = source.render()
             except SourceError, error:
                 html = silvaviews.render(error, self.request).strip()
                 if not html:
                     continue
-                html = broken_source(html)
+                # There is already a class, as it is used to match in the Xpath
+                node.attrib['class'] += ' broken-source'
 
-            node.insert(0, lxml.html.fromstring(html))
+            result = lxml.html.fragment_fromstring(html, create_parent="div")
+            node.extend(result)

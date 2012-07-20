@@ -182,7 +182,7 @@ return "Render source"
             error.exception, TestRequest(), preview=True)
         self.assertEqual(
             message.strip(),
-            'External Source unknown is not available.')
+            '<p>External Source unknown is not available.</p>')
 
         # The source is no longer available
         self.assertItemsEqual(

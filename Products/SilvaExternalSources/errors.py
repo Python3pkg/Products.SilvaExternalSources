@@ -24,7 +24,10 @@ class SourceErrorView(silvaviews.Render):
         if preview is None:
             preview = IPreviewLayer.providedBy(self.request)
         if preview:
-            return translate(self.context.message(), context=self.request)
+            return u"".join(
+                ("<p>",
+                 translate(self.context.message(), context=self.request),
+                 "</p>"))
         return u""
 
 

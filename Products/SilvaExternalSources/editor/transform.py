@@ -48,6 +48,7 @@ class ExternalSourceSaveFilter(TransformationFilter):
         for node in tree.xpath(SOURCE_XPATH):
             name = node.attrib.get('data-silva-name')
             instance = node.attrib.get('data-silva-instance')
+            changed = 'data-silva-settings' in node.attrib
             parameters = parse_qs(node.attrib.get('data-silva-settings', ''))
             try:
                 source = self.manager(
@@ -60,12 +61,12 @@ class ExternalSourceSaveFilter(TransformationFilter):
                 if instance is None:
                     status = source.create()
                     instance = source.getId()
-                else:
+                elif changed:
                     status = source.save()
-                if status is silvaforms.FAILURE:
+                if changed and status is silvaforms.FAILURE:
                     logger.error(
-                        u"Error while saving source parameters %s for %s(%s) "
-                        u"on content %s",
+                        u"Error while saving source parameters %s "
+                        u"for %s(%s) on content %s",
                         parameters, name, instance,
                         '/'.join(self.context.getPhysicalPath()))
                 node.attrib['data-source-instance'] = instance

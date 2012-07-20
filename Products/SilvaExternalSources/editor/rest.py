@@ -81,7 +81,7 @@ class PreviewSource(SourceAPI):
         try:
             return self.get_source().render(preview=True)
         except SourceError as error:
-            return silvaviews.render(error, self.request)
+            return silvaviews.render(error, self.request, preview=True)
 
 
 class SourceParameters(SourceAPI):

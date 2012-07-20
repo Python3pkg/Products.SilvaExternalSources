@@ -20,8 +20,10 @@ class SourceError(ValueError):
 class SourceErrorView(silvaviews.Render):
     grok.context(SourceError)
 
-    def render(self):
-        if IPreviewLayer.providedBy(self.request):
+    def render(self, preview=None):
+        if preview is None:
+            preview = IPreviewLayer.providedBy(self.request)
+        if preview:
             return translate(self.context.message(), context=self.request)
         return u""
 
@@ -38,8 +40,10 @@ class SourceRenderingError(SourceError):
 class SourceRenderingErrorView(silvaviews.Render):
     grok.context(SourceRenderingError)
 
-    def update(self):
-        self.preview = IPreviewLayer.providedBy(self.request)
+    def update(self, preview=None):
+        if preview is None:
+            preview = IPreviewLayer.providedBy(self.request)
+        self.preview = preview
         self.title = self.context.manager.label
         self.info = self.context.info
         self.manage = checkPermission(
@@ -57,7 +61,7 @@ class SourcePreviewError(SourceError):
 class SourcePreviewErrorView(silvaviews.Render):
     grok.context(SourcePreviewError)
 
-    def update(self):
+    def update(self, preview=None):
         self.title = self.context.manager.label
         self.editable = self.context.manager.editable()
         self.widgets = self.context.manager.fieldWidgets(display=True)

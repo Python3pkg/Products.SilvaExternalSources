@@ -233,6 +233,36 @@ class WorkingControllerTestCase(TestCase):
 </div>
 """)
 
+    def test_save_unicode(self):
+        """Updating source parameters, with unicode values.
+        """
+        request = TestRequest(form={
+                'field_citation': u'Cela est éternel'.encode('utf-8'),
+                'field_author': 'moi',
+                'marker_field_citation': '1',
+                'marker_field_author': '1',
+                'marker_field_source': '1'})
+        controller = self.sources(request, instance=self.identifier)
+        controller.save()
+
+        parameters, source = self.sources.get_parameters(
+            instance=self.identifier)
+
+        self.assertEqual(parameters.get_source_identifier(), 'cs_citation')
+        self.assertEqual(parameters.citation, u'Cela est éternel')
+        self.assertEqual(parameters.author, u'moi')
+        self.assertEqual(parameters.source, u'')
+        self.assertXMLEqual(controller.render(), u"""
+<div class="citation">
+ Cela est éternel
+ <div class="author">
+  moi
+ </div>
+ <div class="source">
+ </div>
+</div>
+""")
+
 
 class BrokenControllerTestCase(unittest.TestCase):
     layer = FunctionalLayer

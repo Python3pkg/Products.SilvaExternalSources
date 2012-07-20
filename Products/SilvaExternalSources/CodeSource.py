@@ -68,6 +68,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     # ZMI Tabs
     manage_options = (
         {'label':'Edit', 'action':'editCodeSource'},
+        {'label':'Parameters', 'action':'parameters/manage_main'},
         ) + Folder.manage_options
     management_page_charset = 'utf-8'
 

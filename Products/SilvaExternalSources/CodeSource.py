@@ -79,6 +79,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     silvaconf.icon('www/codesource.png')
     silvaconf.factory('manage_addCodeSourceForm')
     silvaconf.factory('manage_addCodeSource')
+    silvaconf.zmi_addable(True)
 
     _data_encoding = 'UTF-8'
     _fs_location = None

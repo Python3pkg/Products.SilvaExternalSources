@@ -84,8 +84,10 @@ INSTALLERS = {
     '.xml': install_xml,
     '.js': install_file,
     '.css': install_file,
+    '.swf': install_file,
+    '.fla': install_file,
     '.txt': install_pt}
-KEEP_EXTENSION_OF = ['.png', '.gif', '.jpg', '.jpeg', '.js', '.css']
+KEEP_EXTENSION_OF = ['.png', '.gif', '.jpg', '.jpeg', '.js', '.css', '.fla', '.swf']
 
 class CodeSourceInstallable(object):
     grok.implements(ICodeSourceInstaller)

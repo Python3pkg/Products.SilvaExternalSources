@@ -51,6 +51,9 @@ class CreateSourceTransformerTestCase(SourceTransformerTestCase):
 
         # We now save the source, this going to create it.
         saved_text = self.transform("""
+<h1>
+   Document Example
+</h1>
 <div class="external-source"
      data-silva-name="cs_citation"
      data-silva-settings="field_citation=Super%20citation&field_author=moi">
@@ -80,6 +83,9 @@ class CreateSourceTransformerTestCase(SourceTransformerTestCase):
         editor_text = self.transform(saved_text, IInputEditorFilter, version)
         self.assertXMLEqual(
             editor_text, """
+<h1>
+   Document Example
+</h1>
 <div class="external-source" data-silva-instance="%s">
 </div>
 """ % instance_key)

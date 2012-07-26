@@ -61,10 +61,14 @@ class ExternalSourceSaveFilter(TransformationFilter):
                 elif changed:
                     status = source.save()
                 if changed and status is silvaforms.FAILURE:
+                    errors = {}
+                    for error in source.errors:
+                        if error.identifier != 'form':
+                            errors[error.identifier] = error.title
                     logger.error(
-                        u"Error while saving source parameters %s "
+                        u"Errors %s while saving source parameters %s "
                         u"for %s(%s) on content %s",
-                        parameters, name, instance,
+                        errors, parameters, name, instance,
                         '/'.join(self.context.getPhysicalPath()))
                 node.attrib['data-source-instance'] = instance
                 self.seen.add(instance)

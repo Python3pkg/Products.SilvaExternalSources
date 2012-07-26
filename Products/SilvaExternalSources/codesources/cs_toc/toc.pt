@@ -1,35 +1,41 @@
-<div tal:define="view here;
-                 capsuletitle options/capsule_title | nothing;
-                 css_class options/css_class | string:'';
-                 css_style options/css_style | string:'';
-                 toc_containers options/paths;
-                 toc_content_types options/toc_types;
-                 toc_depth options/depth;
-                 toc_sort_order python:context.toc_sort_on(options['sort_on'], options['order']);
-                 toc_show_description options/show_desc;
-                 toc_show_icon options/show_icon;
-                 display_headings options/display_headings | python:0;
-                 link_headings options/link_headings | python:0;">
-  <!-- TOC codesource 0.5 -->
+<tal:def tal:define="
+  view here;
+  capsuletitle options/capsule_title | nothing;
+  css_class python:options['css_class'] != '' and options['css_class'] or nothing;
+  css_style python:options['css_style'] != '' and options['css_style'] or nothing;
+  toc_containers options/paths;
+  toc_content_types options/toc_types;
+  toc_depth options/depth;
+  toc_sort_order python:context.toc_sort_on(options['sort_on'], options['order']);
+  toc_show_description options/show_desc;
+  toc_show_icon options/show_icon;
+  display_headings options/display_headings | python:0;
+  link_headings options/link_headings | python:0;
+">
+  <!-- TOC codesource 3.0 -->
   <div tal:omit-tag="python:not (css_class or css_style)"
-       tal:attributes="class css_class;
-                       style css_style;">
+    tal:attributes="
+      class css_class | nothing;
+      style css_style | nothing;
+    ">
     <h2 tal:condition="capsuletitle"
-        tal:content="capsuletitle">
+      tal:content="capsuletitle">
       capsule title
     </h2>
     <tal:tocs tal:repeat="toc_container toc_containers">
       <h3 tal:condition="python:display_headings==1"
-          tal:attributes="class python:not repeat['toc_container'].start and 'interheading' or None">
+        tal:attributes="class python:not repeat['toc_container'].start and 'interheading' or None">
         <a tal:define="title toc_container/get_title_or_id"
-           tal:omit-tag="python:link_headings!=1"
-           tal:attributes="href toc_container/@@absolute_url;
-                           title string:Go to $title"
-           tal:content="title">
-            toc title
+          tal:omit-tag="python:link_headings != 1"
+          tal:attributes="
+            href toc_container/@@absolute_url;
+            title string:Go to $title"
+          tal:content="title">
+          toc title
         </a>
       </h3>
       <tal:toc tal:replace="structure provider:toc" />
     </tal:tocs>
   </div>
-</div>
+  <!-- End TOC codesource 3.0 -->
+</tal:def>

@@ -11,6 +11,8 @@
 # to the sort_order key the tocrenderingadapter
 # accepts
 if sort_order == "reverse":
+    if sort_on == "silva":
+        return "reversesilva"
     if sort_on == "alpha":
         return "reversealpha"
     elif sort_on == "chronmod":

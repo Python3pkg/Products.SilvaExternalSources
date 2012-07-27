@@ -4,6 +4,7 @@
 # $Id$
 
 import unittest
+import doctest
 
 from zope.interface.verify import verifyObject
 from zeam.component import getWrapper
@@ -239,4 +240,6 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(DefaultCodeSourceTestCase))
     suite.addTest(unittest.makeSuite(CodeSourceTestCase))
+    suite.addTest(doctest.DocTestSuite(
+            'Products.SilvaExternalSources.codesources.youtube'))
     return suite

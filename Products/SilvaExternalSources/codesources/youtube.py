@@ -3,76 +3,109 @@
 # See also LICENSE.txt
 # $Id$
 
-# Helpers for cs_youtube...
+# Helpers for cs_youtube ...
 
 import urlparse
 
-# XXX these should become the tests
+from AccessControl import ModuleSecurityInfo
+
+module_security = ModuleSecurityInfo('Products.SilvaExternalSources.codesources.youtube')
+
 
 # correct urls have a path which start with '/v/' and youtube netloc
 # urls have which have a path that starts with '/watch' or with '/embed'
-# need to get rebuild, invalid urls have a path different than that
+# need to get formatted, invalid urls have a path different than that
 
-# type one of url
-#youtube_url = "http://www.youtube.com/watch?v=4T1BITS4Hz0&feature=g-all-u"
+module_security.declarePublic('validate_youtube_url')
+def validate_youtube_url(value, REQUEST=None):
+    """Validate that a url can be used as a youtube URL.
 
-# type two of url
-#youtube_url = "http://www.youtube.com/v/4T1BITS4Hz0"
+    >>> validate_youtube_url("http://www.youtube.com/watch?v=4T1BITS4Hz0&feature=g-all-u")
+    True
+    >>> validate_youtube_url("http://www.youtube.com/v/4T1BITS4Hz0")
+    True
+    >>> validate_youtube_url("http://youtube.com/v/4T1BITS4Hz0")
+    True
+    >>> validate_youtube_url("http://www.youtube.com/embed/fwUHKgVc2zc")
+    True
+    >>> validate_youtube_url("http://www.youtube.com/v/4T1BITS4Hz0?version=3&amp;hl=nl_NL")
+    True
+    >>> validate_youtube_url("http://youtu.be/Lh6QPg5BGsE")
+    True
+    >>> validate_youtube_url("http://youtube.be/v/Lh6QPg5BGsE")
+    False
+    >>> validate_youtube_url("http://youtube.com/embed?v=Lh6QPg5BGsE")
+    False
+    >>> validate_youtube_url("http://youtube.com/embed/videos/Lh6QPg5BGsE")
+    False
+    >>> validate_youtube_url("http://youtube.com/")
+    False
+    >>> validate_youtube_url("http://www.youtube.com/watch?foo=bar")
+    False
+    >>> validate_youtube_url("http://silvacms.org")
+    False
+    """
+    return format_youtube_url(value) is not None
 
-# type three of url
-#youtube_url = "http://www.youtube.com/embed/fwUHKgVc2zc"
 
-# type four of url
-#youtube_url = "http://www.youtube.com/v/4T1BITS4Hz0?version=3&amp;hl=nl_NL"
+module_security.declarePublic('format_youtube_url')
+def format_youtube_url(source_url):
+    """Convert different format of youtube URLs to the one required by
+    the flash player.
 
-#type five of url
-#youtube_url = "http://youtu.be/Lh6QPg5BGsE"
-
-#type six of url invalid
-#youtube_url = "http://youtube.be/v/Lh6QPg5BGsE"
-
-#type seven of url invalid
-#youtube_url = "http://youtube.com/embed?v=Lh6QPg5BGsE"
-
-# print build_youtube_url(youtube_url)
-
-# target url: http://www.youtube.com/v/4T1BITS4Hz0?version=3&amp;hl=nl_NL
-
-def build_youtube_url(url):
-    source_url = url
+    >>> format_youtube_url("http://www.youtube.com/watch?v=4T1BITS4Hz0&feature=g-all-u")
+    'http://www.youtube.com/v/4T1BITS4Hz0'
+    >>> format_youtube_url("http://www.youtube.com/v/4T1BITS4Hz0")
+    'http://www.youtube.com/v/4T1BITS4Hz0'
+    >>> format_youtube_url("http://youtube.com/v/4T1BITS4Hz0")
+    'http://www.youtube.com/v/4T1BITS4Hz0'
+    >>> format_youtube_url("http://www.youtube.com/embed/fwUHKgVc2zc")
+    'http://www.youtube.com/v/fwUHKgVc2zc'
+    >>> format_youtube_url("http://www.youtube.com/v/4T1BITS4Hz0?version=3&amp;hl=nl_NL")
+    'http://www.youtube.com/v/4T1BITS4Hz0'
+    >>> format_youtube_url("http://youtu.be/Lh6QPg5BGsE")
+    'http://www.youtube.com/v/Lh6QPg5BGsE'
+    >>> format_youtube_url("http://youtube.be/v/Lh6QPg5BGsE")
+    >>> format_youtube_url("http://youtube.com/embed?v=Lh6QPg5BGsE")
+    >>> format_youtube_url("http://youtube.com/embed/videos/Lh6QPg5BGsE")
+    >>> format_youtube_url("http://youtube.com/")
+    >>> format_youtube_url("http://www.youtube.com/watch?foo=bar")
+    """
+    if source_url is None:
+        return None
 
     parsed_url = urlparse.urlparse(source_url)
-
-    # print "Parsed url: ", parsed_url
-
-    # example ParseResult(scheme='http', netloc='www.youtube.com', path='/watch', params='', query='v=4T1BITS4Hz0&feature=g-all-u', fragment='')
-
     parsed_query = urlparse.parse_qs(parsed_url.query)
+    parsed_path = parsed_url.path.strip('/').split('/')
 
-    # print "Parsed query: ", parsed_query
+    if not len(parsed_path):
+        return None
 
-    # if structure to cover alle conditions based on path
-    # the url is ok we have a netloc and a path
+    def youtube_url(video_id):
+        return urlparse.urlunsplit((
+            parsed_url.scheme,
+            'www.youtube.com',
+            '/v/' + video_id,
+            '',
+            ''),)
 
-    if parsed_url.netloc.endswith('youtube.com') and parsed_url.path.startswith('/v/'):
-        source_url = source_url
-    elif parsed_url.netloc.endswith('youtube.com') and not 'v' in  parsed_query and parsed_url.path.startswith('/embed'):
-        video_id = parsed_url.path.split('/')
-        target_url = parsed_url.scheme, parsed_url.netloc, '/v/' + video_id [-1] , 0 ,0
-        target_url = urlparse.urlunsplit(target_url)
-        source_url = target_url
-    elif parsed_url.netloc.endswith('youtube.com') and 'v' in  parsed_query and parsed_url.path.startswith('/watch'):
-        target_url = parsed_url.scheme, parsed_url.netloc, '/v/' + parsed_query['v'][0], 0 ,0
-        target_url = urlparse.urlunsplit(target_url)
-        source_url = target_url
-    elif parsed_url.netloc.endswith('youtu.be') and parsed_url.path.startswith('/'):
-        target_url = parsed_url.scheme, 'youtube.com', '/v' + parsed_url.path, 0 ,0
-        target_url = urlparse.urlunsplit(target_url)
-        source_url = target_url
-    else:
-        source_url = None
+    if parsed_url.netloc.endswith('youtube.com'):
 
-    return source_url
+        if parsed_path[0] == 'v' and len(parsed_path) == 2:
+            return youtube_url(parsed_path[1])
+        if parsed_path[0] == 'embed' and len(parsed_path) == 2:
+            return youtube_url(parsed_path[1])
+
+        if parsed_path[0] == 'watch':
+            if 'v' in parsed_query:
+                return youtube_url(parsed_query['v'][0])
+
+    elif parsed_url.netloc.endswith('youtu.be'):
+
+        if len(parsed_path) == 1:
+            return youtube_url(parsed_path[0])
+
+    return None
 
 
 

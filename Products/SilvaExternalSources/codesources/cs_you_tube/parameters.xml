@@ -48,7 +48,7 @@
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>
-          <default>350</default>
+          <default>480</default>
           <description>Height of the YouTube video</description>
           <display_maxwidth></display_maxwidth>
           <display_width type="int">20</display_width>
@@ -75,7 +75,7 @@
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>
-          <default>425</default>
+          <default>640</default>
           <description>Width of the YouTube video</description>
           <display_maxwidth></display_maxwidth>
           <display_width type="int">20</display_width>

@@ -15,6 +15,7 @@
     <group>
       <title>Default</title>
       <fields>
+
       <field><id>youtube_url</id> <type>StringField</type>
         <values>
           <alternate_name></alternate_name>
@@ -35,9 +36,10 @@
           <whitespace_preserve type="int">0</whitespace_preserve>
         </values>
         <tales>
+          <external_validator>python:modules['Products.SilvaExternalSources.codesources.youtube'].validate_youtube_url</external_validator>
         </tales>
         <messages>
-          <message name="external_validator_failed">The input failed the external validator.</message>
+          <message name="external_validator_failed">This URL is not a valid Youtube URL for embedding.</message>
           <message name="required_not_found">Input is required but no input given.</message>
           <message name="too_long">Too much input was given.</message>
         </messages>

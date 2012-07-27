@@ -1,12 +1,17 @@
 <tal:block define="
-  y_width options/youtube_width | nothing;
-  y_height options/youtube_height | nothing;
-  y_url options/youtube_url | nothing;
+  y_width options/youtube_width | python:640;
+  y_height options/youtube_height | python:480;
+  y_url python:modules['Products.SilvaExternalSources.codesources.youtube'].format_youtube_url(options.get('youtube_url'));
   ">
   <object type="application/x-shockwave-flash" data=""
-    tal:attributes="height y_height; width y_width; data y_url;">
+    tal:attributes="height y_height; width y_width; data y_url;"
+    tal:condition="y_url">
     <param name="movie" value=""
       tal:attributes="value y_url;" />
     <param name="wmode" value="transparent" />
   </object>
+  <p tal:condition="not:y_url">
+     This youtube URL is no longer valid.
+  </p>
+
 </tal:block>

@@ -24,7 +24,7 @@ from five import grok
 from silva.core.interfaces.content import IVersion
 from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf
-from zope.component import getUtility
+from zope.component import queryUtility
 
 
 class CodeSourceErrorSupplement(object):
@@ -159,7 +159,10 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     security.declareProtected(
         ViewManagementScreens, 'manage_getFileSystemLocations')
     def manage_getFileSystemLocations(self):
-        service = getUtility(ICodeSourceService)
+        service = queryUtility(ICodeSourceService)
+        if service is None:
+            # XXX pre-migration Silva 3.0
+            service = self.service_codesources
         return map(
             lambda source: source.location,
             service.get_installable_source(identifier=self.id))
@@ -172,7 +175,10 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         update_source=None, purge_source=None):
         """ Edit CodeSource object
         """
-        service = getUtility(ICodeSourceService)
+        service = queryUtility(ICodeSourceService)
+        if service is None:
+            # XXX pre-migration Silva 3.0
+            service = self.service_codesources
         if (update_source or purge_source) and self.get_fs_location():
             candidates = list(service.get_installable_source(
                 location=self.get_fs_location()))

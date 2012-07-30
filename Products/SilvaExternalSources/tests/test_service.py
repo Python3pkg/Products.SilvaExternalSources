@@ -42,10 +42,24 @@ class ServiceTestCase(unittest.TestCase):
             [self.root.cs_citation, self.root.cs_toc])
 
         # We can get the installable and they will tell us the same
-        installable = service.get_installable_source(identifier='cs_citation')
+        candidates = list(service.get_installable_source(
+                identifier='cs_citation'))
+        self.assertEqual(len(candidates), 1)
+        installable = candidates[0]
         self.assertTrue(installable.is_installed(self.root), True)
-        installable = service.get_installable_source(identifier='cs_toc')
+        self.assertEqual(
+            installable.location,
+            'Products.SilvaExternalSources:/Products/SilvaExternalSources/codesources/cs_citation')
+
+        candidates = list(service.get_installable_source(
+                identifier='cs_toc'))
+        self.assertEqual(len(candidates), 1)
+        installable = candidates[0]
         self.assertTrue(installable.is_installed(self.root), True)
+        self.assertEqual(
+            installable.location,
+            'Products.SilvaExternalSources:/Products/SilvaExternalSources/codesources/cs_toc')
+
 
     def test_clear_and_find_installed_sources(self):
         """Clear and find again installed code sources.
@@ -67,8 +81,10 @@ class ServiceTestCase(unittest.TestCase):
         folder.
         """
         service = queryUtility(ICodeSourceService)
-        installable = service.get_installable_source(
-            identifier='cs_portlet_element')
+        candidates = list(service.get_installable_source(
+                identifier='cs_portlet_element'))
+        self.assertEqual(len(candidates), 1)
+        installable = candidates[0]
         self.assertTrue(verifyObject(ICodeSourceInstaller, installable))
         self.assertEqual(
             installable.identifier,

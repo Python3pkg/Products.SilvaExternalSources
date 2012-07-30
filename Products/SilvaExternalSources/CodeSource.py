@@ -156,24 +156,45 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     def set_script_id(self, script_id):
         self._script_id = script_id
 
-    security.declareProtected(ViewManagementScreens, 'manage_editCodeSource')
+    security.declareProtected(
+        ViewManagementScreens, 'manage_getFileSystemLocations')
+    def manage_getFileSystemLocations(self):
+        service = getUtility(ICodeSourceService)
+        return map(
+            lambda source: source.location,
+            service.get_installable_source(identifier=self.id))
+
+    security.declareProtected(
+        ViewManagementScreens, 'manage_editCodeSource')
     def manage_editCodeSource(
-        self, title, script_id, data_encoding, description=None,
-        cacheable=None, previewable=None, usable=None, update_source=None):
+        self, title, script_id, data_encoding, description=None, location=None,
+        cacheable=None, previewable=None, usable=None,
+        update_source=None, purge_source=None):
         """ Edit CodeSource object
         """
-        if update_source and self.get_fs_location():
-            service = getUtility(ICodeSourceService)
-            installable = service.get_installable_source(
-                location=self.get_fs_location())
-            if installable is not None:
-                installable.update(self)
+        service = getUtility(ICodeSourceService)
+        if (update_source or purge_source) and self.get_fs_location():
+            candidates = list(service.get_installable_source(
+                location=self.get_fs_location()))
+            if len(candidates) == 1:
+                candidates[0].update(self, purge_source is not None)
                 return self.editCodeSource(
-                    manage_tabs_message='Source updated from the filesystem')
+                    manage_tabs_message='Source updated from the filesystem.')
             return self.editCodeSource(
-                manage_tabs_message='Could find the associated definition on the filesystem')
+                manage_tabs_message='Could find the associated definition on the filesystem.')
 
         msg = u''
+
+        if location is not None and location != self._fs_location:
+            if location:
+                candidates = list(service.get_installable_source(
+                        location=location))
+                if len(candidates) != 1:
+                    msg += "Multiple code sources definition found for " + \
+                        "the location, not changed! "
+                    return self.editCodeSource(manage_tabs_message=msg)
+            self._fs_location = location
+            msg += "Code source location changed. "
 
         if data_encoding and data_encoding != self._data_encoding:
             try:
@@ -197,11 +218,12 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
 
         # Assume description is in the encoding as specified
         # by "management_page_charset". Store it in unicode.
-        description = unicode(description, self.management_page_charset)
+        if description is not None:
+            description = unicode(description, self.management_page_charset)
 
-        if description != self._description:
-            self.set_description(description)
-            msg += "Description changed. "
+            if description != self._description:
+                self.set_description(description)
+                msg += "Description changed. "
 
         if not bool(cacheable) is self.is_cacheable():
             self.set_cacheable(bool(cacheable))

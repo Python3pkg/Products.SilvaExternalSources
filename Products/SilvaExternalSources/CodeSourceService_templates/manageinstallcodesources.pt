@@ -34,8 +34,9 @@
           <div tal:repeat="source view/sources">
             <tal:details tal:condition="source/validate"
                          tal:define="id source/identifier">
-              <input type="checkbox" name="sources" value="#" id="#"
-                     tal:attributes="value id; id id" />
+              <input type="checkbox" name="locations" value="#" id="#"
+                     tal:attributes="value source/location;
+                                     id id" />
               <label class="form-label" for="#"
                      tal:attributes="for id">
                 <span tal:replace="source/title" />

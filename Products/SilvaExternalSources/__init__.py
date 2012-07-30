@@ -31,15 +31,16 @@ class ExternalSourcesInstaller(DefaultInstaller):
             factory.manage_addCodeSourceService()
 
         service = root.service_codesources
-        for source_id in ['cs_toc', 'cs_citation',]:
-            if source_id not in installed_ids:
-                source = service.get_installable_source(source_id)
-                if source is not None:
-                    source.install(root)
+        for identifier in ['cs_toc', 'cs_citation',]:
+            if identifier not in installed_ids:
+                candidates = list(
+                    service.get_installable_source(identifier=identifier))
+                if len(candidates) == 1:
+                    candidates[0].install(root)
                 else:
                     logger.error(
                         u"Could not find default source %s to install it.",
-                        source_id)
+                        identifier)
 
 
     def uninstall_custom(self, root):

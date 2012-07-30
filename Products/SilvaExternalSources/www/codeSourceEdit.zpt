@@ -57,20 +57,6 @@ Version of this file: $Revision: 1.7 $
         </h4>
       </td>
     </tr>
-    <tr tal:define="location context/get_fs_location"
-        tal:condition="location">
-      <td align="left" valign="top">
-        <div class="form-label">
-          File system location
-        </div>
-      </td>
-      <td align="left" valign="top">
-        <h4 tal:content="location">
-          Location
-        </h4>
-      </td>
-    </tr>
-    <tr>
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
@@ -164,6 +150,35 @@ Version of this file: $Revision: 1.7 $
           tal:attributes="checked python: here.is_usable() and 'checked' or None" />
       </td>
     </tr>
+    <tr tal:define="locations context/manage_getFileSystemLocations"
+        tal:condition="locations">
+      <td align="left" valign="top">
+        <div class="form-label">
+          File system location
+        </div>
+      </td>
+      <td align="left" valign="top"
+          tal:define="current context/get_fs_location">
+        <input class="form-element" type="radio" name="location" value=""
+               id="location-remove" checked="#"
+               tal:attributes="checked python:not current and 'checked' or None"/>
+        <label for="location-remove">Remove location</label>
+        <br />
+        <tal:loc tal:repeat="location locations">
+          <input class="form-element" type="radio" name="location"
+                 id="#" value="#" checked="#"
+                 tal:attributes="id string:location-${repeat/location/number};
+                                 value location;
+                                 checked python:current==location and 'checked' or None"/>
+          <label for="#"
+                 tal:attributes="for string:location-${repeat/location/number}"
+                 tal:content="location">
+            Location
+          </label>
+          <br />
+        </tal:loc>
+      </td>
+    </tr>
     <tr>
       <td align="left" valign="top">
       </td>
@@ -171,9 +186,12 @@ Version of this file: $Revision: 1.7 $
         <div class="form-element">
           <input class="form-element" type="submit" name="submit_edit"
                  value="Save changes" />
-          <input class="form-element" type="submit" name="update_source"
-                 value="Update from filesystem"
-                 tal:condition="context/get_fs_location" />
+          <tal:filesystem tal:condition="context/get_fs_location">
+            <input class="form-element" type="submit" name="update_source"
+                   value="Update from filesystem" />
+            <input class="form-element" type="submit" name="purge_source"
+                   value="Purge and update from filesystem" />
+          </tal:filesystem>
         </div>
       </td>
     </tr>

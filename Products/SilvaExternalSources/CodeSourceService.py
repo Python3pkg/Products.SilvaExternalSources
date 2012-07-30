@@ -150,7 +150,7 @@ class CodeSourceInstallable(object):
         source = folder._getOb(self.identifier)
         return self.update(source)
 
-    def update(self, source):
+    def update(self, source, purge=False):
         assert ICodeSource.providedBy(source)
         assert source.get_fs_location() == self.location, u"Invalid source"
         source.set_title(self.title)
@@ -167,6 +167,7 @@ class CodeSourceInstallable(object):
             value = self._config.getboolean('source', 'usable')
             source.set_usable(value)
 
+        installed = []
         for filename in self._files:
             if filename == CONFIGURATION_FILE:
                 continue
@@ -183,6 +184,11 @@ class CodeSourceInstallable(object):
                 source.manage_delObjects([name])
             with open(os.path.join(self._directory, filename), 'rb') as data:
                 installer(source, data, name, extension)
+            installed.append(name)
+        if purge:
+            # Remove other files.
+            source.manage_delObjects(
+                list(set(source.objectIds()).difference(set(installed))))
 
         return True
 
@@ -267,11 +273,9 @@ class CodeSourceService(SilvaService):
             test = lambda s: s.location == location
         else:
             raise NotImplementedError
-        sources = self.get_installable_sources()
-        for source in sources:
+        for source in self.get_installable_sources():
             if test(source):
-                return source
-        return None
+                yield source
 
 
 InitializeClass(CodeSourceService)
@@ -390,19 +394,25 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
 class ManageInstallCodeSources(silvaviews.ZMIView):
     grok.name('manage_install_codesources')
 
-    def update(self, install=False, sources=[]):
+    def update(self, install=False, locations=[]):
         self.status = []
         if install:
+            notfound = []
             installed = []
             notinstalled = []
-            if not isinstance(sources, list):
-                sources = [sources]
-            for source in sources:
-                installable = self.context.get_installable_source(source)
-                if installable.install(self.context.get_root()):
-                    installed.append(installable.title)
+            if not isinstance(locations, list):
+                locations = [locations]
+            for location in locations:
+                candidates = list(self.context.get_installable_source(
+                        location=location))
+                if len(candidates) != 1:
+                    notfound.append(location)
                 else:
-                    notinstalled.append(installable.title)
+                    installable = candidates[0]
+                    if installable.install(self.context.get_root()):
+                        installed.append(installable.title)
+                    else:
+                        notinstalled.append(installable.title)
             if installed:
                 if notinstalled:
                     self.status = _(

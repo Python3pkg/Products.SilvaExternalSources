@@ -39,7 +39,7 @@ class ServiceTestCase(unittest.TestCase):
         service = queryUtility(ICodeSourceService)
         self.assertItemsEqual(
             list(service.get_installed_sources()),
-            [self.root.cs_citation, self.root.cs_toc])
+            [self.root.cs_toc, self.root.cs_citation])
 
         # We can get the installable and they will tell us the same
         candidates = list(service.get_installable_source(

@@ -11,6 +11,7 @@ version = '3.0dev'
 tests_require = [
     'silva.app.document [test]',
     'Products.Silva [test]',
+    'Products.ZSQLiteDA',
     ]
 
 # Products.ZSQLMethods should be as an option ?

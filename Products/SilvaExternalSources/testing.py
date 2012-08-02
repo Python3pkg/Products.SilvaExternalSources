@@ -11,7 +11,8 @@ import transaction
 
 class SilvaExternalSourcesLayer(SilvaLayer):
     default_products = SilvaLayer.default_products + [
-        'SilvaExternalSources'
+        'SilvaExternalSources',
+        'ZSQLiteDA'
         ]
     default_packages = SilvaLayer.default_packages + [
         'silva.app.document'

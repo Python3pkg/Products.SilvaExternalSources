@@ -1,39 +1,24 @@
 <div metal:define-macro="table"
-  lang="en"
-  xml:lang="en"
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:metal="http://xml.zope.org/namespaces/metal"
-  xmlns:tal="http://xml.zope.org/namespaces/tal"
-  tal:define="
-    view here;
-    table options/table | nothing;
+     lang="en"
+     xml:lang="en"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:metal="http://xml.zope.org/namespaces/metal"
+     xmlns:tal="http://xml.zope.org/namespaces/tal"
+     tal:define="parameters options/parameters | nothing;
+                 table options/table | nothing;
+                 columnnames options/names | nothing;
+                 table_class parameters/table_class | nothing;
+                 even_style parameters/even_row_style | nothing;
+                 odd_style parameters/odd_row_style | nothing;">
 
-    Batch nocall:modules/Products/Silva/batch/Batch;
-    b_size python: 10;
-    b_start python: 0;
-    b_start request/b_start | b_start;
-    
-    batch python: Batch(table, b_size, int(b_start), orphan=3);
+  <tal:batch tal:replace="structure options/batch" />
 
-    columnnames options/names | nothing;
-    parameters options/parameters | nothing;
-    
-    table_class parameters/table_class | nothing;
-    even_style parameters/even_row_style | nothing;
-    odd_style parameters/odd_row_style | nothing;"
-  >
-  
-  <metal:block use-macro="here/macro/macros/navigation" />
-
-  <table
-    tal:condition="table"
-    tal:attributes="class string:silvatable ${table_class}"
-    >
-    <caption 
-      tal:condition="python:parameters.get('show_caption',None)"
-      tal:content="here/title"
-    />
-    <thead tal:condition="python:parameters.get('show_column_heading',None)">
+  <table tal:condition="table"
+         tal:attributes="class string:silvatable ${table_class}">
+    <caption
+       tal:condition="python:parameters.get('show_caption')"
+       tal:content="here/title" />
+    <thead tal:condition="python:parameters.get('show_column_heading')">
       <tr>
         <tal:block repeat="name columnnames">
           <th tal:content="name" />
@@ -41,13 +26,11 @@
       </tr>
     </thead>
     <tbody>
-      <tal:block tal:repeat="row batch">
+      <tal:block tal:repeat="row table">
         <tr
-          tal:define="iterate repeat/row/even;"
-          tal:attributes="
-            class python: iterate and 'even' or 'odd';
-            style python: iterate and even_style or odd_style;"
-          >
+           tal:define="iterate repeat/row/even;"
+           tal:attributes="class python: iterate and 'even' or 'odd';
+                           style python: iterate and even_style or odd_style;">
           <tal:block repeat="name columnnames">
             <td tal:content="row/?name" />
           </tal:block>

@@ -24,7 +24,8 @@ Version of this file: $Revision: 1.7 $
 </div>
 
 <form action="manage_editCodeSource" name="editform" method="post">
-  <table cellspacing="0" cellpadding="2" border="0">
+  <table cellspacing="0" cellpadding="2" border="0"
+         tal:define="here_url here/absolute_url">
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
@@ -34,8 +35,7 @@ Version of this file: $Revision: 1.7 $
       <td align="left" valign="top">
         <h4 class="form-help">
           <a
-            tal:attributes="
-              href string:${here/absolute_url}/manage_main">
+            tal:attributes="href string:${here_url}/manage_main">
             manage contents
           </a>
         </h4>
@@ -50,8 +50,7 @@ Version of this file: $Revision: 1.7 $
       <td align="left" valign="top">
         <h4 class="form-help">
           <a
-            tal:attributes="
-              href string:${here/absolute_url}/parameters/manage_main">
+            tal:attributes="href string:${here_url}/parameters/manage_main">
             manage parameters
           </a>
         </h4>

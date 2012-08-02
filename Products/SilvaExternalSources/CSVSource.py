@@ -7,12 +7,13 @@ import csv
 import os
 
 from five import grok
-from zope import component
 from zope import schema
+from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.event import notify
 from zope.lifecycleevent import ObjectModifiedEvent
-from zope.lifecycleevent.interfaces import IObjectCreatedEvent, IObjectModifiedEvent
+from zope.lifecycleevent.interfaces import IObjectCreatedEvent
+from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
 # Zope
@@ -39,9 +40,7 @@ from silva.core.conf.interfaces import ITitledContent
 from silva.core import conf as silvaconf
 from silva.translations import translate as _
 from zeam.form import silva as silvaforms
-from zeam.utils.batch import batch
-from zeam.utils.batch.interfaces import IBatching
-
+from zeam.utils.batch import Batch, IBatching
 
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'layout')
 
@@ -85,7 +84,7 @@ class CSVSource(Folder, Asset, EditableExternalSource):
         if not param.get('csvtableclass'):
             param['csvtableclass'] = 'default'
         batch_size = self._default_batch_size
-        batch_nav = ''
+        batch = ''
         if param.get('csvbatchsize'):
             batch_size = int(param.get('csvbatchsize'))
         model = content
@@ -93,13 +92,12 @@ class CSVSource(Folder, Asset, EditableExternalSource):
             model = content.get_content()
         if rows:
             headings = rows[0]
-            rows = batch(
+            rows = Batch(
                 rows[1:],
                 count=batch_size, name=self.getId(), request=request)
             param['headings'] = headings
-            batch_nav = component.getMultiAdapter(
-                (model, rows, request), IBatching)()
-        return self.layout(table=rows, batch=batch_nav, parameters=param)
+            batch = getMultiAdapter((model, rows, request), IBatching)()
+        return self.layout(table=rows, batch=batch, parameters=param)
 
     security.declareProtected(
         SilvaPermissions.AccessContentsInformation, 'get_file')
@@ -187,23 +185,23 @@ class CSVSource(Folder, Asset, EditableExternalSource):
 InitializeClass(CSVSource)
 
 
-def reset_parameter_form(csvsource):
+def reset_parameter_form(source):
     with open(os.path.join(DATA_PATH, 'csvparameters.xml')) as data:
         form = ZMIForm('form', 'Parameters form', unicode_mode=1)
         XMLToForm(data.read(), form)
-        csvsource.set_form(form)
+        source.set_form(form)
 
-def reset_table_layout(csvsource):
+def reset_table_layout(source):
     # Works for Zope object implementing a 'write()" method...
     layout = [
         ('layout', ZopePageTemplate, 'csvtable.zpt'),
     ]
 
-    for id, klass, filename in layout:
+    for identifier, factory, filename in layout:
         with open(os.path.join(DATA_PATH, filename), 'rb') as data:
-            if not id in csvsource.objectIds():
-                csvsource._setObject(id, klass(id))
-            csvsource._getOb(id).write(data.read())
+            if identifier not in source.objectIds():
+                source._setObject(identifier, factory(identifier))
+            source._getOb(identifier).write(data.read())
 
 @grok.subscribe(ICSVSource, IObjectCreatedEvent)
 def source_created(source, event):

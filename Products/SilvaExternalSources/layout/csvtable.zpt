@@ -36,6 +36,5 @@
         </tr>
       </tal:block>
     </tbody>
-
   </table>
 </div>

@@ -13,7 +13,23 @@ Version of this file: $Revision: 1.8 $
 </h2>
 
 <form action="manage_editSQLSource" method="post">
-  <table cellspacing="0" cellpadding="2" border="0">
+  <table cellspacing="0" cellpadding="2" border="0"
+         tal:define="here_url here/absolute_url">
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-label">
+         Contents
+        </div>
+      </td>
+      <td align="left" valign="top">
+        <h4 class="form-help">
+          <a
+            tal:attributes="href string:${here_url}/manage_main">
+            manage contents
+          </a>
+        </h4>
+      </td>
+    </tr>
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
@@ -23,9 +39,8 @@ Version of this file: $Revision: 1.8 $
       <td align="left" valign="top">
         <h3 class="form-help">
           <a
-            tal:attributes="
-              href string:${here/absolute_url}/parameters/manage_main">
-            edit parameters
+            tal:attributes="href string:${here_url}/parameters/manage_main">
+            manage parameters
           </a>
         </h3>
       </td>
@@ -132,7 +147,7 @@ Version of this file: $Revision: 1.8 $
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          Source is previewable in kupu
+          Source is previewable
         </div>
       </td>
       <td align="left" valign="top">
@@ -143,23 +158,12 @@ Version of this file: $Revision: 1.8 $
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          Reset table rendering pagetemplate<br />
-          to default layout
+          <label for="usable">Source is usable</label>
         </div>
       </td>
       <td align="left" valign="top">
-        <input type="checkbox" name="reset_layout" />
-      </td>
-    </tr>
-    <tr>
-      <td align="left" valign="top">
-        <div class="form-label">
-          Reset parameters form<br />
-          to default.
-        </div>
-      </td>
-      <td align="left" valign="top">
-        <input type="checkbox" name="reset_params" />
+        <input type="checkbox" name="usable" id="usable"
+          tal:attributes="checked python: here.is_usable() and 'checked' or None" />
       </td>
     </tr>
     <tr>
@@ -167,7 +171,12 @@ Version of this file: $Revision: 1.8 $
       </td>
       <td align="left" valign="top">
         <div class="form-element">
-          <input class="form-element" type="submit" name="submit_edit" value="Save changes" />
+          <input class="form-element" type="submit" name="submit_edit"
+                 value="Save changes" />
+          <input class="form-element" type="submit" name="reset_layout"
+                 value="Reset layout" />
+          <input class="form-element" type="submit" name="reset_params"
+                 value="Reset parameters" />
         </div>
       </td>
     </tr>

@@ -27,6 +27,7 @@ class CSVSourceTestCase(unittest.TestCase):
         self.assertNotEqual(source, None)
         self.assertTrue(verifyObject(ICSVSource, source))
         self.assertTrue(ICSVSource.extends(IExternalSource))
+        self.assertItemsEqual(source.objectIds(), ['layout'])
         self.assertEqual(source.is_previewable(), True)
         self.assertEqual(source.is_usable(), True)
         self.assertEqual(source.get_file_size(), 0)

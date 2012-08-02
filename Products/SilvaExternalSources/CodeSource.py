@@ -61,9 +61,17 @@ class CodeSourceErrorSupplement(object):
 
 class CodeSource(EditableExternalSource, Folder, ZMIObject):
     grok.implements(ICodeSource)
+    # register icon and factories
+    silvaconf.icon('www/codesource.png')
+    silvaconf.factory('manage_addCodeSourceForm')
+    silvaconf.factory('manage_addCodeSource')
+    silvaconf.zmi_addable(True)
 
     meta_type = "Silva Code Source"
     security = ClassSecurityInfo()
+
+    _data_encoding = 'UTF-8'
+    _fs_location = None
 
     # ZMI Tabs
     manage_options = (
@@ -76,14 +84,6 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     editCodeSource = PageTemplateFile(
         'www/codeSourceEdit', globals(),  __name__='editCodeSource')
 
-    # register icon and factories
-    silvaconf.icon('www/codesource.png')
-    silvaconf.factory('manage_addCodeSourceForm')
-    silvaconf.factory('manage_addCodeSource')
-    silvaconf.zmi_addable(True)
-
-    _data_encoding = 'UTF-8'
-    _fs_location = None
 
     def __init__(self, id, script_id=None, fs_location=None):
         super(CodeSource, self).__init__(id)

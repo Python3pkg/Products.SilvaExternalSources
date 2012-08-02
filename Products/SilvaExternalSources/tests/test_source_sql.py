@@ -22,6 +22,9 @@ class SQLSourceTestCase(unittest.TestCase):
         source = self.root._getOb('sql_data', None)
         self.assertNotEqual(source, None)
         self.assertTrue(verifyObject(IExternalSource, source))
+        self.assertItemsEqual(source.objectIds(), ['layout'])
+        self.assertEqual(source.is_previewable(), True)
+        self.assertEqual(source.is_usable(), True)
 
     def test_render(self):
         assert False, 'TBD'

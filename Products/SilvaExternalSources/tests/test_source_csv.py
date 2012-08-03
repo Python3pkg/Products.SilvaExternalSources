@@ -2,7 +2,7 @@
 import unittest
 
 from zope.interface.verify import verifyObject
-from Products.Silva.testing import TestRequest, assertTriggersEvents
+from Products.Silva.testing import TestRequest, tests
 from Products.Silva.tests.helpers import open_test_file
 
 from ..interfaces import ICSVSource, IExternalSource
@@ -35,7 +35,7 @@ class CSVSourceTestCase(unittest.TestCase):
         self.assertEqual(source.get_mime_type(), 'text/csv')
 
         with open_test_file('informations.csv', globals()) as data:
-            with assertTriggersEvents('ObjectModifiedEvent'):
+            with tests.assertTriggersEvents('ObjectModifiedEvent'):
                 source.set_file(data)
 
         self.assertEqual(source.get_file_size(), 281)

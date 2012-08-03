@@ -1,7 +1,7 @@
 
 import unittest
 
-from Products.Silva.testing import TestRequest, TestCase
+from Products.Silva.testing import TestRequest, tests
 from zope.component import getMultiAdapter
 from zope.interface.verify import verifyObject
 from zeam.component import getWrapper
@@ -16,7 +16,7 @@ from ..interfaces import IExternalSourceManager, IExternalSourceInstance
 from ..testing import FunctionalLayer
 
 
-class SourceTransformerTestCase(TestCase):
+class SourceTransformerTestCase(unittest.TestCase):
     layer = FunctionalLayer
 
     def setUp(self):
@@ -72,7 +72,7 @@ class CreateSourceTransformerTestCase(SourceTransformerTestCase):
         self.assertEqual(parameters.citation, u'Super citation')
         self.assertEqual(parameters.author, u'moi')
         self.assertEqual(parameters.source, u'')
-        self.assertXMLEqual(
+        tests.assertXMLEqual(
             saved_text,
             """
 <div class="external-source" data-source-instance="%s">
@@ -81,7 +81,7 @@ class CreateSourceTransformerTestCase(SourceTransformerTestCase):
 
         # You can render this source for the editor
         editor_text = self.transform(saved_text, IInputEditorFilter, version)
-        self.assertXMLEqual(
+        tests.assertXMLEqual(
             editor_text, """
 <h1>
    Document Example
@@ -121,7 +121,7 @@ class EditSourceTransformerTestCase(SourceTransformerTestCase):
             (version, TestRequest()), ITransformerFactory)
         transformer = factory(
             'body', version.body, self.saved_text, IDisplayFilter)
-        self.assertXMLEqual(
+        tests.assertXMLEqual(
             unicode(transformer),
 """
 <div class="external-source">
@@ -152,7 +152,7 @@ class EditSourceTransformerTestCase(SourceTransformerTestCase):
             ITransformerFactory)
         transformer = factory(
             'body', version.body, self.saved_text, IDisplayFilter)
-        self.assertXMLEqual(
+        tests.assertXMLEqual(
             unicode(transformer),
 """
 <div class="external-source broken-source">
@@ -177,7 +177,7 @@ class EditSourceTransformerTestCase(SourceTransformerTestCase):
             ITransformerFactory)
         transformer = factory(
             'body', version.body, self.saved_text, IDisplayFilter)
-        self.assertXMLEqual(
+        tests.assertXMLEqual(
             unicode(transformer),
 """
 <div class="external-source">
@@ -194,7 +194,7 @@ class EditSourceTransformerTestCase(SourceTransformerTestCase):
         version = self.root.document.get_editable()
         factory = getMultiAdapter((version, TestRequest()), ITransformerFactory)
         transformer = factory('body', version.body, "", ISaveEditorFilter)
-        self.assertXMLEqual(
+        tests.assertXMLEqual(
             unicode(transformer),
             "")
 

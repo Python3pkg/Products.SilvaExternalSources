@@ -8,6 +8,8 @@ import unittest
 from zope.interface.verify import verifyObject
 from zope.component import queryUtility
 
+from Products.Silva.testing import tests
+
 from ..interfaces import ICodeSourceService, ICodeSourceInstaller
 from ..testing import FunctionalLayer
 
@@ -37,7 +39,7 @@ class ServiceTestCase(unittest.TestCase):
         self.assertTrue('cs_toc' in self.root.objectIds())
 
         service = queryUtility(ICodeSourceService)
-        self.assertItemsEqual(
+        tests.assertContentItemsEqual(
             list(service.get_installed_sources()),
             [self.root.cs_toc, self.root.cs_citation])
 
@@ -111,7 +113,7 @@ class ServiceTestCase(unittest.TestCase):
         self.assertEqual(installable.location, installed.get_fs_location())
 
         # The source appears in the service as well
-        self.assertItemsEqual(
+        tests.assertContentItemsEqual(
             list(service.get_installed_sources()),
             [self.root.cs_citation, self.root.cs_toc, installed])
 

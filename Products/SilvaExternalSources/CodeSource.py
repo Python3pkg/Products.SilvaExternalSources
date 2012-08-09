@@ -3,7 +3,7 @@
 # $Id$
 
 from cgi import escape
-
+from operator import itemgetter
 
 # Zope
 from App.class_init import InitializeClass
@@ -21,10 +21,12 @@ from Products.Silva.SilvaPermissions import ViewManagementScreens, \
 from Products.Silva.helpers import add_and_edit
 
 from five import grok
+from zope.component import queryUtility
+from zope.publisher.interfaces.browser import IBrowserSkinType
+
 from silva.core.interfaces.content import IVersion
 from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf
-from zope.component import queryUtility
 
 
 class CodeSourceErrorSupplement(object):
@@ -72,6 +74,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
 
     _data_encoding = 'UTF-8'
     _fs_location = None
+    _script_layers = []
 
     # ZMI Tabs
     manage_options = (
@@ -108,10 +111,15 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             errors.append(u'Missing required source title.')
         if not self._script_id:
             errors.append(u'Missing required renderer id.')
-        elif self._script_id not in self.objectIds():
-            errors.append(
-                u'Missing renderer %s. Please a script or template with this id.' % (
-                    self._script_id))
+        else:
+            ids = self.objectIds()
+            scripts = [self._script_id] + map(
+                itemgetter(0), self._script_layers)
+            for script_id in scripts:
+                if script_id not in ids:
+                    errors.append(
+                        u'Missing renderer %s. Please a script or template with this id.' % (
+                            script_id))
         if errors:
             return errors
         return None
@@ -125,6 +133,14 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     def get_script_id(self):
         return self._script_id
 
+    security.declareProtected(AccessContentsInformation, 'get_script_layers')
+    def get_script_layers(self):
+        result = []
+        skin = grok.skin.bind(default=lambda l: l.__identifier__)
+        for script_id, layer in self._script_layers:
+            result.append(":".join((script_id, skin.get(layer))))
+        return '\n'.join(result)
+
     security.declareProtected(AccessContentsInformation, 'get_fs_location')
     def get_fs_location(self):
         return self._fs_location
@@ -133,9 +149,22 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     def to_html(self, content, request, **parameters):
         """Render HTML for code source
         """
-        try:
-            script = self[self._script_id]
-        except KeyError:
+        script = None
+        if self._script_layers:
+            # If there are script_layer, check them first.
+            for script_id, layer in self._script_layers:
+                if layer.providedBy(request):
+                    break
+            else:
+                # No matching layer, default.
+                script_id = self._script_id
+        else:
+            # No script_layer, default one.
+            script_id = self._script_id
+        if script_id is not None:
+            script = self._getOb(script_id, None)
+        if script_id is None or script is None:
+            # Missing script
             return None
         parameters['REQUEST'] = request
         if IVersion.providedBy(content):
@@ -156,6 +185,24 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     def set_script_id(self, script_id):
         self._script_id = script_id
 
+    security.declareProtected(ViewManagementScreens, 'set_script_layers')
+    def set_script_layers(self, script_layers):
+        found = []
+        for lineno, line in enumerate(script_layers.strip().splitlines()):
+            entries = line.strip().split(':', 1)
+            if len(entries) != 2:
+                raise ValueError(
+                    u'Invalid script layers: invalid form on line %d' % (
+                        lineno))
+            script_id, layer_identifier = entries
+            layer = queryUtility(IBrowserSkinType, name=layer_identifier)
+            if layer is None:
+                raise ValueError(
+                    u'Invalid script layer: layer %s not found on line %d' % (
+                        layer_identifier, lineno))
+            found.append((script_id, layer))
+        self._script_layers = found
+
     security.declareProtected(
         ViewManagementScreens, 'manage_getFileSystemLocations')
     def manage_getFileSystemLocations(self):
@@ -171,7 +218,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         ViewManagementScreens, 'manage_editCodeSource')
     def manage_editCodeSource(
         self, title, script_id, data_encoding, description=None, location=None,
-        cacheable=None, previewable=None, usable=None,
+        cacheable=None, previewable=None, usable=None, script_layers=None,
         update_source=None, purge_source=None):
         """ Edit CodeSource object
         """
@@ -202,7 +249,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             self._fs_location = location
             msg += "Code source location changed. "
 
-        if data_encoding and data_encoding != self._data_encoding:
+        if data_encoding != self._data_encoding:
             try:
                 unicode('abcd', data_encoding, 'replace')
             except LookupError:
@@ -211,6 +258,13 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
                 return self.editCodeSource(manage_tabs_message=msg)
             self.set_data_encoding(data_encoding)
             msg += u'Data encoding changed. '
+
+        if script_layers is not None:
+            try:
+                self.set_script_layers(script_layers)
+            except ValueError as error:
+                msg += "Error while setting script layers: %s" % error.args[0]
+                return self.editCodeSource(manage_tabs_message=msg)
 
         title = unicode(title, self.management_page_charset)
 

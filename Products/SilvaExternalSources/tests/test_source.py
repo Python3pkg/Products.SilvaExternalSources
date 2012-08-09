@@ -12,6 +12,7 @@ from silva.core.views import views as silvaviews
 from silva.core.interfaces import IFolder
 
 from Products.Silva.testing import TestRequest
+from silvatheme.standardissue.standardissue import IStandardIssueSkin
 
 from ..interfaces import availableSources
 from ..interfaces import ICodeSource, IExternalSource
@@ -75,6 +76,9 @@ class DefaultCodeSourceTestCase(unittest.TestCase):
         source = self.root._getOb('codesource', None)
         self.assertTrue(verifyObject(ICodeSource, source))
         self.assertTrue(verifyObject(IExternalSource, source))
+        # The source script be broken because of the missing script script.
+        self.assertIsNot(source.test_source(), None)
+        self.assertEqual(len(source.test_source()), 1)
 
         # Add the rendering script
         factory = source.manage_addProduct['PythonScripts']
@@ -87,8 +91,11 @@ return "Render source"
 """)
 
         # Now verify the source.
+        self.assertEqual(source.test_source(), None)
         self.assertEqual(source.is_usable(), True)
         self.assertEqual(source.is_previewable(), True)
+        self.assertEqual(source.get_script_id(), 'script')
+        self.assertEqual(source.get_script_layers(), '')
         self.assertEqual(source.get_icon(), None)
         self.assertEqual(source.get_description(), '')
         self.assertEqual(source.test_source(), None)
@@ -138,10 +145,10 @@ return "Render source"
         controller.create()
         self._instance = controller.getId()
 
-    def get_controller(self):
+    def get_controller(self, layers=[]):
         version = self.root.example.get_editable()
         sources = getWrapper(version, IExternalSourceManager)
-        return sources(TestRequest(), instance=self._instance)
+        return sources(TestRequest(layers=layers), instance=self._instance)
 
     def test_controller(self):
         """Test the controller for our source.
@@ -155,6 +162,55 @@ return "Render source"
         self.assertEqual(controller.description, source.get_description())
         self.assertEqual(controller.editable(), False)
         self.assertEqual(controller.render(), "Render source")
+
+    def test_layers(self):
+        """Test that you can set different script for different layers.
+        """
+        source = self.root.codesource
+        # Source is working and no script layers by default
+        self.assertIs(source.test_source(), None)
+        self.assertEqual(source.get_script_layers(), '')
+
+        # Invalid format
+        with self.assertRaises(ValueError):
+            source.set_script_layers("""
+test:Standard Issue
+this is wrong man""")
+        self.assertEqual(source.get_script_layers(), '')
+
+        # Invalid skin
+        with self.assertRaises(ValueError):
+            source.set_script_layers("""
+test:Standard Issue
+this:Test issue""")
+        self.assertEqual(source.get_script_layers(), '')
+
+        # Correctly set a script layer, but the source is broken, the
+        # script is missing.
+        source.set_script_layers("test:Standard Issue")
+        self.assertEqual(source.get_script_layers(), "test:Standard Issue")
+        self.assertIsNot(source.test_source(), None)
+        self.assertEqual(len(source.test_source()), 1)
+
+        factory = source.manage_addProduct['PythonScripts']
+        factory.manage_addPythonScript('test')
+        script = source._getOb('test')
+        script.write("""
+##parameters=model,version,REQUEST
+
+return "Render layer"
+""")
+        self.assertIs(source.test_source(), None)
+
+        # Without any layer, you get the default rendering.
+        controller = self.get_controller()
+        self.assertTrue(verifyObject(IExternalSourceController, controller))
+        self.assertEqual(controller.render(), "Render source")
+
+        # With the given skin, you should have the new rendering
+        controller = self.get_controller(layers=[IStandardIssueSkin])
+        self.assertTrue(verifyObject(IExternalSourceController, controller))
+        self.assertEqual(controller.render(), "Render layer")
 
     def test_archive(self):
         """Test you can move the source in a folder. The rendering in

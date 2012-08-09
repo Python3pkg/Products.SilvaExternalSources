@@ -12,6 +12,7 @@ tests_require = [
     'silva.app.document [test]',
     'Products.Silva [test]',
     'Products.ZSQLiteDA',
+    'silvatheme.standardissue',
     ]
 
 # Products.ZSQLMethods should be as an option ?

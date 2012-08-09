@@ -70,11 +70,11 @@ Version of this file: $Revision: 1.7 $
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-          <label for="script_id">Renderer Id</label>
+          <label for="script_id">Renderer identifier</label>
           <br />
           <small>
-            The id of the script or template that renders<br />
-            the output of the code source.
+            The identifier of the script or template that renders<br />
+            the output of the code source by default
           </small>
         </div>
       </td>
@@ -86,12 +86,39 @@ Version of this file: $Revision: 1.7 $
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
+          <label for="script_layers">Alternate renderer identifiers</label>
+          <br />
+          <small>
+            Identifiers of the scripts or templates that renders <br />
+            the output of the code source for a given skin, one per
+            line, <br /> in the format of the script identifier:the skin
+            name.
+          </small>
+        </div>
+      </td>
+      <td align="left" valign="top">
+        <textarea
+          style="width: 100%;"
+          type="text"
+          cols="40"
+          rows="5"
+          wrap="soft"
+          value=""
+          name="script_layers"
+          id="script_layers"
+          tal:content="context/get_script_layers"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-label">
           <label for="data_encoding">Data encoding</label>
         </div>
       </td>
       <td align="left" valign="top">
         <input type="text" name="data_encoding" size="40" id="data_encoding" value=""
-          tal:attributes="value here/get_data_encoding" />
+          tal:attributes="value context/get_data_encoding" />
       </td>
     </tr>
     <tr>
@@ -99,7 +126,7 @@ Version of this file: $Revision: 1.7 $
         <div class="form-label">
           <label for="description">Description</label>
           <br />
-          <small>This will visible in inserted code sources.</small>
+          <small>This will be visible in inserted code sources.</small>
         </div>
       </td>
       <td align="left" valign="top">
@@ -112,7 +139,7 @@ Version of this file: $Revision: 1.7 $
           value=""
           name="description"
           id="description"
-          tal:content="here/get_description"
+          tal:content="context/get_description"
         />
       </td>
     </tr>
@@ -161,9 +188,9 @@ Version of this file: $Revision: 1.7 $
         <input class="form-element" type="radio" name="location" value=""
                id="location-remove" checked="#"
                tal:attributes="checked python:not current and 'checked' or None"/>
-        <label for="location-remove">Remove location</label>
+        <label for="location-remove">No location</label>
         <br />
-        <tal:loc tal:repeat="location locations">
+        <tal:available tal:repeat="location locations">
           <input class="form-element" type="radio" name="location"
                  id="#" value="#" checked="#"
                  tal:attributes="id string:location-${repeat/location/number};
@@ -175,7 +202,10 @@ Version of this file: $Revision: 1.7 $
             Location
           </label>
           <br />
-        </tal:loc>
+        </tal:available>
+        <tal:other tal:condition="python: current and current not in locations">
+          Other: <b tal:content="current" />
+        </tal:other>
       </td>
     </tr>
     <tr>

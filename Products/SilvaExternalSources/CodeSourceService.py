@@ -157,6 +157,12 @@ class CodeSourceInstallable(object):
         source.set_script_id(self.script_id)
         if self.description:
             source.set_description(self.description)
+        if self._config.has_option('source', 'script_layers'):
+            value = self._config.get('source', 'script_layers')
+            try:
+                source.set_script_layers(value)
+            except ValueError:
+                pass
         if self._config.has_option('source', 'cacheable'):
             value = self._config.getboolean('source', 'cacheable')
             source.set_cacheable(value)

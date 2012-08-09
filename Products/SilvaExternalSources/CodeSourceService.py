@@ -157,8 +157,8 @@ class CodeSourceInstallable(object):
         source.set_script_id(self.script_id)
         if self.description:
             source.set_description(self.description)
-        if self._config.has_option('source', 'script_layers'):
-            value = self._config.get('source', 'script_layers')
+        if self._config.has_option('source', 'alternate_render_ids'):
+            value = self._config.get('source', 'alternate_render_ids')
             try:
                 source.set_script_layers(value)
             except ValueError:

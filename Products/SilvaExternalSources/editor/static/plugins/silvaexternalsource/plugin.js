@@ -34,9 +34,15 @@
             };
             element = CKEDITOR.plugins.silvaexternalsource.isInsideASource(base);
             if (element != null) {
-                if (select_element !== false && element.$ !== base.$) {
-                    // Be sure the source is selected
-                    selection.selectElement(element);
+                if (element.$ !== base.$) {
+                    var target = element;
+                    var range = new CKEDITOR.dom.range(editor.document);
+
+                    if (CKEDITOR.env.gecko) {
+                        target = target.getParent();
+                    };
+                    range.selectNodeContents(target);
+                    range.select();
                 };
                 return element;
             };
@@ -125,7 +131,7 @@
         exec: function(editor) {
             var source = API.getSelectedSource(editor, false);
             if (source !== null) {
-                source.remove();
+                source.getParent().remove();
             }
         },
         startDisabled: true
@@ -151,34 +157,38 @@
                 className: 'cke_button_removediv'
             });
             editor.addCss(
+                'span.inline-container {' +
+                    'display: inline-block;' +
+                    '}');
+            editor.addCss(
                 'div.external-source {' +
                     'margin: 5px 0;' +
                     'color: #444;' +
                     'background-color: #efefef;' +
-                    'display: inline-block;' +
+                    'display: block;' +
                     'min-height: 20px;' +
                     'min-width: 20px;' +
                     '}');
             editor.addCss(
-                'div.source-float-left {' +
+                'span.source-float-left {' +
                     'float: left;' +
                     '}');
             editor.addCss(
-                'div.source-float-right {' +
+                'span.source-float-right {' +
                     'float: right;' +
                     '}');
             editor.addCss(
-                'div.source-left {' +
+                'span.source-left {' +
                     'text-align: left;' +
                     'display: block;' +
                     '}');
             editor.addCss(
-                'div.source-right {' +
+                'span.source-right {' +
                     'text-align: right;' +
                     'display: block;' +
                     '}');
             editor.addCss(
-                'div.source-center {' +
+                'span.source-center {' +
                     'text-align: center;' +
                     'display: block;' +
                     '}');
@@ -261,14 +271,21 @@
                     delete attributes[name];
                 };
             };
-            var is_source_div = function(element) {
+            var is_source = function(element) {
                 // Test if the given element is an image div.
                 return (element &&
                         element.name == 'div' &&
                         element.attributes['class'] != null &&
-                        element.attributes['class'].match('external-source'));
+                        element.attributes['class'].match('^external-source'));
             };
-            var is_preview_div = function(element) {
+            var is_container = function(element) {
+                // Test if the given element is an image div.
+                return (element &&
+                        element.name == 'span' &&
+                        element.attributes['class'] != null &&
+                        element.attributes['class'].match('^inline-container'));
+            };
+            var is_preview = function(element) {
                 // Test if the given element is an image div.
                 return (element &&
                         element.name == 'div' &&
@@ -280,11 +297,22 @@
                 dataFilter.addRules({
                     elements: {
                         div: function(element) {
-                            if (is_source_div(element)) {
+                            if (is_source(element)) {
                                 var attributes = element.attributes;
+                                var parent = element.parent;
+                                var style = /^external-source (.*)$/.exec(
+                                    element.attributes['class'])[1];
 
                                 attributes['contenteditable'] = 'false';
                                 element.children = [];
+                                if (!is_container(parent)) {
+                                    var container = new CKEDITOR.htmlParser.element(
+                                        'span', {'class': 'inline-container ' + style});
+                                    container.children = [element];
+                                    container.parent = parent;
+                                    element.parent = container;
+                                    return container;
+                                };
                             };
                             return null;
                         }
@@ -295,10 +323,16 @@
             if (htmlFilter) {
                 htmlFilter.addRules({
                     elements: {
+                        span: function(element) {
+                            if (is_container(element)) {
+                                return element.children[0];
+                            };
+                            return null;
+                        },
                         div: function(element) {
-                            if (is_preview_div(element)) {
+                            if (is_preview(element)) {
                                 return false;
-                            } else if (is_source_div(element)) {
+                            } else if (is_source(element)) {
                                 var attributes = element.attributes;
 
                                 remove(attributes, 'contenteditable');

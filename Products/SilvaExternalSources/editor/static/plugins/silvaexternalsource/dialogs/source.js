@@ -130,7 +130,7 @@
                 ['float right', 'source-float-right']
             ],
             setup: function(data) {
-                this.setValue(data.align);
+                this.setValue(data.align || 'default');
             },
             commit: function(data) {
                 data.align = this.getValue();
@@ -218,6 +218,8 @@
                 var selection = editor.getSelection();
                 var ranges = selection.getRanges(true);
 
+                var container = new CKEDITOR.dom.element('span');
+                container.setAttributes({'class': 'inline-container ' + data.align});
                 var source = new CKEDITOR.dom.element('div');
                 var attributes = {};
 
@@ -226,8 +228,8 @@
                 attributes['data-silva-name'] = data.name;
                 attributes['data-silva-settings'] = data.parameters;
                 source.setAttributes(attributes);
-                ranges[0].insertNode(source);
-                selection.selectElement(source);
+                container.append(source);
+                ranges[0].insertNode(container);
 
                 API.loadPreview($(source.$), editor);
             }
@@ -271,6 +273,7 @@
 
                 source.setAttribute('class', 'external-source ' + data.align);
                 source.setAttribute('data-silva-settings', data.parameters);
+                source.getParent().setAttribute('class', 'inline-container ' + data.align);
 
                 API.loadPreview($(source.$), editor);
             }
@@ -279,4 +282,3 @@
 
 
 })(jQuery, CKEDITOR);
-

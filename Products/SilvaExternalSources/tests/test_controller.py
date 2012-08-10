@@ -131,6 +131,8 @@ class CreationTestCase(unittest.TestCase):
         self.assertEqual(len(sources.all()), 0)
 
         with self.assertRaises(errors.SourceMissingError):
+            sources.get_parameters()
+        with self.assertRaises(errors.SourceMissingError):
             sources.get_parameters(name='cs_nonexisting')
         with self.assertRaises(errors.SourceMissingError):
             sources(request, name='cs_nonexisting')

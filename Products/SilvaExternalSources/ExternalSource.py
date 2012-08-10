@@ -237,12 +237,14 @@ class ExternalSourceManager(object):
             if parameters is None:
                 raise error.ParametersMissingError(instance)
             name = parameters.get_source_identifier()
+        if name is None:
+            raise error.SourceMissingError('unknow')
         source = getattr(self.context, name, None)
         if source is not None and IExternalSource.providedBy(source):
             return parameters, source
         if parameters is not None:
             return parameters, None
-        raise error.SourceMissingError(source)
+        raise error.SourceMissingError(name)
 
     def __call__(self, request, instance=None, name=None):
         parameters, source = self.get_parameters(instance=instance, name=name)

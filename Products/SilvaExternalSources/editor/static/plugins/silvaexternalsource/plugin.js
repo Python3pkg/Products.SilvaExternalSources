@@ -170,25 +170,25 @@
                     'min-width: 20px;' +
                     '}');
             editor.addCss(
-                'span.source-float-left {' +
+                'span.inline-container.float-left {' +
                     'float: left;' +
                     '}');
             editor.addCss(
-                'span.source-float-right {' +
+                'span.inline-container.float-right {' +
                     'float: right;' +
                     '}');
             editor.addCss(
-                'span.source-left {' +
+                'span.inline-container.align-left {' +
                     'text-align: left;' +
                     'display: block;' +
                     '}');
             editor.addCss(
-                'span.source-right {' +
+                'span.inline-container.align-right {' +
                     'text-align: right;' +
                     'display: block;' +
                     '}');
             editor.addCss(
-                'span.source-center {' +
+                'span.inline-container.align-center {' +
                     'text-align: center;' +
                     'display: block;' +
                     '}');

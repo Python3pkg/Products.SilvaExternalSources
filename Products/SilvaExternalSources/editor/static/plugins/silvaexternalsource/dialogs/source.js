@@ -123,11 +123,11 @@
             required: true,
             items: [
                 ['default', 'default'],
-                ['align left', 'source-left'],
-                ['align center', 'source-center'],
-                ['align right', 'source-right'],
-                ['float left', 'source-float-left'],
-                ['float right', 'source-float-right']
+                ['align left', 'align-left'],
+                ['align center', 'align-center'],
+                ['align right', 'align-right'],
+                ['float left', 'float-left'],
+                ['float right', 'float-right']
             ],
             setup: function(data) {
                 this.setValue(data.align || 'default');

@@ -300,18 +300,18 @@
                             if (is_source(element)) {
                                 var attributes = element.attributes;
                                 var parent = element.parent;
-                                var parse_alignement = /^external-source (.*)$/.exec(
+                                var parse_alignment = /^external-source (.*)$/.exec(
                                     element.attributes['class']);
-                                var alignement = 'default';
+                                var alignment = 'default';
 
-                                if (parse_alignement !== null) {
-                                    alignement = parse_alignement[1];
+                                if (parse_alignment !== null) {
+                                    alignment = parse_alignment[1];
                                 };
                                 attributes['contenteditable'] = 'false';
                                 element.children = [];
                                 if (!is_container(parent)) {
                                     var container = new CKEDITOR.htmlParser.element(
-                                        'span', {'class': 'inline-container ' + style});
+                                        'span', {'class': 'inline-container ' + parse_alignment});
                                     container.children = [element];
                                     container.parent = parent;
                                     element.parent = container;

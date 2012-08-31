@@ -21,6 +21,7 @@ from ..interfaces import IExternalSourceManager
 
 HTML_CODE_SOURCE = u"""
 <div>
+    <h1>Example</h1>
     <p>some paragraph..</p>
     <div class="external-source default"
          data-silva-name="cs_citation"

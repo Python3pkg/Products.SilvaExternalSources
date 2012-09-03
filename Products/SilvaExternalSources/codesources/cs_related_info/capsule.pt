@@ -11,8 +11,7 @@
   catstyles    python:styles and (adjust + cssstyle) or nothing;
   style        python:catstyles and catstyles or (cssstyle and cssstyle or adjust);
 ">
-<!-- Related Info code source -->
-<div tal:attributes="class align">
+<!-- Related Info code source (cs_related_info) -->
 <div class="info plot"
   tal:attributes="
     class python:cssclass and cssclass or default;
@@ -26,16 +25,14 @@
   tal:content="structure capsulebody">
   Capsule body text....
 </p>
-<p tal:condition="linktext">
+<p class="source" tal:condition="linktext">
 <a tal:omit-tag="not:linkurl"
   tal:attributes="href linkurl">
-<span tal:replace="structure linktext">
+<tal:inc tal:replace="structure linktext">
   Link text....
-</span>
+</tal:inc>
 </a>
 </p>
 </div>
-</div>
 <!-- /Related Info -->
 </tal:init>
-

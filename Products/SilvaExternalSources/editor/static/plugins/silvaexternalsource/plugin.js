@@ -311,7 +311,7 @@
                                 element.children = [];
                                 if (!is_container(parent)) {
                                     var container = new CKEDITOR.htmlParser.element(
-                                        'span', {'class': 'inline-container ' + parse_alignment});
+                                        'span', {'class': 'inline-container ' + alignment});
                                     container.children = [element];
                                     container.parent = parent;
                                     element.parent = container;

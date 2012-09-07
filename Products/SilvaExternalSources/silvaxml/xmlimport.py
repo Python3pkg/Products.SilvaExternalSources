@@ -12,6 +12,7 @@ from silva.core import conf as silvaconf
 from silva.core.interfaces import IVersion, ISilvaXMLImportHandler
 from silva.core.editor.transform.interfaces import ISilvaXMLImportFilter
 from silva.core.editor.transform.base import TransformationFilter
+from silva.translations import translate as _
 from zeam.component import getWrapper
 from zeam.form.silva.interfaces import IXMLFormSerialization
 
@@ -39,20 +40,23 @@ class ExternalSourceImportFilter(TransformationFilter):
         self.sources = getWrapper(self.context, IExternalSourceManager)
 
     def __call__(self, tree):
-        request = self.handler.getInfo().request
+        info = self.handler.getInfo()
+        request = info.request
         for node in tree.xpath(
                 '//html:div[contains(@class, "external-source")]',
                 namespaces={'html': 'http://www.w3.org/1999/xhtml'}):
             name = node.attrib.get('source-identifier')
             if name is None:
-                logger.error(
-                    u"Broken external source in import.")
+                info.reportError(
+                    _(u"Broken external source in import."),
+                    content=self.context)
                 continue
             try:
                 source = self.sources(request, name=name)
             except SourceError:
-                logger.warn(
-                    u"Unknown external source %r in import", name)
+                info.reportError(
+                    _(u"Unknown external source ${name} in import",
+                        mapping=dict(name=name)), content=self.context)
                 continue
             identifier = source.new()
 

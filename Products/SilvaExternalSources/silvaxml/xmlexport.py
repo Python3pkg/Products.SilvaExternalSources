@@ -15,6 +15,7 @@ from silva.core.editor.transform.interfaces import ISilvaXMLExportFilter
 from silva.core.interfaces import IVersion, ISilvaXMLExportHandler
 from zeam.component import getWrapper
 from zeam.form.silva.interfaces import IXMLFormSerialization
+from silva.translations import translate as _
 
 from . import NS_SOURCE_URI
 from ..interfaces import IExternalSourceManager
@@ -53,7 +54,8 @@ class ExternalSourceExportFilter(TransformationFilter):
         self.sources = getWrapper(self.context, IExternalSourceManager)
 
     def __call__(self, tree):
-        request = self.handler.getInfo().request
+        info = self.handler.getInfo()
+        request = info.request
         for node in tree.xpath(
                 '//html:div[contains(@class, "external-source")]',
                 namespaces={'html': 'http://www.w3.org/1999/xhtml'}):
@@ -63,9 +65,8 @@ class ExternalSourceExportFilter(TransformationFilter):
             try:
                 source = self.sources(request, instance=identifier)
             except SourceError:
-                logger.error(
-                    u'Broken source in document %s',
-                    '/'.join(self.context.getPhysicalPath()))
+                info.reportError(
+                    _(u'Broken source in document'), content=self.context)
                 continue
             node.attrib['source-identifier'] = source.getSourceId()
 

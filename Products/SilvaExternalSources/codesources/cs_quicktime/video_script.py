@@ -1,4 +1,4 @@
-##parameters=model, version, ref, controller, autoplay, width, height, params=''
+##parameters=model, REQUEST, version, ref, controller, autoplay, width, height, params=''
 
 video_url = ref.absolute_url()
 if width == '':

@@ -13,7 +13,7 @@
   <i18n_domain></i18n_domain>
   <groups>
     <group>
-      <title>Default</title>
+      <title>Formulario</title>
       <fields>
 
       <field><id>iframe</id> <type>TextAreaField</type>
@@ -25,7 +25,7 @@
 remove all this text and paste here...</default>
           <description></description>
           <enabled type="int">1</enabled>
-          <external_validator type="method">iframe_validator</external_validator>
+          <external_validator></external_validator>
           <extra></extra>
           <height type="int">5</height>
           <hidden type="int">0</hidden>
@@ -39,6 +39,7 @@ remove all this text and paste here...</default>
           <width type="int">20</width>
         </values>
         <tales>
+          <external_validator>python:modules['Products.SilvaExternalSources.codesources.googlemaps'].validate_googlemaps_iframe</external_validator>
         </tales>
         <messages>
           <message name="external_validator_failed">The input failed the external validator.</message>
@@ -48,6 +49,18 @@ remove all this text and paste here...</default>
           <message name="too_long">You entered too many characters.</message>
         </messages>
       </field>
+      </fields>
+    </group>
+    <group>
+      <title>Mapa</title>
+      <fields>
+
+      </fields>
+    </group>
+    <group>
+      <title>Geral</title>
+      <fields>
+
       </fields>
     </group>
   </groups>

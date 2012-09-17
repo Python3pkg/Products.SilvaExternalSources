@@ -47,7 +47,13 @@ def install_pt(context, data, id, extension):
     factory.manage_addPageTemplate(id, '', data.read())
 
 def install_file(context, data, id, extension):
-    """Install an Image file.
+    """Install a File.
+    """
+    factory = context.manage_addProduct['OFSP']
+    factory.manage_addFile(id, file=data)
+
+def install_image(context, data, id, extension):
+    """Install an Image.
     """
     factory = context.manage_addProduct['OFSP']
     factory.manage_addImage(id, file=data)
@@ -73,12 +79,11 @@ def install_xml(context, data, id, extension):
                 id, '/'.join(context.getPhysicalPath())))
 
 
-
 INSTALLERS = {
-    '.png': install_file,
-    '.gif': install_file,
-    '.jpeg': install_file,
-    '.jpg': install_file,
+    '.png': install_image,
+    '.gif': install_image,
+    '.jpeg': install_image,
+    '.jpg': install_image,
     '.pt': install_pt,
     '.py': install_py,
     '.xml': install_xml,

@@ -111,6 +111,15 @@ class ServiceTestCase(unittest.TestCase):
         # And the location matches the one of the installer
         installed = self.root.folder.cs_portlet_element
         self.assertEqual(installable.location, installed.get_fs_location())
+        self.assertItemsEqual(
+            installed.objectIds(),
+            ['icon.png', 'README', 'LICENSE', 'portlet_element'])
+        self.assertEqual(
+            installed._getOb('icon.png').meta_type,
+            'Image')
+        self.assertEqual(
+            installed._getOb('portlet_element').meta_type,
+            'Page Template')
 
         # The source appears in the service as well
         tests.assertContentItemsEqual(

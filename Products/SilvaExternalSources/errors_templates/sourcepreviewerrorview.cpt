@@ -8,7 +8,7 @@
     <li tal:repeat="widget view.widgets">
       <span tal:content="widget.title" />:
       <tal:value
-         tal:on-error="string:Broken Formulator field"
+         tal:on-error="string:Broken Formulator Field."
          tal:content="structure widget.render()" />
     </li>
   </ul>

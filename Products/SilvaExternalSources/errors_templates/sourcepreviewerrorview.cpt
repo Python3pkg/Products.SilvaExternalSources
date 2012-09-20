@@ -7,7 +7,9 @@
   <ul tal:condition="view.editable">
     <li tal:repeat="widget view.widgets">
       <span tal:content="widget.title" />:
-      <tal:value tal:content="structure widget.render()" />
+      <tal:value
+         tal:on-error="string:Broken Formulator field"
+         tal:content="structure widget.render()" />
     </li>
   </ul>
   <p tal:condition="not view.editable"

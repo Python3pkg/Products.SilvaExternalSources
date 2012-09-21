@@ -53,6 +53,9 @@ def validate_googlemaps_iframe(iframe, REQUEST=None):
     >>> validate_googlemaps_iframe('<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://infrae.com"></iframe><br /><small><a href="http://infrae.com" style="color:#0000FF;text-align:left">View Larger Map</a></small>')
     False
 
+    >>> validate_googlemaps_iframe('<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.at/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=Augasse+2-6,+Wien&amp;aq=0&amp;oq=augasse+2&amp;sll=47.696454,13.345766&amp;sspn=7.898759,22.115479&amp;t=h&amp;ie=UTF8&amp;hq=&amp;hnear=Augasse+2-6,+Alsergrund+1090+Wien&amp;z=14&amp;ll=48.231908,16.357079&amp;output=embed"></iframe><br /><small><a href="https://maps.google.at/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=Augasse+2-6,+Wien&amp;aq=0&amp;oq=augasse+2&amp;sll=47.696454,13.345766&amp;sspn=7.898759,22.115479&amp;t=h&amp;ie=UTF8&amp;hq=&amp;hnear=Augasse+2-6,+Alsergrund+1090+Wien&amp;z=14&amp;ll=48.231908,16.357079" style="color:#0000FF;text-align:left">View Larger Map</a></small>')
+    True
+
     >>> validate_googlemaps_iframe('<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="www.google.com/maps?saddr=Hotel+Ibis+Coimbra+%4040.205247,-8.426782"><iframe src="http://google.com.au/evilscript.pl"></iframe></iframe><br /><small><a href="www.google.com/maps?saddr=Hotel+Ibis+Coimbra+%4040.205247,-8.426782" style="color:#0000FF;text-align:left">View Larger Map</a></small>')
     False
 
@@ -68,10 +71,10 @@ def validate_googlemaps_iframe(iframe, REQUEST=None):
     >>> validate_googlemaps_iframe('<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://www.google.com/"></iframe><form action="http://infrae.com"><a>Form</a></form>')
     False
 
-    >>> validate_googlemaps_iframe('<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://www.google.fa.ke/evil"></iframe>')
+    >>> validate_googlemaps_iframe('''<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.at/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=Augasse+2-6,+Wien&amp;aq=0&amp;oq=augasse+2&amp;sll=47.696454,13.345766&amp;sspn=7.898759,22.115479&amp;t=h&amp;ie=UTF8&amp;hq=&amp;hnear=Augasse+2-6,+Alsergrund+1090+Wien&amp;z=14&amp;ll=48.231908,16.357079&amp;output=embed"></iframe><br /><small><a href="https://maps.google.at/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=Augasse+2-6,+Wien&amp;aq=0&amp;oq=augasse+2&amp;sll=47.696454,13.345766&amp;sspn=7.898759,22.115479&amp;t=h&amp;ie=UTF8&amp;hq=&amp;hnear=Augasse+2-6,+Alsergrund+1090+Wien&amp;z=14&amp;ll=48.231908,16.357079&amp;output=embed" style="color:#0000FF;text-align:left">View Larger Map</a></small>''')
     True
 
-    >>> validate_googlemaps_iframe('<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.at/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=Augasse+2-6,+Wien&amp;aq=0&amp;oq=augasse+2&amp;sll=47.696454,13.345766&amp;sspn=7.898759,22.115479&amp;t=h&amp;ie=UTF8&amp;hq=&amp;hnear=Augasse+2-6,+Alsergrund+1090+Wien&amp;z=14&amp;ll=48.231908,16.357079&amp;output=embed"></iframe><br /><small><a href="https://maps.google.at/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=Augasse+2-6,+Wien&amp;aq=0&amp;oq=augasse+2&amp;sll=47.696454,13.345766&amp;sspn=7.898759,22.115479&amp;t=h&amp;ie=UTF8&amp;hq=&amp;hnear=Augasse+2-6,+Alsergrund+1090+Wien&amp;z=14&amp;ll=48.231908,16.357079" style="color:#0000FF;text-align:left">View Larger Map</a></small>')
+    >>> validate_googlemaps_iframe('''<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://google.fa.ke/evil"></iframe><br /><small><a href="http://google.fa.ke/evil" style="color:#0000FF;text-align:left">View Larger Map</a></small>''')
     True
     """
 
@@ -96,6 +99,9 @@ def validate_googlemaps_iframe(iframe, REQUEST=None):
             if key == 'src' or key == 'href':
                URLs.append(element.get(key))
  
+        
+    # still cannot check against google.fa.ke/eviladdress
+    # Google lists http://www.google.com/supported_domains but it does change regularly
     _url_pattern = re.compile(r'^(https?://)?(www\.|maps\.)?google\.[a-z]{2,3}(\.[a-z]{2})?/(maps)?.*$')
     for value in URLs:
         if not _url_pattern.search(value):

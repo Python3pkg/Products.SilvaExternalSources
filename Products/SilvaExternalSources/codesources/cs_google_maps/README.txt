@@ -11,6 +11,10 @@ Currently the file google_maps_source is not being used. Instead,
 the codesource expects the entire iframe code to be added by the user
 rather than only a URL to the map.
 
+The validation script, 'googlemaps.py', resides in the filesystem at
+Products.SilvaExternalSources in 'codesources'. It validates both
+the iframe code and the URLs inside.
+
 Parameters
 ----------
 

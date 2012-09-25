@@ -1,11 +1,22 @@
 ChangeLog
 =========
 
-3.0 (unreleased)
-----------------
+3.0c1 (2012/09/25)
+------------------
 
-- fix code source pop-up for small screens.
-  [wim]
+- Refactor code source API for Silva 3.0c1.
+
+- Update to Silva 3.0c1 API.
+
+- Update default code sources for Silva 3.0.
+
+- Add new content type *Source Asset*.
+
+- Improve Code Source service.
+
+- Improve tests.
+
+- Fix bugs.
 
 3.0b1 (2011/11/11)
 ------------------

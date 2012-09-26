@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2002-2010 Infrae. All rights reserved.
+# Copyright (c) 2002-2012 Infrae. All rights reserved.
 # See also LICENSE.txt
-# $Id$
 
 from setuptools import setup, find_packages
 import os
@@ -55,10 +54,13 @@ setup(name='Products.SilvaExternalSources',
         'silva.core.views',
         'silva.translations',
         'silva.ui',
+        'zeam.component',
         'zeam.form.silva',
         'zeam.utils.batch',
-        'zeam.component',
+        'zope.annotation',
         'zope.component',
+        'zope.event',
+        'zope.i18n',
         'zope.interface',
         'zope.intid',
         'zope.lifecycleevent',

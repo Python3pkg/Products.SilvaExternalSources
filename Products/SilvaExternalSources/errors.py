@@ -18,6 +18,11 @@ class SourceError(ValueError):
     def message(self):
         return _(u"External Source errored during the processing.")
 
+    def __unicode__(self):
+        return translate(self.message())
+
+    def __str__(self):
+        return str(self.__unicode__())
 
 
 class SourceErrorView(silvaviews.Render):

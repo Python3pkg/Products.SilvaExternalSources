@@ -7,14 +7,13 @@ import logging
 from five import grok
 from zope.interface import Interface
 
-from Products.Silva.silvaxml import xmlexport, NS_SILVA_URI
-
 from silva.core.editor.transform.base import TransformationFilter
 from silva.core.editor.transform.interfaces import ISilvaXMLExportFilter
-from silva.core.interfaces import IVersion, ISilvaXMLExportHandler
+from silva.core.interfaces import IVersion, ISilvaXMLProducer
+from silva.core.xml import producers, NS_SILVA_URI
+from silva.translations import translate as _
 from zeam.component import getWrapper
 from zeam.form.silva.interfaces import IXMLFormSerialization
-from silva.translations import translate as _
 
 from . import NS_SOURCE_URI
 from ..interfaces import IExternalSourceManager
@@ -37,12 +36,8 @@ class FieldProducer(ElementTreeContentHandler):
         return self.__handler
 
 
-xmlexport.theXMLExporter.registerNamespace(
-    'silva-external-sources', NS_SOURCE_URI)
-
-
 class ExternalSourceExportFilter(TransformationFilter):
-    grok.adapts(IVersion, ISilvaXMLExportHandler)
+    grok.adapts(IVersion, ISilvaXMLProducer)
     grok.provides(ISilvaXMLExportFilter)
 
     def __init__(self, context, handler):
@@ -53,8 +48,7 @@ class ExternalSourceExportFilter(TransformationFilter):
         self.sources = getWrapper(self.context, IExternalSourceManager)
 
     def __call__(self, tree):
-        info = self.handler.getInfo()
-        request = info.request
+        exported = self.handler.getExported()
         for node in tree.xpath(
                 '//html:div[contains(@class, "external-source")]',
                 namespaces={'html': 'http://www.w3.org/1999/xhtml'}):
@@ -62,10 +56,16 @@ class ExternalSourceExportFilter(TransformationFilter):
             del node.attrib['data-source-instance']
 
             try:
-                source = self.sources(request, instance=identifier)
-            except SourceError:
-                info.reportError(
-                    _(u'Broken source in document'), content=self.context)
+                source = self.sources(exported.request, instance=identifier)
+            except SourceError as error:
+                exported.reportProblem(
+                    u'Broken source in documen while exporting: {0}'.format(error),
+                    self.context)
+                continue
+            if source.source is None:
+                exported.reportProblem(
+                    u"Broken source in document: source is gone in the export.",
+                    self.context)
                 continue
             node.attrib['source-identifier'] = source.getSourceId()
 
@@ -89,7 +89,7 @@ class SourceParametersProducer(object):
     def getHandler(self):
         return self
 
-    def source_parameters(self, source_manager):
+    def sax_source_parameters(self, source_manager):
         """`source_manager` should be a IExternalSourceManager bounded to
         an instance.
         """
@@ -105,29 +105,29 @@ class SourceParametersProducer(object):
         self.endElementNS(NS_SOURCE_URI, 'fields')
 
 
-class SourceAssetProducer(xmlexport.SilvaVersionedContentProducer):
+class SourceAssetProducer(producers.SilvaVersionedContentProducer):
     grok.adapts(ISourceAsset, Interface)
 
     def sax(self):
         self.startElementNS(NS_SOURCE_URI, 'source-asset',
             {'id': self.context.id})
-        self.workflow()
-        self.versions()
+        self.sax_workflow()
+        self.sax_versions()
         self.endElementNS(NS_SOURCE_URI, 'source-asset')
 
 
-class SourceAssetVersionProducer(xmlexport.SilvaBaseProducer,
+class SourceAssetVersionProducer(producers.SilvaProducer,
                                  SourceParametersProducer):
     grok.adapts(ISourceAssetVersion, Interface)
 
     def sax(self):
-        manager = self.context.get_controller(self.getInfo().request)
+        manager = self.context.get_controller(self.getExported().request)
         self.startElementNS(
             NS_SILVA_URI,
             'content',
             {'version_id': self.context.id,
              'source-identifier': manager.getSourceId()})
-        self.metadata()
-        self.source_parameters(manager)
+        self.sax_metadata()
+        self.sax_source_parameters(manager)
         self.endElementNS(NS_SILVA_URI, 'content')
 

@@ -8,14 +8,14 @@ import lxml.sax
 from five import grok
 
 from silva.core import conf as silvaconf
-from silva.core.interfaces import IVersion, ISilvaXMLImportHandler
+from silva.core.interfaces import IVersion, ISilvaXMLHandler
 from silva.core.editor.transform.interfaces import ISilvaXMLImportFilter
 from silva.core.editor.transform.base import TransformationFilter
-from silva.translations import translate as _
+from silva.core.xml import handlers
 from zeam.component import getWrapper
 from zeam.form.silva.interfaces import IXMLFormSerialization
 
-from Products.Silva.silvaxml import xmlimport, NS_SILVA_URI
+from silva.core.xml import NS_SILVA_URI
 
 from . import NS_SOURCE_URI
 from ..interfaces import IExternalSourceManager
@@ -27,7 +27,7 @@ silvaconf.namespace(NS_SOURCE_URI)
 
 
 class ExternalSourceImportFilter(TransformationFilter):
-    grok.adapts(IVersion, ISilvaXMLImportHandler)
+    grok.adapts(IVersion, ISilvaXMLHandler)
     grok.provides(ISilvaXMLImportFilter)
     grok.order(15)
 
@@ -39,23 +39,22 @@ class ExternalSourceImportFilter(TransformationFilter):
         self.sources = getWrapper(self.context, IExternalSourceManager)
 
     def __call__(self, tree):
-        info = self.handler.getInfo()
-        request = info.request
+        importer = self.handler.getExtra()
+        request = importer.request
         for node in tree.xpath(
                 '//html:div[contains(@class, "external-source")]',
                 namespaces={'html': 'http://www.w3.org/1999/xhtml'}):
             name = node.attrib.get('source-identifier')
             if name is None:
-                info.reportError(
-                    _(u"Broken external source in import."),
-                    content=self.context)
+                importer.reportProblem(
+                    u"Broken external source in import.", self.context)
                 continue
             try:
                 source = self.sources(request, name=name)
-            except SourceError:
-                info.reportError(
-                    _(u"Unknown external source ${name} in import",
-                        mapping=dict(name=name)), content=self.context)
+            except SourceError as error:
+                importer.reportProblem(
+                    u"Broken source in import: {0}".format(error),
+                    self.context)
                 continue
             identifier = source.new()
 
@@ -82,7 +81,7 @@ class ExternalSourceImportFilter(TransformationFilter):
             node.attrib['data-source-instance'] = identifier
 
 
-class SourceParameterHandler(xmlimport.SilvaBaseHandler):
+class SourceParameterHandler(handlers.SilvaHandler):
     """ Handle source parameter.
 
     Only to be used by a SourceParametersHandler
@@ -114,7 +113,7 @@ class SourceParameterHandler(xmlimport.SilvaBaseHandler):
             self.proxy.endElementNS(name, qname)
 
 
-class SourceParametersHandler(xmlimport.SilvaBaseHandler):
+class SourceParametersHandler(handlers.SilvaHandler):
     """Handler for importing source parameters.
 
     The parent handler must define a `source` property
@@ -122,7 +121,6 @@ class SourceParametersHandler(xmlimport.SilvaBaseHandler):
 
     see SourceAssetVersionHandler for example usage.
     """
-
     deserializers = None
 
     def getOverrides(self):
@@ -139,8 +137,7 @@ class SourceParametersHandler(xmlimport.SilvaBaseHandler):
             del self.deserializers
 
 
-class SourceAssetVersionHandler(xmlimport.SilvaBaseHandler):
-
+class SourceAssetVersionHandler(handlers.SilvaVersionHandler):
     source = None
 
     def getOverrides(self):
@@ -154,21 +151,21 @@ class SourceAssetVersionHandler(xmlimport.SilvaBaseHandler):
             self.setResultId(uid)
             source_identifier = attrs[(None, 'source-identifier')]
             factory = getWrapper(self.result(), IExternalSourceManager)
-            self.source = factory(self.getInfo().request,
-                                          name=source_identifier)
+            self.source = factory(self.getExtra().request,
+                                  name=source_identifier)
             identifier = self.source.new()
             self.result().set_parameters_identifier(identifier)
             self.setResultId(uid)
 
     def endElementNS(self, name, qname):
         if (NS_SILVA_URI, 'content') == name:
-            xmlimport.updateVersionCount(self)
+            self.updateVersionCount()
             self.storeMetadata()
             self.storeWorkflow()
             self.source_manager = None
 
 
-class SourceAssetHandler(xmlimport.SilvaBaseHandler):
+class SourceAssetHandler(handlers.SilvaHandler):
     silvaconf.name('source-asset')
 
     def getOverrides(self):
@@ -176,10 +173,10 @@ class SourceAssetHandler(xmlimport.SilvaBaseHandler):
 
     def startElementNS(self, name, qname, attrs):
         if name == (NS_SOURCE_URI, 'source-asset'):
-            uid = self.generateOrReplaceId(attrs[(None, 'id')].encode('utf-8'))
+            identifier = self.generateIdentifier(attrs)
             factory = self.parent().manage_addProduct['SilvaExternalSources']
-            factory.manage_addSourceAsset(uid, '', no_default_version=True)
-            self.setResultId(uid)
+            factory.manage_addSourceAsset(identifier, '', no_default_version=True)
+            self.setResultId(identifier)
 
     def endElementNS(self, name, qname):
         if name == (NS_SOURCE_URI, 'source-asset'):

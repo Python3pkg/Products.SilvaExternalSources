@@ -11,7 +11,6 @@ from zeam.component import getWrapper
 from Products.Silva.tests.test_xml_import import SilvaXMLTestCase
 
 from silva.app.document.interfaces import IDocument
-from silva.core.interfaces.events import IContentImported
 from silva.core.references.reference import ReferenceSet
 
 from ..interfaces import IExternalSourceManager
@@ -26,14 +25,13 @@ class CodeSourceDocumentImportTestCase(SilvaXMLTestCase):
         self.root = self.layer.get_application()
         self.layer.login('editor')
 
-    def test_document(self):
+    def test_document_with_source(self):
         """Import a document that uses a source.
         """
-        self.import_file(
-            'test_import_source.silvaxml', globs=globals())
-        self.assertEventsAre(
-            ['ContentImported for /root/example'],
-            IContentImported)
+        importer = self.assertImportFile(
+            'test_import_source.silvaxml',
+            ['/root/example'])
+        self.assertEqual(importer.getProblems(), [])
 
         document = self.root.example
         self.assertTrue(verifyObject(IDocument, document))
@@ -51,17 +49,15 @@ class CodeSourceDocumentImportTestCase(SilvaXMLTestCase):
         self.assertEqual(parameters.author, u'ouam')
         self.assertEqual(parameters.source, u'wikipedia')
 
-    def test_document_missing_source(self):
+    def test_document_with_missing_source(self):
         """Import a document that uses a source that is missing on the
         system.
 
         The document is imported, but not the source.
         """
-        self.import_file(
-            'test_import_source_missing.silvaxml', globs=globals())
-        self.assertEventsAre(
-            ['ContentImported for /root/example'],
-            IContentImported)
+        importer = self.assertImportFile(
+            'test_import_source_missing.silvaxml',
+            ['/root/example'])
 
         document = self.root.example
         self.assertTrue(verifyObject(IDocument, document))
@@ -71,6 +67,9 @@ class CodeSourceDocumentImportTestCase(SilvaXMLTestCase):
         version = document.get_editable()
         sources = getWrapper(version, IExternalSourceManager)
         self.assertEqual(len(sources.all()), 0)
+        self.assertEqual(
+            importer.getProblems(),
+            [(u'Broken source in import: External Source cs_ultimate is not available.', version)])
 
 
 class SourceAssetImportTestCase(SilvaXMLTestCase):
@@ -80,8 +79,12 @@ class SourceAssetImportTestCase(SilvaXMLTestCase):
         self.root = self.layer.get_application()
         self.layer.login('editor')
 
-    def test_import_source_asset(self):
-        self.import_file('test_import_source_asset.silvaxml', globals())
+    def test_source_asset(self):
+        importer = self.assertImportFile(
+            'test_import_source_asset.silvaxml',
+            ['/root/folder',
+             '/root/folder/asset'])
+        self.assertEqual(importer.getProblems(), [])
 
         asset = self.root.folder.asset
         self.assertTrue(verifyObject(ISourceAsset, asset))
@@ -92,6 +95,25 @@ class SourceAssetImportTestCase(SilvaXMLTestCase):
         params, _ = source.manager.get_parameters(version._parameter_identifier)
         self.assertIn(self.root.folder, ReferenceSet(version, params.paths))
         self.assertEquals(set(['Silva Folder']), set(params.toc_types))
+
+    def test_source_asset_invalid_parameters(self):
+        importer = self.assertImportFile(
+            'test_import_source_asset_invalid_parameters.silvaxml',
+            ['/root/folder',
+             '/root/folder/asset'])
+
+        asset = self.root.folder.asset
+        self.assertTrue(verifyObject(ISourceAsset, asset))
+        version = asset.get_editable()
+        self.assertTrue(verifyObject(ISourceAssetVersion, version))
+        source = version.get_controller(TestRequest())
+        self.assertEquals('cs_toc', source.getSourceId())
+        params, _ = source.manager.get_parameters(version._parameter_identifier)
+        self.assertEqual(set(['Silva Folder']), set(params.toc_types))
+        self.assertEqual(
+            importer.getProblems(),
+            [("Error in field 'paths': Broken reference.", version),
+             ("Error in field 'paths': Could not resolve imported path non/existant.", version)])
 
 
 def test_suite():

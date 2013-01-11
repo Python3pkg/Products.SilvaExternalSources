@@ -6,7 +6,6 @@ import unittest
 
 from zope.interface.verify import verifyObject
 from Products.Silva.testing import TestRequest, tests
-from Products.Silva.tests.helpers import open_test_file
 
 from ..interfaces import ICSVSource, IExternalSource
 from ..testing import FunctionalLayer
@@ -37,7 +36,7 @@ class CSVSourceTestCase(unittest.TestCase):
         self.assertEqual(source.get_filename(), 'csv_data.csv')
         self.assertEqual(source.get_mime_type(), 'text/csv')
 
-        with open_test_file('informations.csv', globals()) as data:
+        with self.layer.open_fixture('informations.csv') as data:
             with tests.assertTriggersEvents('ObjectModifiedEvent'):
                 source.set_file(data)
 
@@ -50,7 +49,7 @@ class CSVSourceTestCase(unittest.TestCase):
         """
         source = self.root._getOb('csv_data', None)
         version = self.root.example.get_editable()
-        with open_test_file('informations.csv', globals()) as data:
+        with self.layer.open_fixture('informations.csv') as data:
             source.set_file(data)
 
         rendered = source.to_html(version, TestRequest())

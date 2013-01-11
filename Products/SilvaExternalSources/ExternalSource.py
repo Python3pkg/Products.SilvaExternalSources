@@ -243,6 +243,7 @@ class ExternalSourceManager(object):
         if source is not None and IExternalSource.providedBy(source):
             return parameters, source
         if parameters is not None:
+            # XXX Return a stub here not to loose source name.
             return parameters, None
         raise error.SourceMissingError(name)
 

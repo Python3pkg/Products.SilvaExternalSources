@@ -1,4 +1,4 @@
-<tal:def define="
+<tal:def tal:define="
   capsuleid    python:options['capsule_id'] != '' and options['capsule_id'] or nothing;
   capsuleclass python:options['capsule_class'] != '' and options['capsule_class'] or nothing;
   capsulestyle python:options['capsule_style'] != '' and options['capsule_style'] or nothing;
@@ -7,12 +7,12 @@
 ">
   <!-- Start portlet element -->
   <div tal:attributes="
-    class capsuleclass;
     id capsuleid;
+    class capsuleclass;
     style capsulestyle;">
     <h2 tal:condition="capsuletitle"
       tal:content="structure capsuletitle">
-        title....
+      title....
     </h2>
     <tal:ins tal:content="structure document/@@content.html">
       document

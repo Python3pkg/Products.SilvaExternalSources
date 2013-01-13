@@ -1,21 +1,22 @@
-<tal:def define="capsulestyle options/capsule_style | nothing;
-                 capsuleid python: options['capsule_id'] or '';
-                 capsuleclass python: options['capsule_class'] or '';
-                 capsuletitle options/capsule_title | nothing;
-                 document options/document | nothing;
-                 ">
+<tal:def define="
+  capsulestyle options/capsule_style | nothing;
+  capsuleid python: options['capsule_id'] or '';
+  capsuleclass python: options['capsule_class'] or '';
+  capsuletitle options/capsule_title | nothing;
+  document options/document | nothing;
+">
   <!-- Start portlet element -->
   <div tal:attributes="class capsuleclass;
-                       id capsuleid;
-                       style capsulestyle;">
+    id capsuleid;
+    style capsulestyle;">
     <h2 class="heading"
-        tal:condition="capsuletitle"
-        tal:content="structure capsuletitle">
-      title....
+      tal:condition="capsuletitle"
+      tal:content="structure capsuletitle">
+        title....
     </h2>
     <div class="portlet"
-         tal:content="structure document/@@content.html">
-      document
+      tal:content="structure document/@@content.html">
+        document
     </div>
   </div>
   <!-- End portlet element -->

@@ -1,7 +1,7 @@
 <tal:def define="
-  capsulestyle python:options['capsule_style'] != '' and options['capsule_style'] or nothing;
   capsuleid    python:options['capsule_id'] != '' and options['capsule_id'] or nothing;
   capsuleclass python:options['capsule_class'] != '' and options['capsule_class'] or nothing;
+  capsulestyle python:options['capsule_style'] != '' and options['capsule_style'] or nothing;
   capsuletitle options/capsule_title | nothing;
   document     options/document | nothing;
 ">

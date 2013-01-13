@@ -6,11 +6,11 @@
   document     options/document | nothing;
 ">
   <!-- Start portlet element -->
-  <div tal:attributes="class capsuleclass;
+  <div tal:attributes="
+    class capsuleclass;
     id capsuleid;
     style capsulestyle;">
-    <h2 class="heading"
-      tal:condition="capsuletitle"
+    <h2 tal:condition="capsuletitle"
       tal:content="structure capsuletitle">
         title....
     </h2>

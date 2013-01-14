@@ -114,5 +114,8 @@
    </silva-app-document:document>
   </content>
  </folder>
+ <problem path="example/0">
+  Broken source in document: source is gone in the export.
+ </problem>
 </silva>
 

@@ -87,6 +87,9 @@ class CodeSourceDocumentExportTestCase(SilvaXMLTestCase):
 
 
 class SourceAssertExportTestCase(SilvaXMLTestCase):
+    """Test source asset XML export. We will use the TOC code source
+    for the test.
+    """
 
     layer = FunctionalLayer
 
@@ -96,14 +99,20 @@ class SourceAssertExportTestCase(SilvaXMLTestCase):
 
         factory = self.root.manage_addProduct['Silva']
         factory.manage_addFolder('folder', 'Folder')
+        factory.manage_addFolder('other', 'Other Folder')
         factory = self.root.folder.manage_addProduct['SilvaExternalSources']
         factory.manage_addSourceAsset('asset', 'A source asset')
 
-        version = self.root.folder._getOb('asset').get_editable()
+    def save_asset(self, target=None):
+        # Helper to save the parameters in the test source asset.
+        version = self.root.folder.asset.get_editable()
 
-        folder_id = getUtility(IIntIds).register(self.root.folder)
+        if target is not None:
+            target = getUtility(IIntIds).register(target)
+        else:
+            target = '0'
         request = TestRequest(
-            form={'field_paths': str(folder_id),
+            form={'field_paths': str(target),
                   'field_toc_types': "Silva Folder",
                   'field_depth': "0",
                   'field_sort_on': "silva",
@@ -112,15 +121,48 @@ class SourceAssertExportTestCase(SilvaXMLTestCase):
         source = factory(request, name='cs_toc')
         marker = source.create()
         version.set_parameters_identifier(source.getId())
-        assert silvaforms.SUCCESS == marker
+        self.assertIs(marker, silvaforms.SUCCESS)
+        return version
 
     def test_export_source_asset(self):
+        self.save_asset(self.root.folder)
+
         exporter = self.assertExportEqual(
             self.root.folder,
             'test_export_source_asset.silvaxml')
         self.assertEqual(exporter.getZexpPaths(), [])
         self.assertEqual(exporter.getAssetPaths(), [])
         self.assertEqual(exporter.getProblems(), [])
+
+    def test_export_source_asset_external_reference(self):
+        """The code source has a parameters that will trigger an
+        external reference error.
+        """
+        self.save_asset(self.root.other)
+
+        self.assertExportFail(self.root.folder)
+
+    def test_export_source_asset_external_reference_force(self):
+        """The code source has a parameters that have a reference
+        outside of the export, but the option external_references is
+        set.
+        """
+        version = self.save_asset(self.root.other)
+
+        exporter = self.assertExportEqual(
+            self.root.folder,
+            'test_export_source_asset_external.silvaxml',
+            options={'external_references': True})
+        self.assertEqual(
+            exporter.getZexpPaths(),
+            [])
+        self.assertEqual(
+            exporter.getAssetPaths(),
+            [])
+        self.assertEqual(
+            exporter.getProblems(),
+            [(u'A reference Formulator field refers to an content outside of the export (../other).',
+              version)])
 
 
 def test_suite():

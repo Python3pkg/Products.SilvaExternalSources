@@ -112,8 +112,8 @@ class SourceAssetImportTestCase(SilvaXMLTestCase):
         self.assertEqual(set(['Silva Folder']), set(params.toc_types))
         self.assertEqual(
             importer.getProblems(),
-            [("Error in field 'paths': Broken reference.", version),
-             ("Error in field 'paths': Could not resolve imported path non/existant.", version)])
+            [("Error in field 'paths': Could not resolve imported path non/existant.", version),
+             ("Error in field 'paths': Broken reference.", version)])
 
 
 def test_suite():

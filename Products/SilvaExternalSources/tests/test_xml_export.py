@@ -161,7 +161,7 @@ class SourceAssertExportTestCase(SilvaXMLTestCase):
             [])
         self.assertEqual(
             exporter.getProblems(),
-            [(u'A reference Formulator field refers to an content outside of the export (../other).',
+            [(u"A reference field 'paths' refers to an content outside of the export (../other).",
               version)])
 
 

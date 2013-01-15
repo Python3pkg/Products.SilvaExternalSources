@@ -91,6 +91,6 @@
     </content>
   </folder>
   <problem path="folder/asset/0">
-    A reference Formulator field refers to an content outside of the export (../other).
+    A reference field 'paths' refers to an content outside of the export (../other).
   </problem>
 </silva>

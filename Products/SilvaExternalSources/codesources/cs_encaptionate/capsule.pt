@@ -13,13 +13,13 @@
   creditlink   options/credit_link | nothing;
   credittext   options/credit_text | nothing;
 ">
-  <!-- encaptionator -->
+  <!-- Start encaptionator code source (cs_encaptionator) -->
   <div tal:attributes="
     class string:encaptionator${capsuleclass};
     style string:width:${imagewidth}px;">
     <h5 class="heading"
-        tal:condition="capsuletitle"
-        tal:content="structure capsuletitle">
+      tal:condition="capsuletitle"
+      tal:content="structure capsuletitle">
       Title....
     </h5>
     <a class="image"
@@ -29,8 +29,7 @@
          title options/link_tooltip | nothing;">
       <img tal:replace="structure image/tag" />
     </a>
-    <p class="p"
-       tal:condition="captiontext"
+    <p tal:condition="captiontext"
        tal:content="structure captiontext">
       Caption text....
     </p>
@@ -50,5 +49,5 @@
       </a>
     </p>
   </div>
-  <!-- /encaptionator -->
+  <!-- End encaptionator -->
 </tal:def>

@@ -1,40 +1,39 @@
-<tal:def define="capsulestyle options/capsule_style | nothing;
-                 capsuleclass python: capsulestyle and ' ' + capsulestyle or '';
-                 capsuletitle options/capsule_title | nothing;
-                 image        options/image_path;
-                 dimensions   python: image.get_canonical_web_scale();
-                 imagewidth   python: dimensions[0];
-                 imagelink    options/image_link | nothing;
-                 linkurl      options/link_url | nothing;
-                 reference    python: imagelink and (imagelink == 'hires' and image.absolute_url() + '?hires' or linkurl);
-                 captiontext  options/caption_text | nothing;
-                 creditprefix options/credit_prefix | nothing;
-                 creditlink   options/credit_link | nothing;
-                 credittext   options/credit_text | nothing;
-                 ">
+<tal:def define="
+  capsulestyle options/capsule_style | nothing;
+  capsuleclass python: capsulestyle and ' ' + capsulestyle or '';
+  capsuletitle options/capsule_title | nothing;
+  image        options/image_path;
+  dimensions   python: image.get_canonical_web_scale();
+  imagewidth   python: dimensions[0];
+  imagelink    options/image_link | nothing;
+  linkurl      options/link_url | nothing;
+  reference    python: imagelink and (imagelink == 'hires' and image.absolute_url() + '?hires' or linkurl);
+  captiontext  options/caption_text | nothing;
+  creditprefix options/credit_prefix | nothing;
+  creditlink   options/credit_link | nothing;
+  credittext   options/credit_text | nothing;
+">
   <!-- encaptionator -->
-  <div tal:attributes="class string:encaptionator${capsuleclass};
-                       style string:width:${imagewidth}px;">
-
+  <div tal:attributes="
+    class string:encaptionator${capsuleclass};
+    style string:width:${imagewidth}px;">
     <h5 class="heading"
         tal:condition="capsuletitle"
         tal:content="structure capsuletitle">
       Title....
     </h5>
-
     <a class="image"
        tal:omit-tag="not:reference"
-       tal:attributes="href reference;
-                       title options/link_tooltip | nothing;">
+       tal:attributes="
+         href reference;
+         title options/link_tooltip | nothing;">
       <img tal:replace="structure image/tag" />
     </a>
-
     <p class="p"
        tal:condition="captiontext"
        tal:content="structure captiontext">
       Caption text....
     </p>
-
     <p class="credit"
        tal:condition="python: creditprefix or credittext">
       <span tal:replace="structure creditprefix">
@@ -42,15 +41,14 @@
       </span>
       <a tal:omit-tag="not:creditlink"
          tal:attributes="
-                         href creditlink;
-                         title options/creditlink_tooltip | nothing;
-                         ">
+           href creditlink;
+           title options/creditlink_tooltip | nothing;
+        ">
         <span tal:replace="structure credittext">
           Credit text....
         </span>
       </a>
     </p>
-
   </div>
   <!-- /encaptionator -->
 </tal:def>

@@ -20,7 +20,7 @@ from zeam.form import silva as silvaforms
 
 from ..interfaces import IExternalSourceManager
 from ..interfaces import ISourceEditableVersion
-from ..errors import SourceError
+from ..errors import SourceError, ParametersMissingError
 from ..editor.utils import parse_qs
 
 logger = logging.getLogger('silva.externalsources')
@@ -107,9 +107,10 @@ class ExternalSourceInputFilter(TransformationFilter):
 
     def __call__(self, tree):
         for node in tree.xpath(SOURCE_XPATH):
-            instance = node.attrib['data-source-instance']
-            del node.attrib['data-source-instance']
-            node.attrib['data-silva-instance'] = instance
+            instance = node.attrib.get('data-source-instance')
+            if instance is not None:
+                del node.attrib['data-source-instance']
+            node.attrib['data-silva-instance'] = instance or ''
 
 
 class ExternalSourceDisplayFilter(TransformationFilter):
@@ -126,16 +127,20 @@ class ExternalSourceDisplayFilter(TransformationFilter):
 
     def __call__(self, tree):
         for node in tree.xpath(SOURCE_XPATH):
-            instance = node.attrib['data-source-instance']
-            del node.attrib['data-source-instance']
+            instance = node.attrib.get('data-source-instance')
+            if instance is not None:
+                del node.attrib['data-source-instance']
             try:
+                if instance is None:
+                    raise ParametersMissingError()
                 source = self.sources(self.request, instance=instance)
                 html = source.render()
             except SourceError, error:
                 html = silvaviews.render(error, self.request).strip()
                 if not html:
                     continue
-                # There is already a class, as it is used to match in the Xpath
+                # There is already a class, as it is used to match
+                # in the XPath.
                 node.attrib['class'] += ' broken-source'
 
             result = lxml.html.fragment_fromstring(html, create_parent="div")

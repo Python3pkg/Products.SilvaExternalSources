@@ -338,7 +338,7 @@ class ExternalSourceController(silvaforms.FormData):
     def save(self):
         assert self.getContent() is not None, u'Cannot save to missing source'
         if self.source is None:
-            raise error.SourceMissingError('unknown')
+            raise error.SourceMissingError('unknow')
         data, errors = self.extractData()
         if errors:
             return silvaforms.FAILURE
@@ -377,7 +377,7 @@ class ExternalSourceController(silvaforms.FormData):
         permissions.AccessContentsInformation, 'render')
     def render(self, view=False, preview=False):
         if self.source is None:
-            raise error.SourceMissingError('unknown')
+            raise error.SourceMissingError('unknow')
         if preview and not self.source.is_previewable():
             raise error.SourcePreviewError(self)
         values = {}

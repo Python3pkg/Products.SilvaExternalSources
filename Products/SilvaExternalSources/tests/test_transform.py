@@ -45,6 +45,46 @@ class CreateSourceTransformerTestCase(SourceTransformerTestCase):
         transformer = factory('body', version.body, text, filter)
         return unicode(transformer)
 
+    def test_display_broken_xml_source_public(self):
+        """Test a source that have an invalid or missing
+        data-source-instance.
+        """
+        version = self.root.document.get_editable()
+        factory = getMultiAdapter(
+            (version, TestRequest()), ITransformerFactory)
+        transformer = factory(
+            'body', version.body, '<div class="external-source"></div>',
+            IDisplayFilter)
+
+        tests.assertXMLEqual(
+            unicode(transformer),
+            """
+<div class="external-source">
+</div>
+""")
+
+    def test_display_broken_xml_source_preview(self):
+        """Test a source that have an invalid or missing
+        data-source-instance.
+        """
+        version = self.root.document.get_editable()
+        factory = getMultiAdapter(
+            (version, TestRequest(layers=[IPreviewLayer])),
+            ITransformerFactory)
+        transformer = factory(
+            'body', version.body, '<div class="external-source"></div>',
+            IDisplayFilter)
+
+        tests.assertXMLEqual(
+            unicode(transformer),
+            """
+<div class="external-source broken-source">
+ <p>
+   External Source parameters are missing.
+ </p>
+</div>
+""")
+
     def test_create_source(self):
         """Create a source using the transformer.
         """
@@ -160,7 +200,7 @@ class EditSourceTransformerTestCase(SourceTransformerTestCase):
 """
 <div class="external-source broken-source">
  <p>
-   External Source unknown is not available.
+   External Source unknow is not available.
  </p>
 </div>
 """)

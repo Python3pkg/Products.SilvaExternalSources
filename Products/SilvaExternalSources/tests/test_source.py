@@ -238,7 +238,7 @@ return "Render layer"
             error.exception, TestRequest(), preview=True)
         self.assertEqual(
             message.strip(),
-            '<p>External Source unknown is not available.</p>')
+            '<p>External Source unknow is not available.</p>')
 
         # The source is no longer available
         self.assertItemsEqual(

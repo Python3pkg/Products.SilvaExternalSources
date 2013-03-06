@@ -1,10 +1,14 @@
 ChangeLog
 =========
 
-3.0 (unreleased)
+3.0 (2013/03/06)
 ----------------
 
-- ...
+- Update Silva XML import and export API.
+
+- Update cs_encaptionate and portlet_element code sources.
+
+- Improve import of inexisting code sources.
 
 3.0c1 (2012/09/25)
 ------------------

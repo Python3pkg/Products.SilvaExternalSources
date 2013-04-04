@@ -14,11 +14,11 @@ module_security = ModuleSecurityInfo(
 
 module_security.declarePublic('get_publishable_content_types')
 def get_publishable_content_types(context):
-    container = context.get_container()
+    container = context.get_root()
     return IAddableContents(container).get_all_addables(require=IPublishable)
 
 
 module_security.declarePublic('get_container_content_types')
 def get_container_content_types(context):
-    container = context.get_container()
+    container = context.get_root()
     return IAddableContents(container).get_all_addables()

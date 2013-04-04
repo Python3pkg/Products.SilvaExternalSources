@@ -8,7 +8,8 @@ import urlparse
 
 from AccessControl import ModuleSecurityInfo
 
-module_security = ModuleSecurityInfo('Products.SilvaExternalSources.codesources.youtube')
+module_security = ModuleSecurityInfo(
+    'Products.SilvaExternalSources.codesources.youtube')
 
 
 # correct urls have a path which start with '/v/' and youtube netloc

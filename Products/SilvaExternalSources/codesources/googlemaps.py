@@ -4,10 +4,16 @@
 
 import lxml.html
 import re
-# from urlparse import urlparse
+
 from AccessControl import ModuleSecurityInfo
 
-module_security = ModuleSecurityInfo('Products.SilvaExternalSources.codesources.googlemaps')
+module_security = ModuleSecurityInfo(
+    'Products.SilvaExternalSources.codesources.googlemaps')
+
+# Google lists http://www.google.com/supported_domains but it does
+# change regularly
+_url_pattern = re.compile(
+    r'^(https?://)?(www\.|maps\.)?google\.[a-z]{2,3}(\.[a-z]{2})?/(maps)?.*$')
 
 
 # Validate that iFrame code pasted into the codesource has a valid googlemaps
@@ -86,7 +92,7 @@ def validate_googlemaps_iframe(iframe, REQUEST=None):
     tree = lxml.html.fragment_fromstring(iframe, create_parent=True)
     URLs = []
     elements = tree.findall('.//*')
-    
+
     for element in elements:
         if element.tag == 'iframe':
             if (len(element.getchildren()) != 0 or
@@ -100,24 +106,11 @@ def validate_googlemaps_iframe(iframe, REQUEST=None):
                 return False
             if key == 'src' or key == 'href':
                URLs.append(element.get(key))
- 
-        
+
+
     # still cannot check against google.fa.ke/eviladdress
-    # Google lists http://www.google.com/supported_domains but it does change regularly
-    _url_pattern = re.compile(r'^(https?://)?(www\.|maps\.)?google\.[a-z]{2,3}(\.[a-z]{2})?/(maps)?.*$')
     for value in URLs:
         if not _url_pattern.search(value):
-          return False 
-#        parsed = urlparse(value)
-#
-#        if parsed.scheme == '':
-#          if not (parsed.path.endswith('google.com/maps') or 
-#                  parsed.path.startswith('maps.google.')):
-#              return False
-#        elif parsed.scheme == 'http' or parsed.scheme == 'https':
-#          # this will not catch google.com/someRandomThing 
-#          # nor just google.com/
-#          if not parsed.netloc.endswith('google.com'):
-#              return False  
-                    
+          return False
+
     return True

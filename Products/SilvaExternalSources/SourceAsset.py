@@ -9,6 +9,7 @@ from zope import schema
 from zope.event import notify
 from zope.interface import Interface
 from zope.lifecycleevent import ObjectModifiedEvent
+from zope.i18n import translate
 
 from AccessControl import ClassSecurityInfo
 from App.class_init import InitializeClass
@@ -46,8 +47,8 @@ class SourceAssetVersion(Version):
 
     security.declarePrivate('get_controller')
     def get_controller(self, request):
-        factory = getWrapper(self, IExternalSourceManager)
-        return factory(request, instance=self._parameter_identifier)
+        manager = getWrapper(self, IExternalSourceManager)
+        return manager(request, instance=self._parameter_identifier)
 
     security.declarePrivate('get_source')
     def get_source(self):
@@ -75,52 +76,61 @@ class SourceAsset(VersionedNonPublishable):
         return None
 
     security.declarePrivate('get_source')
-    def get_source(self):
-        return self.get_viewable().get_source()
+    def get_viewable_source(self):
+        viewable = self.get_viewable()
+        if viewable is not None:
+            try:
+                return viewable.get_source()
+            except SourceError:
+                pass
+        return None
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'to_html')
     def to_html(self, content, request, **parameters):
-        return self.get_viewable().get_controller(request).render()
+        viewable = self.get_viewable()
+        if viewable is not None:
+            return viewable.get_controller(request).render()
+        # Should we put an error message instead ?
+        return u''
 
     def get_description(self):
-        try:
-            source = self.get_source()
+        source = self.get_viewable_source()
+        if source is not None:
             return source.get_description()
-        except SourceError:
-            return _('Broken or missing source.')
+        return _('Broken or missing source.')
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'get_icon')
     def get_icon(self):
-        try:
-            source = self.get_source()
+        source = self.get_viewable_source()
+        if source is not None:
             return source.get_icon()
-        except SourceError:
-            return None
+        return None
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'is_usable')
     def is_usable(self):
-        return True
+        source = self.get_viewable_source()
+        if source is not None:
+            return True
+        return False
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'is_previewable')
     def is_previewable(self, **parameters):
-        try:
-            source = self.get_source()
+        source = self.get_viewable_source()
+        if source is not None:
             return source.is_previewable()
-        except SourceError:
-            return False
+        return False
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'is_cacheable')
     def is_cacheable(self, **parameters):
-        try:
-            source = self.get_source()
+        source = self.get_viewable_source()
+        if source is not None:
             return source.is_cacheable()
-        except SourceError:
-            return False
+        return False
 
 
 InitializeClass(SourceAsset)
@@ -269,15 +279,22 @@ class SourceAssetEditFormLookup(silvaforms.DefaultFormLookup):
 class SourceAssetView(silvaviews.View):
     grok.context(ISourceAsset)
 
+    text = None
+    controller = None
+
     def update(self):
-        self.msg = None
-        self.controller = None
         try:
             self.controller = self.content.get_controller(self.request)
         except SourceError, error:
-            self.msg = silvaviews.render(error, self.request)
+            self.text = silvaviews.render(error, self.request)
 
     def render(self):
-        if self.msg:
-            return self.msg
+        # If a text is set, return it or render the source.
+        if self.text is not None:
+            if self.text:
+                return self.text
+            # This is the default text used by the layout.
+            text = _('Sorry, this ${meta_type} is not viewable.',
+                     mapping={'meta_type': self.context.meta_type})
+            return '<p>%s</p>' % translate(text, context=self.request)
         return self.controller.render()

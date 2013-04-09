@@ -297,4 +297,6 @@ def test_suite():
     suite.addTest(unittest.makeSuite(CodeSourceTestCase))
     suite.addTest(doctest.DocTestSuite(
             'Products.SilvaExternalSources.codesources.youtube'))
+    suite.addTest(doctest.DocTestSuite(
+            'Products.SilvaExternalSources.codesources.googlemaps'))
     return suite

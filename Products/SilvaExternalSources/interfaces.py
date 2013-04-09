@@ -152,7 +152,8 @@ class ISourceAssetVersion(IVersion):
         """
 
     def get_source():
-        """Return the original source object associated to this asset.
+        """Return the original source object associated to this asset,
+        or raise a SourceError exception.
         """
 
 
@@ -160,9 +161,10 @@ class ISourceAsset(IVersionedNonPublishable, IExternalSource):
     """Source asset store a external source and parameters to render it
     """
 
-    def get_source():
-        """Return the original source object associated to the current
-        viewable version of this asset.
+    def get_viewable_source():
+        """Return the original source object associated with the
+        published version of the asset, or None if it is available or
+        broken.
         """
 
 

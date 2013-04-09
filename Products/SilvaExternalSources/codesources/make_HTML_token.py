@@ -5,11 +5,12 @@
 from random import choice
 from AccessControl import ModuleSecurityInfo
 
-module_security = ModuleSecurityInfo('Products.SilvaExternalSources.codesources.make_HTML_token')
+module_security = ModuleSecurityInfo(
+    'Products.SilvaExternalSources.codesources.make_HTML_token')
 
-chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz-0123456789' 
+chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz-0123456789'
 length = 12
 
 module_security.declarePublic('make_token')
 def make_token():
-  return ''.join(choice(chars) for x in xrange(length))
+    return ''.join(choice(chars) for x in xrange(length))

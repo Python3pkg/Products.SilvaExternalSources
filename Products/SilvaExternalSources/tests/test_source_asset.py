@@ -42,9 +42,8 @@ class SourceAssetTestCase(unittest.TestCase):
         # usefull message.
         with self.layer.get_browser(public_settings) as browser:
             browser.login('editor')
-            self.assertEqual(
-                browser.open('/root/++preview++/asset'),
-                200)
+            self.assertEqual(browser.open('/root/++preview++/asset'), 200)
+            self.assertEqual(browser.inspect.title, [])
             self.assertEqual(
                 browser.inspect.content,
                 ['External Source unknow is not available.'])
@@ -58,9 +57,8 @@ class SourceAssetTestCase(unittest.TestCase):
         self.assertEqual(asset.is_previewable(), False)
         self.assertEqual(asset.is_cacheable(), False)
         with self.layer.get_browser(public_settings) as browser:
-            self.assertEqual(
-                browser.open('/root/asset'),
-                200)
+            self.assertEqual(browser.open('/root/asset'), 200)
+            self.assertEqual(browser.inspect.title, [])
             self.assertEqual(
                 browser.inspect.content,
                 ['Sorry, this Silva Source Asset is not viewable.'])
@@ -71,11 +69,9 @@ class SourceAssetTestCase(unittest.TestCase):
         factory = self.root.manage_addProduct['SilvaExternalSources']
         factory.manage_addSourceAsset('asset', 'Test Asset')
         asset = self.root._getOb('asset', None)
-        self.assertTrue(verifyObject(ISourceAsset, asset))
         version = asset.get_editable()
-        self.assertTrue(verifyObject(ISourceAssetVersion, version))
 
-        # Create a code source with cs_citation.
+        # Create a source with cs_citation
         sources = getWrapper(version, IExternalSourceManager)
         controller = sources(TestRequest(), name='cs_citation')
         controller.create()
@@ -96,11 +92,12 @@ class SourceAssetTestCase(unittest.TestCase):
             self.assertEqual(browser.inspect.title, [])
             self.assertEqual(browser.inspect.content, ['Silva is a great CMS.'])
 
-        # We publish it.
+        # We publish it
+        original = self.root.cs_citation
         IPublicationWorkflow(asset).publish()
         self.assertEqual(asset.get_parameters_form(), None)
-        self.assertEqual(asset.get_icon(), self.root.cs_citation.get_icon())
-        self.assertEqual(asset.get_description(), self.root.cs_citation.get_description())
+        self.assertEqual(asset.get_icon(), original.get_icon())
+        self.assertEqual(asset.get_description(), original.get_description())
         self.assertEqual(asset.is_usable(), True)
         self.assertEqual(asset.is_previewable(), True)
         self.assertEqual(asset.is_cacheable(), True)
@@ -109,6 +106,58 @@ class SourceAssetTestCase(unittest.TestCase):
             self.assertEqual(browser.open('/root/asset'), 200)
             self.assertEqual(browser.inspect.title, [])
             self.assertEqual(browser.inspect.content, ['Silva is a great CMS.'])
+
+    def test_broken_render_source_asset(self):
+        """Test a source that renders a source with a broken render
+        script.
+        """
+        factory = self.root.manage_addProduct['SilvaExternalSources']
+        factory.manage_addSourceAsset('asset', 'Test Asset')
+        asset = self.root._getOb('asset', None)
+        version = asset.get_editable()
+
+        # Create a test code source
+        factory = self.root.manage_addProduct['SilvaExternalSources']
+        factory.manage_addCodeSource('brokensource', 'Broken Source', 'script')
+        source = self.root._getOb('brokensource', None)
+
+        # Add the rendering script
+        factory = source.manage_addProduct['PythonScripts']
+        factory.manage_addPythonScript('script')
+        script = source._getOb('script')
+        script.write("""
+##parameters=model,version,REQUEST
+I am broken
+return "Render source"
+""")
+
+        # Create a source with the new test source
+        sources = getWrapper(version, IExternalSourceManager)
+        controller = sources(TestRequest(), name='brokensource')
+        controller.create()
+        version.set_parameters_identifier(controller.getId())
+
+        # You can preview it, but it will fail with a nice message
+        with self.layer.get_browser(public_settings) as browser:
+            browser.login('editor')
+            self.assertEqual(browser.open('/root/++preview++/asset'), 200)
+            self.assertEqual(browser.inspect.title, [])
+            self.assertEqual(
+                browser.inspect.content,
+                ['Error while rendering Broken Source\n  '
+                 'A programmation error happened while rendering the source.'])
+
+        IPublicationWorkflow(asset).publish()
+        # We published the asset we still a nice error message instead
+        # of a failure message.
+        with self.layer.get_browser(public_settings) as browser:
+            browser.options.handle_errors = False
+            self.assertEqual(browser.open('/root/asset'), 200)
+            self.assertEqual(browser.inspect.title, [])
+            self.assertEqual(
+                browser.inspect.content,
+                ['Sorry, this Silva Source Asset is not viewable.'])
+
 
 def test_suite():
     suite = unittest.TestSuite()

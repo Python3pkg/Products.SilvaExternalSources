@@ -279,22 +279,27 @@ class SourceAssetEditFormLookup(silvaforms.DefaultFormLookup):
 class SourceAssetView(silvaviews.View):
     grok.context(ISourceAsset)
 
-    text = None
-    controller = None
-
-    def update(self):
-        try:
-            self.controller = self.content.get_controller(self.request)
-        except SourceError, error:
-            self.text = silvaviews.render(error, self.request)
-
     def render(self):
-        # If a text is set, return it or render the source.
-        if self.text is not None:
-            if self.text:
-                return self.text
-            # This is the default text used by the layout.
-            text = _('Sorry, this ${meta_type} is not viewable.',
-                     mapping={'meta_type': self.context.meta_type})
-            return '<p>%s</p>' % translate(text, context=self.request)
-        return self.controller.render()
+        error = None
+        try:
+            # Try to fetch the controller.
+            controller = self.content.get_controller(self.request)
+        except SourceError, error:
+            error = error
+        else:
+            try:
+                # Try to render the source.
+                return controller.render()
+            except SourceError, error:
+                error = error
+        # Render the error if it returns something.
+        message = silvaviews.render(error, self.request).strip()
+        if message:
+            return message
+        # Return the default text used by the layout otherwise (this
+        # happens with the source is published, you don't have any
+        # details).
+        text = _('Sorry, this ${meta_type} is not viewable.',
+                 mapping={'meta_type': self.context.meta_type})
+        return u'<p>%s</p>' % translate(text, context=self.request)
+

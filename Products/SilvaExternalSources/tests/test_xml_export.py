@@ -17,7 +17,7 @@ from ..testing import FunctionalLayer
 from ..interfaces import IExternalSourceManager
 
 
-HTML_CODE_SOURCE = u"""
+HTML_CITATION_CODE_SOURCE = u"""
 <div>
     <h1>Example</h1>
     <p>some paragraph..</p>
@@ -27,9 +27,48 @@ HTML_CODE_SOURCE = u"""
     </div>
 </div>
 """
+HTML_TOC_CODE_SOURCE = u"""
+<div>
+    <h1>Document with TOCs</h1>
+    <p>A first table of content:</p>
+    <div class="external-source default"
+         data-silva-name="cs_toc"
+         data-silva-settings="field_paths={0}&amp;field_toc_types=Silva+Folder&amp;field_depth=0&amp;field_sort_on=silva&amp;field_order=normal">
+    </div>
+    <p>Since we were not sure about it, a second table of content:</p>
+    <div class="external-source default"
+         data-silva-name="cs_toc"
+         data-silva-settings="field_paths={0}&amp;field_toc_types=Silva+Folder&amp;field_depth=0&amp;field_sort_on=silva&amp;field_order=normal">
+    </div>
+</div>
+"""
+
+class TOCCodeSourceDocumentExportTestCase(SilvaXMLTestCase):
+    layer = FunctionalLayer
+
+    def setUp(self):
+        self.root = self.layer.get_application()
+        self.layer.login('author')
+        # You have to install the source as manager
+        factory = self.root.manage_addProduct['Silva']
+        factory.manage_addFolder('folder', 'Folder')
+        factory = self.root.folder.manage_addProduct['silva.app.document']
+        factory.manage_addDocument('example', 'Example')
+        version = self.root.folder.example.get_editable()
+        html = HTML_TOC_CODE_SOURCE.format(
+            getUtility(IIntIds).register(self.root.folder))
+        version.body.save(version, TestRequest(), html)
+
+    def test_export_two_tocs_in_document(self):
+        exporter = self.assertExportEqual(
+            self.root.folder,
+            'test_export_source_two_tocs.silvaxml')
+        self.assertEqual(exporter.getZexpPaths(), [])
+        self.assertEqual(exporter.getAssetPaths(), [])
+        self.assertEqual(exporter.getProblems(), [])
 
 
-class CodeSourceDocumentExportTestCase(SilvaXMLTestCase):
+class CitationCodeSourceDocumentExportTestCase(SilvaXMLTestCase):
     layer = FunctionalLayer
 
     def setUp(self):
@@ -45,9 +84,9 @@ class CodeSourceDocumentExportTestCase(SilvaXMLTestCase):
         factory = self.root.folder.manage_addProduct['silva.app.document']
         factory.manage_addDocument('example', 'Example')
         version = self.root.folder.example.get_editable()
-        version.body.save(version, TestRequest(), HTML_CODE_SOURCE)
+        version.body.save(version, TestRequest(), HTML_CITATION_CODE_SOURCE)
 
-    def test_code_source_and_document(self):
+    def test_export_code_source_and_document(self):
         """Export a document containing a code source.
 
         The code source is exported as a ZEXP.
@@ -65,8 +104,8 @@ class CodeSourceDocumentExportTestCase(SilvaXMLTestCase):
             exporter.getProblems(),
             [])
 
-    def test_code_source_and_document_broken(self):
-        """Export a document containing a broken code source.
+    def test_export_document_with_missing_source(self):
+        """Export a document containing a missing code source.
         """
         # Delete code source to break it.
         self.root.manage_delObjects(['cs_citation'])
@@ -75,7 +114,7 @@ class CodeSourceDocumentExportTestCase(SilvaXMLTestCase):
         # Export
         exporter = self.assertExportEqual(
             self.root.folder,
-            'test_export_source_broken.silvaxml')
+            'test_export_source_missing.silvaxml')
         self.assertEqual(exporter.getZexpPaths(), [])
         self.assertEqual(exporter.getAssetPaths(), [])
 
@@ -168,6 +207,7 @@ class SourceAssertExportTestCase(SilvaXMLTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(CodeSourceDocumentExportTestCase))
+    suite.addTest(unittest.makeSuite(CitationCodeSourceDocumentExportTestCase))
+    suite.addTest(unittest.makeSuite(TOCCodeSourceDocumentExportTestCase))
     suite.addTest(unittest.makeSuite(SourceAssertExportTestCase))
     return suite

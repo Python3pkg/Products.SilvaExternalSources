@@ -1,0 +1,200 @@
+<?xml version='1.0' encoding='utf-8'?>
+<silva xmlns="http://infrae.com/namespace/silva" {namespaces} silva_version="{version}">
+ <folder id="folder">
+  <metadata>
+   <set id="silva-content">
+    <silva-content:maintitle>
+     Folder
+    </silva-content:maintitle>
+    <silva-content:shorttitle>
+    </silva-content:shorttitle>
+   </set>
+   <set id="silva-extra">
+    <silva-extra:comment>
+    </silva-extra:comment>
+    <silva-extra:contactemail>
+    </silva-extra:contactemail>
+    <silva-extra:contactname>
+    </silva-extra:contactname>
+    <silva-extra:content_description>
+    </silva-extra:content_description>
+    <silva-extra:creationtime>
+     YYYY-MM-DDTHH:MM:SS
+    </silva-extra:creationtime>
+    <silva-extra:creator>
+     author
+    </silva-extra:creator>
+    <silva-extra:keywords>
+    </silva-extra:keywords>
+    <silva-extra:language>
+    </silva-extra:language>
+    <silva-extra:lastauthor>
+     author
+    </silva-extra:lastauthor>
+    <silva-extra:modificationtime>
+     YYYY-MM-DDTHH:MM:SS
+    </silva-extra:modificationtime>
+    <silva-extra:subject>
+    </silva-extra:subject>
+   </set>
+   <set xmlns:silvasettings="http://infrae.com/namespace/metadata/silva-settings" id="silva-settings">
+     <silvasettings:hide_from_tocs>
+       do not hide
+     </silvasettings:hide_from_tocs>
+   </set>
+  </metadata>
+  <content>
+   <silva-app-document:document id="example">
+    <workflow>
+     <version id="0">
+      <status>
+       unapproved
+      </status>
+      <publication_datetime>
+      </publication_datetime>
+      <expiration_datetime>
+      </expiration_datetime>
+     </version>
+    </workflow>
+    <content version_id="0">
+     <metadata>
+      <set id="silva-content">
+       <silva-content:maintitle>
+        Document with TOCs
+       </silva-content:maintitle>
+       <silva-content:shorttitle>
+       </silva-content:shorttitle>
+      </set>
+      <set id="silva-extra">
+       <silva-extra:comment>
+       </silva-extra:comment>
+       <silva-extra:contactemail>
+       </silva-extra:contactemail>
+       <silva-extra:contactname>
+       </silva-extra:contactname>
+       <silva-extra:content_description>
+       </silva-extra:content_description>
+       <silva-extra:creationtime>
+        YYYY-MM-DDTHH:MM:SS
+       </silva-extra:creationtime>
+       <silva-extra:creator>
+        author
+       </silva-extra:creator>
+       <silva-extra:keywords>
+       </silva-extra:keywords>
+       <silva-extra:language>
+       </silva-extra:language>
+       <silva-extra:lastauthor>
+        author
+       </silva-extra:lastauthor>
+       <silva-extra:modificationtime>
+        YYYY-MM-DDTHH:MM:SS
+       </silva-extra:modificationtime>
+       <silva-extra:subject>
+       </silva-extra:subject>
+      </set>
+      <set xmlns:silvasettings="http://infrae.com/namespace/metadata/silva-settings" id="silva-settings">
+        <silvasettings:hide_from_tocs>
+          do not hide
+        </silvasettings:hide_from_tocs>
+      </set>
+     </metadata>
+     <silva-app-document:body>
+      <silva-core-editor:text>
+       <html:div>
+        <html:p>
+         A first table of content:
+        </html:p>
+        <html:div class="external-source default" source-identifier="cs_toc">
+         <silva-external-sources:fields>
+          <silva-external-sources:field xmlns:silva-references="http://infrae.com/namespace/silva-references" id="paths">
+           <silva-references:path>
+            folder
+           </silva-references:path>
+          </silva-external-sources:field>
+          <silva-external-sources:field xmlns:formulator="http://infrae.com/namespace/formulator" id="toc_types">
+           <formulator:value>
+            Silva Folder
+           </formulator:value>
+          </silva-external-sources:field>
+          <silva-external-sources:field id="depth">
+           0
+          </silva-external-sources:field>
+          <silva-external-sources:field id="sort_on">
+           silva
+          </silva-external-sources:field>
+          <silva-external-sources:field id="order">
+           normal
+          </silva-external-sources:field>
+          <silva-external-sources:field id="show_icon">
+           False
+          </silva-external-sources:field>
+          <silva-external-sources:field id="show_desc">
+           False
+          </silva-external-sources:field>
+          <silva-external-sources:field id="display_headings">
+           False
+          </silva-external-sources:field>
+          <silva-external-sources:field id="link_headings">
+           False
+          </silva-external-sources:field>
+          <silva-external-sources:field id="capsule_title">
+          </silva-external-sources:field>
+          <silva-external-sources:field id="css_class">
+          </silva-external-sources:field>
+          <silva-external-sources:field id="css_style">
+          </silva-external-sources:field>
+         </silva-external-sources:fields>
+        </html:div>
+        <html:p>
+         Since we were not sure about it, a second table of content:
+        </html:p>
+        <html:div class="external-source default" source-identifier="cs_toc">
+         <silva-external-sources:fields>
+          <silva-external-sources:field xmlns:silva-references="http://infrae.com/namespace/silva-references" id="paths">
+           <silva-references:path>
+            folder
+           </silva-references:path>
+          </silva-external-sources:field>
+          <silva-external-sources:field xmlns:formulator="http://infrae.com/namespace/formulator" id="toc_types">
+           <formulator:value>
+            Silva Folder
+           </formulator:value>
+          </silva-external-sources:field>
+          <silva-external-sources:field id="depth">
+           0
+          </silva-external-sources:field>
+          <silva-external-sources:field id="sort_on">
+           silva
+          </silva-external-sources:field>
+          <silva-external-sources:field id="order">
+           normal
+          </silva-external-sources:field>
+          <silva-external-sources:field id="show_icon">
+           False
+          </silva-external-sources:field>
+          <silva-external-sources:field id="show_desc">
+           False
+          </silva-external-sources:field>
+          <silva-external-sources:field id="display_headings">
+           False
+          </silva-external-sources:field>
+          <silva-external-sources:field id="link_headings">
+           False
+          </silva-external-sources:field>
+          <silva-external-sources:field id="capsule_title">
+          </silva-external-sources:field>
+          <silva-external-sources:field id="css_class">
+          </silva-external-sources:field>
+          <silva-external-sources:field id="css_style">
+         </silva-external-sources:fields>
+        </html:div>
+       </html:div>
+      </silva-core-editor:text>
+     </silva-app-document:body>
+    </content>
+   </silva-app-document:document>
+  </content>
+ </folder>
+</silva>
+

@@ -2,19 +2,18 @@
 # Copyright (c) 2010-2013 Infrae. All rights reserved.
 # See also LICENSE.txt
 
-from xml.sax.handler import ContentHandler
 from lxml import etree
-from lxml.etree import ElementTree, SubElement
-from lxml.etree import ProcessingInstruction
 from lxml.sax import SaxError, _getNsTag
+from xml.sax.handler import ContentHandler
 
 
 class ElementTreeContentHandler(ContentHandler):
-    """Build an lxml ElementTree from SAX events.
+    """Build an lxml ElementTree from SAX-like events. This is a
+    simplified version of lxml.sax.ElementTreeContentHandler that
+    behave in a compatible fashion with Sprout version.
     """
     def __init__(self, makeelement=None, root=None):
         self._root = root
-        self._root_siblings = []
         self._element_stack = []
         if self._root is not None:
             self._element_stack.append(self._root)
@@ -25,11 +24,10 @@ class ElementTreeContentHandler(ContentHandler):
             makeelement = etree.Element
         self._makeelement = makeelement
 
-    def _get_etree(self):
+    @property
+    def etree(self):
         "Contains the generated ElementTree after parsing is finished."
-        return ElementTree(self._root)
-
-    etree = property(_get_etree, doc=_get_etree.__doc__)
+        return etree.ElementTree(self._root)
 
     def setDocumentLocator(self, locator):
         pass
@@ -79,25 +77,16 @@ class ElementTreeContentHandler(ContentHandler):
 
         element_stack = self._element_stack
         if self._root is None:
-            element = self._root = \
-                      self._makeelement(el_name, attrs, self._new_mappings)
-            if self._root_siblings and hasattr(element, 'addprevious'):
-                for sibling in self._root_siblings:
-                    element.addprevious(sibling)
-            del self._root_siblings[:]
+            element = self._root = self._makeelement(
+                el_name, attrs, self._new_mappings)
         else:
-            element = SubElement(element_stack[-1], el_name,
-                                 attrs, self._new_mappings)
+            element = etree.SubElement(
+                element_stack[-1], el_name, attrs, self._new_mappings)
         element_stack.append(element)
-
         self._new_mappings.clear()
 
     def processingInstruction(self, target, data):
-        pi = ProcessingInstruction(target, data)
-        if self._root is None:
-            self._root_siblings.append(pi)
-        else:
-            self._element_stack[-1].append(pi)
+        pass
 
     def endElementNS(self, ns_name, qname):
         element = self._element_stack.pop()

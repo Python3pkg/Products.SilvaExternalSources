@@ -11,7 +11,6 @@ from silva.core.editor.transform.base import TransformationFilter
 from silva.core.editor.transform.interfaces import ISilvaXMLExportFilter
 from silva.core.interfaces import IVersion, ISilvaXMLProducer
 from silva.core.xml import producers, NS_SILVA_URI
-from silva.translations import translate as _
 from zeam.component import getWrapper
 from zeam.form.silva.interfaces import IXMLFormSerialization
 
@@ -52,6 +51,12 @@ class ExternalSourceExportFilter(TransformationFilter):
         for node in tree.xpath(
                 '//html:div[contains(@class, "external-source")]',
                 namespaces={'html': 'http://www.w3.org/1999/xhtml'}):
+            if 'data-source-instance' not in node.attrib:
+                exported.reportProblem(
+                    u'Broken source in document while exporting: '
+                    u'Source parameters are missing.',
+                    self.context)
+                continue
             identifier = node.attrib['data-source-instance']
             del node.attrib['data-source-instance']
 
@@ -59,12 +64,14 @@ class ExternalSourceExportFilter(TransformationFilter):
                 source = self.sources(exported.request, instance=identifier)
             except SourceError as error:
                 exported.reportProblem(
-                    u'Broken source in documen while exporting: {0}'.format(error),
+                    u'Broken source in document while exporting:'
+                    u'{0}'.format(error),
                     self.context)
                 continue
             if source.source is None:
                 exported.reportProblem(
-                    u"Broken source in document: source is gone in the export.",
+                    u'Broken source in document while exporting: '
+                    u'source is no longer installed in the Silva site.',
                     self.context)
                 continue
             node.attrib['source-identifier'] = source.getSourceId()

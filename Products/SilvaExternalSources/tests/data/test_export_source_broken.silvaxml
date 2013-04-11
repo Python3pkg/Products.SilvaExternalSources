@@ -115,7 +115,7 @@
   </content>
  </folder>
  <problem path="folder/example/0">
-  Broken source in document: source is gone in the export.
+  Broken source in document while exporting: source is no longer installed in the Silva site.
  </problem>
 </silva>
 

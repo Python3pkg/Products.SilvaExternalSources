@@ -82,7 +82,8 @@ class CodeSourceDocumentExportTestCase(SilvaXMLTestCase):
         version = self.root.folder.example.get_editable()
         self.assertEqual(
             exporter.getProblems(),
-            [(u'Broken source in document: source is gone in the export.',
+            [(u'Broken source in document while exporting: '
+              u'source is no longer installed in the Silva site.',
               version)])
 
 

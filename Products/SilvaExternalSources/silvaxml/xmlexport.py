@@ -87,6 +87,7 @@ class ExternalSourceExportFilter(TransformationFilter):
                 serializer(producer)
                 producer.endElement('field')
             producer.endElement('fields')
+            producer.endPrefixMapping(None)
 
 
 class SourceParametersProducer(object):

@@ -19,7 +19,7 @@ class ElementTreeContentHandler(ContentHandler):
         if self._root is not None:
             self._element_stack.append(self._root)
         self._default_ns = None
-        self._ns_mapping = { None : [None] }
+        self._ns_mapping = {None: [None]}
         self._new_mappings = {}
         if makeelement is None:
             makeelement = etree.Element
@@ -66,12 +66,7 @@ class ElementTreeContentHandler(ContentHandler):
 
         if attributes:
             attrs = {}
-            try:
-                iter_attributes = attributes.iteritems()
-            except AttributeError:
-                iter_attributes = attributes.items()
-
-            for name_tuple, value in iter_attributes:
+            for name_tuple, value in attributes.iteritems():
                 if isinstance(name_tuple, basestring):
                     attr_name = name_tuple
                 elif name_tuple[0]:

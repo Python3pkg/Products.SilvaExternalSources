@@ -13,6 +13,7 @@ from Products.Silva.tests.test_xml_import import SilvaXMLTestCase
 from silva.app.document.interfaces import IDocument
 from silva.core.references.reference import ReferenceSet
 
+from ..errors import SourceMissingError
 from ..interfaces import IExternalSourceManager
 from ..interfaces import ISourceAsset, ISourceAssetVersion
 from ..testing import FunctionalLayer
@@ -69,7 +70,8 @@ class CodeSourceDocumentImportTestCase(SilvaXMLTestCase):
         self.assertEqual(len(sources.all()), 0)
         self.assertEqual(
             importer.getProblems(),
-            [(u'Broken source in import: External Source cs_ultimate is not available.', version)])
+            [(u'Broken source in import: '
+              u'External Source cs_ultimate is not available.', version)])
 
 
 class SourceAssetImportTestCase(SilvaXMLTestCase):
@@ -90,13 +92,36 @@ class SourceAssetImportTestCase(SilvaXMLTestCase):
         self.assertTrue(verifyObject(ISourceAsset, asset))
         version = asset.get_editable()
         self.assertTrue(verifyObject(ISourceAssetVersion, version))
-        source = version.get_controller(TestRequest())
-        self.assertEquals('cs_toc', source.getSourceId())
-        params, _ = source.manager.get_parameters(version._parameter_identifier)
+        source = version.get_source()
+        self.assertEquals('cs_toc', source.getId())
+        params = version.get_parameters()
         self.assertIn(self.root.folder, ReferenceSet(version, params.paths))
         self.assertEquals(set(['Silva Folder']), set(params.toc_types))
 
+    def test_source_asset_missing_source(self):
+        """Import a source asset content that uses a unexisting
+        source.
+        """
+        importer = self.assertImportFile(
+            'test_import_source_asset_missing.silvaxml',
+            ['/root/folder',
+             '/root/folder/asset'])
+
+        asset = self.root.folder.asset
+        self.assertTrue(verifyObject(ISourceAsset, asset))
+        version = asset.get_editable()
+        self.assertTrue(verifyObject(ISourceAssetVersion, version))
+        with self.assertRaises(SourceMissingError):
+            version.get_source()
+
+        self.assertEqual(
+            importer.getProblems(),
+            [(u'Broken source in import: '
+              u'External Source cs_missing is not available.', version)])
+
     def test_source_asset_invalid_parameters(self):
+        """Import a source asset content with invalid parameters.
+        """
         importer = self.assertImportFile(
             'test_import_source_asset_invalid_parameters.silvaxml',
             ['/root/folder',
@@ -106,14 +131,34 @@ class SourceAssetImportTestCase(SilvaXMLTestCase):
         self.assertTrue(verifyObject(ISourceAsset, asset))
         version = asset.get_editable()
         self.assertTrue(verifyObject(ISourceAssetVersion, version))
-        source = version.get_controller(TestRequest())
-        self.assertEquals('cs_toc', source.getSourceId())
-        params, _ = source.manager.get_parameters(version._parameter_identifier)
-        self.assertEqual(set(['Silva Folder']), set(params.toc_types))
+        source = version.get_source()
+        self.assertEquals(source.getId(), 'cs_toc')
+        params = version.get_parameters()
+        self.assertEqual(set(params.toc_types), set(['Silva Folder']))
         self.assertEqual(
             importer.getProblems(),
             [("Error in field 'paths': Could not resolve imported path non/existant.", version),
              ("Error in field 'paths': Broken reference.", version)])
+
+    def test_source_asset_unknown_parameters(self):
+        """This export contains extra unknown parameters.
+        """
+        importer = self.assertImportFile(
+            'test_import_source_asset_unknown_parameters.silvaxml',
+            ['/root/folder',
+             '/root/folder/asset'])
+        self.assertEqual(importer.getProblems(), [])
+
+        asset = self.root.folder.asset
+        self.assertTrue(verifyObject(ISourceAsset, asset))
+        version = asset.get_editable()
+        self.assertTrue(verifyObject(ISourceAssetVersion, version))
+        source = version.get_source()
+        self.assertEqual(source.getId(), 'cs_toc')
+        params = version.get_parameters()
+        self.assertIn(self.root.folder, ReferenceSet(version, params.paths))
+        self.assertEqual(set(params.toc_types), set(['Silva Folder']))
+        self.assertIs(getattr(params, 'space_depth', None), None)
 
 
 def test_suite():

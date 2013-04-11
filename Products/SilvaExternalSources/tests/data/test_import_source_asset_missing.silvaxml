@@ -39,7 +39,7 @@ silva_version="Silva 3.0dev">
 <expiration_datetime />
 </version>
 </workflow>
-<content version_id="0" source_identifier="cs_toc">
+<content version_id="0" source_identifier="cs_missing">
 <metadata>
 <set id="silva-content">
 <silva-content:maintitle>A source asset</silva-content:maintitle>
@@ -65,15 +65,14 @@ silva_version="Silva 3.0dev">
 <silva-external-sources:fields>
 <silva-external-sources:field xmlns="http://infrae.com/namespace/silva-references"
 id="paths">
-<path>non/existant</path>
-<path></path>
+<path>folder</path>
 </silva-external-sources:field>
 <silva-external-sources:field xmlns="http://infrae.com/namespace/formulator"
 id="toc_types">
 <value>Silva Folder</value>
 </silva-external-sources:field>
 <silva-external-sources:field id="depth">
-really deep man</silva-external-sources:field>
+0</silva-external-sources:field>
 <silva-external-sources:field id="sort_on">
 silva</silva-external-sources:field>
 <silva-external-sources:field id="order">

@@ -58,6 +58,12 @@ class SourceAssetVersion(Version):
             self._v_original_source = source
         return self._v_original_source
 
+    security.declarePrivate('get_parameters')
+    def get_parameters(self):
+        manager = getWrapper(self, IExternalSourceManager)
+        parameters, _ = manager.get_parameters(self._parameter_identifier)
+        return parameters
+
 InitializeClass(SourceAssetVersion)
 
 

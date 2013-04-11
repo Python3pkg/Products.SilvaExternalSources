@@ -65,15 +65,16 @@ silva_version="Silva 3.0dev">
 <silva-external-sources:fields>
 <silva-external-sources:field xmlns="http://infrae.com/namespace/silva-references"
 id="paths">
-<path>non/existant</path>
-<path></path>
+<path>folder</path>
 </silva-external-sources:field>
 <silva-external-sources:field xmlns="http://infrae.com/namespace/formulator"
 id="toc_types">
 <value>Silva Folder</value>
 </silva-external-sources:field>
 <silva-external-sources:field id="depth">
-really deep man</silva-external-sources:field>
+0</silva-external-sources:field>
+<silva-external-sources:field id="space_level">
+0</silva-external-sources:field>
 <silva-external-sources:field id="sort_on">
 silva</silva-external-sources:field>
 <silva-external-sources:field id="order">
@@ -86,9 +87,6 @@ False</silva-external-sources:field>
 False</silva-external-sources:field>
 <silva-external-sources:field id="link_headings">
 False</silva-external-sources:field>
-<silva-external-sources:field id="capsule_title" />
-<silva-external-sources:field id="css_class" />
-<silva-external-sources:field id="css_style" />
 </silva-external-sources:fields>
 </content>
 </silva-external-sources:source_asset>

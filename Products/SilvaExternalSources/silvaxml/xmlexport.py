@@ -116,11 +116,11 @@ class SourceAssetProducer(producers.SilvaVersionedContentProducer):
     grok.adapts(ISourceAsset, Interface)
 
     def sax(self):
-        self.startElementNS(NS_SOURCE_URI, 'source-asset',
+        self.startElementNS(NS_SOURCE_URI, 'source_asset',
             {'id': self.context.id})
         self.sax_workflow()
         self.sax_versions()
-        self.endElementNS(NS_SOURCE_URI, 'source-asset')
+        self.endElementNS(NS_SOURCE_URI, 'source_asset')
 
 
 class SourceAssetVersionProducer(producers.SilvaProducer,
@@ -133,7 +133,7 @@ class SourceAssetVersionProducer(producers.SilvaProducer,
             NS_SILVA_URI,
             'content',
             {'version_id': self.context.id,
-             'source-identifier': manager.getSourceId()})
+             'source_identifier': manager.getSourceId()})
         self.sax_metadata()
         self.sax_source_parameters(manager)
         self.endElementNS(NS_SILVA_URI, 'content')

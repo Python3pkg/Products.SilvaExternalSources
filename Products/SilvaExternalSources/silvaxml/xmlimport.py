@@ -18,7 +18,7 @@ from zeam.form.silva.interfaces import IXMLFormSerialization
 from silva.core.xml import NS_SILVA_URI
 
 from . import NS_SOURCE_URI
-from ..interfaces import IExternalSourceManager
+from ..interfaces import IExternalSourceManager, ISourceAsset
 from ..errors import SourceError
 
 logger = logging.getLogger('silva.core.xml')
@@ -47,7 +47,7 @@ class ExternalSourceImportFilter(TransformationFilter):
             name = node.attrib.get('source-identifier')
             if name is None:
                 importer.reportProblem(
-                    u"Broken external source in import.", self.context)
+                    u"Broken source in import.", self.context)
                 continue
             try:
                 source = self.sources(request, name=name)
@@ -70,8 +70,7 @@ class ExternalSourceImportFilter(TransformationFilter):
                 if deserializer is None:
                     # This field have been removed. Ignore it.
                     logger.warn(
-                        u"unknown external source parameter %s in %s" % (
-                            field_id, node.attrib['source-identifier']))
+                        u"Unknown source parameter %s in %s" % (field_id, name))
                     continue
                 # Deserialize the value
                 deserializer(field_node, self.handler)
@@ -88,13 +87,12 @@ class SourceParameterHandler(handlers.SilvaHandler):
     """
 
     proxy = None
-    field_id = None
 
     def startElementNS(self, name, qname, attrs):
         if name == (NS_SOURCE_URI, 'field'):
             self.proxy = lxml.sax.ElementTreeContentHandler()
             self.proxy.startElementNS(name, qname, attrs)
-            self.field_id = attrs[(None, 'id')]
+            self.setData('field_id', attrs[(None, 'id')])
         elif self.proxy is not None:
             self.proxy.startElementNS(name, qname, attrs)
 
@@ -106,9 +104,10 @@ class SourceParameterHandler(handlers.SilvaHandler):
     def endElementNS(self, name, qname):
         if name == (NS_SOURCE_URI, 'field'):
             self.proxy.endElementNS(name, qname)
-            deserializer = self.parentHandler().deserializers[self.field_id]
-            deserializer(self.proxy.etree.getroot(), self.parentHandler())
-            del self.proxy
+            self.parentHandler().deserializeSourceField(
+                self.getData('field_id'),
+                self.proxy.etree.getroot())
+            self.proxy = None
         elif self.proxy is not None:
             self.proxy.endElementNS(name, qname)
 
@@ -126,58 +125,93 @@ class SourceParametersHandler(handlers.SilvaHandler):
     def getOverrides(self):
         return {(NS_SOURCE_URI, 'field'): SourceParameterHandler}
 
+    def deserializeSourceField(self, field_id, field_node):
+        if self.deserializers is None:
+            return
+        deserializer = self.deserializers.get(field_id)
+        if deserializer is None:
+            logger.warn(u"Unknown source parameter %s." % (field_id))
+            return
+        deserializer(field_node, self)
+
     def startElementNS(self, name, qname, attrs):
         if name == (NS_SOURCE_URI, 'fields'):
-            self.deserializers = getWrapper(
-                self.parentHandler().source,
-                IXMLFormSerialization).getDeserializers()
+            source = self.parentHandler().source
+            if source is not None:
+                self.deserializers = getWrapper(
+                    source, IXMLFormSerialization).getDeserializers()
 
     def endElementNS(self, name, qname):
         if name == (NS_SOURCE_URI, 'fields'):
-            del self.deserializers
+            self.deserializers = None
 
 
-class SourceAssetVersionHandler(handlers.SilvaVersionHandler):
+class SourceHandler(object):
+    """Mixin handler to unserialize sources.
+    """
+
     source = None
 
     def getOverrides(self):
         return {(NS_SOURCE_URI, 'fields'): SourceParametersHandler}
 
+    def createSource(self, identifier, context):
+        importer = self.getExtra()
+        factory = getWrapper(context, IExternalSourceManager)
+        try:
+            self.source = factory(importer.request, name=identifier)
+        except SourceError, error:
+            importer.reportProblem(
+                u"Broken source in import: {0}".format(error),
+                context)
+            return None
+        else:
+            return self.source.new()
+
+    def getSource(self):
+        return self.source
+
+
+class SourceAssetVersionHandler(SourceHandler, handlers.SilvaVersionHandler):
+    source = None
+
+    def _createVersion(self, identifier):
+        factory = self.parent().manage_addProduct['SilvaExternalSources']
+        factory.manage_addSourceAssetVersion(identifier, '')
+
     def startElementNS(self, name, qname, attrs):
         if (NS_SILVA_URI, 'content') == name:
-            uid = attrs[(None, 'version_id')].encode('utf-8')
-            factory = self.parent().manage_addProduct['SilvaExternalSources']
-            factory.manage_addSourceAssetVersion(uid, '')
-            self.setResultId(uid)
-            source_identifier = attrs[(None, 'source-identifier')]
-            factory = getWrapper(self.result(), IExternalSourceManager)
-            self.source = factory(self.getExtra().request,
-                                  name=source_identifier)
-            identifier = self.source.new()
-            self.result().set_parameters_identifier(identifier)
-            self.setResultId(uid)
+            version = self.createVersion(attrs)
+            source_identifier = attrs[(None, 'source_identifier')]
+            identifier = self.createSource(source_identifier, version)
+            if identifier:
+                version.set_parameters_identifier(identifier)
 
     def endElementNS(self, name, qname):
         if (NS_SILVA_URI, 'content') == name:
             self.updateVersionCount()
             self.storeMetadata()
             self.storeWorkflow()
-            self.source_manager = None
+            self.source = None
 
 
 class SourceAssetHandler(handlers.SilvaHandler):
-    silvaconf.name('source-asset')
+    silvaconf.name('source_asset')
 
     def getOverrides(self):
         return {(NS_SILVA_URI, 'content'): SourceAssetVersionHandler}
 
+    def _createContent(self, identifier):
+        factory = self.parent().manage_addProduct['SilvaExternalSources']
+        factory.manage_addSourceAsset(identifier, '', no_default_version=True)
+
+    def _verifyContent(self, content):
+        return ISourceAsset.providedBy(content)
+
     def startElementNS(self, name, qname, attrs):
-        if name == (NS_SOURCE_URI, 'source-asset'):
-            identifier = self.generateIdentifier(attrs)
-            factory = self.parent().manage_addProduct['SilvaExternalSources']
-            factory.manage_addSourceAsset(identifier, '', no_default_version=True)
-            self.setResultId(identifier)
+        if name == (NS_SOURCE_URI, 'source_asset'):
+            self.createContent(attrs)
 
     def endElementNS(self, name, qname):
-        if name == (NS_SOURCE_URI, 'source-asset'):
+        if name == (NS_SOURCE_URI, 'source_asset'):
             self.notifyImport()

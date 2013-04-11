@@ -31,7 +31,7 @@
       </set>
     </metadata>
     <content>
-      <silva-external-sources:source-asset id="asset">
+      <silva-external-sources:source_asset id="asset">
         <workflow>
           <version id="0">
             <status>unapproved</status>
@@ -39,7 +39,7 @@
             <expiration_datetime />
           </version>
         </workflow>
-        <content source-identifier="cs_toc" version_id="0">
+        <content source_identifier="cs_toc" version_id="0">
           <metadata>
             <set id="silva-content">
               <silva-content:maintitle>A source asset</silva-content:maintitle>
@@ -87,7 +87,7 @@
             <silva-external-sources:field id="css_style" />
           </silva-external-sources:fields>
         </content>
-      </silva-external-sources:source-asset>
+      </silva-external-sources:source_asset>
     </content>
   </folder>
 </silva>

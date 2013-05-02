@@ -176,8 +176,7 @@ Version of this file: $Revision: 1.7 $
           tal:attributes="checked python: here.is_usable() and 'checked' or None" />
       </td>
     </tr>
-    <tr tal:define="locations context/manage_getFileSystemLocations"
-        tal:condition="locations">
+    <tr tal:define="locations context/manage_getFileSystemLocations">
       <td align="left" valign="top">
         <div class="form-label">
           File system location
@@ -185,24 +184,26 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top"
           tal:define="current context/get_fs_location">
-        <input class="form-element" type="radio" name="location" value=""
-               id="location-remove" checked="#"
-               tal:attributes="checked python:not current and 'checked' or None"/>
-        <label for="location-remove">No location</label>
-        <br />
-        <tal:available tal:repeat="location locations">
-          <input class="form-element" type="radio" name="location"
-                 id="#" value="#" checked="#"
-                 tal:attributes="id string:location-${repeat/location/number};
-                                 value location;
-                                 checked python:current==location and 'checked' or None"/>
-          <label for="#"
-                 tal:attributes="for string:location-${repeat/location/number}"
-                 tal:content="location">
-            Location
-          </label>
+          <input class="form-element" type="radio" name="location" value=""
+                 id="location-remove" checked="#"
+                 tal:attributes="checked python:not current and 'checked' or None"/>
+          <label for="location-remove">No location</label>
           <br />
-        </tal:available>
+          <tal:change tal:condition="locations">
+            <tal:available tal:repeat="location locations">
+              <input class="form-element" type="radio" name="location"
+                     id="#" value="#" checked="#"
+                     tal:attributes="id string:location-${repeat/location/number};
+                                     value location;
+                                     checked python:current==location and 'checked' or None"/>
+              <label for="#"
+                     tal:attributes="for string:location-${repeat/location/number}"
+                     tal:content="location">
+                Location
+              </label>
+              <br />
+            </tal:available>
+          </tal:change>
         <tal:other tal:condition="python: current and current not in locations">
           Other: <b tal:content="current" />
         </tal:other>
@@ -220,6 +221,8 @@ Version of this file: $Revision: 1.7 $
                    value="Update from filesystem" />
             <input class="form-element" type="submit" name="purge_source"
                    value="Purge and update from filesystem" />
+            <input class="form-element" type="submit" name="export_source"
+                   value="Export to filesystem" />
           </tal:filesystem>
         </div>
       </td>

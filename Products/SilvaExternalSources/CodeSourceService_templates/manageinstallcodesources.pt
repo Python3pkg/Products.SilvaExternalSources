@@ -32,16 +32,22 @@
 
         <form>
           <div tal:repeat="source view/sources">
-            <tal:details tal:condition="source/validate"
-                         tal:define="id source/identifier">
+            <tal:details tal:define="id source/identifier;
+                                     working source/validate">
               <input type="checkbox" name="locations" value="#" id="#"
-                     tal:attributes="value source/location;
+                     tal:attributes="disabled python: not working and 'disabled' or None;
+                                     value source/location;
                                      id id" />
               <label class="form-label" for="#"
                      tal:attributes="for id">
                 <span tal:replace="source/title" />
                 (<span tal:replace="id" />)
               </label>
+              <i tal:condition="not: working"
+                 style="font-weight: bold; color: red;"
+                 i18n:translate="">
+                This source is incomplete and cannot be installed.
+              </i>
               <p class="form-help form-checkbox-help">
                 <span tal:replace="source/description" />
                 <br />
@@ -50,6 +56,9 @@
             </tal:details>
           </div>
           <input type="submit" name="install" value="Install"
+                 i18n:attributes="value" />
+          <input type="submit" name="refresh" value="Refresh"
+                 title="Refresh the list of installable sources"
                  i18n:attributes="value" />
         </form>
       </tal:installables>

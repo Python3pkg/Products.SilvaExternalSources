@@ -219,17 +219,22 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
     def manage_editCodeSource(
         self, title, script_id, data_encoding, description=None, location=None,
         cacheable=None, previewable=None, usable=None, script_layers=None,
-        update_source=None, purge_source=None):
+        update_source=None, purge_source=None, export_source=None):
         """ Edit CodeSource object
         """
         service = queryUtility(ICodeSourceService)
         if service is None:
             # XXX pre-migration Silva 3.0
             service = self.service_codesources
-        if (update_source or purge_source) and self.get_fs_location():
+        if ((update_source or purge_source or export_source)
+            and self.get_fs_location()):
             candidates = list(service.get_installable_source(
-                location=self.get_fs_location()))
+                    location=self.get_fs_location()))
             if len(candidates) == 1:
+                if export_source:
+                    candidates[0].export(self)
+                    return self.editCodeSource(
+                        manage_tabs_message='Source exported to the filesystem.')
                 candidates[0].update(self, purge_source is not None)
                 return self.editCodeSource(
                     manage_tabs_message='Source updated from the filesystem.')

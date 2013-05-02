@@ -16,18 +16,19 @@ from OFS.interfaces import IObjectWillBeRemovedEvent
 from ZODB.broken import Broken
 
 from Products.Formulator.Form import ZMIForm
+from Products.Formulator.FormToXML import formToXML
 
 from five import grok
-from zope.cachedescriptors.property import CachedProperty
 from zope.component import getUtility, queryUtility
 from zope.intid.interfaces import IIntIds
 from zope.lifecycleevent.interfaces import IObjectAddedEvent
 
-from silva.core.services.base import SilvaService
 from silva.core import conf as silvaconf
 from silva.core.interfaces import IContainer
-from silva.core.views import views as silvaviews
+from silva.core.interfaces import IMimeTypeClassifier
+from silva.core.services.base import SilvaService
 from silva.core.services.utils import walk_silva_tree
+from silva.core.views import views as silvaviews
 from silva.translations import translate as _
 
 from .interfaces import ICodeSource, ICodeSourceService, ICodeSourceInstaller
@@ -37,69 +38,160 @@ logger = logging.getLogger('silva.externalsources')
 
 
 CONFIGURATION_FILE = 'source.ini'
+PARAMETERS_FILE = 'parameters.xml'
 # All the code following are default helper to help you to install
-# your code-soruces packaged on the file system.
+# your code-sources packaged on the file system.
 
-def install_pt(context, data, id, extension):
+
+class Exporter(object):
+
+    def __init__(self, content):
+        self.content = content
+
+    def get_filename(self, identifier):
+        raise NotImplemented
+
+    def __call__(self, filename):
+        raise NotImplemented
+
+
+class PageTemplateExporter(Exporter):
+    """Export a page template. If the name of the template is in upper
+    case this will create a .txt file, a .pt otherwise.
+    """
+
+    def get_filename(self, identifier):
+        if '.' not in identifier:
+            if identifier.isupper():
+                return identifier + '.txt'
+            else:
+                return identifier + '.pt'
+        return identifier
+
+    def __call__(self, filename):
+        with open(filename, 'wb') as target:
+            data = self.content.read()
+            if isinstance(data, unicode):
+                data = data.encode('utf-8')
+            if not data.endswith(os.linesep):
+                data += os.linesep
+            target.write(data)
+
+
+class FileExporter(Exporter):
+    """Export a file or an image. If identifier doesn't contains an
+    extension, guess one from the filename.
+    """
+
+    def get_filename(self, identifier):
+        if '.' not in identifier:
+            guess_extension = getUtility(IMimeTypeClassifier).guess_extension
+            return identifier + guess_extension(self.content.content_type)
+        return identifier
+
+    def __call__(self, filename):
+        with open(filename, 'wb') as target:
+            data = self.content.data
+            if isinstance(data, basestring):
+                target.write(data)
+            else:
+                while data is not None:
+                    target.write( data.data )
+                    data = data.next
+
+
+class ScriptExporter(PageTemplateExporter):
+
+    def get_filename(self, identifier):
+        if '.' not in identifier:
+            return identifier + '.py'
+        return identifier
+
+
+class Importer(object):
+    keep_extension = False
+
+    def __call__(self, context, identifier, data):
+        raise NotImplemented
+
+
+class PageTemplateImporter(Importer):
     """Install a page template.
     """
-    factory = context.manage_addProduct['PageTemplates']
-    factory.manage_addPageTemplate(id, '', data.read())
 
-def install_file(context, data, id, extension):
+    def __call__(self, context, identifier, data):
+        factory = context.manage_addProduct['PageTemplates']
+        factory.manage_addPageTemplate(identifier, '', data.read())
+
+
+class FileImporter(Importer):
     """Install a File.
     """
-    factory = context.manage_addProduct['OFSP']
-    factory.manage_addFile(id, file=data)
+    keep_extension = True
 
-def install_image(context, data, id, extension):
+    def __call__(self, context, identifier, data):
+        factory = context.manage_addProduct['OFSP']
+        factory.manage_addFile(identifier, file=data)
+
+
+class ImageImporter(FileImporter):
     """Install an Image.
     """
-    factory = context.manage_addProduct['OFSP']
-    factory.manage_addImage(id, file=data)
 
-def install_py(context, data, id, extension):
+    def __call__(self, context, identifier, data):
+        factory = context.manage_addProduct['OFSP']
+        factory.manage_addImage(identifier, file=data)
+
+
+class PythonScriptImporter(Importer):
     """Install a Python script.
     """
-    factory = context.manage_addProduct['PythonScripts']
-    factory.manage_addPythonScript(id)
-    script = getattr(context, id)
-    script.write(data.read())
 
-def install_xml(context, data, id, extension):
-    """Install an XML file.
-    """
-    form = ZMIForm(id, 'Parameters form')
-    try:
-        form.set_xml(data.read())
-        context.set_form(form)
-    except:
-        logger.exception(
-            'Error while installing Formulator form id "%s" in "%s"' % (
+    def __call__(self, context, identifier, data):
+        factory = context.manage_addProduct['PythonScripts']
+        factory.manage_addPythonScript(identifier)
+        script = context._getOb(identifier)
+        script.write(data.read())
+
+
+class FormulatorImporter(Importer):
+
+    def __call__(self, context, identifier, data):
+        form = ZMIForm(identifier, 'Parameters form')
+        try:
+            form.set_xml(data.read())
+            context.set_form(form)
+        except:
+            logger.exception(
+                'Error while installing Formulator form id "%s" in "%s"' % (
                 id, '/'.join(context.getPhysicalPath())))
 
 
+EXPORTERS = {
+    'File': FileExporter,
+    'Image': FileExporter,
+    'Script (Python)': ScriptExporter,
+    'Page Template': PageTemplateExporter,
+    }
 INSTALLERS = {
-    '.png': install_image,
-    '.gif': install_image,
-    '.jpeg': install_image,
-    '.jpg': install_image,
-    '.pt': install_pt,
-    '.py': install_py,
-    '.xml': install_xml,
-    '.js': install_file,
-    '.css': install_file,
-    '.swf': install_file,
-    '.fla': install_file,
-    '.txt': install_pt}
-KEEP_EXTENSION_OF = ['.png', '.gif', '.jpg', '.jpeg', '.js', '.css', '.fla', '.swf']
+    '.png':ImageImporter,
+    '.gif': ImageImporter,
+    '.jpeg': ImageImporter,
+    '.jpg': ImageImporter,
+    '.pt': PageTemplateImporter,
+    '.txt': PageTemplateImporter,
+    '.py': PythonScriptImporter,
+    '.xml': FormulatorImporter,
+    None: FileImporter,} # None is the default installer.
 
 class CodeSourceInstallable(object):
     grok.implements(ICodeSourceInstaller)
 
     def __init__(self, location, directory, files):
         self._config = ConfigParser.ConfigParser()
-        self._config.read(os.path.join(directory, CONFIGURATION_FILE))
+        self._config_filename = os.path.join(directory, CONFIGURATION_FILE)
+        if os.path.isfile(self._config_filename):
+            self._config.read(self._config_filename)
         self._directory = directory
         self._files = files
         self._location = location
@@ -120,19 +212,25 @@ class CodeSourceInstallable(object):
             logger.error('invalid source definition at %s' % self._directory)
         return valid
 
-    @CachedProperty
+    @property
     def identifier(self):
-        return self._config.get('source', 'id')
+        if self._config.has_option('source', 'description'):
+            return self._config.get('source', 'id')
+        return os.path.basename(self._directory)
 
-    @CachedProperty
+    @property
     def title(self):
-        return self._config.get('source', 'title')
+        if self._config.has_option('source', 'description'):
+            return self._config.get('source', 'title')
+        return self.identifier
 
-    @CachedProperty
+    @property
     def script_id(self):
-        return self._config.get('source', 'render_id')
+        if self._config.has_option('source', 'description'):
+            return self._config.get('source', 'render_id')
+        return ''
 
-    @CachedProperty
+    @property
     def description(self):
         if self._config.has_option('source', 'description'):
             return self._config.get('source', 'description')
@@ -155,9 +253,83 @@ class CodeSourceInstallable(object):
         source = folder._getOb(self.identifier)
         return self.update(source)
 
+    def _get_installables(self):
+        for filename in self._files:
+            if filename == CONFIGURATION_FILE:
+                continue
+            identifier, extension = os.path.splitext(filename)
+            factory = INSTALLERS.get(extension, None)
+            if factory is None:
+                # Default to None, file default installer.
+                factory = INSTALLERS[None]
+            if factory.keep_extension:
+                identifier = filename
+            yield identifier, filename, factory()
+
+    def export(self, source):
+        assert ICodeSource.providedBy(source)
+        assert source.get_fs_location() == self.location, u"Invalid source"
+        # Step 1, export configuration.
+        if not self._config.has_section('source'):
+            self._config.add_section('source')
+
+        def set_value(key, value):
+            if value:
+                self._config.set('source', key, value)
+            elif self._config.has_option('source', key):
+                self._config.remove_option('source', key)
+
+        set_value('id', source.getId())
+        set_value('title', source.get_title())
+        set_value('description', source.get_description())
+        set_value('render_id', source.get_script_id())
+        set_value('alternate_render_ids', source.get_script_layers())
+        set_value('usuable', source.is_usable() and "yes" or "no")
+        set_value('previewable', source.is_previewable() and "yes" or "no")
+        set_value('cacheable', source.is_cacheable() and "yes" or "no")
+
+        with open(self._config_filename, 'wb') as config_file:
+            self._config.write(config_file)
+
+        files_to_keep = [CONFIGURATION_FILE]
+        # Step 2, export parameters if any or delete the file.
+        parameters = source.get_parameters_form()
+        parameters_filename = os.path.join(self._directory, PARAMETERS_FILE)
+        if parameters is not None:
+            files_to_keep.append(PARAMETERS_FILE)
+            with open(parameters_filename, 'w') as parameters_file:
+                parameters_file.write(formToXML(parameters) + os.linesep)
+
+        existing_files_mapping = {}
+        for identifier, filename, installer in self._get_installables():
+            existing_files_mapping[identifier] = filename
+
+        # Step 2, export files.
+        for identifier, content in source.objectItems():
+            factory = EXPORTERS.get(content.meta_type, None)
+            if factory is None:
+                exporter.info(
+                    u"don't know how to export %s for code source %s" % (
+                        content.meta_type, self.identifier))
+                continue
+            exporter = factory(content)
+            if identifier in existing_files_mapping:
+                filename = existing_files_mapping[identifier]
+            else:
+                filename = exporter.get_filename(identifier)
+            exporter(os.path.join(self._directory, filename))
+            files_to_keep.append(filename)
+
+        # Step 3, purge files that were not recreated.
+        for filename in os.listdir(self._directory):
+            if filename not in files_to_keep:
+                os.unlink(os.path.join(self._directory, filename))
+        self._files = files_to_keep
+
     def update(self, source, purge=False):
         assert ICodeSource.providedBy(source)
         assert source.get_fs_location() == self.location, u"Invalid source"
+        assert self.validate()
         source.set_title(self.title)
         source.set_script_id(self.script_id)
         if self.description:
@@ -179,23 +351,14 @@ class CodeSourceInstallable(object):
             source.set_usable(value)
 
         installed = []
-        for filename in self._files:
-            if filename == CONFIGURATION_FILE:
-                continue
-            name, extension = os.path.splitext(filename)
-            installer = INSTALLERS.get(extension, None)
-            if installer is None:
-                logger.info(
-                    u"don't know how to install file %s for code source %s" % (
-                        filename, self.identifier))
-                continue
-            if extension in KEEP_EXTENSION_OF:
-                name = filename
-            if name in source.objectIds():
+        for identifier, filename, installer in self._get_installables():
+            if identifier in installed:
+                raise AssertionError(u"Duplicate file")
+            if identifier in source.objectIds():
                 source.manage_delObjects([name])
             with open(os.path.join(self._directory, filename), 'rb') as data:
-                installer(source, data, name, extension)
-            installed.append(name)
+                installer(source, identifier, data)
+            installed.append(identifier)
         if purge:
             # Remove other files.
             source.manage_delObjects(
@@ -253,8 +416,8 @@ class CodeSourceService(SilvaService):
 
     security.declareProtected(
         'View management screens', 'get_installable_sources')
-    def get_installable_sources(self):
-        if hasattr(self.aq_base,  '_v_installable_sources'):
+    def get_installable_sources(self, refresh=False):
+        if not refresh and hasattr(self.aq_base,  '_v_installable_sources'):
             return self._v_installable_sources
         self._v_installable_sources = sources = []
         for entry_point  in iter_entry_points(
@@ -405,7 +568,7 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
 class ManageInstallCodeSources(silvaviews.ZMIView):
     grok.name('manage_install_codesources')
 
-    def update(self, install=False, locations=[]):
+    def update(self, install=False, refresh=False, locations=[]):
         self.status = []
         if install:
             notfound = []
@@ -441,7 +604,7 @@ class ManageInstallCodeSources(silvaviews.ZMIView):
                     mapping=dict(notinstalled=', '.join(notinstalled)))
 
         self.sources = []
-        for source in self.context.get_installable_sources():
+        for source in self.context.get_installable_sources(refresh=refresh):
             self.sources.append(source)
 
 

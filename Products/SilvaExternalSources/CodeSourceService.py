@@ -266,7 +266,7 @@ class CodeSourceInstallable(object):
                 identifier = filename
             yield identifier, filename, factory()
 
-    def export(self, source):
+    def export(self, source, directory=None):
         assert ICodeSource.providedBy(source)
         assert source.get_fs_location() == self.location, u"Invalid source"
         # Step 1, export configuration.
@@ -288,14 +288,18 @@ class CodeSourceInstallable(object):
         set_value('previewable', source.is_previewable() and "yes" or "no")
         set_value('cacheable', source.is_cacheable() and "yes" or "no")
 
-        with open(self._config_filename, 'wb') as config_file:
+        if directory is None:
+            directory = self._directory
+
+        configuration_filename = os.path.join(directory, CONFIGURATION_FILE)
+        files_to_keep = [CONFIGURATION_FILE]
+        with open(configuration_filename, 'wb') as config_file:
             self._config.write(config_file)
 
-        files_to_keep = [CONFIGURATION_FILE]
         # Step 2, export parameters if any or delete the file.
         parameters = source.get_parameters_form()
-        parameters_filename = os.path.join(self._directory, PARAMETERS_FILE)
         if parameters is not None:
+            parameters_filename = os.path.join(directory, PARAMETERS_FILE)
             files_to_keep.append(PARAMETERS_FILE)
             with open(parameters_filename, 'w') as parameters_file:
                 parameters_file.write(formToXML(parameters) + os.linesep)
@@ -308,7 +312,7 @@ class CodeSourceInstallable(object):
         for identifier, content in source.objectItems():
             factory = EXPORTERS.get(content.meta_type, None)
             if factory is None:
-                exporter.info(
+                logger.info(
                     u"don't know how to export %s for code source %s" % (
                         content.meta_type, self.identifier))
                 continue
@@ -317,14 +321,15 @@ class CodeSourceInstallable(object):
                 filename = existing_files_mapping[identifier]
             else:
                 filename = exporter.get_filename(identifier)
-            exporter(os.path.join(self._directory, filename))
+            exporter(os.path.join(directory, filename))
             files_to_keep.append(filename)
 
         # Step 3, purge files that were not recreated.
-        for filename in os.listdir(self._directory):
+        for filename in os.listdir(directory):
             if filename not in files_to_keep:
-                os.unlink(os.path.join(self._directory, filename))
-        self._files = files_to_keep
+                os.unlink(os.path.join(directory, filename))
+        if self._directory == directory:
+            self._files = files_to_keep
 
     def update(self, source, purge=False):
         assert ICodeSource.providedBy(source)
@@ -355,7 +360,7 @@ class CodeSourceInstallable(object):
             if identifier in installed:
                 raise AssertionError(u"Duplicate file")
             if identifier in source.objectIds():
-                source.manage_delObjects([name])
+                source.manage_delObjects([identifier])
             with open(os.path.join(self._directory, filename), 'rb') as data:
                 installer(source, identifier, data)
             installed.append(identifier)

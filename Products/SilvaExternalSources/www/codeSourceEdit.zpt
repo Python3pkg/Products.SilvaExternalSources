@@ -8,9 +8,9 @@ Version of this file: $Revision: 1.7 $
   define="manage_tabs_message options/manage_tabs_message | nothing"
   replace="structure here/manage_tabs" />
 
-<h3>
+<h2>
   Edit Silva Code Source
-</h3>
+</h2>
 
 <div class="system-msg"
      tal:define="problems context/test_source"
@@ -216,17 +216,32 @@ Version of this file: $Revision: 1.7 $
         <div class="form-element">
           <input class="form-element" type="submit" name="submit_edit"
                  value="Save changes" />
-          <tal:filesystem tal:condition="context/get_fs_location">
-            <input class="form-element" type="submit" name="update_source"
-                   value="Update from filesystem" />
-            <input class="form-element" type="submit" name="purge_source"
-                   value="Purge and update from filesystem" />
-            <input class="form-element" type="submit" name="export_source"
-                   value="Export to filesystem" />
-          </tal:filesystem>
         </div>
       </td>
     </tr>
   </table>
 </form>
+
+<tal:filesystem tal:condition="context/get_fs_location">
+  <h3>
+    Update a Code Source from the filesystem
+  </h3>
+  <form action="manage_updateCodeSource" name="updateform" method="post">
+    <input class="form-element" type="submit" name="update"
+           value="Update from filesystem" />
+    <input class="form-element" type="submit" name="purge"
+           value="Purge and update from filesystem" />
+  </form>
+
+  <h3>
+    Export a Code Source to the filesystem
+  </h3>
+  <form action="manage_exportCodeSource" name="updateform" method="post">
+    <input class="form-element" type="submit" name="export"
+           value="Export to filesystem" />
+    <input class="form-element" type="submit" name="aszip"
+           value="Export and download as a ZIP" />
+  </form>
+</tal:filesystem>
+
 <h1 tal:replace="structure here/manage_page_footer">Footer</h1>

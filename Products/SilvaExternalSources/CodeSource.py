@@ -2,8 +2,13 @@
 # Copyright (c) 2002-2013 Infrae. All rights reserved.
 # See also LICENSE.txt
 
-from cgi import escape
 from operator import itemgetter
+import cgi
+import io
+import os
+import shutil
+import tempfile
+import zipfile
 
 # Zope
 from App.class_init import InitializeClass
@@ -57,7 +62,7 @@ class CodeSourceErrorSupplement(object):
 
         return u'<p>Extra information:<br /><li>%s</li></p>' % ''.join(map(
                 lambda x: u'<li><b>%s</b>: %s</li>' % (
-                    escape(str(x[0])), escape(str(x[1]))),
+                    cgi.escape(str(x[0])), cgi.escape(str(x[1]))),
                 info))
 
 
@@ -203,6 +208,23 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             found.append((script_id, layer))
         self._script_layers = found
 
+    def _get_installable(self, location=None):
+        """Return the installable source associated with this code
+        source.
+        """
+        if location is None:
+            location = self.get_fs_location()
+            if location is None:
+                return None
+        service = queryUtility(ICodeSourceService)
+        if service is None:
+            # XXX pre-migration Silva 3.0
+            service = self.service_codesources
+        candidates = list(service.get_installable_source(location=location))
+        if len(candidates) == 1:
+            return candidates[0]
+        return None
+
     security.declareProtected(
         ViewManagementScreens, 'manage_getFileSystemLocations')
     def manage_getFileSystemLocations(self):
@@ -215,41 +237,81 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             service.get_installable_source(identifier=self.id))
 
     security.declareProtected(
+        ViewManagementScreens, 'manage_updateCodeSource')
+    def manage_updateCodeSource(self, purge=False, REQUEST=None):
+        """Update a code source from the filesystem.
+        """
+        installable = self._get_installable()
+        if installable is None:
+            if REQUEST is not None:
+                return self.editCodeSource(
+                    manage_tabs_message=\
+                        'Could find the code source on the filesystem.')
+            return False
+        installable.update(self, bool(purge))
+        if REQUEST is not None:
+            return self.editCodeSource(
+                manage_tabs_message='Source updated from the filesystem.')
+        return True
+
+    security.declareProtected(
+        ViewManagementScreens, 'manage_exportCodeSource')
+    def manage_exportCodeSource(self, aszip=False, REQUEST=None):
+        """Export a code source to the filesystem.
+        """
+        installable = self._get_installable()
+        if installable is None:
+            if REQUEST is not None:
+                return self.editCodeSource(
+                    manage_tabs_message=\
+                        'Could find the code source on the filesystem.')
+            return None
+        directory = None
+        if aszip:
+            directory = tempfile.mkdtemp('-codesource-export')
+        installable.export(self, directory)
+        if not aszip:
+            if REQUEST is not None:
+                return self.editCodeSource(
+                    manage_tabs_message='Source exported to the filesystem.')
+            return None
+        result = io.BytesIO()
+        archive = zipfile.ZipFile(result, 'w')
+        for path, directories, filenames in os.walk(directory):
+            root = path[len(directory):]
+            if root:
+                root = os.path.join(self.getId(), root)
+            else:
+                root = self.getId()
+            for filename in filenames:
+                archive.write(os.path.join(path, filename),
+                              os.path.join(root, filename))
+        archive.close()
+        shutil.rmtree(directory)
+        if REQUEST is not None:
+            REQUEST.RESPONSE.setHeader(
+                'Content-Type',
+                'application/zip')
+            REQUEST.RESPONSE.setHeader(
+                'Content-Disposition',
+                'attachment;filename=%s.zip' % self.getId())
+        return result.getvalue()
+
+    security.declareProtected(
         ViewManagementScreens, 'manage_editCodeSource')
     def manage_editCodeSource(
         self, title, script_id, data_encoding, description=None, location=None,
-        cacheable=None, previewable=None, usable=None, script_layers=None,
-        update_source=None, purge_source=None, export_source=None):
-        """ Edit CodeSource object
+        cacheable=None, previewable=None, usable=None, script_layers=None):
+        """ Edit a code source settings.
         """
-        service = queryUtility(ICodeSourceService)
-        if service is None:
-            # XXX pre-migration Silva 3.0
-            service = self.service_codesources
-        if ((update_source or purge_source or export_source)
-            and self.get_fs_location()):
-            candidates = list(service.get_installable_source(
-                    location=self.get_fs_location()))
-            if len(candidates) == 1:
-                if export_source:
-                    candidates[0].export(self)
-                    return self.editCodeSource(
-                        manage_tabs_message='Source exported to the filesystem.')
-                candidates[0].update(self, purge_source is not None)
-                return self.editCodeSource(
-                    manage_tabs_message='Source updated from the filesystem.')
-            return self.editCodeSource(
-                manage_tabs_message='Could find the associated definition on the filesystem.')
-
         msg = u''
 
         if location is not None and location != self._fs_location:
             if location:
-                candidates = list(service.get_installable_source(
-                        location=location))
-                if len(candidates) != 1:
-                    msg += "Multiple code sources definition found for " + \
-                        "the location, not changed! "
+                installable = self._get_installable(location)
+                if installable is None:
+                    msg += "Invalid location for the code source " + \
+                        "definition, not changed! "
                     return self.editCodeSource(manage_tabs_message=msg)
             self._fs_location = location
             msg += "Code source location changed. "
@@ -272,7 +334,6 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
                 return self.editCodeSource(manage_tabs_message=msg)
 
         title = unicode(title, self.management_page_charset)
-
         if title and title != self.title:
             self.title = title
             msg += "Title changed. "
@@ -285,7 +346,6 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         # by "management_page_charset". Store it in unicode.
         if description is not None:
             description = unicode(description, self.management_page_charset)
-
             if description != self._description:
                 self.set_description(description)
                 msg += "Description changed. "

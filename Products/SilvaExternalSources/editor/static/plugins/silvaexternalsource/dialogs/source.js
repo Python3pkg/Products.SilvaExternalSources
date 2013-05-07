@@ -7,11 +7,66 @@
     var VALIDATE_REST_URL = '++rest++Products.SilvaExternalSources.source.validate';
     var PARAMETERS_REST_URL = '++rest++Products.SilvaExternalSources.source.parameters';
 
+    var ParameterFocusable = function(field, dialog) {
+        var element = new CKEDITOR.dom.element(field),
+            element_type = element.getAttribute('type'),
+            field_type = (element_type && element_type.toLowerCase() == 'text') ? 'text': 'other';
+
+        var focusable = {
+            isParameter: function() {
+                return true;
+            },
+            isFocusable: function() {
+                return true;
+            },
+            tabIndex: 0,
+            focusIndex: 0,
+            keyboardFocusable: true,
+            getInputElement: function() {
+                return element;
+            },
+            type: field_type,
+            focus: function() {
+                return element.focus();
+            },
+            select: function() {
+            }
+        };
+        element.on('focus', function() {
+            dialog.currentFocusIndex = focusable.focusIndex;
+        });
+        return focusable;
+    };
+
     var rest_url = function(url) {
         return $('#content-url').attr('href') + '/' + url;
     };
 
-    var load_parameters = function($container, parameters) {
+    var update_focus = function($container, dialog, start_index) {
+        var len, i = 0,
+            parameter_list = [start_index, 0];
+
+        // Step 1 remove any existing old parameters.
+        for (i=0; i< dialog.focusList.length; i++) {
+            if (dialog.focusList[i].isParameter && dialog.focusList[i].isParameter()) {
+                dialog.focusList.splice(i, 1);
+                i = i - 1;
+            };
+        };
+        // Step 2 field parameters field and build a list of them.
+        $container.find('input:visible,textarea:visible,select:visible').each(function() {
+            parameter_list.push(ParameterFocusable(this, dialog));
+        });
+        // Step 3 merge the two focus lists on target.
+        dialog.focusList.splice.apply(dialog.focusList, parameter_list);
+        // Step 4 recompute focusIndex.
+        for (i=0, len=dialog.focusList.length; i < len; i++) {
+         	dialog.focusList[i].focusIndex = i;
+        };
+        dialog.currentFocusIndex = 0;
+    };
+
+    var load_parameters = function($container, parameters, dialog, start_index) {
         // Fetch the parameters form.
         $container.html('<p>Fetching source parameters from server ...</p>');
         $.ajax({
@@ -20,9 +75,12 @@
             dataType: 'html',
             type: 'POST',
             success: function(html) {
+                var $form;
+
                 $container.html(html);
-                var $form = $container.children('form');
+                $form = $container.children('form');
                 $form.trigger('load-smiform', {form: $form, container: $form});
+                update_focus($form, dialog._, start_index);
             },
             error: function() {
                 $container.html('');
@@ -33,18 +91,20 @@
         });
     };
 
-    var create_parameters_fields = function (parameters_identifier) {
+    var create_parameters_fields = function (parameters_identifier, start_index) {
         return [{
             type: 'html',
             id: 'source_options',
             html: '<div class="' + parameters_identifier + '"></div>',
             setup: function(data) {
-                var $container = $('.' + parameters_identifier);
-                var parameters = [];
+                var $container = $('.' + parameters_identifier),
+                    dialog = this.getDialog(),
+                    parameters = [],
+                    key, extra;
 
                 this._.source = {};
                 if (data.instance) {
-                    var editor = this.getDialog().getParentEditor();
+                    var editor = dialog.getParentEditor();
 
                     this._.source['source_instance'] = data.instance;
                     this._.source['source_text'] = editor.name;
@@ -52,20 +112,20 @@
                     this._.source['source_name'] = data.name;
                 };
                 if (data.parameters) {
-                    var extra = [{'name': 'source_inline', 'value':1}];
+                    extra = [{'name': 'source_inline', 'value':1}];
                     parameters = data.parameters;
 
-                    for (var key in this._.source) {
+                    for (key in this._.source) {
                         extra.push({'name': key, 'value': this._.source[key]});
                     };
                     parameters = parameters + '&' + $.param(extra);
-                    load_parameters($container, parameters);
+                    load_parameters($container, parameters, dialog, start_index);
                 } else if (data.instance) {
 
-                    for (var key in this._.source) {
+                    for (key in this._.source) {
                         parameters.push({'name': key, 'value': this._.source[key]});
                     };
-                    load_parameters($container, $.param(this._.source));
+                    load_parameters($container, $.param(this._.source), dialog, start_index);
                 };
             },
             validate: function() {
@@ -163,7 +223,7 @@
                             if (source_options._.source) {
                                 source_options._.source.source_name = event.data.value;
                             };
-                            load_parameters($container, {'source_name': event.data.value});
+                            load_parameters($container, {'source_name': event.data.value}, dialog, 1);
                             align_input.show();
                         } else {
                             if (source_options._.source &&
@@ -201,12 +261,11 @@
                 }, {
                     type: 'vbox',
                     id: 'source_parameters',
-                    children: create_parameters_fields('external_source_add')
+                    children: create_parameters_fields('external_source_add', 1)
                 }]
             }],
             onShow: function() {
                 var data = {};
-
                 this.setupContent(data);
             },
             onOk: function() {
@@ -243,7 +302,7 @@
             minHeight: 400,
             contents: [{
                 id: 'external_source_edit_page',
-                elements: create_parameters_fields('external_source_edit')
+                elements: create_parameters_fields('external_source_edit', 0)
             }],
             onShow: function() {
                 var data = {};

@@ -63,6 +63,9 @@
         for (i=0, len=dialog.focusList.length; i < len; i++) {
          	dialog.focusList[i].focusIndex = i;
         };
+        if (dialog.focusList.length > 1) {
+            dialog.focusList[0].focus();
+        };
         dialog.currentFocusIndex = 0;
     };
 

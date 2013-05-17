@@ -214,19 +214,19 @@ class CodeSourceInstallable(object):
 
     @property
     def identifier(self):
-        if self._config.has_option('source', 'description'):
+        if self._config.has_option('source', 'id'):
             return self._config.get('source', 'id')
         return os.path.basename(self._directory)
 
     @property
     def title(self):
-        if self._config.has_option('source', 'description'):
+        if self._config.has_option('source', 'title'):
             return self._config.get('source', 'title')
         return self.identifier
 
     @property
     def script_id(self):
-        if self._config.has_option('source', 'description'):
+        if self._config.has_option('source', 'render_id'):
             return self._config.get('source', 'render_id')
         return ''
 

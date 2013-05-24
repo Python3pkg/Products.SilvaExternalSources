@@ -1,10 +1,19 @@
 ChangeLog
 =========
 
-3.0.1 (unreleased)
+3.0.1 (2013/05/24)
 ------------------
 
-- ...
+- Support broken and missing sources in the Source Asset content.
+
+- Fix import of broken and missing sources in the Source Asset
+  content.
+
+- Add support to export code sources to the file system.
+
+- Add support to tab between code source fields in CKEditor.
+
+- Improve tests.
 
 3.0 (2013/03/06)
 ----------------

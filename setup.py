@@ -5,7 +5,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '3.0.1dev'
+version = '3.0.1'
 
 tests_require = [
     'silva.app.document [test]',
@@ -52,6 +52,7 @@ setup(name='Products.SilvaExternalSources',
         'silva.core.interfaces',
         'silva.core.services',
         'silva.core.views',
+        'silva.core.xml',
         'silva.translations',
         'silva.ui',
         'zeam.component',

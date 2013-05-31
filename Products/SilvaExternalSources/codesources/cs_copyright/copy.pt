@@ -1,0 +1,10 @@
+<tal:def tal:define="
+  startyear   python:options['start_year'] != '' and options['start_year'] or nothing;
+  currentyear python:DateTime().year();
+  rightholder options/right_holder;
+">
+<p>&copy; Copyright
+<tal:ins tal:condition="python:startyear and int(startyear) < currentyear"
+ tal:content="string:${startyear}-">2001-</tal:ins><tal:ins tal:content="currentyear">2013</tal:ins>
+<tal:ins tal:content="rightholder">name</tal:ins>. All rights reserved.</p>
+</tal:def>

@@ -23,15 +23,15 @@ def massdump(container, extension_name):
             'Products.SilvaExternalSources.sources', 'defaults').__file__)
     for source in container.objectValues('Silva Code Source'):
         identifier = source.getId()
-        if source._fs_location is not None:
-            continue
         target = os.path.join(directory, identifier)
-        if not os.path.exists(target):
-            os.makedirs(target)
-
         location = (
             extension.project_name + ':' +
             target[len(extension.location):])
+
+        if source.get_fs_location() not in (None, location):
+            continue
+        if not os.path.exists(target):
+            os.makedirs(target)
         source._fs_location = location
         installable = CodeSourceInstallable(location, target, [])
         installable.export(source)

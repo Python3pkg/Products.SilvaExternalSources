@@ -302,7 +302,12 @@ class CodeSourceInstallable(object):
             parameters_filename = os.path.join(directory, PARAMETERS_FILE)
             files_to_keep.append(PARAMETERS_FILE)
             with open(parameters_filename, 'w') as parameters_file:
-                parameters_file.write(formToXML(parameters) + os.linesep)
+                try:
+                    parameters_file.write(formToXML(parameters) + os.linesep)
+                except:
+                    logger.error(
+                        "failed to export parameters for code source %s",
+                        self.identifier)
 
         existing_files_mapping = {}
         for identifier, filename, installer in self._get_installables():
@@ -313,8 +318,8 @@ class CodeSourceInstallable(object):
             factory = EXPORTERS.get(content.meta_type, None)
             if factory is None:
                 logger.info(
-                    u"don't know how to export %s for code source %s" % (
-                        content.meta_type, self.identifier))
+                    u"don't know how to export %s for code source %s",
+                    content.meta_type, self.identifier)
                 continue
             exporter = factory(content)
             if identifier in existing_files_mapping:
@@ -325,8 +330,8 @@ class CodeSourceInstallable(object):
                 exporter(os.path.join(directory, filename))
             except:
                 logger.error(
-                    "failed to export %s for code source %s" % (
-                        content.meta_type, self.identifier))
+                    "failed to export %s for code source %s",
+                    content.meta_type, self.identifier)
             files_to_keep.append(filename)
 
         # Step 3, purge files that were not recreated.

@@ -740,7 +740,7 @@ class ManageExportCodeSources(silvaforms.ZMIForm):
         if values['recursive']:
             sources = walk_silva_tree(self.context, requires=ICodeSource)
         else:
-            sources = self.context.container.objectValues('Silva Code Source')
+            sources = self.context.objectValues('Silva Code Source')
 
         for source in sources:
             if source.meta_type != 'Silva Code Source':

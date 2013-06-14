@@ -759,5 +759,8 @@ class ManageExportCodeSources(silvaforms.ZMIForm):
             installable = CodeSourceInstallable(location, target, [])
             installable.export(source)
             exported.append(location)
-        self.status = 'Exported {0}'.format(', '.join(exported))
+        if exported:
+            self.status = 'Exported: {0}.'.format(', '.join(exported))
+        else:
+            self.status = 'Nothing exported.'
         return silvaforms.SUCCESS

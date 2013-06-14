@@ -8,6 +8,8 @@ import re
 import logging
 import ConfigParser
 import shutil
+import pkg_resources
+
 from datetime import datetime
 from pkg_resources import iter_entry_points
 
@@ -20,6 +22,8 @@ from Products.Formulator.Form import ZMIForm
 from Products.Formulator.FormToXML import formToXML
 
 from five import grok
+from zope.interface import Interface
+from zope import schema
 from zope.component import getUtility, queryUtility
 from zope.intid.interfaces import IIntIds
 from zope.lifecycleevent.interfaces import IObjectAddedEvent
@@ -31,6 +35,7 @@ from silva.core.services.base import SilvaService
 from silva.core.services.utils import walk_silva_tree
 from silva.core.views import views as silvaviews
 from silva.translations import translate as _
+from zeam.form import silva as silvaforms
 
 from .interfaces import ICodeSource, ICodeSourceService, ICodeSourceInstaller
 from .interfaces import ISourceErrors
@@ -480,10 +485,8 @@ class CodeSourceService(SilvaService):
         logger.info('search for code sources')
         self.clear_installed_sources()
         service = getUtility(IIntIds)
-        for container in walk_silva_tree(self.get_root(), requires=IContainer):
-            for content in container.objectValues():
-                if ICodeSource.providedBy(content):
-                    self._installed_sources.append(service.register(content))
+        for source in walk_silva_tree(self.get_root(), requires=ICodeSource):
+            self._installed_sources.append(service.register(source))
 
     security.declareProtected(
         'Access contents information', 'get_installed_sources')
@@ -703,3 +706,58 @@ class ManageSourcesErrors(silvaviews.ZMIView):
         if 'clear' in self.request.form:
             errors.clear()
         self.errors = errors.fetch()
+
+
+class IExportCodeSourcesFields(Interface):
+
+    extension_name = schema.TextLine(
+        title=u'Extension name',
+        constraint=lambda s : s in pkg_resources.working_set.by_key,
+        required=True)
+    recursive = schema.Bool(
+        title=u'Recursive export ?',
+        default=False,
+        required=False)
+
+
+class ManageExportCodeSources(silvaforms.ZMIForm):
+    grok.name('manage_export_codesources')
+    grok.context(IContainer)
+
+    label = 'Mass export of codesources'
+    fields = silvaforms.Fields(IExportCodeSourcesFields)
+
+    @silvaforms.action('Export')
+    def export(self):
+        values, errors = self.extractData()
+        if errors:
+            return silvaforms.FAILURE
+        exported = []
+        extension = pkg_resources.working_set.by_key[values['extension_name']]
+        directory = os.path.dirname(extension.load_entry_point(
+                'Products.SilvaExternalSources.sources', 'defaults').__file__)
+
+        if values['recursive']:
+            sources = walk_silva_tree(self.context, requires=ICodeSource)
+        else:
+            sources = self.context.container.objectValues('Silva Code Source')
+
+        for source in sources:
+            if source.meta_type != 'Silva Code Source':
+                continue
+            identifier = source.getId()
+            target = os.path.join(directory, identifier)
+            location = (
+                extension.project_name + ':' +
+                target[len(extension.location):])
+
+            if source.get_fs_location() not in (None, location):
+                continue
+            if not os.path.exists(target):
+                os.makedirs(target)
+            source._fs_location = location
+            installable = CodeSourceInstallable(location, target, [])
+            installable.export(source)
+            exported.append(location)
+        self.status = 'Exported {0}'.format(', '.join(exported))
+        return silvaforms.SUCCESS

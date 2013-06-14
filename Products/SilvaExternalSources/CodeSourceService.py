@@ -7,6 +7,7 @@ import os
 import re
 import logging
 import ConfigParser
+import shutil
 from datetime import datetime
 from pkg_resources import iter_entry_points
 
@@ -48,10 +49,10 @@ class Exporter(object):
     def __init__(self, content):
         self.content = content
 
-    def get_filename(self, identifier):
+    def get_pathname(self, identifier):
         raise NotImplemented
 
-    def __call__(self, filename):
+    def __call__(self, pathname):
         raise NotImplemented
 
 
@@ -60,7 +61,7 @@ class PageTemplateExporter(Exporter):
     case this will create a .txt file, a .pt otherwise.
     """
 
-    def get_filename(self, identifier):
+    def get_pathname(self, identifier):
         if '.' not in identifier:
             if identifier.isupper():
                 return identifier + '.txt'
@@ -68,8 +69,8 @@ class PageTemplateExporter(Exporter):
                 return identifier + '.pt'
         return identifier
 
-    def __call__(self, filename):
-        with open(filename, 'wb') as target:
+    def __call__(self, pathname):
+        with open(pathname, 'wb') as target:
             data = self.content.read()
             if isinstance(data, unicode):
                 data = data.encode('utf-8')
@@ -83,29 +84,84 @@ class FileExporter(Exporter):
     extension, guess one from the filename.
     """
 
-    def get_filename(self, identifier):
+    def get_pathname(self, identifier):
         if '.' not in identifier:
             guess_extension = getUtility(IMimeTypeClassifier).guess_extension
             return identifier + guess_extension(self.content.content_type)
         return identifier
 
-    def __call__(self, filename):
-        with open(filename, 'wb') as target:
+    def __call__(self, pathname):
+        with open(pathname, 'wb') as target:
             data = self.content.data
             if isinstance(data, basestring):
                 target.write(data)
             else:
                 while data is not None:
-                    target.write( data.data )
+                    target.write(data.data)
                     data = data.next
 
 
 class ScriptExporter(PageTemplateExporter):
 
-    def get_filename(self, identifier):
+    def get_pathname(self, identifier):
         if '.' not in identifier:
             return identifier + '.py'
         return identifier
+
+
+class DTMLExporter(Exporter):
+
+    def get_pathname(self, identifier):
+        return identifier + '.dtml'
+
+    def __call__(self, pathname):
+        with open(pathname, 'wb') as target:
+            target.write(self.content.raw)
+
+
+class FolderExporter(Exporter):
+
+    def get_pathname(self, identifier):
+        return identifier
+
+    def __call__(self, pathname):
+        if not os.path.exists(pathname):
+            os.makedirs(pathname)
+            existing = []
+        else:
+            existing = os.listdir(pathname)
+        exported = []
+        for identifier, content in self.content.objectItems():
+            factory = EXPORTERS.get(content.meta_type, None)
+            if factory is None:
+                logger.info(
+                    u"don't know how to export %s for code source %s",
+                    content.meta_type, self.identifier)
+                continue
+            exporter = factory(content)
+            filename = exporter.get_pathname(identifier)
+            try:
+                exporter(os.path.join(pathname, filename))
+            except:
+                logger.error(
+                    "failed to export %s for code source %s",
+                    content.meta_type, self.identifier)
+            exported.append(filename)
+        for filename in existing:
+            if filename not in exported:
+                shutil.rmtree(os.path.join(pathname, filename))
+
+
+class ExternalMethod(Exporter):
+
+    def get_pathname(self, identifier):
+        return identifier + ".em"
+
+    def __call__(self, pathname):
+        with open(pathname, 'wb') as target:
+            target.write('title:string=%s\n' % self.content.title)
+            target.write('module:string=%s\n' % self.content._module)
+            target.write('function:string=%s\n' % self.content._function)
 
 
 class Importer(object):
@@ -172,6 +228,9 @@ EXPORTERS = {
     'Image': FileExporter,
     'Script (Python)': ScriptExporter,
     'Page Template': PageTemplateExporter,
+    'Folder': FolderExporter,
+    'DTML Document': DTMLExporter,
+    'External Method': ExternalMethod,
     }
 INSTALLERS = {
     '.png':ImageImporter,
@@ -183,6 +242,7 @@ INSTALLERS = {
     '.py': PythonScriptImporter,
     '.xml': FormulatorImporter,
     None: FileImporter,} # None is the default installer.
+
 
 class CodeSourceInstallable(object):
     grok.implements(ICodeSourceInstaller)
@@ -268,7 +328,10 @@ class CodeSourceInstallable(object):
 
     def export(self, source, directory=None):
         assert ICodeSource.providedBy(source)
-        assert source.get_fs_location() == self.location, u"Invalid source"
+        if directory is None:
+            assert source.get_fs_location() == self.location, u"Invalid source"
+            directory = self._directory
+
         # Step 1, export configuration.
         if not self._config.has_section('source'):
             self._config.add_section('source')
@@ -288,9 +351,6 @@ class CodeSourceInstallable(object):
         set_value('previewable', source.is_previewable() and "yes" or "no")
         set_value('cacheable', source.is_cacheable() and "yes" or "no")
 
-        if directory is None:
-            directory = self._directory
-
         configuration_filename = os.path.join(directory, CONFIGURATION_FILE)
         files_to_keep = [CONFIGURATION_FILE]
         with open(configuration_filename, 'wb') as config_file:
@@ -309,9 +369,9 @@ class CodeSourceInstallable(object):
                         "failed to export parameters for code source %s",
                         self.identifier)
 
-        existing_files_mapping = {}
+        existing_mapping = {}
         for identifier, filename, installer in self._get_installables():
-            existing_files_mapping[identifier] = filename
+            existing_mapping[identifier] = filename
 
         # Step 2, export files.
         for identifier, content in source.objectItems():
@@ -322,10 +382,10 @@ class CodeSourceInstallable(object):
                     content.meta_type, self.identifier)
                 continue
             exporter = factory(content)
-            if identifier in existing_files_mapping:
-                filename = existing_files_mapping[identifier]
+            if identifier in existing_mapping:
+                filename = existing_mapping[identifier]
             else:
-                filename = exporter.get_filename(identifier)
+                filename = exporter.get_pathname(identifier)
             try:
                 exporter(os.path.join(directory, filename))
             except:
@@ -337,7 +397,7 @@ class CodeSourceInstallable(object):
         # Step 3, purge files that were not recreated.
         for filename in os.listdir(directory):
             if filename not in files_to_keep:
-                os.unlink(os.path.join(directory, filename))
+                shutil.rmtree(os.path.join(directory, filename))
         if self._directory == directory:
             self._files = files_to_keep
 

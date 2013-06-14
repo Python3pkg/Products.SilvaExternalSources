@@ -61,7 +61,6 @@ class ServiceTestCase(unittest.TestCase):
             installable.location,
             'Products.SilvaExternalSources:/Products/SilvaExternalSources/codesources/cs_toc')
 
-
     def test_clear_and_find_installed_sources(self):
         """Clear and find again installed code sources.
         """

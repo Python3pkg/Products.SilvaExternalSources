@@ -240,6 +240,7 @@ EXPORTERS = {
     'Page Template': PageTemplateExporter,
     'Folder': FolderExporter,
     'DTML Document': DTMLExporter,
+    'DTML Method': DTMLExporter,
     'External Method': ExternalMethodExporter,
     'Formulator Form': FormulatorExporter,
     }

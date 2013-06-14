@@ -321,7 +321,12 @@ class CodeSourceInstallable(object):
                 filename = existing_files_mapping[identifier]
             else:
                 filename = exporter.get_filename(identifier)
-            exporter(os.path.join(directory, filename))
+            try:
+                exporter(os.path.join(directory, filename))
+            except:
+                logger.error(
+                    "failed to export %s for code source %s" % (
+                        content.meta_type, self.identifier))
             files_to_keep.append(filename)
 
         # Step 3, purge files that were not recreated.

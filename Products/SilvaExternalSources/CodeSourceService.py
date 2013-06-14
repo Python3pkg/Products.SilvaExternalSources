@@ -54,10 +54,10 @@ class Exporter(object):
     def __init__(self, content):
         self.content = content
 
-    def get_pathname(self, identifier):
+    def get_path(self, identifier):
         raise NotImplemented
 
-    def __call__(self, pathname):
+    def __call__(self, path):
         raise NotImplemented
 
 
@@ -66,7 +66,7 @@ class PageTemplateExporter(Exporter):
     case this will create a .txt file, a .pt otherwise.
     """
 
-    def get_pathname(self, identifier):
+    def get_path(self, identifier):
         if '.' not in identifier:
             if identifier.isupper():
                 return identifier + '.txt'
@@ -74,8 +74,8 @@ class PageTemplateExporter(Exporter):
                 return identifier + '.pt'
         return identifier
 
-    def __call__(self, pathname):
-        with open(pathname, 'wb') as target:
+    def __call__(self, path):
+        with open(path, 'wb') as target:
             data = self.content.read()
             if isinstance(data, unicode):
                 data = data.encode('utf-8')
@@ -89,14 +89,14 @@ class FileExporter(Exporter):
     extension, guess one from the filename.
     """
 
-    def get_pathname(self, identifier):
+    def get_path(self, identifier):
         if '.' not in identifier:
             guess_extension = getUtility(IMimeTypeClassifier).guess_extension
             return identifier + guess_extension(self.content.content_type)
         return identifier
 
-    def __call__(self, pathname):
-        with open(pathname, 'wb') as target:
+    def __call__(self, path):
+        with open(path, 'wb') as target:
             data = self.content.data
             if isinstance(data, basestring):
                 target.write(data)
@@ -108,7 +108,7 @@ class FileExporter(Exporter):
 
 class ScriptExporter(PageTemplateExporter):
 
-    def get_pathname(self, identifier):
+    def get_path(self, identifier):
         if '.' not in identifier:
             return identifier + '.py'
         return identifier
@@ -116,35 +116,35 @@ class ScriptExporter(PageTemplateExporter):
 
 class DTMLExporter(Exporter):
 
-    def get_pathname(self, identifier):
+    def get_path(self, identifier):
         return identifier + '.dtml'
 
-    def __call__(self, pathname):
-        with open(pathname, 'wb') as target:
+    def __call__(self, path):
+        with open(path, 'wb') as target:
             target.write(self.content.raw)
 
 
 class FormulatorExporter(Exporter):
 
-    def get_pathname(self, identifier):
+    def get_path(self, identifier):
         return identifier + '.xml'
 
-    def __call__(self, pathname):
-        with open(pathname, 'w') as target:
+    def __call__(self, path):
+        with open(path, 'w') as target:
             target.write(formToXML(self.content))
 
 
 class FolderExporter(Exporter):
 
-    def get_pathname(self, identifier):
+    def get_path(self, identifier):
         return identifier
 
-    def __call__(self, pathname):
-        if not os.path.exists(pathname):
-            os.makedirs(pathname)
+    def __call__(self, path):
+        if not os.path.exists(path):
+            os.makedirs(path)
             existing = []
         else:
-            existing = os.listdir(pathname)
+            existing = os.listdir(path)
         exported = []
         for identifier, content in self.content.objectItems():
             factory = EXPORTERS.get(content.meta_type, None)
@@ -154,9 +154,9 @@ class FolderExporter(Exporter):
                     content.meta_type, self.identifier)
                 continue
             exporter = factory(content)
-            filename = exporter.get_pathname(identifier)
+            filename = exporter.get_path(identifier)
             try:
-                exporter(os.path.join(pathname, filename))
+                exporter(os.path.join(path, filename))
             except:
                 logger.error(
                     "failed to export %s for code source %s",
@@ -164,16 +164,16 @@ class FolderExporter(Exporter):
             exported.append(filename)
         for filename in existing:
             if filename not in exported:
-                shutil.rmtree(os.path.join(pathname, filename))
+                shutil.rmtree(os.path.join(path, filename))
 
 
 class ExternalMethodExporter(Exporter):
 
-    def get_pathname(self, identifier):
+    def get_path(self, identifier):
         return identifier + ".em"
 
-    def __call__(self, pathname):
-        with open(pathname, 'wb') as target:
+    def __call__(self, path):
+        with open(path, 'wb') as target:
             target.write('title:string=%s\n' % self.content.title)
             target.write('module:string=%s\n' % self.content._module)
             target.write('function:string=%s\n' % self.content._function)
@@ -182,7 +182,7 @@ class ExternalMethodExporter(Exporter):
 class Importer(object):
     keep_extension = False
 
-    def __call__(self, context, identifier, data):
+    def __call__(self, context, identifier, path):
         raise NotImplemented
 
 
@@ -190,9 +190,10 @@ class PageTemplateImporter(Importer):
     """Install a page template.
     """
 
-    def __call__(self, context, identifier, data):
-        factory = context.manage_addProduct['PageTemplates']
-        factory.manage_addPageTemplate(identifier, '', data.read())
+    def __call__(self, context, identifier, path):
+        with open(path, 'rb') as data:
+            factory = context.manage_addProduct['PageTemplates']
+            factory.manage_addPageTemplate(identifier, '', data.read())
 
 
 class FileImporter(Importer):
@@ -200,9 +201,10 @@ class FileImporter(Importer):
     """
     keep_extension = True
 
-    def __call__(self, context, identifier, data):
-        factory = context.manage_addProduct['OFSP']
-        factory.manage_addFile(identifier, file=data)
+    def __call__(self, context, identifier, path):
+        with open(path, 'rb') as data:
+            factory = context.manage_addProduct['OFSP']
+            factory.manage_addFile(identifier, file=data)
 
 
 class ImageImporter(FileImporter):
@@ -218,24 +220,69 @@ class PythonScriptImporter(Importer):
     """Install a Python script.
     """
 
-    def __call__(self, context, identifier, data):
-        factory = context.manage_addProduct['PythonScripts']
-        factory.manage_addPythonScript(identifier)
-        script = context._getOb(identifier)
-        script.write(data.read())
+    def __call__(self, context, identifier, path):
+        with open(path, 'rb') as data:
+            factory = context.manage_addProduct['PythonScripts']
+            factory.manage_addPythonScript(identifier)
+            script = context._getOb(identifier)
+            script.write(data.read())
+
+
+class DTMLImporter(Importer):
+
+    def __call__(self, context, identifier, path):
+        with open(path, 'rb') as data:
+            factory = context.manage_addProduct['OFS']
+            factory.manage_addDTMLDocument(identifier)
+            dtml = context._getOb(identifier)
+            dtml.munge(data.read())
 
 
 class FormulatorImporter(Importer):
 
-    def __call__(self, context, identifier, data):
-        form = ZMIForm(identifier, 'Parameters form')
-        try:
-            form.set_xml(data.read())
-            context.set_form(form)
-        except:
-            logger.exception(
-                'Error while installing Formulator form id "%s" in "%s"' % (
-                id, '/'.join(context.getPhysicalPath())))
+    def __call__(self, context, identifier, path):
+        with open(path, 'rb') as data:
+            form = ZMIForm(identifier, 'Parameters form')
+            try:
+                form.set_xml(data.read())
+            except:
+                logger.exception(
+                    'Error while installing Formulator form id "%s" in "%s"' % (
+                    id, '/'.join(context.getPhysicalPath())))
+            else:
+                if identifier == 'parameters':
+                    context.set_form(form)
+                else:
+                    context._setObject(identifier, form)
+
+
+class FolderOrFileImporter(Importer):
+    keep_extension = True
+
+    def __call__(self, context, identifier, path):
+        factory = context.manage_addProduct['OFSP']
+        if os.path.isdir(path):
+             factory.manage_addFolder(identifier)
+             container = context._getOb(identifier)
+             for filename in os.listdir(path):
+                if filename.startswith('.'):
+                    continue
+                identifier, extension = os.path.splitext(filename)
+                factory = INSTALLERS.get(extension, None)
+                if factory is None:
+                    # Default to None, file default installer.
+                    factory = INSTALLERS[None]
+                if factory.keep_extension:
+                    identifier = filename
+                installer = factory()
+                if identifier in container.objectIds():
+                    container.manage_delObjects([identifier])
+                installer(container, identifier,
+                          os.path.join(path, filename))
+        else:
+            with open(path, 'rb') as data:
+                factory.manage_addFile(identifier, file=data)
+
 
 
 EXPORTERS = {
@@ -258,7 +305,8 @@ INSTALLERS = {
     '.txt': PageTemplateImporter,
     '.py': PythonScriptImporter,
     '.xml': FormulatorImporter,
-    None: FileImporter,} # None is the default installer.
+    '.dtml': DTMLImporter,
+    None: FolderOrFileImporter,} # None is the default installer.
 
 
 class CodeSourceInstallable(object):
@@ -332,7 +380,7 @@ class CodeSourceInstallable(object):
 
     def _get_installables(self):
         for filename in self._files:
-            if filename == CONFIGURATION_FILE:
+            if filename == CONFIGURATION_FILE or filename.startswith('.'):
                 continue
             identifier, extension = os.path.splitext(filename)
             factory = INSTALLERS.get(extension, None)
@@ -402,7 +450,7 @@ class CodeSourceInstallable(object):
             if identifier in existing_mapping:
                 filename = existing_mapping[identifier]
             else:
-                filename = exporter.get_pathname(identifier)
+                filename = exporter.get_path(identifier)
             try:
                 exporter(os.path.join(directory, filename))
             except:
@@ -448,8 +496,8 @@ class CodeSourceInstallable(object):
                 raise AssertionError(u"Duplicate file")
             if identifier in source.objectIds():
                 source.manage_delObjects([identifier])
-            with open(os.path.join(self._directory, filename), 'rb') as data:
-                installer(source, identifier, data)
+            installer(source, identifier,
+                      os.path.join(self._directory, filename))
             installed.append(identifier)
         if purge:
             # Remove other files.

@@ -119,6 +119,16 @@ class DTMLExporter(Exporter):
             target.write(self.content.raw)
 
 
+class FormulatorExporter(Exporter):
+
+    def get_pathname(self, identifier):
+        return identifier + '.xml'
+
+    def __call__(self, pathname):
+        with open(pathname, 'w') as target:
+            target.write(formToXML(self.content))
+
+
 class FolderExporter(Exporter):
 
     def get_pathname(self, identifier):
@@ -152,7 +162,7 @@ class FolderExporter(Exporter):
                 shutil.rmtree(os.path.join(pathname, filename))
 
 
-class ExternalMethod(Exporter):
+class ExternalMethodExporter(Exporter):
 
     def get_pathname(self, identifier):
         return identifier + ".em"
@@ -230,7 +240,8 @@ EXPORTERS = {
     'Page Template': PageTemplateExporter,
     'Folder': FolderExporter,
     'DTML Document': DTMLExporter,
-    'External Method': ExternalMethod,
+    'External Method': ExternalMethodExporter,
+    'Formulator Form': FormulatorExporter,
     }
 INSTALLERS = {
     '.png':ImageImporter,

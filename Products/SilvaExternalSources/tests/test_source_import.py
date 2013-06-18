@@ -49,6 +49,26 @@ class CodeSourceImportTestCase(unittest.TestCase):
             source.js.objectIds(),
             ['advanced.js'])
 
+    def test_import_and_export_fancy(self):
+        installable = CodeSourceInstallable(
+            'test:', self.get_path(), os.listdir(self.get_path()))
+        installable.install(self.root)
+
+        source = self.root._getOb('cs_fancytest', None)
+        self.assertTrue(verifyObject(ICodeSource, source))
+        self.assertItemsEqual(
+            source.objectIds(),
+            ['css', 'feedback', 'js', 'README', 'script'])
+        self.assertItemsEqual(
+            source.css.objectIds(),
+            ['advanced.css'])
+        self.assertItemsEqual(
+            source.js.objectIds(),
+            ['advanced.js'])
+
+        # We export again the source.
+        installable.export(source)
+
 
 def test_suite():
     suite = unittest.TestSuite()

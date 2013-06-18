@@ -467,7 +467,11 @@ class CodeSourceInstallable(object):
         # Step 3, purge files that were not recreated.
         for filename in os.listdir(directory):
             if filename not in files_to_keep:
-                shutil.rmtree(os.path.join(directory, filename))
+                fullname = os.path.join(directory, filename)
+                if os.path.isdir(fullname):
+                    shutil.rmtree(fullname)
+                else:
+                    os.unlink(fullname)
         if self._directory == directory:
             self._files = files_to_keep
 

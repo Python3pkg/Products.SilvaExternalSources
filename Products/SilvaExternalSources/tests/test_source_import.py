@@ -68,6 +68,16 @@ class CodeSourceImportTestCase(unittest.TestCase):
 
         # We export again the source.
         installable.export(source)
+        self.assertEqual(
+            os.listdir(self.get_path()),
+            ['css', 'feedback.xml', 'js', 'parameters.xml',
+             'README.txt', 'script.pt', 'source.ini'])
+        self.assertEqual(
+            os.listdir(self.get_path('css')),
+            ['advanced.css.dtml'])
+        self.assertEqual(
+            os.listdir(self.get_path('js')),
+            ['advanced.js'])
 
 
 def test_suite():

@@ -13,6 +13,7 @@ import pkg_resources
 from datetime import datetime
 from pkg_resources import iter_entry_points
 
+from Acquisition import aq_parent
 from AccessControl import ClassSecurityInfo
 from App.class_init import InitializeClass
 from OFS.interfaces import IObjectWillBeRemovedEvent
@@ -680,13 +681,17 @@ class SourcesErrorsReporter(grok.GlobalUtility):
 class ManageExistingCodeSources(silvaviews.ZMIView):
     grok.name('manage_existing_codesources')
 
-    def update(self, find=False, update=False):
+    def update(self, find=False, below=None, child=False, update=False):
         self.status = None
         if find:
             self.context.find_installed_sources()
             self.status = _(u"Sources refreshed.")
 
         self.sources = []
+        if below:
+            below = below.strip()
+            if not below.endswith('/'):
+                below += '/'
         for source in self.context.get_installed_sources():
             if isinstance(source, Broken):
                 self.sources.append(
@@ -696,18 +701,26 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
                      'path': '/'.join(source.getPhysicalPath()),
                      'url': None})
             else:
-                updated = False
+                path = '/'.join(source.getPhysicalPath())
+                if (below and (not path.startswith(below) or
+                               (child and '/' in path[len(below):]))):
+                    continue
+                message = None
                 if update and ICodeSource.providedBy(source):
                     installable = source._get_installable()
                     if installable is not None:
                         installable.update(source, True)
-                        updated = True
+                        message = _('Source updated.')
                 self.sources.append({'id': source.getId(),
                                      'problems': source.test_source(),
                                      'title': source.get_title(),
-                                     'path': '/'.join(source.getPhysicalPath()),
+                                     'path': path,
                                      'url': source.absolute_url(),
-                                     'updated': updated})
+                                     'message': message})
+        if below:
+            self.filter = below.rstrip('/')
+        else:
+            self.filter = '/'.join(aq_parent(self.context).getPhysicalPath())
 
 
 class ManageInstallCodeSources(silvaviews.ZMIView):

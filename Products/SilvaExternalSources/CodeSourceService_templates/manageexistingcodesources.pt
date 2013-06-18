@@ -9,7 +9,7 @@
 
       <style type="text/css">
         ul li.broken a { font-weight: bold; color: red; }
-        span.updated { font-style: italic; }
+        span.message { font-style: italic; }
       </style>
 
       <div class="system-msg"
@@ -50,9 +50,9 @@
                                title source/path">
               <span tal:replace="source/id" />
             </a> : <span tal:replace="source/title" />
-            <tal:updated tal:condition="source/updated">
-              : <span class="updated" i18n:translate="">Source updated.</span>
-            </tal:updated>
+            <tal:message tal:condition="source/message">
+              : <span class="message" tal:content="source/message" />
+            </tal:message>
             <tal:error tal:condition="source/problems">
               <p>Error(s) are:</p>
               <ol tal:condition="source/problems">
@@ -65,8 +65,18 @@
         </ul>
       <form action="#" method="post"
             tal:attributes="action request/URL">
+
+        <h4 i18n:translate="">Filter the known code sources</h4>
+        <input type="text" name="below" tal:attributes="value view/filter"/>
+        <input type="checkbox" name="child" id="child" />
+        <label for="child" i18n:translate="">Include sub-folders ?</label>
+        <input type="submit" name="filter" value="Filter"
+               i18n:attributes="value" /> <br/>
+        <h4 i18n:translate="">
+          Update all the code sources from the filesystem
+        </h4>
         <input type="submit" name="update"
-               value="Update them all from the filesystem"
+               value="Update them all"
                onclick="if (!confirm('Are you sure?')) return false"
                i18n:attributes="value" />
       </form>

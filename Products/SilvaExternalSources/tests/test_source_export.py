@@ -47,12 +47,12 @@ class CodeSourceExportTestCase(unittest.TestCase):
         shutil.rmtree(self.directory)
 
     def assertIsFile(self, *names):
-        self.assertTrue(os.path.isfile(self.get_filename(*names)))
+        self.assertTrue(os.path.isfile(self.get_path(*names)))
 
     def assertIsDirectory(self, *names):
-        self.assertTrue(os.path.isdir(self.get_filename(*names)))
+        self.assertTrue(os.path.isdir(self.get_path(*names)))
 
-    def get_filename(self, *names):
+    def get_path(self, *names):
         return os.path.join(self.directory, *names)
 
     def test_python_script(self):
@@ -73,9 +73,9 @@ class CodeSourceExportTestCase(unittest.TestCase):
         self.assertIsFile('script.py')
         self.assertIsFile('source.ini')
         self.assertIsFile('parameters.xml')
-        with open(self.get_filename('script.py'), 'rb') as script:
+        with open(self.get_path('script.py'), 'rb') as script:
             self.assertEqual(script.read(), TEST_SCRIPT)
-        with open(self.get_filename('source.ini'), 'rb') as script:
+        with open(self.get_path('source.ini'), 'rb') as script:
             self.assertEqual(script.read(), TEST_SOURCE)
 
     def test_dtml_document(self):
@@ -96,9 +96,9 @@ class CodeSourceExportTestCase(unittest.TestCase):
         self.assertIsFile('cool.css.dtml')
         self.assertIsFile('source.ini')
         self.assertIsFile('parameters.xml')
-        with open(self.get_filename('cool.css.dtml'), 'rb') as script:
+        with open(self.get_path('cool.css.dtml'), 'rb') as script:
             self.assertEqual(script.read(), TEST_DTML)
-        with open(self.get_filename('source.ini'), 'rb') as script:
+        with open(self.get_path('source.ini'), 'rb') as script:
             self.assertEqual(script.read(), TEST_SOURCE)
 
     def test_folder(self):
@@ -127,11 +127,11 @@ class CodeSourceExportTestCase(unittest.TestCase):
         self.assertIsFile('script.py')
         self.assertIsFile('source.ini')
         self.assertIsFile('parameters.xml')
-        with open(self.get_filename('source.ini'), 'rb') as script:
+        with open(self.get_path('source.ini'), 'rb') as script:
             self.assertEqual(script.read(), TEST_SOURCE)
-        with open(self.get_filename('script.py'), 'rb') as script:
+        with open(self.get_path('script.py'), 'rb') as script:
             self.assertEqual(script.read(), TEST_SCRIPT)
-        with open(self.get_filename('helpers', 'script.py'), 'rb') as script:
+        with open(self.get_path('helpers', 'script.py'), 'rb') as script:
             self.assertEqual(script.read(), TEST_SCRIPT)
 
 

@@ -704,7 +704,7 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
             else:
                 path = '/'.join(source.getPhysicalPath())
                 if (below and (not path.startswith(below) or
-                               (child and '/' in path[len(below):]))):
+                               (not child and '/' in path[len(below):]))):
                     continue
                 message = None
                 if update and ICodeSource.providedBy(source):

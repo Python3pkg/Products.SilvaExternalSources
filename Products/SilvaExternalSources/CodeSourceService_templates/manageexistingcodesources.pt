@@ -70,7 +70,8 @@
 
         <h4 i18n:translate="">Filter the known code sources</h4>
         <input type="text" name="below" tal:attributes="value view/filter"/>
-        <input type="checkbox" name="child" id="child" />
+        <input type="checkbox" name="child" id="child"
+               tal:attributes="checked python:view.include_child and 'checked' or None" />
         <label for="child" i18n:translate="">Include sub-folders ?</label>
         <input type="submit" name="filter" value="Filter"
                i18n:attributes="value" /> <br/>

@@ -688,6 +688,7 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
             self.status = _(u"Sources refreshed.")
 
         self.sources = []
+        self.include_child = bool(child)
         if below:
             below = below.strip()
             if not below.endswith('/'):

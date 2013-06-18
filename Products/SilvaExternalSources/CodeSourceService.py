@@ -571,9 +571,11 @@ class CodeSourceService(SilvaService):
             'Products.SilvaExternalSources.sources'):
             module = entry_point.load()
             directory = os.path.dirname(module.__file__)
-            for source_directory, _, source_files in os.walk(directory):
-                if source_directory == directory:
+            for source_identifier in os.listdir(directory):
+                source_directory = os.path.join(directory, source_identifier)
+                if not os.path.isdir(source_directory):
                     continue
+                source_files = os.listdir(source_directory)
                 if CONFIGURATION_FILE not in source_files:
                     continue
                 source_location = (

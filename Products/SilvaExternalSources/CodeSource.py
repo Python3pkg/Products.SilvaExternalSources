@@ -13,7 +13,6 @@ import zipfile
 # Zope
 from App.class_init import InitializeClass
 from AccessControl import ClassSecurityInfo
-from Acquisition import aq_base
 from OFS.Folder import Folder
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
@@ -109,7 +108,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             root = root.get_default()
         if self.parameters is not None:
             try:
-                aq_base(self.parameters).__of__(root).test_form()
+                self.parameters.test_form(root)
             except ValueError as error:
                 errors.extend(error.args)
         if not self.title:

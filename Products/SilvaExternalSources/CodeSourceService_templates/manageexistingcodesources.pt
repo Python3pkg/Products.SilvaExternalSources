@@ -32,7 +32,9 @@
         <p i18n:translate="">
           There are currently
           <span tal:replace="python:len(view.sources)" i18n:name="count" />
-          known code sources likely to be used in this Silva site.
+          known code sources likely to be used under
+          <span tal:replace="view/filter" i18n:name="path" /> in this Silva
+          site.
         </p>
 
         <p i18n:translate="">

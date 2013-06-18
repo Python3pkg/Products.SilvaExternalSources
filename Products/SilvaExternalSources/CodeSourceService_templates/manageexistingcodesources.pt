@@ -9,6 +9,7 @@
 
       <style type="text/css">
         ul li.broken a { font-weight: bold; color: red; }
+        span.updated { font-style: italic; }
       </style>
 
       <div class="system-msg"
@@ -49,6 +50,9 @@
                                title source/path">
               <span tal:replace="source/id" />
             </a> : <span tal:replace="source/title" />
+            <tal:updated tal:condition="source/updated">
+              : <span class="updated" i18n:translate="">Source updated.</span>
+            </tal:updated>
             <tal:error tal:condition="source/problems">
               <p>Error(s) are:</p>
               <ol tal:condition="source/problems">
@@ -59,6 +63,13 @@
             </tal:error>
           </li>
         </ul>
+      <form action="#" method="post"
+            tal:attributes="action request/URL">
+        <input type="submit" name="update"
+               value="Update them all from the filesystem"
+               onclick="if (!confirm('Are you sure?')) return false"
+               i18n:attributes="value" />
+      </form>
       </tal:sources>
 
       <p tal:condition="not:view/sources"

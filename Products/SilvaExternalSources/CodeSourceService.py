@@ -680,7 +680,7 @@ class SourcesErrorsReporter(grok.GlobalUtility):
 class ManageExistingCodeSources(silvaviews.ZMIView):
     grok.name('manage_existing_codesources')
 
-    def update(self, find=False):
+    def update(self, find=False, update=False):
         self.status = None
         if find:
             self.context.find_installed_sources()
@@ -696,11 +696,18 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
                      'path': '/'.join(source.getPhysicalPath()),
                      'url': None})
             else:
+                updated = False
+                if update and ICodeSource.providedBy(source):
+                    installable = source._get_installable()
+                    if installable is not None:
+                        installable.update(source, True)
+                        updated = True
                 self.sources.append({'id': source.getId(),
                                      'problems': source.test_source(),
                                      'title': source.get_title(),
                                      'path': '/'.join(source.getPhysicalPath()),
-                                     'url': source.absolute_url()})
+                                     'url': source.absolute_url(),
+                                     'updated': updated})
 
 
 class ManageInstallCodeSources(silvaviews.ZMIView):

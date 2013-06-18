@@ -165,7 +165,11 @@ class FolderExporter(Exporter):
             exported.append(filename)
         for filename in existing:
             if filename not in exported:
-                shutil.rmtree(os.path.join(path, filename))
+                fullname = os.path.join(path, filename)
+                if os.path.isdir(fullname):
+                    shutil.rmtree(fullname)
+                else:
+                    os.unlink(fullname)
 
 
 class ExternalMethodExporter(Exporter):

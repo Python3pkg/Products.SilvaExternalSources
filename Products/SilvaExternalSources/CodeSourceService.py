@@ -248,7 +248,7 @@ class FormulatorImporter(Importer):
             except:
                 logger.exception(
                     'Error while installing Formulator form id "%s" in "%s"' % (
-                    id, '/'.join(context.getPhysicalPath())))
+                    identifier, '/'.join(context.getPhysicalPath())))
             else:
                 if identifier == 'parameters':
                     context.set_form(form)

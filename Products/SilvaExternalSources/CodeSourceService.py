@@ -9,6 +9,7 @@ import logging
 import ConfigParser
 import shutil
 import pkg_resources
+import operator
 
 from datetime import datetime
 from pkg_resources import iter_entry_points
@@ -21,6 +22,7 @@ from ZODB.broken import Broken
 
 from Products.Formulator.Form import ZMIForm
 from Products.Formulator.FormToXML import formToXML
+from Products.Silva.ExtensionRegistry import extensionRegistry
 
 from five import grok
 from zope.interface import Interface
@@ -28,6 +30,7 @@ from zope import schema
 from zope.component import getUtility, queryUtility
 from zope.intid.interfaces import IIntIds
 from zope.lifecycleevent.interfaces import IObjectAddedEvent
+from js.jquery import jquery
 
 from silva.core import conf as silvaconf
 from silva.core.interfaces import IContainer
@@ -36,6 +39,7 @@ from silva.core.services.base import SilvaService
 from silva.core.services.utils import walk_silva_tree
 from silva.core.views import views as silvaviews
 from silva.translations import translate as _
+from silva.fanstatic import need
 from zeam.form import silva as silvaforms
 
 from .interfaces import ICodeSource, ICodeSourceService, ICodeSourceInstaller
@@ -317,7 +321,7 @@ INSTALLERS = {
 class CodeSourceInstallable(object):
     grok.implements(ICodeSourceInstaller)
 
-    def __init__(self, location, directory, files):
+    def __init__(self, location, directory, files, extension=None):
         self._config = ConfigParser.ConfigParser()
         self._config_filename = os.path.join(directory, CONFIGURATION_FILE)
         if os.path.isfile(self._config_filename):
@@ -325,6 +329,7 @@ class CodeSourceInstallable(object):
         self._directory = directory
         self._files = files
         self._location = location
+        self.extension = extension
 
     def validate(self):
         """Return true if the definition is complete.
@@ -584,7 +589,8 @@ class CodeSourceService(SilvaService):
                 sources.append(CodeSourceInstallable(
                         source_location,
                         source_directory,
-                        source_files))
+                        source_files,
+                        extension=entry_point.dist.project_name))
         return sources
 
     security.declareProtected(
@@ -772,9 +778,38 @@ class ManageInstallCodeSources(silvaviews.ZMIView):
                     u"Sources ${notinstalled} are already installed.",
                     mapping=dict(notinstalled=', '.join(notinstalled)))
 
-        self.sources = []
+        self.extensions = []
+        self.sources = 0
+        extensions = {}
         for source in self.context.get_installable_sources(refresh=refresh):
-            self.sources.append(source)
+            sources = extensions.setdefault(source.extension, [])
+            sources.append(source)
+            self.sources += 1
+        for name, sources in extensions.items():
+            if name is None:
+                self.extensions.append({
+                        'title': _('Default code sources'),
+                        'id': '0',
+                        'description': '',
+                        'sources': sources})
+                continue
+            identifier = str(name).encode('base64').strip().rstrip('=')
+            extension = extensionRegistry.get_extension(name)
+            if extension is None:
+                self.extensions.append({
+                        'title': name,
+                        'id': identifier,
+                        'description': '',
+                        'sources': sources})
+                continue
+            self.extensions.append({
+                    'title': extension.title,
+                    'id': identifier,
+                    'description': extension.description,
+                    'sources': sources,
+                    })
+        self.extensions.sort(key=operator.itemgetter('title'))
+        need(jquery)
 
 
 class ManageSourcesErrors(silvaviews.ZMIView):

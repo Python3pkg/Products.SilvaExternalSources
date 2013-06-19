@@ -9,9 +9,21 @@
 
       <style type="text/css">
         .form-checkbox-help {
-           margin: 0.5em 0px 1.5em 2em;
+        margin: 0.5em 0px 1.5em 2em;
         }
       </style>
+      <script>
+        (function($) {
+           $(document).ready(function() {
+              $('h3').bind('click', function() {
+                  $(this).next().slideToggle();
+              });
+              $('.check-them-all').bind('change', function() {
+                  $('.' + $(this).attr('id')).click();
+              });
+           });
+        })(jQuery);
+      </script>
 
       <div class="system-msg"
            i18n:translate=""
@@ -27,34 +39,57 @@
       <tal:installables
          tal:condition="view/sources">
         <p i18n:translate="">
-          You can here install new code sources in your Silva site:
+          You can here install <span i18n:name="count"
+          tal:content="view/sources" /> new code sources in your Silva
+          site:
         </p>
 
         <form>
-          <div tal:repeat="source view/sources">
-            <tal:details tal:define="id source/identifier;
-                                     working source/validate">
-              <input type="checkbox" name="locations" value="#" id="#"
-                     tal:attributes="disabled python: not working and 'disabled' or None;
-                                     value source/location;
-                                     id id" />
-              <label class="form-label" for="#"
-                     tal:attributes="for id">
-                <span tal:replace="source/title" />
-                (<span tal:replace="id" />)
-              </label>
-              <i tal:condition="not: working"
-                 style="font-weight: bold; color: red;"
-                 i18n:translate="">
-                This source is incomplete and cannot be installed.
-              </i>
-              <p class="form-help form-checkbox-help">
-                <span tal:replace="source/description" />
-                <br />
-                (File system path : <span tal:replace="source/location" />)
+          <tal:extension tal:repeat="extension view/extensions">
+            <h3 title="Click to hide or display"
+                tal:content="extension/title" />
+
+            <div>
+              <p tal:condition="extension/description"
+                 tal:content="extension/description" />
+
+              <p>
+                <input type="checkbox" class="check-them-all"
+                       tal:attributes="id string:check-${extension/id}" />
+                <label tal:attributes="for string:check-${extension/id}"
+                       i18n:translate="">
+                  Select all sources in this extension
+                </label>
               </p>
-            </tal:details>
-          </div>
+
+              <div tal:repeat="source extension/sources">
+                <tal:details tal:define="id source/identifier;
+                                         working source/validate">
+                  <input type="checkbox" name="locations" value="#" id="#" class="#"
+                         tal:attributes="disabled python: not working and 'disabled' or None;
+                                         value source/location;
+                                         class string:check-${extension/id};
+                                         id id" />
+                  <label class="form-label" for="#"
+                         tal:attributes="for id">
+                    <span tal:replace="source/title" />
+                    (<span tal:replace="id" />)
+                  </label>
+                  <i tal:condition="not: working"
+                     style="font-weight: bold; color: red;"
+                     i18n:translate="">
+                    This source is incomplete and cannot be installed.
+                  </i>
+                  <p class="form-help form-checkbox-help">
+                    <span tal:replace="source/description" />
+                    <br />
+                    (File system path : <span tal:replace="source/location" />)
+                  </p>
+                </tal:details>
+              </div>
+            </div>
+          </tal:extension>
+
           <input type="submit" name="install" value="Install"
                  i18n:attributes="value" />
           <input type="submit" name="refresh" value="Refresh"

@@ -691,7 +691,7 @@ class SourcesErrorsReporter(grok.GlobalUtility):
 class ManageExistingCodeSources(silvaviews.ZMIView):
     grok.name('manage_existing_codesources')
 
-    def update(self, find=False, below=None, child=False, update=False):
+    def update(self, find=False, below=None, child=True, update=False):
         self.status = None
         if find:
             self.context.find_installed_sources()

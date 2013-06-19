@@ -40,17 +40,20 @@ class SourceAssetVersion(Version):
     _parameter_identifier = None
 
     security.declarePrivate('set_parameter_identifier')
+
     def set_parameters_identifier(self, identifier):
         self._parameter_identifier = identifier
         if hasattr(aq_base(self), '_v_original_source'):
             delattr(self, '_v_original_source')
 
     security.declarePrivate('get_controller')
+
     def get_controller(self, request):
         manager = getWrapper(self, IExternalSourceManager)
         return manager(request, instance=self._parameter_identifier)
 
     security.declarePrivate('get_source')
+
     def get_source(self):
         if not hasattr(aq_base(self), '_v_original_source'):
             manager = getWrapper(self, IExternalSourceManager)
@@ -59,6 +62,7 @@ class SourceAssetVersion(Version):
         return self._v_original_source
 
     security.declarePrivate('get_parameters')
+
     def get_parameters(self):
         manager = getWrapper(self, IExternalSourceManager)
         parameters, _ = manager.get_parameters(self._parameter_identifier)
@@ -72,16 +76,18 @@ class SourceAsset(VersionedNonPublishable):
     """
     meta_type = "Silva Source Asset"
     grok.implements(ISourceAsset)
-    silvaconf.icon('www/codesource.png')
+    silvaconf.icon('www/code_source_asset.png')
     silvaconf.version_class(SourceAssetVersion)
     security = ClassSecurityInfo()
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'get_parameters_form')
+
     def get_parameters_form(self):
         return None
 
     security.declarePrivate('get_source')
+
     def get_viewable_source(self):
         viewable = self.get_viewable()
         if viewable is not None:
@@ -93,6 +99,7 @@ class SourceAsset(VersionedNonPublishable):
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'to_html')
+
     def to_html(self, content, request, **parameters):
         viewable = self.get_viewable()
         if viewable is not None:
@@ -108,6 +115,7 @@ class SourceAsset(VersionedNonPublishable):
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'get_icon')
+
     def get_icon(self):
         source = self.get_viewable_source()
         if source is not None:
@@ -116,6 +124,7 @@ class SourceAsset(VersionedNonPublishable):
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'is_usable')
+
     def is_usable(self):
         source = self.get_viewable_source()
         if source is not None:
@@ -124,6 +133,7 @@ class SourceAsset(VersionedNonPublishable):
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'is_previewable')
+
     def is_previewable(self, **parameters):
         source = self.get_viewable_source()
         if source is not None:
@@ -132,6 +142,7 @@ class SourceAsset(VersionedNonPublishable):
 
     security.declareProtected(
         permissions.AccessContentsInformation, 'is_cacheable')
+
     def is_cacheable(self, **parameters):
         source = self.get_viewable_source()
         if source is not None:
@@ -308,4 +319,3 @@ class SourceAssetView(silvaviews.View):
         text = _('Sorry, this ${meta_type} is not viewable.',
                  mapping={'meta_type': self.context.meta_type})
         return u'<p>%s</p>' % translate(text, context=self.request)
-

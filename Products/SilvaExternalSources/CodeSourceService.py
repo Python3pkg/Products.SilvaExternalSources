@@ -735,7 +735,7 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
                         if len(candidates) == 1:
                             source._fs_location = candidates[0]
                             message = _('Source associated with ${location}.',
-                                        dict(location=candidates[0]))
+                                        mapping=dict(location=candidates[0]))
                 self.sources.append({'id': source.getId(),
                                      'problems': source.test_source(),
                                      'title': source.get_title(),

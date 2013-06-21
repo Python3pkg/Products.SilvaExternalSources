@@ -697,7 +697,8 @@ class SourcesErrorsReporter(grok.GlobalUtility):
 class ManageExistingCodeSources(silvaviews.ZMIView):
     grok.name('manage_existing_codesources')
 
-    def update(self, find=False, below=None, child=False, update=False):
+    def update(self, find=False, below=None, child=False,
+               update=False, bind=False):
         self.status = None
         if find:
             self.context.find_installed_sources()
@@ -723,11 +724,18 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
                                (not child and '/' in path[len(below):]))):
                     continue
                 message = None
-                if update and ICodeSource.providedBy(source):
-                    installable = source._get_installable()
-                    if installable is not None:
-                        installable.update(source, True)
-                        message = _('Source updated.')
+                if ICodeSource.providedBy(source):
+                    if update:
+                        installable = source._get_installable()
+                        if installable is not None:
+                            installable.update(source, True)
+                            message = _('Source updated.')
+                    elif bind and not source.get_fs_location():
+                        candidates = source.manage_getFileSystemLocations()
+                        if len(candidates) == 1:
+                            source._fs_location = candidates[0]
+                            message = _('Source associated with ${location}.',
+                                        dict(location=candidates[0]))
                 self.sources.append({'id': source.getId(),
                                      'problems': source.test_source(),
                                      'title': source.get_title(),
@@ -822,11 +830,21 @@ class ManageSourcesErrors(silvaviews.ZMIView):
         self.errors = errors.fetch()
 
 
+def check_extension(name):
+    if ':' in name:
+        name, _ = name.split(':', 1)
+    return name in pkg_resources.working_set.by_key
+
+
 class IExportCodeSourcesFields(Interface):
 
     extension_name = schema.TextLine(
         title=u'Extension name',
-        constraint=lambda s : s in pkg_resources.working_set.by_key,
+        description=_(
+            u"Enter the extension name and the entry point name, seperated by "
+            u"a :. The entry point name defaults to defaults if it is not "
+            u"specified."),
+        constraint=check_extension,
         required=True)
     recursive = schema.Bool(
         title=u'Recursive export ?',
@@ -847,9 +865,12 @@ class ManageExportCodeSources(silvaforms.ZMIForm):
         if errors:
             return silvaforms.FAILURE
         exported = []
-        extension = pkg_resources.working_set.by_key[values['extension_name']]
+        extension_name = values['extension_name']
+        if ':' in extension_name:
+            extension_name, entry_name = extension_name.split(':', 1)
+        extension = pkg_resources.working_set.by_key[extension_name]
         directory = os.path.dirname(extension.load_entry_point(
-                'Products.SilvaExternalSources.sources', 'defaults').__file__)
+                'Products.SilvaExternalSources.sources', entry_name).__file__)
 
         if values['recursive']:
             sources = walk_silva_tree(self.context, requires=ICodeSource)

@@ -74,12 +74,19 @@
                tal:attributes="checked python:view.include_child and 'checked' or None" />
         <label for="child" i18n:translate="">Include sub-folders ?</label>
         <input type="submit" name="filter" value="Filter"
-               i18n:attributes="value" /> <br/>
+               title="Filter the list of code source based on path criteria"
+               i18n:attributes="value title" /> <br/>
         <h4 i18n:translate="">
-          Update all the code sources from the filesystem
+          Manage all the code sources from the filesystem
         </h4>
         <input type="submit" name="update"
                value="Update them all"
+               title="Update code sources code using filesystem code"
+               onclick="if (!confirm('Are you sure?')) return false"
+               i18n:attributes="value title" />
+        <input type="submit" name="bind"
+               value="Bind them all"
+               title="Bind a code source to filesystem code"
                onclick="if (!confirm('Are you sure?')) return false"
                i18n:attributes="value" />
       </form>

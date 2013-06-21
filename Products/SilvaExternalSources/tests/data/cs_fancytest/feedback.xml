@@ -16,7 +16,7 @@
       <title>Default</title>
       <fields>
 
-      <field><id>name</id> <type>StringField</type>
+      <field><id>fullname</id> <type>StringField</type>
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>

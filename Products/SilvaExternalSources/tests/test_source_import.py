@@ -49,7 +49,7 @@ class CodeSourceImportTestCase(unittest.TestCase):
             source.js.objectIds(),
             ['advanced.js'])
 
-    def test_import_and_export_fancy(self):
+    def test_import_export_and_update_fancy(self):
         installable = CodeSourceInstallable(
             'test:', self.get_path(), os.listdir(self.get_path()))
         installable.install(self.root)
@@ -68,15 +68,27 @@ class CodeSourceImportTestCase(unittest.TestCase):
 
         # We export again the source.
         installable.export(source)
-        self.assertEqual(
+        self.assertItemsEqual(
             os.listdir(self.get_path()),
             ['css', 'feedback.xml', 'js', 'parameters.xml',
              'README.txt', 'script.pt', 'source.ini'])
-        self.assertEqual(
+        self.assertItemsEqual(
             os.listdir(self.get_path('css')),
             ['advanced.css.dtml'])
-        self.assertEqual(
+        self.assertItemsEqual(
             os.listdir(self.get_path('js')),
+            ['advanced.js'])
+
+        # And update it
+        installable.update(source, purge=True)
+        self.assertItemsEqual(
+            source.objectIds(),
+            ['css', 'feedback', 'js', 'README', 'script'])
+        self.assertItemsEqual(
+            source.css.objectIds(),
+            ['advanced.css'])
+        self.assertItemsEqual(
+            source.js.objectIds(),
             ['advanced.js'])
 
 

@@ -20,7 +20,7 @@ cacheable = no
 
 """
 
-TEST_SCRIPT = """## Script (Python) "script"
+TEST_SCRIPT = """## Script (Python) "%s"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
@@ -62,7 +62,7 @@ class CodeSourceExportTestCase(unittest.TestCase):
         factory = self.root.source.manage_addProduct['PythonScripts']
         factory.manage_addPythonScript('script')
         script = self.root.source._getOb('script')
-        script.write(TEST_SCRIPT)
+        script.write(TEST_SCRIPT % 'script')
 
         installable = CodeSourceInstallable('test:', self.directory, [])
         installable.export(self.root.source)
@@ -74,7 +74,30 @@ class CodeSourceExportTestCase(unittest.TestCase):
         self.assertIsFile('source.ini')
         self.assertIsFile('parameters.xml')
         with open(self.get_path('script.py'), 'rb') as script:
-            self.assertEqual(script.read(), TEST_SCRIPT)
+            self.assertEqual(script.read(), TEST_SCRIPT  % 'script')
+        with open(self.get_path('source.ini'), 'rb') as script:
+            self.assertEqual(script.read(), TEST_SOURCE)
+
+    def test_python_script_with_extension(self):
+        """Test export a code source with a script with an extension.
+        """
+        # Add the rendering script
+        factory = self.root.source.manage_addProduct['PythonScripts']
+        factory.manage_addPythonScript('script.xml')
+        script = self.root.source._getOb('script.xml')
+        script.write(TEST_SCRIPT  % 'script.xml')
+
+        installable = CodeSourceInstallable('test:', self.directory, [])
+        installable.export(self.root.source)
+
+        self.assertItemsEqual(
+            os.listdir(self.directory),
+            ['parameters.xml', 'script.xml.py', 'source.ini'])
+        self.assertIsFile('script.xml.py')
+        self.assertIsFile('source.ini')
+        self.assertIsFile('parameters.xml')
+        with open(self.get_path('script.xml.py'), 'rb') as script:
+            self.assertEqual(script.read(), TEST_SCRIPT  % 'script.xml')
         with open(self.get_path('source.ini'), 'rb') as script:
             self.assertEqual(script.read(), TEST_SOURCE)
 
@@ -109,12 +132,12 @@ class CodeSourceExportTestCase(unittest.TestCase):
         factory = self.root.source.helpers.manage_addProduct['PythonScripts']
         factory.manage_addPythonScript('script')
         script = self.root.source.helpers._getOb('script')
-        script.write(TEST_SCRIPT)
+        script.write(TEST_SCRIPT % "script")
         # Add the rendering script
         factory = self.root.source.manage_addProduct['PythonScripts']
         factory.manage_addPythonScript('script')
         script = self.root.source._getOb('script')
-        script.write(TEST_SCRIPT)
+        script.write(TEST_SCRIPT % "script")
 
         installable = CodeSourceInstallable('test:', self.directory, [])
         installable.export(self.root.source)
@@ -130,9 +153,9 @@ class CodeSourceExportTestCase(unittest.TestCase):
         with open(self.get_path('source.ini'), 'rb') as script:
             self.assertEqual(script.read(), TEST_SOURCE)
         with open(self.get_path('script.py'), 'rb') as script:
-            self.assertEqual(script.read(), TEST_SCRIPT)
+            self.assertEqual(script.read(), TEST_SCRIPT  % "script")
         with open(self.get_path('helpers', 'script.py'), 'rb') as script:
-            self.assertEqual(script.read(), TEST_SCRIPT)
+            self.assertEqual(script.read(), TEST_SCRIPT  % "script")
 
 
 def test_suite():

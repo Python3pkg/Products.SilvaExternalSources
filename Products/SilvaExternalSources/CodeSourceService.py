@@ -114,9 +114,7 @@ class FileExporter(Exporter):
 class ScriptExporter(PageTemplateExporter):
 
     def get_path(self, identifier):
-        if '.' not in identifier:
-            return identifier + '.py'
-        return identifier
+        return identifier + '.py'
 
 
 class DTMLExporter(Exporter):

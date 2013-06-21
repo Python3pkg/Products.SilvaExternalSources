@@ -79,6 +79,9 @@
         <h4 i18n:translate="">
           Manage all the code sources from the filesystem
         </h4>
+        <p i18n:translate="">
+          Those operations applies to the filtered list of know code sources.
+        </p>
         <input type="submit" name="update"
                value="Update them all"
                title="Update code sources code using filesystem code"

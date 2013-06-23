@@ -32,14 +32,14 @@
         <p i18n:translate="">
           There are currently
           <span tal:replace="python:len(view.sources)" i18n:name="count" />
-          known code sources likely to be used under
+          known code sources possibly in use under
           <span tal:replace="view/filter" i18n:name="path" /> in this Silva
           site.
         </p>
 
         <p i18n:translate="">
           Sources in red are broken and need attention. However, it is
-          possible that other sources are broken as well and are not
+          possible that other sources can be broken and not
           displayed in red.
         </p>
 
@@ -51,7 +51,7 @@
                tal:attributes="href string:${source/url}/editCodeSource;
                                title source/path">
               <span tal:replace="source/id" />
-            </a> : <span tal:replace="source/title" />
+            </a>: <span class="form-help" tal:content="source/title" />
             <tal:message tal:condition="source/message">
               : <span class="message" tal:content="source/message" />
             </tal:message>
@@ -80,7 +80,7 @@
           Manage all the code sources from the filesystem
         </h4>
         <p i18n:translate="">
-          Those operations applies to the filtered list of know code sources.
+          Those operations apply to the filtered list of known code sources.
         </p>
         <input type="submit" name="update"
                value="Update them all"
@@ -97,7 +97,7 @@
 
       <p tal:condition="not:view/sources"
          i18n:translate="">
-        There is no known code sources is this site.
+        There are no known code sources is this site.
         Try to find them with the actions below.
       </p>
 
@@ -107,8 +107,8 @@
 
       <p i18n:translate="">
         If no code sources show up here, but you have some created,
-        you can find all existing code sources using this
-        action below. This can take a really long time.
+        you can find all existing code sources using this action
+        below. In large sites this can take a really long time.
       </p>
 
       <form action="#" method="post"

@@ -218,9 +218,10 @@ class ImageImporter(FileImporter):
     """Install an Image.
     """
 
-    def __call__(self, context, identifier, data):
-        factory = context.manage_addProduct['OFSP']
-        factory.manage_addImage(identifier, file=data)
+    def __call__(self, context, identifier, path):
+        with open(path, 'rb') as data:
+            factory = context.manage_addProduct['OFSP']
+            factory.manage_addImage(identifier, file=data)
 
 
 class PythonScriptImporter(Importer):

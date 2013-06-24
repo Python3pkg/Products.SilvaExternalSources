@@ -82,7 +82,7 @@
                   </i>
                   <p class="form-help form-checkbox-help">
                     <span tal:replace="source/description" />
-                    <br />
+                    <br tal:condition="source/description" />
                     (File system path : <span tal:replace="source/location" />)
                   </p>
                 </tal:details>

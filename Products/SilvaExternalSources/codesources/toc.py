@@ -5,7 +5,6 @@
 # Helpers for cs_toc...
 
 from AccessControl import ModuleSecurityInfo
-
 from silva.core.interfaces import IAddableContents, IPublishable
 
 module_security = ModuleSecurityInfo(

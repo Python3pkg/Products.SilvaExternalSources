@@ -20,6 +20,7 @@ def render_content(content, request, suppress_title=False):
             or IBrowserRequest.providedBy(request)):
         # You can't see the content or don't have a valid request.
         return u''
+    content = content.get_silva_object()
     if suppress_title:
         if IDocument.providedBy(content):
             version = content.get_viewable()

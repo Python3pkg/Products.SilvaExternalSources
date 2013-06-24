@@ -39,21 +39,25 @@ def render_content(content, request, suppress_title=False):
 
 
 module_security.declarePublic('include_resource')
-def include_resource(css=None, js=None, requires=[]):
+def include_resource(css=None, js=None, requires=[], bottom=False):
     """Add a Javascript or CSS to the document head. It can depends on
     other resources, like for instance jquery::
 
       include_resource(js='http://url', requires=['jquery'])
+
+    It returns a resource that can be used as dependencies again.
     """
     pass
 
 
 module_security.declarePublic('include_snippet')
-def include_snippet(css=None, js=None, requires=[]):
+def include_snippet(css=None, js=None, requires=[], bottom=False):
     """Include a Javascript or CSS snippet in the document head. It
     can depends on other resources, like for instance jquery::
 
       include_resource(js='alert("I like JS !");', requires=['jquery'])
+
+    It returns a resource that can be used as dependencies again.
     """
     pass
 

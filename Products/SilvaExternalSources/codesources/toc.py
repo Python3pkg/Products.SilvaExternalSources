@@ -5,19 +5,16 @@
 # Helpers for cs_toc...
 
 from AccessControl import ModuleSecurityInfo
-from silva.core.interfaces import IAddableContents, IPublishable
+import zope.deferredimport
 
 module_security = ModuleSecurityInfo(
     'Products.SilvaExternalSources.codesources.toc')
-
-
 module_security.declarePublic('get_publishable_content_types')
-def get_publishable_content_types(context):
-    container = context.get_root()
-    return IAddableContents(container).get_all_addables(require=IPublishable)
-
-
 module_security.declarePublic('get_container_content_types')
-def get_container_content_types(context):
-    container = context.get_root()
-    return IAddableContents(container).get_all_addables()
+
+zope.deferredimport.deprecated(
+    'Please refresh your TOC code source',
+    get_publishable_content_types='Products.SilvaExternalSources.codesources.api:get_publishable_content_types',
+    get_container_content_types='Products.SilvaExternalSources.codesources.api:get_container_content_types')
+
+

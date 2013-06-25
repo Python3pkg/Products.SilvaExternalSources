@@ -58,8 +58,8 @@
           <view_separator>&lt;br /&gt;</view_separator>
         </values>
         <tales>
-          <default>python:modules['Products.SilvaExternalSources.codesources.toc'].get_publishable_content_types(context)</default>
-          <items>python:modules['Products.SilvaExternalSources.codesources.toc'].get_container_content_types(context)</items>
+          <default>python:modules['Products.SilvaExternalSources.codesources.api].get_publishable_content_types(context)</default>
+          <items>python:modules['Products.SilvaExternalSources.codesources.api].get_container_content_types(context)</items>
         </tales>
         <messages>
           <message name="external_validator_failed">The input failed the external validator.</message>

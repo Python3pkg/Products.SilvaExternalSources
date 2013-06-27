@@ -96,7 +96,7 @@ def include_snippet(css=None, js=None, requires=[], bottom=False):
         resources = [js]
         category = 'js'
     else:
-        resources = css
+        resources = [css]
         category = 'css'
     return _include_resources(
         Snippet, resources, category, requires, bottom)

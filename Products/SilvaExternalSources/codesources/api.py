@@ -5,6 +5,7 @@ from AccessControl.security import checkPermission
 from silva.app.document.interfaces import IDocument
 from silva.core.interfaces import IAddableContents, IPublishable
 from silva.core.interfaces import IAutoTOC
+from silva.fanstatic import Group, Snippet, ExternalResource
 from zope.component import getMultiAdapter, queryMultiAdapter
 from zope.publisher.interfaces.browser import IBrowserRequest
 
@@ -39,6 +40,20 @@ def render_content(content, request, suppress_title=False):
     return u''
 
 
+def _include_resources(factory, resources, category, requires, bottom):
+
+    def create(resource):
+        return factory(resource, category=category,
+                       depends=requires, bottom=bottom)
+
+    if len(resources) == 1:
+        result = create(resources[0])
+    else:
+        result = Group(map(create, resources))
+    result.need()
+    return result
+
+
 module_security.declarePublic('include_resource')
 def include_resource(css=None, js=None, requires=[], bottom=False):
     """Add a Javascript or CSS to the document head. It can depends on
@@ -48,7 +63,22 @@ def include_resource(css=None, js=None, requires=[], bottom=False):
 
     It returns a resource that can be used as dependencies again.
     """
-    pass
+    if css is None:
+        if not isinstance(js, (list, tuple)):
+            if js is None:
+                raise ValueError("Resources to include are missing")
+            resources = [js]
+        else:
+            resources = js
+        category = 'js'
+    else:
+        if not isinstance(css, (list, tuple)):
+            resources = [css]
+        else:
+            resources = css
+        category = 'css'
+    return _include_resources(
+        ExternalResource, resources, category, requires, bottom)
 
 
 module_security.declarePublic('include_snippet')
@@ -60,7 +90,16 @@ def include_snippet(css=None, js=None, requires=[], bottom=False):
 
     It returns a resource that can be used as dependencies again.
     """
-    pass
+    if css is None:
+        if js is None:
+            raise ValueError("Snippet to include is missing")
+        resources = [js]
+        category = 'js'
+    else:
+        resources = css
+        category = 'css'
+    return _include_resources(
+        Snippet, resources, category, requires, bottom)
 
 
 module_security.declarePublic('get_publishable_content_types')

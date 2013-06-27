@@ -1,9 +1,8 @@
 
-
 from AccessControl import ModuleSecurityInfo
 from AccessControl.security import checkPermission
 from silva.app.document.interfaces import IDocument
-from silva.core.interfaces import IAddableContents, IPublishable
+from silva.core.interfaces import IAddableContents, IPublishable, ITreeContents
 from silva.core.interfaces import IAutoTOC
 from silva.fanstatic import Group, Snippet, ExternalResource
 from zope.component import getMultiAdapter, queryMultiAdapter
@@ -117,3 +116,18 @@ def get_container_content_types(context):
     """
     container = context.get_root()
     return IAddableContents(container).get_all_addables()
+
+
+module_security.declarePublic('get_content_tree')
+def get_content_tree(context, depth):
+    # This is extremely slow and performance-wise bad
+    return ITreeContents(context).get_tree(depth)
+
+
+module_security.declarePublic('get_content_public_tree')
+def get_content_public_tree(context, depth):
+    # This is extremely slow and performance-wise bad
+    return ITreeContents(context).get_public_tree(depth)
+
+
+

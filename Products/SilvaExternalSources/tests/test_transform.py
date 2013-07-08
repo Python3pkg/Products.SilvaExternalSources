@@ -137,6 +137,52 @@ class CreateSourceTransformerTestCase(SourceTransformerTestCase):
         self.assertEqual(len(sources.all()), 1)
 
 
+class EditCustomSourceTransformerTestCase(SourceTransformerTestCase):
+
+    def setUp(self):
+        super(EditCustomSourceTransformerTestCase, self).setUp()
+        factory = self.root.manage_addProduct['SilvaExternalSources']
+        factory.manage_addCodeSource('cs_source', 'Test Source', 'script')
+        factory = self.root.cs_source.manage_addProduct['PythonScripts']
+        factory.manage_addPythonScript('script')
+        script = self.root.cs_source._getOb('script')
+        script.write("""
+##parameters=model,version,REQUEST
+
+return '<a href="http://silvacms.org">SilvaCMS</a><b>Silva is cool</b>'
+""")
+        version = self.root.document.get_editable()
+        sources = getWrapper(version, IExternalSourceManager)
+        controller = sources(TestRequest(form={}), name='cs_source')
+        controller.create()
+        self.instance_key = controller.getId()
+        self.saved_text = """
+<h1>This is a title</h1>
+<div class="external-source" data-source-instance="%s">
+</div>
+<p>Well good bye!</p>
+""" % self.instance_key
+
+    def test_display_source_with_multi_tags(self):
+        """Display and render a source that have multiple top level
+        tags.
+        """
+        version = self.root.document.get_editable()
+        factory = getMultiAdapter(
+            (version, TestRequest()), ITransformerFactory)
+        transformer = factory(
+            'body', version.body, self.saved_text, IDisplayFilter)
+        tests.assertXMLEqual(
+            unicode(transformer),
+"""
+<h1>This is a title</h1>
+<a href="http://silvacms.org">SilvaCMS</a>
+<b>Silva is cool</b>
+<p>Well good bye!</p>
+""")
+        sources = getWrapper(version, IExternalSourceManager)
+        self.assertEqual(len(sources.all()), 1)
+
 
 class EditSourceTransformerTestCase(SourceTransformerTestCase):
 
@@ -167,7 +213,35 @@ class EditSourceTransformerTestCase(SourceTransformerTestCase):
         tests.assertXMLEqual(
             unicode(transformer),
 """
-<div class="external-source">
+<div class="citation">
+ Don't trust citations on the Internet
+ <div class="author">
+  Charlemagne
+ </div>
+ <div class="source">
+  The Internet
+ </div>
+</div>
+""")
+        sources = getWrapper(version, IExternalSourceManager)
+        self.assertEqual(len(sources.all()), 1)
+
+    def test_display_source_with_alignement(self):
+        """If you render without any layer, you will see the code
+        source rendered.
+        """
+        version = self.root.document.get_editable()
+        factory = getMultiAdapter(
+            (version, TestRequest()), ITransformerFactory)
+        transformer = factory(
+            'body', version.body, """
+<div class="external-source float-left" data-source-instance="%s">
+</div>
+""" % self.instance_key, IDisplayFilter)
+        tests.assertXMLEqual(
+            unicode(transformer),
+"""
+<div class="external-source float-left">
  <div class="citation">
   Don't trust citations on the Internet
   <div class="author">
@@ -179,7 +253,34 @@ class EditSourceTransformerTestCase(SourceTransformerTestCase):
  </div>
 </div>
 """)
+        sources = getWrapper(version, IExternalSourceManager)
+        self.assertEqual(len(sources.all()), 1)
 
+    def test_display_source_with_default_alignement(self):
+        """If you render without any layer, you will see the code
+        source rendered.
+        """
+        version = self.root.document.get_editable()
+        factory = getMultiAdapter(
+            (version, TestRequest()), ITransformerFactory)
+        transformer = factory(
+            'body', version.body, """
+<div class="external-source default" data-source-instance="%s">
+</div>
+""" % self.instance_key, IDisplayFilter)
+        tests.assertXMLEqual(
+            unicode(transformer),
+"""
+<div class="citation">
+ Don't trust citations on the Internet
+ <div class="author">
+  Charlemagne
+ </div>
+ <div class="source">
+  The Internet
+ </div>
+</div>
+""")
         sources = getWrapper(version, IExternalSourceManager)
         self.assertEqual(len(sources.all()), 1)
 
@@ -244,9 +345,11 @@ class EditSourceTransformerTestCase(SourceTransformerTestCase):
         sources = getWrapper(version, IExternalSourceManager)
         self.assertEqual(len(sources.all()), 0)
 
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(CreateSourceTransformerTestCase))
     suite.addTest(unittest.makeSuite(EditSourceTransformerTestCase))
+    suite.addTest(unittest.makeSuite(EditCustomSourceTransformerTestCase))
     return suite
 

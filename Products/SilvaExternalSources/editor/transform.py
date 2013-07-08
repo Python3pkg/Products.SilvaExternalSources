@@ -113,6 +113,8 @@ class ExternalSourceInputFilter(TransformationFilter):
             node.attrib['data-silva-instance'] = instance or ''
 
 
+DEFAULT_CLASSES = set(['external-source', 'default'])
+
 class ExternalSourceDisplayFilter(TransformationFilter):
     """Updater External Source information on edit.
     """
@@ -135,6 +137,8 @@ class ExternalSourceDisplayFilter(TransformationFilter):
                     raise ParametersMissingError()
                 source = self.sources(self.request, instance=instance)
                 html = source.render()
+                keep = not set(node.attrib['class'].split()).issubset(
+                    DEFAULT_CLASSES)
             except SourceError, error:
                 html = silvaviews.render(error, self.request).strip()
                 if not html:
@@ -142,6 +146,16 @@ class ExternalSourceDisplayFilter(TransformationFilter):
                 # There is already a class, as it is used to match
                 # in the XPath.
                 node.attrib['class'] += ' broken-source'
+                keep = True
 
             result = lxml.html.fragment_fromstring(html, create_parent="div")
-            node.extend(result)
+            if keep:
+                node.extend(result)
+            else:
+                parent = node.getparent()
+                if parent is not None:
+                    index = parent.index(node)
+                    for child in result:
+                        parent.insert(index, child)
+                        index += 1
+                    parent.remove(node)

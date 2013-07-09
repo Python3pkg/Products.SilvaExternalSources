@@ -108,7 +108,9 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             root = root.get_default()
         if self.parameters is not None:
             try:
-                self.parameters.test_form(root)
+                self.parameters.test_form(
+                    context=root,
+                    bad_fields=['context', 'content', 'model', 'script'])
             except ValueError as error:
                 errors.extend(error.args)
         if not self.title:

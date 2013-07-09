@@ -159,3 +159,4 @@ class ExternalSourceDisplayFilter(TransformationFilter):
                         parent.insert(index, child)
                         index += 1
                     parent.remove(node)
+

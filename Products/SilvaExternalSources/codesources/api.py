@@ -32,7 +32,7 @@ def render_content(content, request, suppress_title=False):
             toc = getMultiAdapter((content, request), name="toc")
             toc.update()
             return toc.render()
-        return u''
+        # suppress title is not supported for other contents, render them publicly.
     renderer = queryMultiAdapter((content, request), name='content.html')
     if renderer is not None:
         return renderer()

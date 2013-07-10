@@ -42,8 +42,8 @@ def render_content(content, request, suppress_title=False):
 def _include_resources(factory, resources, category, requires, bottom):
 
     def create(resource, depends):
-        return factory(resource, category=category,
-                       depends=depends, bottom=bottom)
+        return [factory(resource, category=category,
+                        depends=depends, bottom=bottom)]
 
     # If the ordering in fanstatic would not randomize the relative
     # order of the resources the code would be:
@@ -55,9 +55,10 @@ def _include_resources(factory, resources, category, requires, bottom):
     # But instead we have to make each resource depend on each other.
     for resource in resources:
         requires = create(resource, requires)
+    result = requires[0]
 
-    requires.need()
-    return requires
+    result.need()
+    return result
 
 
 module_security.declarePublic('include_resource')

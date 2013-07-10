@@ -41,16 +41,23 @@ def render_content(content, request, suppress_title=False):
 
 def _include_resources(factory, resources, category, requires, bottom):
 
-    def create(resource):
+    def create(resource, depends):
         return factory(resource, category=category,
-                       depends=requires, bottom=bottom)
+                       depends=depends, bottom=bottom)
 
-    if len(resources) == 1:
-        result = create(resources[0])
-    else:
-        result = Group(map(create, resources))
-    result.need()
-    return result
+    # If the ordering in fanstatic would not randomize the relative
+    # order of the resources the code would be:
+    # if len(resources) == 1:
+    #     result = create(resources[0], requires)
+    # else:
+    #     result = Group(map(lambda r: create(r, requires), resources))
+
+    # But instead we have to make each resource depend on each other.
+    for resource in resources:
+        requires = create(resource, requires)
+
+    requires.need()
+    return requires
 
 
 module_security.declarePublic('include_resource')

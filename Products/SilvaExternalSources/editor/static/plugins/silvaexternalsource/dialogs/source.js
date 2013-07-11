@@ -75,12 +75,14 @@
         $.ajax({
             url: rest_url(PARAMETERS_REST_URL),
             data: parameters,
-            dataType: 'html',
+            dataType: 'json',
             type: 'POST',
-            success: function(html) {
+            success: function(data) {
                 var $form;
 
-                $container.html(html);
+                dialog.parts.title.setText(
+                    [$.trim(/^[^:]*/.exec(dialog.parts.title.getText())), ':', data.title].join(" "));
+                $container.html(data.parameters);
                 $form = $container.children('form');
                 $form.trigger('load-smiform', {form: $form, container: $form});
                 update_focus($form, dialog._, start_index);
@@ -270,6 +272,8 @@
             onShow: function() {
                 var data = {};
                 this.setupContent(data);
+                // Reset the title
+                this.parts.title.setText($.trim(/^[^:]*/.exec(this.parts.title.getText())));
             },
             onOk: function() {
                 var data = {};
@@ -325,6 +329,8 @@
                 };
 
                 this.setupContent(data);
+                // Reset the title
+                this.parts.title.setText($.trim(/^[^:]*/.exec(this.parts.title.getText())));
             },
             onOk: function() {
                 var data = {};

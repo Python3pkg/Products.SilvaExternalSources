@@ -78,7 +78,13 @@ class PreviewSource(SourceAPI):
 
     def POST(self):
         try:
-            return self.get_source().render(preview=True)
+            source = self.get_source()
+            html = source.render(preview=True).strip()
+            if not html:
+                # XXX Should support translation here (i.e. use a template)
+                return """<div><h3>%s</h3>
+<p>The source didn't produce any content.</p></div>""" % source.label
+            return html
         except SourceError as error:
             return silvaviews.render(error, self.request, preview=True)
 
@@ -122,7 +128,9 @@ class SourceParameters(SourceAPI):
                      'title': widget.title,
                      'description': widget.description,
                      'widget': widget.render()})
-        return self.template.render(self)
+        return self.json_response({
+                'title': source.label,
+                'parameters': self.template.render(self)})
 
 
 class SourceParametersValidator(SourceAPI):

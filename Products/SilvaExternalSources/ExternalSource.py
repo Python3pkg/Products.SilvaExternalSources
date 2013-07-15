@@ -447,7 +447,7 @@ class ExternalSourceController(silvaforms.FormData):
             info = u''.join(format_exception(*sys.exc_info()))
             getUtility(ISourceErrors).report(info)
             raise error.SourceRenderingError(self, info)
-        if template:
+        if not preview and template:
             html = template.replace('<!-- source output -->', html)
         return html
 

@@ -13,6 +13,7 @@ import persistent
 
 # Zope
 from AccessControl import ClassSecurityInfo
+from AccessControl.security import checkPermission
 from App.class_init import InitializeClass
 from zExceptions.ExceptionFormatter import format_exception
 import Acquisition
@@ -23,6 +24,7 @@ from Products.Silva import SilvaPermissions as permissions
 from silva.translations import translate as _
 from zeam.component import component
 from zeam.form import silva as silvaforms
+from zeam.form.ztk.widgets import TextField
 
 from . import errors as error
 from .interfaces import IExternalSource, IEditableExternalSource
@@ -32,7 +34,7 @@ from .interfaces import ISourceErrors
 from .interfaces import availableSources # BB
 
 logger = logging.getLogger('silva.externalsources')
-
+SETTINGS_PERMISSION = 'silva.ManageSilvaContentSettings'
 
 # BBB
 def getSourceForId(context, identifier):
@@ -183,6 +185,8 @@ InitializeClass(EditableExternalSource)
 class ExternalSourceParameters(persistent.Persistent):
     grok.implements(IExternalSourceInstance)
 
+    __source_template = None
+
     def __init__(self, parameter_identifier, source_identifier):
         self.__source_identifier = source_identifier
         self.__parameter_identifier = parameter_identifier
@@ -193,6 +197,13 @@ class ExternalSourceParameters(persistent.Persistent):
     def get_source_identifier(self):
         return self.__source_identifier
 
+    def get_source_template(self):
+        # A source template is an HTML chunk that can be used to warp
+        # around the result of an external source.
+        return self.__source_template
+
+    def set_source_template(self, template):
+        self.__source_template = template
 
 
 @component(IAnnotatable, provides=IExternalSourceManager)
@@ -252,26 +263,51 @@ class ExternalSourceManager(object):
         return ExternalSourceController(source, self, request, parameters)
 
 
+class InvalidSourceTemplate(ValueError):
+
+    def doc(self):
+        return _(u'The source template marker <!-- source output --> '
+                 u'is missing.')
+
+
+def validateSourceTemplate(value):
+    if '<!-- source output -->' not in value:
+        raise InvalidSourceTemplate()
+    return True
+
+
 class ExternalSourceController(silvaforms.FormData):
     grok.implements(IExternalSourceController)
     security = ClassSecurityInfo()
 
     actions = silvaforms.Actions()
-    fields = silvaforms.Fields()
-    dataManager = silvaforms.FieldValueDataManagerFactory
+    parameterFields = silvaforms.Fields()
+    settingFields = silvaforms.Fields()
     ignoreRequest = True
     ignoreContent = False
 
     def __init__(self, source, manager, request, instance):
-        super(ExternalSourceController, self).__init__(
-            manager.context, request, instance)
+        dataManager = [
+            (None,
+             lambda content: silvaforms.FieldValueDataManager(self, content))]
         self.manager = manager
         self.source = source
         self.__parent__ = manager.context # Enable security checks.
         if source is not None:
             fields = source.get_parameters_form()
             if fields is not None:
-                self.fields = silvaforms.Fields(fields)
+                self.parameterFields = silvaforms.Fields(fields)
+            if checkPermission(SETTINGS_PERMISSION, manager.context):
+                self.settingFields += TextField(
+                    identifier="source_template",
+                    title="Source template",
+                    constrainValue=validateSourceTemplate,
+                    required=False)
+                dataManager.append(
+                    ('source_template', silvaforms.SilvaDataManager))
+        self.dataManager = silvaforms.MultiDataManagerFactory(dataManager)
+        super(ExternalSourceController, self).__init__(
+            manager.context, request, instance)
 
     def getId(self):
         content = self.getContent()
@@ -286,11 +322,11 @@ class ExternalSourceController(silvaforms.FormData):
 
     def extractData(self, fields=None):
         if fields is None:
-            fields = self.fields
+            fields = self.parameterFields + self.settingFields
         return super(ExternalSourceController, self).extractData(fields)
 
     def editable(self):
-        return len(self.fields) != 0
+        return len(self.parameterFields) != 0
 
     @property
     def label(self):
@@ -303,6 +339,10 @@ class ExternalSourceController(silvaforms.FormData):
         if self.source is not None:
             return self.source.get_description()
         return u''
+
+    @property
+    def fields(self):
+        return self.parameterFields
 
     def indexes(self):
         # Return index entries for Silva Indexer.
@@ -323,7 +363,7 @@ class ExternalSourceController(silvaforms.FormData):
         assert self.getSourceId() == destination.getSourceId()
         source = self.getContentData()
         target = destination.getContentData()
-        for field in self.fields:
+        for field in self.parameterFields:
             try:
                 target.set(field.identifier, source.get(field.identifier))
             except KeyError:
@@ -343,7 +383,7 @@ class ExternalSourceController(silvaforms.FormData):
         if errors:
             return silvaforms.FAILURE
         manager = self.getContentData()
-        for field in self.fields:
+        for field in self.parameterFields + self.settingFields:
             value = data.getWithDefault(field.identifier)
             if value is not silvaforms.NO_CHANGE:
                 manager.set(field.identifier, value)
@@ -354,7 +394,7 @@ class ExternalSourceController(silvaforms.FormData):
         assert self.getContent() is not None, u'Cannot remove missing source'
         manager = self.getContentData()
         identifier = self.getId()
-        for field in self.fields:
+        for field in self.parameterFields:
             manager.delete(field.identifier)
         self.manager.remove(identifier)
         return silvaforms.SUCCESS
@@ -369,7 +409,9 @@ class ExternalSourceController(silvaforms.FormData):
             self.ignoreRequest = ignoreRequest
             self.ignoreContent = ignoreContent
         widgets = silvaforms.Widgets(form=self, request=self.request)
-        widgets.extend(self.fields)
+        widgets.extend(self.parameterFields)
+        if self.settingFields and not display:
+            widgets.extend(self.settingFields)
         widgets.update()
         return widgets
 
@@ -381,14 +423,16 @@ class ExternalSourceController(silvaforms.FormData):
         if preview and not self.source.is_previewable():
             raise error.SourcePreviewError(self)
         values = {}
-        if self.fields:
+        template = None
+        if self.parameterFields:
             if not self.ignoreRequest:
-                values, errors = self.extractData()
+                values, errors = self.extractData(self.parameterFields)
                 if errors:
                     raise error.ParametersError(errors)
             elif not self.ignoreContent and self.getContent() is not None :
+                template = self.getContent().get_source_template()
                 manager = self.getContentData()
-                for field in self.fields:
+                for field in self.parameterFields:
                     try:
                         value = manager.get(field.identifier)
                     except KeyError:
@@ -398,11 +442,13 @@ class ExternalSourceController(silvaforms.FormData):
                 raise error.ParametersError()
 
         try:
-            return self.source.to_html(self.context, self.request, **values)
+            html = self.source.to_html(self.context, self.request, **values)
         except:
             info = u''.join(format_exception(*sys.exc_info()))
             getUtility(ISourceErrors).report(info)
             raise error.SourceRenderingError(self, info)
-
+        if template:
+            html = template.replace('<!-- source output -->', html)
+        return html
 
 InitializeClass(ExternalSourceController)

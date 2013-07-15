@@ -183,14 +183,29 @@ class WorkingControllerTestCase(TestCase):
         self.assertXMLEqual(controller.render(), """
 <div class="citation">
  je bent een klootzak
- <div class="author">
-  jou
- </div>
- <div class="source">
-  wikipedia
- </div>
+ <div class="author">jou</div>
+ <div class="source">wikipedia</div>
 </div>
 """)
+
+        # If you set a source template, it is used around the output
+        parameters, _ = self.sources.get_parameters(instance=self.identifier)
+        parameters.set_source_template("""<div class="portlet">
+   <!-- source output -->
+   <div class="portlet-footer" />
+</div>
+""")
+        self.assertXMLEqual(controller.render(), """
+<div class="portlet">
+ <div class="citation">
+   je bent een klootzak
+   <div class="author">jou</div>
+   <div class="source">wikipedia</div>
+ </div>
+ <div class="portlet-footer" />
+</div>
+""")
+
 
     def test_remove(self):
         """Remove a defined source.
@@ -226,11 +241,8 @@ class WorkingControllerTestCase(TestCase):
         self.assertXMLEqual(controller.render(), """
 <div class="citation">
  il fait soleil
- <div class="author">
-  moi
- </div>
- <div class="source">
- </div>
+ <div class="author">moi</div>
+ <div class="source"></div>
 </div>
 """)
 

@@ -855,7 +855,9 @@ class ManageExportCodeSources(silvaforms.ZMIForm):
     grok.name('manage_export_codesources')
     grok.context(IContainer)
 
-    label = 'Mass export of codesources'
+    label = u'Mass export of codesources'
+    description = u'Export every codesources located in this container and ' \
+        u'optionally in sub-containers.'
     fields = silvaforms.Fields(IExportCodeSourcesFields)
 
     @silvaforms.action('Export')

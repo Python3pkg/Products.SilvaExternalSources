@@ -255,6 +255,16 @@ class IExternalSourceInstance(Interface):
         parameters.
         """
 
+    def get_source_template():
+        """Return a string used a template to warp around the result
+        of the source.
+        """
+
+    def set_source_template(template):
+        """Set a string to use as a template to warp around the result
+        of the source.
+        """
+
 
 class IExternalSourceController(Interface):
     """This control an instance of a code source.

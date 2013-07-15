@@ -50,6 +50,9 @@ class SourceAPI(UIREST):
     grok.baseclass()
 
     def get_document(self):
+        """Return the document version to which the External source is
+        associated.
+        """
         if IVersionedContent.providedBy(self.context):
             version = self.context.get_editable()
             if version is not None:

@@ -1,4 +1,4 @@
-##parameters=model, version, ref, width, height, play='true', quality='high', params=''
+##parameters=REQUEST, model, version, ref, width, height, play='true', quality='high', params=''
 
 asset_url = ref.absolute_url()
 if width == '':

@@ -273,7 +273,6 @@
                 var data = {};
                 this.setupContent(data);
                 // Reset the title
-                $(this.parts.dialog.$).find('.cke_dialog_body').width('600px');
                 this.parts.title.setText($.trim(/^[^:]*/.exec(this.parts.title.getText())));
             },
             onOk: function() {
@@ -331,7 +330,6 @@
 
                 this.setupContent(data);
                 // Reset the title
-                $(this.parts.dialog.$).find('.cke_dialog_body').width('600px');
                 this.parts.title.setText($.trim(/^[^:]*/.exec(this.parts.title.getText())));
             },
             onOk: function() {

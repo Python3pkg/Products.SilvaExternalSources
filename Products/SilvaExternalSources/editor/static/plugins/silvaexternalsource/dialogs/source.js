@@ -1,12 +1,15 @@
 
 
 (function($, CKEDITOR) {
+    var API = CKEDITOR.plugins.silvaexternalsource,
+        LIST_SOURCES_REST_URL = '++rest++Products.SilvaExternalSources.source.availables',
+        VALIDATE_REST_URL = '++rest++Products.SilvaExternalSources.source.validate',
+        PARAMETERS_REST_URL = '++rest++Products.SilvaExternalSources.source.parameters';
 
-    var API = CKEDITOR.plugins.silvaexternalsource;
-    var LIST_SOURCES_REST_URL = '++rest++Products.SilvaExternalSources.source.availables';
-    var VALIDATE_REST_URL = '++rest++Products.SilvaExternalSources.source.validate';
-    var PARAMETERS_REST_URL = '++rest++Products.SilvaExternalSources.source.parameters';
-
+    /**
+     * This object let you focus fields that cames from the template
+     * rendered on the server containing External Source paramters.
+     **/
     var ParameterFocusable = function(field, dialog) {
         var element = new CKEDITOR.dom.element(field),
             element_type = element.getAttribute('type'),
@@ -38,11 +41,17 @@
         return focusable;
     };
 
-    var rest_url = function(url) {
+    var get_rest_url = function(url) {
         return $('#content-url').attr('href') + '/' + url;
     };
 
-    var update_focus = function($container, dialog, start_index) {
+    /**
+     * This function takes a jQuery element and a dialog and will
+     * create declare to the dialog the focus order of any form field
+     * found inside the element. start_index is the based index on
+     * which to base the focus order.
+     **/
+    var update_focus_list = function($container, dialog, start_index) {
         var len, i = 0,
             parameter_list = [start_index, 0];
 
@@ -69,11 +78,15 @@
         dialog.currentFocusIndex = 0;
     };
 
+    /**
+     * Load inside the given jQuery element the parameters. This is
+     * used inside the given dialog.
+     **/
     var load_parameters = function($container, parameters, dialog, start_index) {
         // Fetch the parameters form.
         $container.html('<p>Fetching source parameters from server ...</p>');
         $.ajax({
-            url: rest_url(PARAMETERS_REST_URL),
+            url: get_rest_url(PARAMETERS_REST_URL),
             data: parameters,
             dataType: 'json',
             type: 'POST',
@@ -85,7 +98,7 @@
                 $container.html(data.parameters);
                 $form = $container.children('form');
                 $form.trigger('load-smiform', {form: $form, container: $form});
-                update_focus($form, dialog._, start_index);
+                update_focus_list($form, dialog._, start_index);
             },
             error: function() {
                 $container.html('');
@@ -145,7 +158,7 @@
                 parameters.push({'name': 'source_inline', 'value': 1});
 
                 $.ajax({
-                    url: rest_url(VALIDATE_REST_URL),
+                    url: get_rest_url(VALIDATE_REST_URL),
                     data: parameters,
                     dataType: 'json',
                     type: 'POST',
@@ -247,7 +260,7 @@
                         this.add('Select a source to add', '');
                         this.setValue('');
                         $.getJSON(
-                            rest_url(LIST_SOURCES_REST_URL),
+                            get_rest_url(LIST_SOURCES_REST_URL),
                             function(sources) {
                                 for (var i=0; i < sources.length; i++) {
                                     self.add(sources[i].title, sources[i].identifier);
@@ -333,9 +346,9 @@
                 this.parts.title.setText($.trim(/^[^:]*/.exec(this.parts.title.getText())));
             },
             onOk: function() {
-                var data = {};
-                var editor = this.getParentEditor();
-                var source = API.getSelectedSource(editor);
+                var data = {},
+                    editor = this.getParentEditor(),
+                    source = API.getSelectedSource(editor);
 
                 this.commitContent(data);
 

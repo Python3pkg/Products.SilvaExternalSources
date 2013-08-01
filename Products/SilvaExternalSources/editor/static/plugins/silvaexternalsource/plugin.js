@@ -40,57 +40,65 @@
             // Return a source element if the given element is
             // instance a source.
             var initial = true,
-                container = element;
+                container;
 
-            // Try to see if we are inside a source.
-            while (container != null) {
-                container = container.getAscendant('div', initial);
-                if (API.isSource(container)) {
-                    return container;
-                };
-                initial = false;
-            };
-            // Try to see if we have the wraper instead.
-            container = element.getAscendant('span', true);
-            if (API.isSourceWrapper(container)) {
-                var children = container.getChildren(),
-                    i, len, child;
-                for (i=0, len=children.count(); i < len; i++) {
-                    child = children.getItem(i);
-                    if (API.isSource(child)) {
-                        return child;
+            if (element != null) {
+                // Try to see if we have the wrapper. This should be
+                // the correctly selected element for already selected
+                // sources.
+                container = element.getAscendant('span', true);
+                if (API.isSourceWrapper(container)) {
+                    var children = container.getChildren(),
+                        i, len, child;
+                    for (i=0, len=children.count(); i < len; i++) {
+                        child = children.getItem(i);
+                        if (API.isSource(child)) {
+                            return child;
+                        };
                     };
+                };
+
+                // Try to see if we are inside a source.
+                container = element;
+                while (container != null) {
+                    container = container.getAscendant('div', initial);
+                    if (API.isSource(container)) {
+                        return container;
+                    };
+                    initial = false;
                 };
             };
             return null;
         },
-        getSelectedSource: function(editor, no_selection) {
-            // Return the currently selected source.
-            var selection = editor.getSelection(),
-                source = null,
-                wrapper = null,
-                base = null;
-
-            if (selection === null) {
-                return null;
-            };
-            if (selection.getType() == CKEDITOR.SELECTION_ELEMENT) {
-                base = selection.getSelectedElement();
-            } else {
-                base = selection.getStartElement();
-            };
-            source = API.findSource(base);
+        findAndSelectSource: function(editor, node) {
+            var source = API.findSource(node),
+                wrapper;
             if (source != null) {
                 wrapper = source.getParent();
                 if (!API.isSourceWrapper(wrapper)) {
                     wrapper = source;
                 };
                 // Select the wrapper if needed.
-                if (!no_selection && wrapper.$ !== base.$) {
-                    var range = new CKEDITOR.dom.range(editor.document);
+                CKEDITOR.plugins.silvautils.selectBlock(editor, wrapper);
+                return source;
+            };
+            return null;
+        },
+        getSelectedSource: function(editor, no_selection) {
+            // Return the currently selected source.
+            var selected = CKEDITOR.plugins.silvautils.getSelectedElement(editor),
+                source = null,
+                wrapper = null;
 
-                    range.selectNodeContents(wrapper);
-                    range.select();
+            source = API.findSource(selected);
+            if (source != null) {
+                wrapper = source.getParent();
+                if (!API.isSourceWrapper(wrapper)) {
+                    wrapper = source;
+                };
+                // Select the wrapper if needed.
+                if (!no_selection && (!selected || wrapper.$ !== selected.$)) {
+                    CKEDITOR.plugins.silvautils.selectBlock(editor, wrapper);
                 };
                 return source;
             };
@@ -140,14 +148,13 @@
                         $element.empty(); //CKEditor adds an br in empty container.
                         $preview = $('<div class="external-source-preview"></div');
                         $preview.appendTo($element);
-                        $preview.delegate('a', 'click', function(event) {
+                        $preview.on('a', function(event) {
                             event.stopPropagation();
                             event.preventDefault();
                         });
                     };
 
                     $preview.html(html);
-
                     // If the document was unmodified, the fact to
                     // load the preview should not have modified it, reset the flag.
                     if (!is_dirty)
@@ -164,7 +171,7 @@
         exec: function(editor) {
             var source = API.getSelectedSource(editor);
 
-            if (source) {
+            if (source !== null) {
                 editor.openDialog('silvaexternalsourceedit');
             } else {
                 editor.openDialog('silvaexternalsourcenew');
@@ -260,11 +267,11 @@
                 });
             });
             editor.on('selectionChange', function(event) {
-                var element = API.getSelectedSource(editor),
+                var source = API.getSelectedSource(editor),
                     command_edit = editor.getCommand('silvaexternalsource'),
                     command_remove = editor.getCommand('silvaremoveexternalsource');
 
-                if (element !== null) {
+                if (source !== null) {
                     command_edit.setState(CKEDITOR.TRISTATE_ON);
                     command_remove.setState(CKEDITOR.TRISTATE_OFF);
                 } else {
@@ -273,9 +280,9 @@
                 };
             });
             editor.on('doubleclick', function(event) {
-                var element = API.getSelectedSource(editor);
+                var source = API.getSelectedSource(editor);
 
-                if (element !== null) {
+                if (source !== null) {
                     event.data.dialog = 'silvaexternalsourceedit';
                 };
             });
@@ -288,53 +295,30 @@
                 if (code in {37:1, 38:1, 39:1, 40:1}) {
                     setTimeout(function() {
                         var source = API.getSelectedSource(editor, true),
-                            parent = null;
+                            parent = null,
+                            target = null,
+                            on_top = code in {37:1, 38:1};
 
                         if (source !== null) {
                             parent = source.getParent();
                             if (!API.isSourceWrapper(parent)) {
                                 parent = source;
                             };
-                            var target,
-                                range,
-                                selection = editor.getSelection(),
-                                at_the_end;
 
-                            if (code in {37:1, 38:1}) {
+                            if (on_top) {
                                 target = parent.getPrevious();
                                 if (target === null) {
                                     target = editor.document.createElement('p');
                                     target.insertBefore(parent);
                                 };
-                                at_the_end = true;
                             } else {
                                 target = parent.getNext();
                                 if (target === null) {
                                     target = editor.document.createElement('p');
                                     target.insertAfter(parent);
                                 };
-                                at_the_end = false;
                             };
-                            selection.unlock();
-                            if (!CKEDITOR.env.ie) {
-                                range = new CKEDITOR.dom.range(editor.document);
-                                range.moveToPosition(target, at_the_end ?
-                                                     CKEDITOR.POSITION_BEFORE_END:
-                                                     CKEDITOR.POSITION_AFTER_START);
-                                target.scrollIntoView();
-                            } else {
-                                range = editor.document.$.body.createTextRange();
-                                range.moveToElementText(target.$);
-                                range.collapse();
-                                range.scrollIntoView();
-                            };
-                            selection.selectRanges([range]);
-                            selection.lock();
-                            editor.forceNextSelectionCheck();
-                            editor.selectionChange(true);
-                            setTimeout(function() {
-                                selection.unlock();
-                            }, 100);
+                            CKEDITOR.plugins.silvautils.selectText(editor, target, on_top);
                         };
                     }, 25);
                 };
@@ -437,9 +421,9 @@
                                         // and after each source.
                                         container.attributes['contenteditable'] = 'false';
                                         container.children = [
-                                            new CKEDITOR.htmlParser.text('&#xfeff;'),
+                                            new CKEDITOR.htmlParser.text(''),
                                             element,
-                                            new CKEDITOR.htmlParser.text('&#xfeff;')];
+                                            new CKEDITOR.htmlParser.text('')];
                                     } else {
                                         container.children = [element];
                                     };
@@ -458,15 +442,17 @@
                 htmlFilter.addRules({
                     elements: {
                         span: function(element) {
-                            var i, len;
+                            var i, len, result = false;
 
                             if (is_wrapper(element)) {
                                 for (i=0, len=element.children.length; i < len; i++) {
                                     if (is_source(element.children[i])) {
-                                        return element.children[i];
+                                        result = element.children[i];
+                                        break;
                                     };
                                 };
-                                return false;
+                                element.children = []; // Be sure to other nodes.
+                                return result;
                             };
                             return null;
                         },

@@ -4,8 +4,8 @@
      * CKEditor Plugin for External Sources. External Sources inside
      * the editor are represented like this:
      *
-     * <span class="inline-container alignement">
-     *    <div class="alignment external-source">
+     * <span class="inline-container source-container alignement">
+     *    <div class="external-source alignement">
      *        <div class="external-source-preview" />
      *    </div>
      * </span>
@@ -21,7 +21,7 @@
             if (element != null &&
                 element.type == CKEDITOR.NODE_ELEMENT &&
                 element.is('span') &&
-                element.hasClass('inline-container')) {
+                element.hasClass('source-container')) {
                 return true;
             }
             return false;
@@ -87,11 +87,10 @@
         },
         getSelectedSource: function(editor, no_selection) {
             // Return the currently selected source.
-            var selected = CKEDITOR.plugins.silvautils.getSelectedElement(editor),
-                source = null,
+            var selected = CKEDITOR.silva.utils.getSelectedElement(editor),
+                source = API.findSource(selected),
                 wrapper = null;
 
-            source = API.findSource(selected);
             if (source != null) {
                 wrapper = source.getParent();
                 if (!API.isSourceWrapper(wrapper)) {
@@ -99,7 +98,7 @@
                 };
                 // Select the wrapper if needed.
                 if (!no_selection && wrapper.$ !== selected.$) {
-                    CKEDITOR.plugins.silvautils.selectBlock(editor, wrapper);
+                    CKEDITOR.silva.utils.selectBlock(editor, wrapper);
                 };
                 return source;
             };
@@ -207,7 +206,7 @@
     CKEDITOR.plugins.add('silvaexternalsource', {
         requires: ['dialog', 'silvautils'],
         init: function(editor) {
-            var UTILS = CKEDITOR.plugins.silvautils;
+            var UTILS = CKEDITOR.silva.utils;
 
             editor.addCommand(
                 'silvaexternalsource',
@@ -226,10 +225,6 @@
                 className: 'cke_button_removediv'
             });
             editor.addCss(
-                'span.inline-container {' +
-                    'display: inline-block;' +
-                    '}');
-            editor.addCss(
                 'div.external-source {' +
                     'margin: 5px 0;' +
                     'color: #444;' +
@@ -237,29 +232,6 @@
                     'display: block;' +
                     'min-height: 20px;' +
                     'min-width: 20px;' +
-                    '}');
-            editor.addCss(
-                'span.inline-container.float-left {' +
-                    'float: left;' +
-                    '}');
-            editor.addCss(
-                'span.inline-container.float-right {' +
-                    'float: right;' +
-                    '}');
-            editor.addCss(
-                'span.inline-container.align-left {' +
-                    'text-align: left;' +
-                    'display: block;' +
-                    '}');
-            editor.addCss(
-                'span.inline-container.align-right {' +
-                    'text-align: right;' +
-                    'display: block;' +
-                    '}');
-            editor.addCss(
-                'span.inline-container.align-center {' +
-                    'text-align: center;' +
-                    'display: block;' +
                     '}');
 
             // Events
@@ -306,6 +278,7 @@
                 };
             });
             editor.on('doubleclick', function(event) {
+                // Open the edit dialog if you double click on a source.
                 var source = API.getSelectedSource(editor, true);
 
                 API.setCurrentSource(editor, source);
@@ -314,11 +287,11 @@
                 };
             });
             editor.on('key', function(event) {
+                // Improve the navigation before and after the code source with the arrows.
                 if (editor.mode != 'wysiwyg')
                     return;
 
                 var code = event.data.keyCode;
-                // Improve the navigation before and after the code source with the arrows.
                 if (code in {9:1, 37:1, 38:1, 39:1, 40:1}) {
                     setTimeout(function() {
                         var source = API.getSelectedSource(editor, true),
@@ -335,7 +308,6 @@
                     }, 25);
                 };
             });
-
 
             // Dialog
             CKEDITOR.dialog.add('silvaexternalsourcenew', this.path + 'dialogs/source.js');
@@ -375,30 +347,18 @@
         },
         afterInit: function(editor) {
             // Input / Output transformations
-            var dataProcessor = editor.dataProcessor,
-                dataFilter = dataProcessor && dataProcessor.dataFilter,
-                htmlFilter = dataProcessor && dataProcessor.htmlFilter;
-
             var remove = function(attributes, name) {
                 // Remove an attribute from an object.
                 if (attributes[name]) {
                     delete attributes[name];
                 };
             };
-
             var is_source = function(element) {
                 // Test if the given element is an external source div.
                 return (element &&
                         element.name == 'div' &&
                         element.attributes['class'] != null &&
                         element.attributes['class'].match('^external-source'));
-            };
-            var is_wrapper = function(element) {
-                // Test if the given element is a temporary container.
-                return (element &&
-                element.name == 'span' &&
-                        element.attributes['class'] != null &&
-                        element.attributes['class'].match('^inline-container'));
             };
             var is_preview = function(element) {
                 // Test if the given element is a external source preview div.
@@ -407,42 +367,23 @@
                         element.attributes['class'] == 'external-source-preview');
             };
 
+            var dataProcessor = editor.dataProcessor,
+                dataFilter = dataProcessor && dataProcessor.dataFilter,
+                htmlFilter = dataProcessor && dataProcessor.htmlFilter,
+                ALIGNEMENT = new CKEDITOR.silva.RE(/^external-source (.*)$/, 'default'),
+                WRAPPER = new CKEDITOR.silva.parser.Wrapper(is_source, 'source-container');
+
 
             if (dataFilter) {
                 dataFilter.addRules({
                     elements: {
                         div: function(element) {
                             if (is_source(element)) {
-                                var attributes = element.attributes,
-                                    parent = element.parent,
-                                    parse_alignment = /^external-source (.*)$/.exec(
-                                        element.attributes['class']),
-                                    alignment = 'default';
-
-                                if (parse_alignment !== null) {
-                                    alignment = parse_alignment[1];
-                                };
-                                attributes['contenteditable'] = 'false';
+                                element.attributes['contenteditable'] = 'false';
                                 element.children = [];
-                                if (!is_wrapper(parent)) {
-                                    var container = new CKEDITOR.htmlParser.element(
-                                        'span', {'class': 'inline-container ' + alignment});
-                                    if (CKEDITOR.env.webkit) {
-                                        // To help the selection in
-                                        // Chrome we add a space before
-                                        // and after each source.
-                                        container.attributes['contenteditable'] = 'false';
-                                        container.children = [
-                                            new CKEDITOR.htmlParser.text(''),
-                                            element,
-                                            new CKEDITOR.htmlParser.text('')];
-                                    } else {
-                                        container.children = [element];
-                                    };
-                                    container.parent = parent;
-                                    element.parent = container;
-                                    return container;
-                                };
+                                return WRAPPER.wrap(
+                                    element,
+                                    ALIGNEMENT.extract(element.attributes['class']));
                             };
                             return null;
                         }
@@ -454,34 +395,20 @@
                 htmlFilter.addRules({
                     elements: {
                         span: function(element) {
-                            var i, len, result = false;
-
-                            if (is_wrapper(element)) {
-                                for (i=0, len=element.children.length; i < len; i++) {
-                                    if (is_source(element.children[i])) {
-                                        result = element.children[i];
-                                        break;
-                                    };
-                                };
-                                element.children = []; // Be sure to other nodes.
-                                return result;
-                            };
-                            return null;
+                            return WRAPPER.remove(element);
                         },
                         div: function(element) {
                             if (is_preview(element)) {
                                 return false;
                             } else if (is_source(element)) {
-                                var attributes = element.attributes;
-
-                                remove(attributes, 'contenteditable');
-                                remove(attributes, 'style');
+                                remove(element.attributes, 'contenteditable');
+                                remove(element.attributes, 'style');
                                 return null;
                             };
                             return null;
                         }
                     }
-                    });
+                });
             };
         }
 

@@ -1,5 +1,4 @@
 
-
 (function($, CKEDITOR) {
     var API = CKEDITOR.plugins.silvaexternalsource,
         LIST_SOURCES_REST_URL = '++rest++Products.SilvaExternalSources.source.availables',
@@ -298,7 +297,7 @@
                 var ranges = selection.getRanges(true);
 
                 var container = new CKEDITOR.dom.element('span');
-                container.setAttributes({'class': 'inline-container ' + data.align});
+                container.setAttributes({'class': 'inline-container source-container ' + data.align});
                 var source = new CKEDITOR.dom.element('div');
                 var attributes = {};
 
@@ -316,7 +315,7 @@
     });
 
     CKEDITOR.dialog.add('silvaexternalsourceedit', function(editor) {
-        var ALIGNMENT = /^external-source\s+([a-z-]+)\s*$/;
+        var ALIGNEMENT = new CKEDITOR.silva.RE(/^external-source\s+([a-z-]+)\s*$/);
 
         return {
             title: 'External Source Settings',
@@ -331,11 +330,7 @@
                     source = API.getCurrentSource(editor);
 
                 if (source !== null) {
-                    var alignment = ALIGNMENT.exec(source.getAttribute('class'));
-
-                    if (alignment != null) {
-                        data.align = alignment[1];
-                    }
+                    data.align = ALIGNEMENT.extract(source.getAttribute('class'));
                     data.name = source.getAttribute('data-silva-name');
                     data.instance = source.getAttribute('data-silva-instance');
                     if (source.hasAttribute('data-silva-settings')) {
@@ -354,7 +349,7 @@
 
                 source.setAttribute('class', 'external-source ' + data.align);
                 source.setAttribute('data-silva-settings', data.parameters);
-                source.getParent().setAttribute('class', 'inline-container ' + data.align);
+                source.getParent().setAttribute('class', 'inline-container source-container ' + data.align);
 
                 API.loadPreview(editor, $(source.$));
             }

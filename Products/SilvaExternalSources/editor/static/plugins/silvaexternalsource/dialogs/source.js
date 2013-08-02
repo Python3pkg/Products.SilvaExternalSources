@@ -310,12 +310,14 @@
                 container.append(source);
                 ranges[0].insertNode(container);
 
-                API.loadPreview($(source.$), editor);
+                API.loadPreview(editor, $(source.$));
             }
         };
     });
 
     CKEDITOR.dialog.add('silvaexternalsourceedit', function(editor) {
+        var ALIGNMENT = /^external-source\s+([a-z-]+)\s*$/;
+
         return {
             title: 'External Source Settings',
             minWidth: 600,
@@ -325,30 +327,28 @@
                 elements: create_parameters_fields('external_source_edit', 0)
             }],
             onShow: function() {
-                var data = {};
-                var editor = this.getParentEditor();
-                var source = API.getSelectedSource(editor);
-                var parse_alignment = /^external-source\s+([a-z-]+)\s*$/;
-                var info_alignment = parse_alignment.exec(
-                    source.getAttribute('class'));
+                var data = {},
+                    source = API.getCurrentSource(editor);
 
-                if (info_alignment != null) {
-                    data.align = info_alignment[1];
-                }
-                data.name = source.getAttribute('data-silva-name');
-                data.instance = source.getAttribute('data-silva-instance');
-                if (source.hasAttribute('data-silva-settings')) {
-                    data.parameters = source.getAttribute('data-silva-settings');
+                if (source !== null) {
+                    var alignment = ALIGNMENT.exec(source.getAttribute('class'));
+
+                    if (alignment != null) {
+                        data.align = alignment[1];
+                    }
+                    data.name = source.getAttribute('data-silva-name');
+                    data.instance = source.getAttribute('data-silva-instance');
+                    if (source.hasAttribute('data-silva-settings')) {
+                        data.parameters = source.getAttribute('data-silva-settings');
+                    };
                 };
-
                 this.setupContent(data);
                 // Reset the title
                 this.parts.title.setText($.trim(/^[^:]*/.exec(this.parts.title.getText())));
             },
             onOk: function() {
                 var data = {},
-                    editor = this.getParentEditor(),
-                    source = API.getSelectedSource(editor);
+                    source = API.getCurrentSource(editor);
 
                 this.commitContent(data);
 
@@ -356,7 +356,7 @@
                 source.setAttribute('data-silva-settings', data.parameters);
                 source.getParent().setAttribute('class', 'inline-container ' + data.align);
 
-                API.loadPreview($(source.$), editor);
+                API.loadPreview(editor, $(source.$));
             }
         };
     });

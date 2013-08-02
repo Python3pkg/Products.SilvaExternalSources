@@ -1,10 +1,10 @@
 
 (function(CKEDITOR, $) {
     /**
-     * Plugin for External Sources. External Sources inside the editor
-     * are represented like this:
+     * CKEditor Plugin for External Sources. External Sources inside
+     * the editor are represented like this:
      *
-     * <span class="inline-container silva-readonly-element">
+     * <span class="inline-container alignement">
      *    <div class="alignment external-source">
      *        <div class="external-source-preview" />
      *    </div>
@@ -70,18 +70,19 @@
             };
             return null;
         },
-        findAndSelectSource: function(editor, node) {
-            var source = API.findSource(node),
-                wrapper;
-            if (source != null) {
-                wrapper = source.getParent();
-                if (!API.isSourceWrapper(wrapper)) {
-                    wrapper = source;
-                };
-                // Select the wrapper if needed.
-                CKEDITOR.plugins.silvautils.selectBlock(editor, wrapper);
-                return source;
-            };
+        setCurrentSource: function(editor, source) {
+            // Save the working source in the editor. This is used to
+            // pass the source to commands.
+            editor._.silvaWorkingSource = source;
+        },
+        getCurrentSource: function(editor) {
+            // Return the source that is currently being
+            // modified. This is used instead of getSelectedSource
+            // because the selection can be changed during the edition
+            // and the reference to the source lost.
+            if (editor._.silvaWorkingSource !== undefined) {
+                return editor._.silvaWorkingSource;
+            }
             return null;
         },
         getSelectedSource: function(editor, no_selection) {
@@ -97,15 +98,15 @@
                     wrapper = source;
                 };
                 // Select the wrapper if needed.
-                if (!no_selection && (!selected || wrapper.$ !== selected.$)) {
+                if (!no_selection && wrapper.$ !== selected.$) {
                     CKEDITOR.plugins.silvautils.selectBlock(editor, wrapper);
                 };
                 return source;
             };
             return null;
         },
-        loadPreview: function($element, editor) {
-            // element is a JQuery element. Editor a CKEditor one.
+        loadPreview: function(editor, $element) {
+            // $element is a JQuery element. Editor a CKEditor one.
             var info = $element.attr('data-silva-settings');
             var $preview = $element.find('.external-source-preview');
             var content_url = $('#content-url').attr('href');
@@ -114,18 +115,18 @@
             // We load an existing code source. Add instance and text.
             if ($element.attr('data-silva-instance') != undefined) {
                 extra_info.push({
-                    'name': 'source_instance',
-                    'value': $element.attr('data-silva-instance')
+                    name: 'source_instance',
+                    value: $element.attr('data-silva-instance')
                 });
                 extra_info.push({
-                    'name': 'source_text',
-                    'value': editor.name
+                    name: 'source_text',
+                    value: editor.name
                 });
             } else if ($element.attr('data-silva-name') != undefined) {
                 // This is a new code source.
                 extra_info.push({
-                    'name': 'source_name',
-                    'value': $element.attr('data-silva-name')
+                    name: 'source_name',
+                    value: $element.attr('data-silva-name')
                 });
             };
             // Merge all preview information together.
@@ -133,7 +134,7 @@
                 info = $.param(extra_info);
             } else {
                 // Those are inline changed options.
-                extra_info.push({'name': 'source_inline', 'value': 1});
+                extra_info.push({name: 'source_inline', value: 1});
                 info += '&' + $.param(extra_info);
             };
 
@@ -157,8 +158,9 @@
                     $preview.html(html);
                     // If the document was unmodified, the fact to
                     // load the preview should not have modified it, reset the flag.
-                    if (!is_dirty)
+                    if (!is_dirty) {
                         editor.resetDirty();
+                    };
                 }
             });
         }
@@ -171,6 +173,7 @@
         exec: function(editor) {
             var source = API.getSelectedSource(editor);
 
+            API.setCurrentSource(editor, source);
             if (source !== null) {
                 editor.openDialog('silvaexternalsourceedit');
             } else {
@@ -202,8 +205,10 @@
     };
 
     CKEDITOR.plugins.add('silvaexternalsource', {
-        requires: ['dialog'],
+        requires: ['dialog', 'silvautils'],
         init: function(editor) {
+            var UTILS = CKEDITOR.plugins.silvautils;
+
             editor.addCommand(
                 'silvaexternalsource',
                 new CKEDITOR.externalSourceCommand());
@@ -260,11 +265,32 @@
             // Events
             editor.on('contentDom', function(event) {
                 // When a document is loaded, we load code sources previews
-                var document = $(editor.document.getDocumentElement().$);
+                var $document = $(editor.document.$);
 
-                document.find('.external-source').each(function () {
-                    API.loadPreview($(this), editor);
+                $document.find('.external-source').each(function () {
+                    API.loadPreview(editor, $(this));
                 });
+                if (!CKEDITOR.env.gecko) {
+                    // Help with the selection of the sources.
+                    editor.document.on('mousedown', function(event) {
+                        var selected,
+                            source = API.findSource(event.data.getTarget()),
+                            wrapper;
+
+                        if (source !== null) {
+                            wrapper = source.getParent();
+                            if (!API.isSourceWrapper(wrapper)) {
+                                wrapper = source;
+                            };
+                            selected = UTILS.getSelectedElement(editor);
+                            if (selected === null || selected.$ !== wrapper.$) {
+                                UTILS.selectBlock(editor, wrapper);
+                            };
+                            // Prevent broken drag'n drop, but not right click.
+                            event.data.preventDefault();
+                        };
+                    });
+                };
             });
             editor.on('selectionChange', function(event) {
                 var source = API.getSelectedSource(editor),
@@ -280,8 +306,9 @@
                 };
             });
             editor.on('doubleclick', function(event) {
-                var source = API.getSelectedSource(editor);
+                var source = API.getSelectedSource(editor, true);
 
+                API.setCurrentSource(editor, source);
                 if (source !== null) {
                     event.data.dialog = 'silvaexternalsourceedit';
                 };
@@ -292,11 +319,10 @@
 
                 var code = event.data.keyCode;
                 // Improve the navigation before and after the code source with the arrows.
-                if (code in {37:1, 38:1, 39:1, 40:1}) {
+                if (code in {9:1, 37:1, 38:1, 39:1, 40:1}) {
                     setTimeout(function() {
                         var source = API.getSelectedSource(editor, true),
                             parent = null,
-                            target = null,
                             on_top = code in {37:1, 38:1};
 
                         if (source !== null) {
@@ -304,21 +330,7 @@
                             if (!API.isSourceWrapper(parent)) {
                                 parent = source;
                             };
-
-                            if (on_top) {
-                                target = parent.getPrevious();
-                                if (target === null) {
-                                    target = editor.document.createElement('p');
-                                    target.insertBefore(parent);
-                                };
-                            } else {
-                                target = parent.getNext();
-                                if (target === null) {
-                                    target = editor.document.createElement('p');
-                                    target.insertAfter(parent);
-                                };
-                            };
-                            CKEDITOR.plugins.silvautils.selectText(editor, target, on_top);
+                            UTILS.selectText(editor, UTILS.getParagraph(editor, parent, on_top), on_top);
                         };
                     }, 25);
                 };

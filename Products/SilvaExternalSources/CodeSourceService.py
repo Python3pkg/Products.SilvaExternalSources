@@ -730,9 +730,12 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
                 if ICodeSource.providedBy(source):
                     if update:
                         installable = source._get_installable()
-                        if installable is not None:
+                        if (installable is not None and
+                                os.path.isdir(installable._directory)):
                             installable.update(source, True)
                             message = _('Source updated.')
+                        else:
+                            message = _('Not updated. Folder missing.')
                     elif bind and not source.get_fs_location():
                         candidates = source.manage_getFileSystemLocations()
                         if len(candidates) == 1:

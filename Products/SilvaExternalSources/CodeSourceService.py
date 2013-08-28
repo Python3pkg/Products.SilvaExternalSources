@@ -254,9 +254,9 @@ class FormulatorImporter(Importer):
             try:
                 form.set_xml(data.read())
             except:
-                logger.exception(
-                    'Error while installing Formulator form id "%s" in "%s"' % (
-                    identifier, '/'.join(context.getPhysicalPath())))
+                logger.exception('''
+                    Error while installing Formulator form id "%s" in "%s"
+                    ''' % (identifier, '/'.join(context.getPhysicalPath())))
             else:
                 if identifier == 'parameters':
                     context.set_form(form)
@@ -270,9 +270,9 @@ class FolderOrFileImporter(Importer):
     def __call__(self, context, identifier, path):
         factory = context.manage_addProduct['OFSP']
         if os.path.isdir(path):
-             factory.manage_addFolder(identifier)
-             container = context._getOb(identifier)
-             for filename in os.listdir(path):
+            factory.manage_addFolder(identifier)
+            container = context._getOb(identifier)
+            for filename in os.listdir(path):
                 if filename.startswith('.'):
                     continue
                 identifier, extension = os.path.splitext(filename)
@@ -292,7 +292,6 @@ class FolderOrFileImporter(Importer):
                 factory.manage_addFile(identifier, file=data)
 
 
-
 EXPORTERS = {
     'File': FileExporter,
     'Image': FileExporter,
@@ -305,7 +304,7 @@ EXPORTERS = {
     'Formulator Form': FormulatorExporter,
     }
 INSTALLERS = {
-    '.png':ImageImporter,
+    '.png': ImageImporter,
     '.gif': ImageImporter,
     '.jpeg': ImageImporter,
     '.jpg': ImageImporter,
@@ -314,19 +313,18 @@ INSTALLERS = {
     '.py': PythonScriptImporter,
     '.xml': FormulatorImporter,
     '.dtml': DTMLImporter,
-    None: FolderOrFileImporter,} # None is the default installer.
+    None: FolderOrFileImporter, }  # None is the default installer.
 
 
 class CodeSourceInstallable(object):
     grok.implements(ICodeSourceInstaller)
 
-    def __init__(self, location, directory, files, extension=None):
+    def __init__(self, location, directory, extension=None):
         self._config = ConfigParser.ConfigParser()
         self._config_filename = os.path.join(directory, CONFIGURATION_FILE)
         if os.path.isfile(self._config_filename):
             self._config.read(self._config_filename)
         self._directory = directory
-        self._files = files
         self._location = location
         self.extension = extension
 
@@ -382,13 +380,14 @@ class CodeSourceInstallable(object):
             return False
 
         factory = folder.manage_addProduct['SilvaExternalSources']
-        factory.manage_addCodeSource(self.identifier, fs_location=self.location)
+        factory.manage_addCodeSource(self.identifier,
+                                     fs_location=self.location)
 
         source = folder._getOb(self.identifier)
         return self.update(source)
 
     def _get_installables(self):
-        for filename in self._files:
+        for filename in os.listdir(self._directory):
             if filename == CONFIGURATION_FILE or filename.startswith('.'):
                 continue
             identifier, extension = os.path.splitext(filename)
@@ -529,10 +528,10 @@ class CodeSourceService(SilvaService):
 
     security = ClassSecurityInfo()
     manage_options = (
-        {'label':'Existing Code Sources',
-         'action':'manage_existing_codesources'},
-        {'label':'Install Code Sources',
-         'action':'manage_install_codesources'},
+        {'label': 'Existing Code Sources',
+         'action': 'manage_existing_codesources'},
+        {'label': 'Install Code Sources',
+         'action': 'manage_install_codesources'},
         {'label': 'External Sources Errors',
          'action': 'manage_sources_errors'}
         ) + SilvaService.manage_options
@@ -542,6 +541,7 @@ class CodeSourceService(SilvaService):
 
     security.declareProtected(
         'View management screens', 'find_installed_sources')
+
     def find_installed_sources(self):
         logger.info('search for code sources')
         self.clear_installed_sources()
@@ -551,6 +551,7 @@ class CodeSourceService(SilvaService):
 
     security.declareProtected(
         'Access contents information', 'get_installed_sources')
+
     def get_installed_sources(self):
         if self._installed_sources is not None:
             resolve = getUtility(IIntIds).getObject
@@ -562,17 +563,19 @@ class CodeSourceService(SilvaService):
 
     security.declareProtected(
         'View management screens', 'clear_installed_sources')
+
     def clear_installed_sources(self):
         self._installed_sources = []
 
     security.declareProtected(
         'View management screens', 'get_installable_sources')
+
     def get_installable_sources(self, refresh=False):
         if not refresh and hasattr(self.aq_base,  '_v_installable_sources'):
             return self._v_installable_sources
         self._v_installable_sources = sources = []
-        for entry_point  in iter_entry_points(
-            'Products.SilvaExternalSources.sources'):
+        for entry_point in iter_entry_points(
+                'Products.SilvaExternalSources.sources'):
             module = entry_point.load()
             directory = os.path.dirname(module.__file__)
             for source_identifier in os.listdir(directory):
@@ -586,14 +589,14 @@ class CodeSourceService(SilvaService):
                     entry_point.dist.project_name + ':' +
                     source_directory[len(entry_point.dist.location):])
                 sources.append(CodeSourceInstallable(
-                        source_location,
-                        source_directory,
-                        source_files,
-                        extension=entry_point.dist.project_name))
+                    source_location,
+                    source_directory,
+                    extension=entry_point.dist.project_name))
         return sources
 
     security.declareProtected(
         'View management screens', 'get_installable_source')
+
     def get_installable_source(self, identifier=None, location=None):
         if identifier is not None:
             test = lambda s: s.identifier == identifier
@@ -614,7 +617,7 @@ def register_source(source, event):
     """Register newly created source to the service.
     """
     if (event.object is source and
-        not IContainer.providedBy(event.newParent)):
+            not IContainer.providedBy(event.newParent)):
         # The source is not added in a Silva Container so it won't be usable.
         return
     service = queryUtility(ICodeSourceService)
@@ -633,7 +636,7 @@ def unregister_source(source, event):
     """
     if (event.object is source and
         event.newName is not None and
-        IContainer.providedBy(event.newParent)):
+            IContainer.providedBy(event.newParent)):
         # We are just moving or renaming the source
         return
     service = queryUtility(ICodeSourceService)
@@ -645,6 +648,7 @@ def unregister_source(source, event):
 
 
 OBJECT_ADDRESS = re.compile('0x([0-9a-f])*')
+
 
 class SourcesError(object):
     """Describe a code source error.
@@ -760,7 +764,7 @@ class ManageInstallCodeSources(silvaviews.ZMIView):
                 locations = [locations]
             for location in locations:
                 candidates = list(self.context.get_installable_source(
-                        location=location))
+                    location=location))
                 if len(candidates) != 1:
                     notfound.append(location)
                 else:
@@ -795,26 +799,28 @@ class ManageInstallCodeSources(silvaviews.ZMIView):
         for name, sources in extensions.items():
             if name is None:
                 self.extensions.append({
-                        'title': _('Default code sources'),
-                        'id': '0',
-                        'description': '',
-                        'sources': sources})
+                    'title': _('Default code sources'),
+                    'id': '0',
+                    'description': '',
+                    'sources': sources
+                })
                 continue
             identifier = str(name).encode('base64').strip().rstrip('=')
             extension = extensionRegistry.get_extension(name)
             if extension is None:
                 self.extensions.append({
-                        'title': name,
-                        'id': identifier,
-                        'description': '',
-                        'sources': sources})
+                    'title': name,
+                    'id': identifier,
+                    'description': '',
+                    'sources': sources
+                })
                 continue
             self.extensions.append({
-                    'title': extension.title,
-                    'id': identifier,
-                    'description': extension.description,
-                    'sources': sources,
-                    })
+                'title': extension.title,
+                'id': identifier,
+                'description': extension.description,
+                'sources': sources,
+            })
         self.extensions.sort(key=operator.itemgetter('title'))
         need(jquery)
 
@@ -871,7 +877,7 @@ class ManageExportCodeSources(silvaforms.ZMIForm):
             extension_name, entry_name = extension_name.split(':', 1)
         extension = pkg_resources.working_set.by_key[extension_name]
         directory = os.path.dirname(extension.load_entry_point(
-                'Products.SilvaExternalSources.sources', entry_name).__file__)
+            'Products.SilvaExternalSources.sources', entry_name).__file__)
 
         if values['recursive']:
             sources = walk_silva_tree(self.context, requires=ICodeSource)
@@ -892,7 +898,7 @@ class ManageExportCodeSources(silvaforms.ZMIForm):
             if not os.path.exists(target):
                 os.makedirs(target)
             source._fs_location = location
-            installable = CodeSourceInstallable(location, target, [])
+            installable = CodeSourceInstallable(location, target)
             installable.export(source)
             exported.append(location)
         if exported:

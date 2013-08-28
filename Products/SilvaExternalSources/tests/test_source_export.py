@@ -32,6 +32,7 @@ TEST_SCRIPT = """## Script (Python) "%s"
 return "Render source"
 """
 
+
 class CodeSourceExportTestCase(unittest.TestCase):
     layer = FunctionalLayer
 
@@ -64,7 +65,7 @@ class CodeSourceExportTestCase(unittest.TestCase):
         script = self.root.source._getOb('script')
         script.write(TEST_SCRIPT % 'script')
 
-        installable = CodeSourceInstallable('test:', self.directory, [])
+        installable = CodeSourceInstallable('test:', self.directory)
         installable.export(self.root.source)
 
         self.assertItemsEqual(
@@ -74,7 +75,7 @@ class CodeSourceExportTestCase(unittest.TestCase):
         self.assertIsFile('source.ini')
         self.assertIsFile('parameters.xml')
         with open(self.get_path('script.py'), 'rb') as script:
-            self.assertEqual(script.read(), TEST_SCRIPT  % 'script')
+            self.assertEqual(script.read(), TEST_SCRIPT % 'script')
         with open(self.get_path('source.ini'), 'rb') as script:
             self.assertEqual(script.read(), TEST_SOURCE)
 
@@ -85,9 +86,9 @@ class CodeSourceExportTestCase(unittest.TestCase):
         factory = self.root.source.manage_addProduct['PythonScripts']
         factory.manage_addPythonScript('script.xml')
         script = self.root.source._getOb('script.xml')
-        script.write(TEST_SCRIPT  % 'script.xml')
+        script.write(TEST_SCRIPT % 'script.xml')
 
-        installable = CodeSourceInstallable('test:', self.directory, [])
+        installable = CodeSourceInstallable('test:', self.directory)
         installable.export(self.root.source)
 
         self.assertItemsEqual(
@@ -97,7 +98,7 @@ class CodeSourceExportTestCase(unittest.TestCase):
         self.assertIsFile('source.ini')
         self.assertIsFile('parameters.xml')
         with open(self.get_path('script.xml.py'), 'rb') as script:
-            self.assertEqual(script.read(), TEST_SCRIPT  % 'script.xml')
+            self.assertEqual(script.read(), TEST_SCRIPT % 'script.xml')
         with open(self.get_path('source.ini'), 'rb') as script:
             self.assertEqual(script.read(), TEST_SOURCE)
 
@@ -110,7 +111,7 @@ class CodeSourceExportTestCase(unittest.TestCase):
         css = self.root.source._getOb('cool.css')
         css.munge(TEST_DTML)
 
-        installable = CodeSourceInstallable('test:', self.directory, [])
+        installable = CodeSourceInstallable('test:', self.directory)
         installable.export(self.root.source)
 
         self.assertItemsEqual(
@@ -139,7 +140,7 @@ class CodeSourceExportTestCase(unittest.TestCase):
         script = self.root.source._getOb('script')
         script.write(TEST_SCRIPT % "script")
 
-        installable = CodeSourceInstallable('test:', self.directory, [])
+        installable = CodeSourceInstallable('test:', self.directory)
         installable.export(self.root.source)
 
         self.assertItemsEqual(
@@ -153,9 +154,9 @@ class CodeSourceExportTestCase(unittest.TestCase):
         with open(self.get_path('source.ini'), 'rb') as script:
             self.assertEqual(script.read(), TEST_SOURCE)
         with open(self.get_path('script.py'), 'rb') as script:
-            self.assertEqual(script.read(), TEST_SCRIPT  % "script")
+            self.assertEqual(script.read(), TEST_SCRIPT % "script")
         with open(self.get_path('helpers', 'script.py'), 'rb') as script:
-            self.assertEqual(script.read(), TEST_SCRIPT  % "script")
+            self.assertEqual(script.read(), TEST_SCRIPT % "script")
 
 
 def test_suite():

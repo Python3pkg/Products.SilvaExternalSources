@@ -387,6 +387,8 @@ class CodeSourceInstallable(object):
         return self.update(source)
 
     def _get_installables(self):
+        if not os.path.isdir(self._directory):
+            return
         for filename in os.listdir(self._directory):
             if filename == CONFIGURATION_FILE or filename.startswith('.'):
                 continue

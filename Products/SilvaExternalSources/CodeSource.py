@@ -243,11 +243,12 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         """Update a code source from the filesystem.
         """
         installable = self._get_installable()
-        if installable is None:
+        if (installable is None or
+                not os.path.isdir(installable._directory)):
             if REQUEST is not None:
                 return self.editCodeSource(
                     manage_tabs_message=\
-                        'Could find the code source on the filesystem.')
+                        'Couldn\'t find the code source on the filesystem.')
             return False
         installable.update(self, bool(purge))
         if REQUEST is not None:
@@ -261,11 +262,12 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         """Export a code source to the filesystem.
         """
         installable = self._get_installable()
-        if installable is None:
+        if (installable is None or
+                not os.path.isdir(installable._directory)):
             if REQUEST is not None:
                 return self.editCodeSource(
                     manage_tabs_message=\
-                        'Could find the code source on the filesystem.')
+                        'Couldn\'t find the code source on the filesystem.')
             return None
         directory = None
         if aszip:

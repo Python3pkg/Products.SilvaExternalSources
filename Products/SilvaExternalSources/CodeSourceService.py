@@ -716,40 +716,47 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
             if not below.endswith('/'):
                 below += '/'
         for source in self.context.get_installed_sources():
+            path = '/'.join(source.getPhysicalPath())
+            if (below and (not path.startswith(below) or
+                           (not child and '/' in path[len(below):]))):
+                continue
             if isinstance(source, Broken):
                 self.sources.append(
                     {'id': source.getId(),
                      'problems': ['Filesystem code is missing'],
                      'title': 'Corresponding Source implementation is missing',
-                     'path': '/'.join(source.getPhysicalPath()),
+                     'path': path,
                      'url': None})
-            else:
-                path = '/'.join(source.getPhysicalPath())
-                if (below and (not path.startswith(below) or
-                               (not child and '/' in path[len(below):]))):
-                    continue
-                message = None
-                if ICodeSource.providedBy(source):
-                    if update:
-                        installable = source._get_installable()
-                        if (installable is not None and
-                                os.path.isdir(installable._directory)):
-                            installable.update(source, True)
-                            message = _('Source updated.')
-                        else:
-                            message = _('Not updated. Folder missing.')
-                    elif bind and not source.get_fs_location():
-                        candidates = source.manage_getFileSystemLocations()
-                        if len(candidates) == 1:
-                            source._fs_location = candidates[0]
-                            message = _('Source associated with ${location}.',
-                                        mapping=dict(location=candidates[0]))
-                self.sources.append({'id': source.getId(),
-                                     'problems': source.test_source(),
-                                     'title': source.get_title(),
-                                     'path': path,
-                                     'url': source.absolute_url(),
-                                     'message': message})
+                continue
+            message = None
+            if ICodeSource.providedBy(source):
+                if update:
+                    installable = source._get_installable()
+                    if (installable is not None and
+                            os.path.isdir(installable._directory)):
+                        installable.update(source, True)
+                        message = _('Source updated.')
+                    else:
+                        self.sources.append(
+                            {'id': source.getId(),
+                             'problems': ['Filesystem code have been deleted'],
+                             'title': source.get_title(),
+                             'path':  path,
+                             'message': None,
+                             'url': source.absolute_url()})
+                        continue
+                elif bind and not source.get_fs_location():
+                    candidates = source.manage_getFileSystemLocations()
+                    if len(candidates) == 1:
+                        source._fs_location = candidates[0]
+                        message = _('Source associated with ${location}.',
+                                    mapping=dict(location=candidates[0]))
+            self.sources.append({'id': source.getId(),
+                                 'problems': source.test_source(),
+                                 'title': source.get_title(),
+                                 'path': path,
+                                 'url': source.absolute_url(),
+                                 'message': message})
         if below:
             self.filter = below.rstrip('/')
         else:

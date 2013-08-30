@@ -91,29 +91,22 @@ class CodeSourceImportTestCase(unittest.TestCase):
             source.js.objectIds(),
             ['advanced.js'])
 
-    def test_rename_and_update(self):
+    def test_rename_file_and_update(self):
         installable = CodeSourceInstallable(
             'test:', self.get_path())
         installable.install(self.root)
-
-        old_filename = self.get_path('README.txt')
-        new_filename = self.get_path('RENAMED_README.txt')
-
-        os.rename(old_filename, new_filename)
-
         source = self.root._getOb('cs_fancytest', None)
+        self.assertItemsEqual(
+            source.objectIds(),
+            ['css', 'feedback', 'js', 'README', 'script'])
 
-        try:
-            installable.update(source, purge=True)
-        except(IOError):
-            self.fail('''The code source cannot be updated because one
-                      of its file has been renamed on the file system.''')
-
+        os.rename(
+            self.get_path('README.txt'),
+            self.get_path('RENAMED_README.txt'))
+        installable.update(source, purge=True)
         self.assertItemsEqual(
             source.objectIds(),
             ['css', 'feedback', 'js', 'RENAMED_README', 'script'])
-
-        os.rename(new_filename, old_filename)
 
 
 def test_suite():

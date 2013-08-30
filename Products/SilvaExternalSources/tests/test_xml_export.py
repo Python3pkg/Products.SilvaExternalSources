@@ -7,7 +7,7 @@ import unittest
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 
-from Products.Silva.testing import TestRequest
+from Products.Silva.testing import TestRequest, Transaction
 from Products.Silva.tests.test_xml_export import SilvaXMLTestCase
 
 from zeam.form import silva as silvaforms
@@ -48,16 +48,17 @@ class TOCCodeSourceDocumentExportTestCase(SilvaXMLTestCase):
 
     def setUp(self):
         self.root = self.layer.get_application()
-        self.layer.login('author')
-        # You have to install the source as manager
-        factory = self.root.manage_addProduct['Silva']
-        factory.manage_addFolder('folder', 'Folder')
-        factory = self.root.folder.manage_addProduct['silva.app.document']
-        factory.manage_addDocument('example', 'Example')
-        version = self.root.folder.example.get_editable()
-        html = HTML_TOC_CODE_SOURCE.format(
-            getUtility(IIntIds).register(self.root.folder))
-        version.body.save(version, TestRequest(), html)
+        with Transaction():
+            self.layer.login('author')
+            # You have to install the source as manager
+            factory = self.root.manage_addProduct['Silva']
+            factory.manage_addFolder('folder', 'Folder')
+            factory = self.root.folder.manage_addProduct['silva.app.document']
+            factory.manage_addDocument('example', 'Example')
+            version = self.root.folder.example.get_editable()
+            html = HTML_TOC_CODE_SOURCE.format(
+                getUtility(IIntIds).register(self.root.folder))
+            version.body.save(version, TestRequest(), html)
 
     def test_export_two_tocs_in_document(self):
         exporter = self.assertExportEqual(
@@ -73,18 +74,20 @@ class CitationCodeSourceDocumentExportTestCase(SilvaXMLTestCase):
 
     def setUp(self):
         self.root = self.layer.get_application()
-        self.layer.login('manager')
-        # You have to install the source as manager
-        factory = self.root.manage_addProduct['Silva']
-        factory.manage_addFolder('folder', 'Folder')
-        token = self.root.manage_cutObjects(['cs_citation'])
-        self.root.folder.manage_pasteObjects(token)
-        self.layer.login('author')
-        # Continue as author
-        factory = self.root.folder.manage_addProduct['silva.app.document']
-        factory.manage_addDocument('example', 'Example')
-        version = self.root.folder.example.get_editable()
-        version.body.save(version, TestRequest(), HTML_CITATION_CODE_SOURCE)
+        with Transaction():
+            self.layer.login('manager')
+            # You have to install the source as manager
+            factory = self.root.manage_addProduct['Silva']
+            factory.manage_addFolder('folder', 'Folder')
+            token = self.root.manage_cutObjects(['cs_citation'])
+            self.root.folder.manage_pasteObjects(token)
+        with Transaction():
+            self.layer.login('author')
+            # Continue as author
+            factory = self.root.folder.manage_addProduct['silva.app.document']
+            factory.manage_addDocument('example', 'Example')
+            version = self.root.folder.example.get_editable()
+            version.body.save(version, TestRequest(), HTML_CITATION_CODE_SOURCE)
 
     def test_export_code_source_and_document(self):
         """Export a document containing a code source.
@@ -107,9 +110,10 @@ class CitationCodeSourceDocumentExportTestCase(SilvaXMLTestCase):
     def test_export_document_with_missing_source(self):
         """Export a document containing a missing code source.
         """
-        # Delete code source to break it.
-        self.root.manage_delObjects(['cs_citation'])
-        self.root.folder.manage_delObjects(['cs_citation'])
+        with Transaction():
+            # Delete code source to break it.
+            self.root.manage_delObjects(['cs_citation'])
+            self.root.folder.manage_delObjects(['cs_citation'])
 
         # Export
         exporter = self.assertExportEqual(
@@ -135,32 +139,33 @@ class SourceAssertExportTestCase(SilvaXMLTestCase):
 
     def setUp(self):
         self.root = self.layer.get_application()
-        self.layer.login('editor')
-
-        factory = self.root.manage_addProduct['Silva']
-        factory.manage_addFolder('folder', 'Folder')
-        factory.manage_addFolder('other', 'Other Folder')
-        factory = self.root.folder.manage_addProduct['SilvaExternalSources']
-        factory.manage_addSourceAsset('asset', 'A source asset')
+        with Transaction():
+            self.layer.login('editor')
+            factory = self.root.manage_addProduct['Silva']
+            factory.manage_addFolder('folder', 'Folder')
+            factory.manage_addFolder('other', 'Other Folder')
+            factory = self.root.folder.manage_addProduct['SilvaExternalSources']
+            factory.manage_addSourceAsset('asset', 'A source asset')
 
     def save_asset(self, target=None):
-        # Helper to save the parameters in the test source asset.
-        version = self.root.folder.asset.get_editable()
+        with Transaction():
+            # Helper to save the parameters in the test source asset.
+            version = self.root.folder.asset.get_editable()
 
-        if target is not None:
-            target = getUtility(IIntIds).register(target)
-        else:
-            target = '0'
-        request = TestRequest(
-            form={'field_paths': str(target),
-                  'field_toc_types': "Silva Folder",
-                  'field_depth': "0",
-                  'field_sort_on': "silva",
-                  'field_order': "normal"})
-        factory = getWrapper(version, IExternalSourceManager)
-        source = factory(request, name='cs_toc')
-        marker = source.create()
-        version.set_parameters_identifier(source.getId())
+            if target is not None:
+                target = getUtility(IIntIds).register(target)
+            else:
+                target = '0'
+            request = TestRequest(
+                form={'field_paths': str(target),
+                      'field_toc_types': "Silva Folder",
+                      'field_depth': "0",
+                      'field_sort_on': "silva",
+                      'field_order': "normal"})
+            factory = getWrapper(version, IExternalSourceManager)
+            source = factory(request, name='cs_toc')
+            marker = source.create()
+            version.set_parameters_identifier(source.getId())
         self.assertIs(marker, silvaforms.SUCCESS)
         return version
 

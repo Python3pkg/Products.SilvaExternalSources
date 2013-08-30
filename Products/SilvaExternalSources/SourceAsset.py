@@ -245,6 +245,7 @@ class SourceAssetEditForm(silvaforms.SMIEditForm):
     grok.context(ISourceAsset)
 
     actions = silvaforms.Actions(silvaforms.CancelEditAction())
+    readOnly = False
 
     def __init__(self, context, request):
         editable = context.get_editable()
@@ -252,7 +253,7 @@ class SourceAssetEditForm(silvaforms.SMIEditForm):
             self.controller = editable.get_controller(request)
         else:
             self.controller = context.get_viewable().get_controller(request)
-            self.controller.mode = silvaforms.DISPLAY
+            self.readOnly = True
         super(SourceAssetEditForm, self).__init__(context, request)
 
     def updateWidgets(self):
@@ -260,7 +261,9 @@ class SourceAssetEditForm(silvaforms.SMIEditForm):
         if self.controller is not None:
             self.fieldWidgets.extend(
                 self.controller.fieldWidgets(
-                    ignoreRequest=False, ignoreContent=False))
+                    ignoreRequest=self.readOnly,
+                    ignoreContent=False,
+                    display=self.readOnly))
 
     @property
     def formErrors(self):

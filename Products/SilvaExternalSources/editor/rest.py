@@ -112,7 +112,8 @@ class SourceParameters(SourceAPI):
         try:
             source = self.get_source()
         except SourceError:
-            pass
+            self.request.response.setStatus(500)
+            return ''
         else:
             # Apply formulator styles. No choice here.
             for field in source.fields:
@@ -121,7 +122,7 @@ class SourceParameters(SourceAPI):
                         field.customize(STYLES[field.meta_type])
 
             for widget in source.fieldWidgets(
-                ignoreRequest=False, ignoreContent=False):
+                    ignoreRequest=False, ignoreContent=False):
                 label_class = ['cke_dialog_ui_labeled_label']
                 if widget.required:
                     label_class.append('cke_required')
@@ -131,7 +132,7 @@ class SourceParameters(SourceAPI):
                      'title': widget.title,
                      'description': widget.description,
                      'widget': widget.render()})
-        return self.json_response({
+            return self.json_response({
                 'title': source.label,
                 'parameters': self.template.render(self)})
 
@@ -148,9 +149,7 @@ class SourceParametersValidator(SourceAPI):
             if errors:
                 return self.json_response(
                     {'success': False,
-                     'messages': [
-                            {'identifier': error.identifier,
-                             'message': error.title}
-                            for error in errors]})
+                     'messages': [{'identifier': error.identifier,
+                                   'message': error.title}
+                                  for error in errors]})
         return self.json_response({'success': True})
-

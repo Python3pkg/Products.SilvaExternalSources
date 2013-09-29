@@ -1,5 +1,5 @@
-<tal:twitter_timeline>
-  <tal:def tal:define="
+<tal:twitter_timeline
+  tal:define="
     username options/username;
     widgetid options/data-widget-id;
     theme options/data-theme | nothing;
@@ -7,20 +7,19 @@
     height options/height | nothing;
     chrome options/data-chrome | nothing;
     bordercolor options/data-border-color | nothing;
-    tweetlimit options/data-tweet-limit | nothing;" >
-    <a tal:attributes="
-      href python:'https://twitter.com/%s' % username;
-      class string:twitter-timeline;
-      data-widget-id widgetid;
-      data-theme theme;
-      data-link-color linkcolor;
-      height height;
-      data-chrome chrome;
-      data-border-color bordercolor;
-      data-tweet-limit tweetlimit;"
-      tal:content="python:'Tweets by @%s' % username">
-    </a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
-    </script>
-  </tal:def>
+    tweetlimit options/data-tweet-limit | nothing;">
+  <a tal:attributes="
+    href string:https://twitter.com/$username;
+    class string:twitter-timeline;
+    data-widget-id widgetid;
+    data-theme theme;
+    data-link-color linkcolor;
+    height height;
+    data-chrome chrome;
+    data-border-color bordercolor;
+    data-tweet-limit tweetlimit;"
+    tal:content="string:Tweets by $username">
+  </a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+  </script>
 </tal:twitter_timeline>

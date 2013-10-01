@@ -7,10 +7,12 @@
   chrome options/data-chrome | nothing;
   bordercolor options/data-border-color | nothing;
   tweetlimit options/data-tweet-limit | nothing;
+  wtitle options/widget_title;
   cssclass options/css-class | nothing;">
 <!-- Twitter Timeline code source (cs_twittertimeline) -->
 <div tal:attributes="class cssclass"
   tal:omit-tag="not:cssclass">
+  <h3 tal:condition="wtitle" tal:content="wtitle"></h3>
   <a tal:attributes="
     href string:https://twitter.com/$username;
     class string:twitter-timeline;

@@ -20,7 +20,7 @@
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>
-          <default>infrae</default>
+          <default>silvacmsorg</default>
           <description>Your Twitter username</description>
           <display_maxwidth></display_maxwidth>
           <display_width type="int">20</display_width>
@@ -47,7 +47,7 @@
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>
-          <default>345115773511016448</default>
+          <default>347980789734055936</default>
           <description>In order to use this CS you have to create a Twitter user widget in your profile and then input the widget ID in this field (https://twitter.com/settings/widgets/new).
 This widget ID is the value of the "data-widget-id" attribute in the HTML code Twitter provides you after saving the widget in your profile.</description>
           <display_maxwidth></display_maxwidth>
@@ -226,6 +226,60 @@ This widget ID is the value of the "data-widget-id" attribute in the HTML code T
           <max_length></max_length>
           <required type="int">0</required>
           <title>Border color</title>
+          <truncate type="int">0</truncate>
+          <unicode type="int">0</unicode>
+          <whitespace_preserve type="int">0</whitespace_preserve>
+        </values>
+        <tales>
+        </tales>
+        <messages>
+          <message name="external_validator_failed">The input failed the external validator.</message>
+          <message name="required_not_found">Input is required but no input given.</message>
+          <message name="too_long">Too much input was given.</message>
+        </messages>
+      </field>
+      <field><id>widget_title</id> <type>StringField</type>
+        <values>
+          <alternate_name></alternate_name>
+          <css_class></css_class>
+          <default></default>
+          <description>Optional title for the widget.</description>
+          <display_maxwidth></display_maxwidth>
+          <display_width type="int">20</display_width>
+          <enabled type="int">1</enabled>
+          <external_validator></external_validator>
+          <extra></extra>
+          <hidden type="int">0</hidden>
+          <max_length></max_length>
+          <required type="int">0</required>
+          <title>Widget title</title>
+          <truncate type="int">0</truncate>
+          <unicode type="int">0</unicode>
+          <whitespace_preserve type="int">0</whitespace_preserve>
+        </values>
+        <tales>
+        </tales>
+        <messages>
+          <message name="external_validator_failed">The input failed the external validator.</message>
+          <message name="required_not_found">Input is required but no input given.</message>
+          <message name="too_long">Too much input was given.</message>
+        </messages>
+      </field>
+      <field><id>css-class</id> <type>StringField</type>
+        <values>
+          <alternate_name></alternate_name>
+          <css_class></css_class>
+          <default></default>
+          <description>Optional CSS (space-separated) class selectors for the widget &lt;div&gt; wrapper.</description>
+          <display_maxwidth></display_maxwidth>
+          <display_width type="int">20</display_width>
+          <enabled type="int">1</enabled>
+          <external_validator></external_validator>
+          <extra></extra>
+          <hidden type="int">0</hidden>
+          <max_length></max_length>
+          <required type="int">0</required>
+          <title>CSS classes</title>
           <truncate type="int">0</truncate>
           <unicode type="int">0</unicode>
           <whitespace_preserve type="int">0</whitespace_preserve>

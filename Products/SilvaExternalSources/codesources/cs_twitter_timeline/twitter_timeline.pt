@@ -1,14 +1,16 @@
-<tal:twitter_timeline
-  tal:define="
-    username options/username;
-    widgetid options/data-widget-id;
-    theme options/data-theme | nothing;
-    linkcolor options/data-link-color | nothing;
-    height options/height | nothing;
-    chrome options/data-chrome | nothing;
-    bordercolor options/data-border-color | nothing;
-    tweetlimit options/data-tweet-limit | nothing;">
+<tal:twitter_timeline tal:define="
+  username options/username;
+  widgetid options/data-widget-id;
+  theme options/data-theme | nothing;
+  linkcolor options/data-link-color | nothing;
+  height options/height | nothing;
+  chrome options/data-chrome | nothing;
+  bordercolor options/data-border-color | nothing;
+  tweetlimit options/data-tweet-limit | nothing;
+  cssclass options/css-class | nothing;">
 <!-- Twitter Timeline code source (cs_twittertimeline) -->
+<div tal:attributes="class cssclass"
+  tal:omit-tag="not:cssclass">
   <a tal:attributes="
     href string:https://twitter.com/$username;
     class string:twitter-timeline;
@@ -23,5 +25,6 @@
   </a>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
   </script>
+</div>
 <!-- /End Twitter Timeline -->
 </tal:twitter_timeline>

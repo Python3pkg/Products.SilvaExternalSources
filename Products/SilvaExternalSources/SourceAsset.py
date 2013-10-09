@@ -247,14 +247,14 @@ class SourceAssetEditForm(silvaforms.SMIEditForm):
     actions = silvaforms.Actions(silvaforms.CancelEditAction())
     readOnly = False
 
-    def __init__(self, context, request):
-        editable = context.get_editable()
+    def update(self):
+        editable = self.context.get_editable()
         if editable is not None:
-            self.controller = editable.get_controller(request)
+            self.controller = editable.get_controller(self.request)
         else:
-            self.controller = context.get_viewable().get_controller(request)
+            self.controller = self.context.get_viewable().get_controller(
+                self.request)
             self.readOnly = True
-        super(SourceAssetEditForm, self).__init__(context, request)
 
     def updateWidgets(self):
         super(SourceAssetEditForm, self).updateWidgets()
@@ -273,6 +273,7 @@ class SourceAssetEditForm(silvaforms.SMIEditForm):
 
     def isEditable(self):
         return (self.controller is not None and
+                not self.readOnly and
                 self.controller.mode != silvaforms.DISPLAY)
 
     @silvaforms.action(

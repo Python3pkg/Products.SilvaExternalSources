@@ -41,3 +41,10 @@ o Not all Formulator widgets can succesfully be used for
   fields. We are working on adding facilities to Formulator to
   improve this.
 
+Code repository
+===============
+
+You can find the code of this extension in Mercurial:
+https://hg.infrae.com/Products.SilvaExternalSources/.
+
+

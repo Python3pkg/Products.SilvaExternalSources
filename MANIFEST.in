@@ -1,1 +1,1 @@
-recursive-include Products *.cpt *.css *.csv *.ini *.js *.mo *.png *.po *.pot *.pt *.py *.silvaxml *.swf *.txt *.xml *.zcml *.zpt
+recursive-include Products *.cpt *.css *.csv *.dtml *.ini *.js *.mo *.png *.po *.pot *.pt *.py *.silvaxml *.swf *.txt *.xml *.zcml *.zpt

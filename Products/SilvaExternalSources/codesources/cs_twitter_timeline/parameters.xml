@@ -71,22 +71,23 @@ This widget ID is the value of the "data-widget-id" attribute in the HTML code T
           <message name="too_long">Too much input was given.</message>
         </messages>
       </field>
-      <field><id>height</id> <type>IntegerField</type>
+      <field><id>height</id> <type>StringField</type>
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>
-          <default>600</default>
-          <description>Choose the height of the Twitter widget (units are pixels).</description>
+          <default>auto</default>
+          <description>Choose the height of the Twitter widget (you have to specify units, e.g: 500px or 2em).</description>
           <display_maxwidth></display_maxwidth>
           <display_width type="int">20</display_width>
           <enabled type="int">1</enabled>
-          <end></end>
           <external_validator></external_validator>
           <extra></extra>
           <hidden type="int">0</hidden>
+          <max_length></max_length>
           <required type="int">0</required>
-          <start></start>
-          <title>Height</title>
+          <title>Widget height</title>
+          <truncate type="int">0</truncate>
+          <unicode type="int">0</unicode>
           <whitespace_preserve type="int">0</whitespace_preserve>
         </values>
         <tales>
@@ -94,8 +95,7 @@ This widget ID is the value of the "data-widget-id" attribute in the HTML code T
         <messages>
           <message name="external_validator_failed">The input failed the external validator.</message>
           <message name="required_not_found">Input is required but no input given.</message>
-          <message name="not_integer">You did not enter an integer.</message>
-          <message name="integer_out_of_range">The integer you entered was out of range.</message>
+          <message name="too_long">Too much input was given.</message>
         </messages>
       </field>
       <field><id>data-theme</id> <type>StringField</type>

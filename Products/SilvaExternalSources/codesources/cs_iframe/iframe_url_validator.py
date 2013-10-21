@@ -1,5 +1,12 @@
+## Script (Python) "iframe_url_validator"
+##bind container=container
+##bind context=context
+##bind namespace=
+##bind script=script
+##bind subpath=traverse_subpath
 ##parameters=value, REQUEST
-
+##title=
+##
 if not value:
     return False
 

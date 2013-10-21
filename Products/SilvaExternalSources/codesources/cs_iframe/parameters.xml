@@ -101,7 +101,7 @@
         <values>
           <alternate_name></alternate_name>
           <css_class></css_class>
-          <default></default>
+          <default>auto</default>
           <description></description>
           <enabled type="int">1</enabled>
           <external_validator></external_validator>

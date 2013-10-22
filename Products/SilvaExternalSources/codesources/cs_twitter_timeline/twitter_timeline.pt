@@ -21,7 +21,6 @@
       data-widget-id widgetid;
       data-theme theme;
       data-link-color linkcolor;
-      height height;
       data-chrome chrome;
       data-border-color bordercolor;
       data-tweet-limit tweetlimit;"

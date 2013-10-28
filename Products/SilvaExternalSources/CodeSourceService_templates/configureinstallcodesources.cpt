@@ -1,0 +1,3 @@
+<tal:configure i18n:domain="plone">
+   Install
+</tal:configure>

@@ -33,13 +33,14 @@ from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from js.jquery import jquery
 
 from silva.core import conf as silvaconf
-from silva.core.interfaces import IContainer
+from silva.core.interfaces import IContainer, ISilvaConfigurableService
 from silva.core.interfaces import IMimeTypeClassifier
 from silva.core.services.base import SilvaService
 from silva.core.services.utils import walk_silva_tree
 from silva.core.views import views as silvaviews
 from silva.translations import translate as _
 from silva.fanstatic import need
+from silva.ui import rest
 from zeam.form import silva as silvaforms
 
 from .interfaces import ICodeSource, ICodeSourceService, ICodeSourceInstaller
@@ -524,7 +525,7 @@ class CodeSourceInstallable(object):
 class CodeSourceService(SilvaService):
     meta_type = 'Silva Code Source Service'
 
-    grok.implements(ICodeSourceService)
+    grok.implements(ICodeSourceService, ISilvaConfigurableService)
     grok.name('service_codesources')
     silvaconf.icon('www/codesource_service.png')
 
@@ -701,6 +702,7 @@ class SourcesErrorsReporter(grok.GlobalUtility):
 
 class ManageExistingCodeSources(silvaviews.ZMIView):
     grok.name('manage_existing_codesources')
+    grok.context(CodeSourceService)
 
     def update(self, find=False, below=None, child=False,
                update=False, bind=False):
@@ -763,8 +765,7 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
             self.filter = '/'.join(aq_parent(self.context).getPhysicalPath())
 
 
-class ManageInstallCodeSources(silvaviews.ZMIView):
-    grok.name('manage_install_codesources')
+class InstallCodeSourcesMixin(object):
 
     def update(self, install=False, refresh=False, locations=[]):
         self.status = []
@@ -836,9 +837,23 @@ class ManageInstallCodeSources(silvaviews.ZMIView):
         self.extensions.sort(key=operator.itemgetter('title'))
         need(jquery)
 
+class ManageInstallCodeSources(InstallCodeSourcesMixin, silvaviews.ZMIView):
+    grok.name('manage_install_codesources')
+    grok.context(CodeSourceService)
+
+
+class ConfigureInstallCodeSources(InstallCodeSourcesMixin, rest.PageWithTemplateREST):
+    grok.adapts(rest.Screen, CodeSourceService)
+    grok.name('admin')
+    grok.require('zope2.ViewManagementScreens')
+
+    def get_menu_title(self):
+        return _('Install code sources')
+
 
 class ManageSourcesErrors(silvaviews.ZMIView):
     grok.name('manage_sources_errors')
+    grok.context(CodeSourceService)
 
     def update(self):
         errors = getUtility(ISourceErrors)

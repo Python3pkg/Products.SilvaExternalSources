@@ -726,8 +726,8 @@ class ExistingCodeSourcesMixin(object):
             if isinstance(source, Broken):
                 self.sources.append(
                     {'id': source.getId(),
-                     'problems': ['Filesystem code is missing'],
-                     'title': 'Corresponding Source implementation is missing',
+                     'problems': [_(u'Filesystem code is missing')],
+                     'title': _(u'Corresponding Source implementation is missing'),
                      'path': path,
                      'url': None})
                 continue
@@ -742,7 +742,7 @@ class ExistingCodeSourcesMixin(object):
                     else:
                         self.sources.append(
                             {'id': source.getId(),
-                             'problems': ['Filesystem code have been deleted'],
+                             'problems': [_(u'Filesystem code have been deleted')],
                              'title': source.get_title(),
                              'path':  path,
                              'message': None,

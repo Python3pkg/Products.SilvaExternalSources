@@ -35,11 +35,12 @@ from js.jquery import jquery
 from silva.core import conf as silvaconf
 from silva.core.interfaces import IContainer, ISilvaConfigurableService
 from silva.core.interfaces import IMimeTypeClassifier
+from silva.core.messages.interfaces import IMessageService
 from silva.core.services.base import SilvaService
 from silva.core.services.utils import walk_silva_tree
 from silva.core.views import views as silvaviews
-from silva.translations import translate as _
 from silva.fanstatic import need
+from silva.translations import translate as _
 from silva.ui import rest
 from zeam.form import silva as silvaforms
 
@@ -768,7 +769,7 @@ class ManageExistingCodeSources(silvaviews.ZMIView):
 class InstallCodeSourcesMixin(object):
 
     def update(self, install=False, refresh=False, locations=[]):
-        self.status = []
+        self.status = None
         if install:
             notfound = []
             installed = []
@@ -849,6 +850,15 @@ class ConfigureInstallCodeSources(InstallCodeSourcesMixin, rest.PageWithTemplate
 
     def get_menu_title(self):
         return _('Install code sources')
+
+    def update(self, install=False, refresh=False, locations=[]):
+        super(ConfigureInstallCodeSources, self).update(
+            install='install' in self.request.form,
+            refresh='refresh' in self.request.form,
+            locations=self.request.form.get('locations', []))
+        if self.status:
+            service = getUtility(IMessageService)
+            service.send(self.status, self.request, namespace='feedback')
 
 
 class ManageSourcesErrors(silvaviews.ZMIView):

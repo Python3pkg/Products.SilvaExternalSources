@@ -1,3 +1,80 @@
-<tal:configure i18n:domain="plone">
-   Install
+<tal:configure i18n:domain="silva">
+
+  <div class="form-head">
+    <h3 i18n:translate="">
+      Install new code sources
+    </h3>
+    <p tal:condition="rest.sources"
+       i18n:translate="">
+      You can here install <span i18n:name="count" tal:content="rest.sources" />
+      new code sources in your Silva
+      site:
+    </p>
+    <p tal:condition="not rest.sources"
+       i18n:translate="">
+      There is no installable code sources.
+    </p>
+  </div>
+
+  <form class="form-fields-container" tal:condition="rest.sources">
+    <tal:extension tal:repeat="extension rest.extensions">
+      <div class="form-head">
+        <h4 title="Click to hide or display"
+            tal:content="extension.title" />
+        <p tal:condition="extension.description"
+           tal:content="extension.description" />
+      </div>
+      <div class="form-body">
+        <div class="form-section"
+             tal:repeat="source extension.sources">
+          <div class="form-checkbox"
+               tal:define="id source.identifier;
+                           working source.validate">
+            <input type="checkbox" name="locations" value="#" id="#" class="#"
+                   tal:attributes="disabled not working and 'disabled' or None;
+                                   value source.location;
+                                   class string:check-${extension.id} field field-bool field-required;
+                                   id id" />
+            <label for="#"
+                   tal:attributes="for id">
+              <span tal:replace="source.title" />
+              (<span tal:replace="id" />)
+            </label>
+            <i tal:condition="not: working"
+               style="font-weight: bold; color: red;"
+               i18n:translate="">
+              This source is incomplete and cannot be installed.
+            </i>
+            <p tal:content="source.description" />
+          </div>
+        </div>
+      </div>
+    </tal:extension>
+
+    <div class="form-footer">
+      <div class="form-controls">
+        <a class="form-button open-screen" rel="admin" href="."
+           data-form-shortcut="ctrl+z" title="Go back to the site preferences"
+           i18n:attributes="title">
+          <ins class="ui-icon ui-icon-arrowreturnthick-1-w"></ins>
+          Cancel
+        </a>
+
+        <a class="form-control" name="install"
+           data-form-shortcut="ctrl+i" title="Install selected code sources"
+           i18n:attributes="title">
+          <ins class="icon form_check"></ins>
+          Install
+        </a>
+
+        <a class="form-control" name="refresh"
+           data-form-shortcut="ctrl+r" title="Refresh the list of installable sources"
+           i18n:attributes="title">
+          <ins class="icon form_check"></ins>
+          Refresh
+        </a>
+      </div>
+    </div>
+  </form>
+
 </tal:configure>

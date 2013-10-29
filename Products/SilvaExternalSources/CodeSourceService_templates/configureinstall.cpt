@@ -49,32 +49,32 @@
           </div>
         </div>
       </div>
+
+      <div class="form-footer">
+        <div class="form-controls">
+          <a class="form-button open-screen" rel="admin" href="."
+             data-form-shortcut="ctrl+z" title="Go back to the site preferences"
+             i18n:attributes="title">
+            <ins class="ui-icon ui-icon-arrowreturnthick-1-w"></ins>
+            Cancel
+          </a>
+          <a class="form-control" name="install"
+             data-form-shortcut="ctrl+i" title="Install selected code sources"
+             i18n:attributes="title">
+            <ins class="icon form_check"></ins>
+            Install
+          </a>
+          <a class="form-control" name="refresh"
+             data-form-shortcut="ctrl+r" title="Refresh the list of installable sources"
+             i18n:attributes="title">
+            <ins class="icon form_check"></ins>
+            Refresh
+          </a>
+        </div>
+      </div>
+
     </tal:extension>
 
-    <div class="form-footer">
-      <div class="form-controls">
-        <a class="form-button open-screen" rel="admin" href="."
-           data-form-shortcut="ctrl+z" title="Go back to the site preferences"
-           i18n:attributes="title">
-          <ins class="ui-icon ui-icon-arrowreturnthick-1-w"></ins>
-          Cancel
-        </a>
-
-        <a class="form-control" name="install"
-           data-form-shortcut="ctrl+i" title="Install selected code sources"
-           i18n:attributes="title">
-          <ins class="icon form_check"></ins>
-          Install
-        </a>
-
-        <a class="form-control" name="refresh"
-           data-form-shortcut="ctrl+r" title="Refresh the list of installable sources"
-           i18n:attributes="title">
-          <ins class="icon form_check"></ins>
-          Refresh
-        </a>
-      </div>
-    </div>
   </form>
 
 </tal:configure>

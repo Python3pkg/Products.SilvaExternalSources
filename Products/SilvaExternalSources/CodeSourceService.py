@@ -771,7 +771,7 @@ class ManageExistingCodeSources(ExistingCodeSourcesMixin, silvaviews.ZMIView):
     grok.context(CodeSourceService)
 
 
-class ConfigureExisting(ExistingCodeSourcesMixin, rest.PageWithTemplateREST):
+class ConfigureExisting(ExistingCodeSourcesMixin, rest.FormWithTemplateREST):
     grok.adapts(rest.Screen, CodeSourceService)
     grok.name('admin-existing')
     grok.require('zope2.ViewManagementScreens')
@@ -794,7 +794,7 @@ class ConfigureExisting(ExistingCodeSourcesMixin, rest.PageWithTemplateREST):
 
 class ConfigureExistingMenu(menu.MenuItem):
     grok.adapts(menu.ContentMenu, CodeSourceService)
-    grok.order(10)
+    grok.order(20)
     name = _('Available')
     screen = ConfigureExisting
 
@@ -884,7 +884,7 @@ class ManageInstallCodeSources(InstallCodeSourcesMixin, silvaviews.ZMIView):
         need(jquery)
 
 
-class ConfigureInstall(InstallCodeSourcesMixin, rest.PageWithTemplateREST):
+class ConfigureInstall(InstallCodeSourcesMixin, rest.FormWithTemplateREST):
     grok.adapts(rest.Screen, CodeSourceService)
     grok.name('admin')
     grok.require('zope2.ViewManagementScreens')
@@ -906,7 +906,7 @@ class ConfigureInstall(InstallCodeSourcesMixin, rest.PageWithTemplateREST):
 
 class ConfigureInstallMenu(menu.MenuItem):
     grok.adapts(menu.ContentMenu, CodeSourceService)
-    grok.order(15)
+    grok.order(10)
     name = _('Install')
     screen = ConfigureInstall
 

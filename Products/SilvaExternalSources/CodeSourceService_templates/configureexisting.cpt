@@ -54,7 +54,7 @@
           <a class="form-button open-screen" rel="admin" href="."
              data-form-shortcut="ctrl+z" title="Go back to the site preferences"
              i18n:attributes="title">
-            <ins class="ui-icon ui-icon-arrowreturnthick-1-w"></ins>
+            <ins class="icon form_cancel"></ins>
             Cancel
           </a>
           <a class="form-control" name="update"

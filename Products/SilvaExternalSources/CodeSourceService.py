@@ -779,6 +779,11 @@ class ConfigureExisting(ExistingCodeSourcesMixin, rest.FormWithTemplateREST):
     def get_menu_title(self):
         return _('Available code sources')
 
+    def get_menu_parent(self):
+        parent = super(ConfigureExisting, self).get_menu_parent()
+        parent['screen'] = 'admin'
+        return parent
+
     def update(self):
         sources = self.request.form.get('sources')
         if sources is not None and not isinstance(sources, list):
@@ -893,6 +898,11 @@ class ConfigureInstall(InstallCodeSourcesMixin, rest.FormWithTemplateREST):
 
     def get_menu_title(self):
         return _('Install code sources')
+
+    def get_menu_parent(self):
+        parent = super(ConfigureInstall, self).get_menu_parent()
+        parent['screen'] = 'admin'
+        return parent
 
     def update(self, install=False, refresh=False, locations=[]):
         super(ConfigureInstall, self).update(

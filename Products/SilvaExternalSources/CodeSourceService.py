@@ -760,6 +760,7 @@ class ExistingCodeSourcesMixin(object):
                                  'path': path,
                                  'url': source.absolute_url(),
                                  'message': message})
+        self.sources.sort(key=operator.itemgetter('title'))
         if below:
             self.filter = below.rstrip('/')
         else:
@@ -852,6 +853,7 @@ class InstallCodeSourcesMixin(object):
             sources.append(source)
             self.sources += 1
         for name, sources in extensions.items():
+            sources.sort(key=operator.attrgetter('title'))
             if name is None:
                 self.extensions.append({
                     'title': _('Default code sources'),

@@ -1,12 +1,12 @@
 <!--
-Copyright (c) 2002-2010 Infrae. All rights reserved.
-See also LICENSE.txt
-Version of this file: $Revision: 1.7 $
--->
+    Copyright (c) 2002-2010 Infrae. All rights reserved.
+    See also LICENSE.txt
+    Version of this file: $Revision: 1.7 $
+  -->
 <tal:block replace="structure here/manage_page_header" />
 <tal:block
-  define="manage_tabs_message options/manage_tabs_message | nothing"
-  replace="structure here/manage_tabs" />
+   define="manage_tabs_message options/manage_tabs_message | nothing"
+   replace="structure here/manage_tabs" />
 
 <h2>
   Edit Silva Code Source
@@ -29,13 +29,13 @@ Version of this file: $Revision: 1.7 $
     <tr>
       <td align="left" valign="top">
         <div class="form-label">
-         Contents
+          Contents
         </div>
       </td>
       <td align="left" valign="top">
         <h4 class="form-help">
           <a
-            tal:attributes="href string:${here_url}/manage_main">
+             tal:attributes="href string:${here_url}/manage_main">
             manage contents
           </a>
         </h4>
@@ -50,7 +50,7 @@ Version of this file: $Revision: 1.7 $
       <td align="left" valign="top">
         <h4 class="form-help">
           <a
-            tal:attributes="href string:${here_url}/parameters/manage_main">
+             tal:attributes="href string:${here_url}/parameters/manage_main">
             manage parameters
           </a>
         </h4>
@@ -64,7 +64,7 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <input type="text" name="title" size="40" value="" id="title"
-          tal:attributes="value context/get_title" />
+               tal:attributes="value context/get_title" />
       </td>
     </tr>
     <tr>
@@ -80,7 +80,7 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <input type="text" name="script_id" id="script_id" size="40" value=""
-          tal:attributes="value context/get_script_id" />
+               tal:attributes="value context/get_script_id" />
       </td>
     </tr>
     <tr>
@@ -98,16 +98,16 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <textarea
-          style="width: 100%;"
-          type="text"
-          cols="40"
-          rows="5"
-          wrap="soft"
-          value=""
-          name="script_layers"
-          id="script_layers"
-          tal:content="context/get_script_layers"
-        />
+           style="width: 100%;"
+           type="text"
+           cols="40"
+           rows="5"
+           wrap="soft"
+           value=""
+           name="script_layers"
+           id="script_layers"
+           tal:content="context/get_script_layers"
+           />
       </td>
     </tr>
     <tr>
@@ -118,7 +118,7 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <input type="text" name="data_encoding" size="40" id="data_encoding" value=""
-          tal:attributes="value context/get_data_encoding" />
+               tal:attributes="value context/get_data_encoding" />
       </td>
     </tr>
     <tr>
@@ -131,16 +131,16 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <textarea
-          style="width: 100%;"
-          type="text"
-          cols="40"
-          rows="5"
-          wrap="soft"
-          value=""
-          name="description"
-          id="description"
-          tal:content="context/get_description"
-        />
+           style="width: 100%;"
+           type="text"
+           cols="40"
+           rows="5"
+           wrap="soft"
+           value=""
+           name="description"
+           id="description"
+           tal:content="context/get_description"
+           />
       </td>
     </tr>
     <tr>
@@ -151,7 +151,7 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <input type="checkbox" name="cacheable" id="cacheable"
-          tal:attributes="checked python: here.is_cacheable() and 'checked' or None" />
+               tal:attributes="checked python: here.is_cacheable() and 'checked' or None" />
       </td>
     </tr>
     <tr>
@@ -162,7 +162,7 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <input type="checkbox" name="previewable"
-          tal:attributes="checked python: here.is_previewable() and 'checked' or None" />
+               tal:attributes="checked python: here.is_previewable() and 'checked' or None" />
       </td>
     </tr>
     <tr>
@@ -173,7 +173,7 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top">
         <input type="checkbox" name="usable" id="usable"
-          tal:attributes="checked python: here.is_usable() and 'checked' or None" />
+               tal:attributes="checked python: here.is_usable() and 'checked' or None" />
       </td>
     </tr>
     <tr tal:define="locations context/manage_getFileSystemLocations">
@@ -184,26 +184,26 @@ Version of this file: $Revision: 1.7 $
       </td>
       <td align="left" valign="top"
           tal:define="current context/get_fs_location">
-          <input class="form-element" type="radio" name="location" value=""
-                 id="location-remove" checked="#"
-                 tal:attributes="checked python:not current and 'checked' or None"/>
-          <label for="location-remove">No location</label>
-          <br />
-          <tal:change tal:condition="locations">
-            <tal:available tal:repeat="location locations">
-              <input class="form-element" type="radio" name="location"
-                     id="#" value="#" checked="#"
-                     tal:attributes="id string:location-${repeat/location/number};
-                                     value location;
-                                     checked python:current==location and 'checked' or None"/>
-              <label for="#"
-                     tal:attributes="for string:location-${repeat/location/number}"
-                     tal:content="location">
-                Location
-              </label>
-              <br />
-            </tal:available>
-          </tal:change>
+        <input class="form-element" type="radio" name="location" value=""
+               id="location-remove" checked="#"
+               tal:attributes="checked python:not current and 'checked' or None"/>
+        <label for="location-remove">No location</label>
+        <br />
+        <tal:change tal:condition="locations">
+          <tal:available tal:repeat="location locations">
+            <input class="form-element" type="radio" name="location"
+                   id="#" value="#" checked="#"
+                   tal:attributes="id string:location-${repeat/location/number};
+                                   value location;
+                                   checked python:current==location and 'checked' or None"/>
+            <label for="#"
+                   tal:attributes="for string:location-${repeat/location/number}"
+                   tal:content="location">
+              Location
+            </label>
+            <br />
+          </tal:available>
+        </tal:change>
         <tal:other tal:condition="python: current and current not in locations">
           Other: <b tal:content="current" />
         </tal:other>
@@ -232,16 +232,17 @@ Version of this file: $Revision: 1.7 $
     <input class="form-element" type="submit" name="purge"
            value="Purge and update from filesystem" />
   </form>
-
-  <h3>
-    Export a Code Source to the filesystem
-  </h3>
-  <form action="manage_exportCodeSource" name="updateform" method="post">
-    <input class="form-element" type="submit" name="export"
-           value="Export to filesystem" />
-    <input class="form-element" type="submit" name="aszip"
-           value="Export and download as a ZIP" />
-  </form>
 </tal:filesystem>
+
+<h3>
+  Export a Code Source to the filesystem
+</h3>
+<form action="manage_exportCodeSource" name="updateform" method="post">
+  <input class="form-element" type="submit" name="export"
+         value="Export to filesystem"
+         tal:condition="context/get_fs_location" />
+  <input class="form-element" type="submit" name="aszip"
+         value="Export and download as a ZIP" />
+</form>
 
 <h1 tal:replace="structure here/manage_page_footer">Footer</h1>

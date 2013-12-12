@@ -18,7 +18,7 @@ tests_require = [
 
 setup(name='Products.SilvaExternalSources',
       version=version,
-      description="Externals content sources to embed in rich text in Silva.",
+      description="Externals content sources to embed in Silva CMS",
       long_description=open(os.path.join("Products", "SilvaExternalSources", "README.txt")).read() + "\n" +
                        open(os.path.join("Products", "SilvaExternalSources", "HISTORY.txt")).read(),
       classifiers=[
@@ -30,7 +30,7 @@ setup(name='Products.SilvaExternalSources',
       keywords='silva cms document external sources',
       author='Infrae',
       author_email='info@infrae.com',
-      url='http://infrae.com/download/SilvaExternalSources',
+      url='https://github.com/silvacms/Products.SilvaExternalSources',
       license='BSD',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['Products'],

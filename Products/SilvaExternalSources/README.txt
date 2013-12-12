@@ -2,10 +2,11 @@
 SilvaExternalSources
 ====================
 
-The SilvaExternalSources extension adds the possibility to include
-data from non-Silva sources in Silva Documents. These non-Silva or
-external sources can for example be a relational database or the
-outcome of executing a Python script.
+The SilvaExternalSources extension for `Silva`_ that gives you the
+possibility to include data from non-Silva sources inside Silva
+documents and Silva pages. These non-Silva or external sources can for
+example be a relational database or the outcome of executing a Python
+script.
 
 Since an external source can potentially be resource intensive or a
 expose a vulnerability, only users with ZMI access (usualy site
@@ -26,25 +27,10 @@ external sources: *Silva Code Source*, *Silva SQL Source* and
 up as an asset in Silva. This is possible because no code is
 contained in a CSVSource.
 
-See also documentation in the doc subdirectory of this Product.
-
-Known Issues
-============
-
-o For the CSVSource object the description field from the metadata
-  system is used. In cases where this desciption field is not
-  filled in, it might acquire its value from the source's
-  container object.
-
-o Not all Formulator widgets can succesfully be used for
-  parameters yet, in particular check boxes and multi selection
-  fields. We are working on adding facilities to Formulator to
-  improve this.
-
 Code repository
 ===============
 
-You can find the code of this extension in Mercurial:
-https://hg.infrae.com/Products.SilvaExternalSources/.
+You can find the code of this extension in Git:
+https://github.com/silvacms/Products.SilvaExternalSources
 
-
+.. _Silva: http://silvacms.org

@@ -470,6 +470,10 @@ class CodeSourceInstallable(CodeSourceExportable):
     def install(self, folder):
         if self.is_installed(folder):
             return False
+        if self.identifier in folder.objectIds():
+            raise InstallationError(
+                "There is already an object with the source identifier in the folder",
+                self)
 
         factory = folder.manage_addProduct['SilvaExternalSources']
         factory.manage_addCodeSource(self.identifier, fs_location=self.location)
@@ -498,7 +502,7 @@ class CodeSourceInstallable(CodeSourceExportable):
                 u"Invalid source location", source.get_fs_location())
         if not self.validate():
             raise InstallationError(
-                u"Broken source", source)
+                u"Source definition is incomplete", self)
         source.set_title(self.title)
         source.set_script_id(self.script_id)
         if self.description:
@@ -767,12 +771,12 @@ class ExistingCodeSourcesMixin(object):
             if ICodeSource.providedBy(source):
                 if update and (sources is None or source.getId() in sources):
                     installable = source._get_installable()
+                    name = self._get_source_name(source)
                     if (installable is not None and
                             os.path.isdir(installable._directory)):
                         installable.update(source, True)
-                        status = _(
-                            '${source}: Source updated.',
-                            mapping=dict(source=self._get_source_name(source)))
+                        status = _('${name}: Source updated.',
+                                   mapping=dict(name=name))
                     else:
                         self.sources.append(
                             {'id': source.getId(),
@@ -780,9 +784,8 @@ class ExistingCodeSourcesMixin(object):
                              'title': source.get_title(),
                              'path':  path,
                              'url': source.absolute_url()})
-                        self.errors.append(_(
-                            '${source}: Source have problems.',
-                            mapping=dict(source=self._get_source_name(source))))
+                        self.errors.append(_('${name}: Source have problems.',
+                                             mapping=dict(name=name)))
                         continue
                 elif bind and not source.get_fs_location():
                     candidates = source.manage_getFileSystemLocations()
@@ -867,18 +870,25 @@ class InstallCodeSourcesMixin(object):
                     location=location))
                 if len(candidates) != 1:
                     self.errors.append(
-                        _('${source}: Source was not found and could not be installed.',
+                        _('${location}: Source was not found and could not be installed.',
                           mapping=dict(source=location)))
                 else:
                     installable = candidates[0]
-                    if installable.install(self.context.get_root()):
-                        self.success.append(
-                            _('${source}: Source was installed.',
-                            mapping=dict(source=self._get_source_name(installable))))
-                    else:
+                    name = self._get_source_name(installable)
+                    try:
+                        if installable.install(self.context.get_root()):
+                            self.success.append(
+                                _('${name}: Source was installed.',
+                                  mapping=dict(name=name)))
+                        else:
+                            self.errors.append(
+                                _('${name}: Source is already installed.',
+                                  mapping=dict(name=name)))
+                    except InstallationError as error:
                         self.errors.append(
-                            _('${source}: Source is already installed.',
-                              mapping=dict(source=self._get_source_name(installable))))
+                            _('${name}: Error during the installation: ${error}.',
+                              mapping=dict(name=name,
+                                           error=error.args[0])))
 
         self.extensions = []
         self.sources = 0

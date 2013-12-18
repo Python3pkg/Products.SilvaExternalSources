@@ -8,9 +8,8 @@
     <div metal:fill-slot="body">
 
       <style type="text/css">
-        .form-checkbox-help {
-        margin: 0.5em 0px 1.5em 2em;
-        }
+        .form-checkbox-help { margin: 0.5em 0px 1.5em 2em; }
+        div.error-msg { color: red;}
       </style>
       <script>
         (function($) {
@@ -26,9 +25,14 @@
       </script>
 
       <div class="system-msg"
-           i18n:translate=""
-           tal:condition="view/status"
-           tal:content="view/status">
+           tal:repeat="status view/success"
+           tal:content="status">
+        Form status summary
+      </div>
+
+      <div class="system-msg error-msg"
+           tal:repeat="status view/errors"
+           tal:content="status">
         Form status summary
       </div>
 

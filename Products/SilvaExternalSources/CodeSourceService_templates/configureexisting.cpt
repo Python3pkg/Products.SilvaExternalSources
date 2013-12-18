@@ -34,9 +34,6 @@
             <span tal:replace="source.title" />
             (<span tal:replace="source.id" />)
           </label>
-          <tal:message tal:condition="source.message">
-            : <span class="message" tal:content="source.message" />
-          </tal:message>
           <p tal:content="source.title" />
           <tal:error tal:condition="source.problems">
             <p>Error(s) are:</p>

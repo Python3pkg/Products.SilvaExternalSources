@@ -730,12 +730,16 @@ class SourcesErrorsReporter(grok.GlobalUtility):
 
 class ExistingCodeSourcesMixin(object):
 
+    def _get_source_name(self, source):
+        return source.getId()
+
     def update(self, find=False, below=None, child=False,
                update=False, bind=False, sources=None):
-        self.status = None
+        self.success = []
+        self.errors = []
         if find:
             self.context.find_installed_sources()
-            self.status = _(u"Sources refreshed.")
+            self.success.append(_(u"List of sources refreshed."))
 
         self.sources = []
         self.include_child = bool(child)
@@ -755,36 +759,46 @@ class ExistingCodeSourcesMixin(object):
                      'title': _(u'Corresponding Source implementation is missing'),
                      'path': path,
                      'url': None})
+                self.errors.append(_(
+                    '${source}: Source have problems.',
+                    mapping=dict(source=self._get_source_name(source))))
                 continue
-            message = None
+            status = None
             if ICodeSource.providedBy(source):
                 if update and (sources is None or source.getId() in sources):
                     installable = source._get_installable()
                     if (installable is not None and
                             os.path.isdir(installable._directory)):
                         installable.update(source, True)
-                        message = _('Source updated.')
+                        status = _(
+                            '${source}: Source updated.',
+                            mapping=dict(source=self._get_source_name(source)))
                     else:
                         self.sources.append(
                             {'id': source.getId(),
                              'problems': [_(u'Filesystem code have been deleted')],
                              'title': source.get_title(),
                              'path':  path,
-                             'message': None,
                              'url': source.absolute_url()})
+                        self.errors.append(_(
+                            '${source}: Source have problems.',
+                            mapping=dict(source=self._get_source_name(source))))
                         continue
                 elif bind and not source.get_fs_location():
                     candidates = source.manage_getFileSystemLocations()
                     if len(candidates) == 1:
                         source._fs_location = candidates[0]
-                        message = _('Source associated with ${location}.',
-                                    mapping=dict(location=candidates[0]))
+                        status = _(
+                            '${source}: Source associated with ${location}.',
+                            mapping=dict(source=self._get_source_name(source),
+                                         location=candidates[0]))
+            if status:
+                self.success.append(status)
             self.sources.append({'id': source.getId(),
                                  'problems': source.test_source(),
                                  'title': source.get_title(),
                                  'path': path,
-                                 'url': source.absolute_url(),
-                                 'message': message})
+                                 'url': source.absolute_url()})
         self.sources.sort(key=operator.itemgetter('title'))
         if below:
             self.filter = below.rstrip('/')
@@ -810,6 +824,9 @@ class ConfigureExisting(ExistingCodeSourcesMixin, rest.FormWithTemplateREST):
         parent['screen'] = 'admin'
         return parent
 
+    def _get_source_name(self, source):
+        return source.get_title()
+
     def update(self):
         sources = self.request.form.get('sources')
         if sources is not None and not isinstance(sources, list):
@@ -818,9 +835,12 @@ class ConfigureExisting(ExistingCodeSourcesMixin, rest.FormWithTemplateREST):
             find='find' in self.request.form,
             update='update' in self.request.form,
             sources=sources)
-        if self.status:
+        if self.success or self.errors:
             service = getUtility(IMessageService)
-            service.send(self.status, self.request, namespace='feedback')
+            for status in self.success:
+                service.send(status, self.request, namespace='feedback')
+            for status in self.errors:
+                service.send(status, self.request, namespace='error')
 
 
 class ConfigureExistingMenu(menu.MenuItem):
@@ -833,40 +853,32 @@ class ConfigureExistingMenu(menu.MenuItem):
 class InstallCodeSourcesMixin(object):
     only_uninstalled = False
 
+    def _get_source_name(self, installable):
+        return installable.identifier
+
     def update(self, install=False, refresh=False, locations=[]):
-        self.status = None
+        self.success = []
+        self.errors = []
         if install:
-            notfound = []
-            installed = []
-            notinstalled = []
             if not isinstance(locations, list):
                 locations = [locations]
             for location in locations:
                 candidates = list(self.context.get_installable_source(
                     location=location))
                 if len(candidates) != 1:
-                    notfound.append(location)
+                    self.errors.append(
+                        _('${source}: Source was not found and could not be installed.',
+                          mapping=dict(source=location)))
                 else:
                     installable = candidates[0]
                     if installable.install(self.context.get_root()):
-                        installed.append(installable.title)
+                        self.success.append(
+                            _('${source}: Source was installed.',
+                            mapping=dict(source=self._get_source_name(installable))))
                     else:
-                        notinstalled.append(installable.title)
-            if installed:
-                if notinstalled:
-                    self.status = _(
-                        u"Installed sources ${installed} but ${notinstalled} "
-                        u"where already installed.",
-                        mapping=dict(installed=', '.join(installed),
-                                     notinstalled=', '.join(notinstalled)))
-                else:
-                    self.status = _(
-                        u"Installed sources ${installed}.",
-                        mapping=dict(installed=', '.join(installed)))
-            else:
-                self.status = _(
-                    u"Sources ${notinstalled} are already installed.",
-                    mapping=dict(notinstalled=', '.join(notinstalled)))
+                        self.errors.append(
+                            _('${source}: Source is already installed.',
+                              mapping=dict(source=self._get_source_name(installable))))
 
         self.extensions = []
         self.sources = 0
@@ -884,8 +896,7 @@ class InstallCodeSourcesMixin(object):
                     'title': _('Default code sources'),
                     'id': '0',
                     'description': '',
-                    'sources': sources
-                })
+                    'sources': sources})
                 continue
             identifier = str(name).encode('base64').strip().rstrip('=')
             extension = extensionRegistry.get_extension(name)
@@ -894,15 +905,13 @@ class InstallCodeSourcesMixin(object):
                     'title': name,
                     'id': identifier,
                     'description': '',
-                    'sources': sources
-                })
+                    'sources': sources})
                 continue
             self.extensions.append({
                 'title': extension.title,
                 'id': identifier,
                 'description': extension.description,
-                'sources': sources,
-            })
+                'sources': sources})
         self.extensions.sort(key=operator.itemgetter('title'))
 
 
@@ -931,14 +940,20 @@ class ConfigureInstall(InstallCodeSourcesMixin, rest.FormWithTemplateREST):
         parent['screen'] = 'admin'
         return parent
 
+    def _get_source_name(self, installable):
+        return installable.title
+
     def update(self, install=False, refresh=False, locations=[]):
         super(ConfigureInstall, self).update(
             install='install' in self.request.form,
             refresh='refresh' in self.request.form,
             locations=self.request.form.get('locations', []))
-        if self.status:
+        if self.success or self.errors:
             service = getUtility(IMessageService)
-            service.send(self.status, self.request, namespace='feedback')
+            for status in self.success:
+                service.send(status, self.request, namespace='feedback')
+            for status in self.errors:
+                service.send(status, self.request, namespace='error')
 
 
 class ConfigureInstallMenu(menu.MenuItem):

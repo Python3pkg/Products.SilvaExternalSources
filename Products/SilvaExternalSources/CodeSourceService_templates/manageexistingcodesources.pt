@@ -10,12 +10,18 @@
       <style type="text/css">
         ul li.broken a { font-weight: bold; color: red; }
         span.message { font-style: italic; }
+        div.error-msg { color: red;}
       </style>
 
       <div class="system-msg"
-           i18n:translate=""
-           tal:condition="view/status"
-           tal:content="view/status">
+           tal:repeat="status view/success"
+           tal:content="status">
+        Form status summary
+      </div>
+
+      <div class="system-msg error-msg"
+           tal:repeat="status view/errors"
+           tal:content="status">
         Form status summary
       </div>
 
@@ -52,9 +58,6 @@
                                title source/path">
               <span tal:replace="source/id" />
             </a>: <span class="form-help" tal:content="source/title" />
-            <tal:message tal:condition="source/message">
-              : <span class="message" tal:content="source/message" />
-            </tal:message>
             <tal:error tal:condition="source/problems">
               <p>Error(s) are:</p>
               <ol tal:condition="source/problems">

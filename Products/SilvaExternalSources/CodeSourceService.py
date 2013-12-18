@@ -318,17 +318,17 @@ INSTALLERS = {
     None: FolderOrFileImporter, }  # None is the default installer.
 
 
-class CodeSourceInstallable(object):
-    grok.implements(ICodeSourceInstaller)
+class InstallationError(ValueError):
+    pass
 
-    def __init__(self, location, directory, extension=None):
+
+class CodeSourceExportable(object):
+
+    def __init__(self):
         self._config = ConfigParser.ConfigParser()
-        self._config_filename = os.path.join(directory, CONFIGURATION_FILE)
-        if os.path.isfile(self._config_filename):
-            self._config.read(self._config_filename)
-        self._directory = directory
-        self._location = location
-        self.extension = extension
+
+    def _get_installables(self):
+        return []
 
     def validate(self):
         """Return true if the definition is complete.
@@ -342,9 +342,97 @@ class CodeSourceInstallable(object):
             valid = False
         elif not self._config.has_option('source', 'render_id'):
             valid = False
-        if not valid:
-            logger.error('invalid source definition at %s' % self._directory)
         return valid
+
+    def export(self, source, directory):
+        assert ICodeSource.providedBy(source)
+
+        # Step 1, export configuration.
+        if not self._config.has_section('source'):
+            self._config.add_section('source')
+
+        def set_value(key, value):
+            if value:
+                self._config.set('source', key, value)
+            elif self._config.has_option('source', key):
+                self._config.remove_option('source', key)
+
+        set_value('id', source.getId())
+        set_value('title', source.get_title())
+        set_value('description', source.get_description())
+        set_value('render_id', source.get_script_id())
+        set_value('alternate_render_ids', source.get_script_layers())
+        set_value('usuable', source.is_usable() and "yes" or "no")
+        set_value('previewable', source.is_previewable() and "yes" or "no")
+        set_value('cacheable', source.is_cacheable() and "yes" or "no")
+
+        configuration_filename = os.path.join(directory, CONFIGURATION_FILE)
+        files_to_keep = [CONFIGURATION_FILE]
+        with open(configuration_filename, 'wb') as config_file:
+            self._config.write(config_file)
+
+        # Step 2, export parameters if any or delete the file.
+        parameters = source.get_parameters_form()
+        if parameters is not None:
+            parameters_filename = os.path.join(directory, PARAMETERS_FILE)
+            files_to_keep.append(PARAMETERS_FILE)
+            with open(parameters_filename, 'w') as parameters_file:
+                try:
+                    parameters_file.write(formToXML(parameters) + os.linesep)
+                except:
+                    logger.error(
+                        "failed to export parameters for code source %s",
+                        source.getId())
+
+        existing_mapping = {}
+        for identifier, filename, installer in self._get_installables():
+            existing_mapping[identifier] = filename
+
+        # Step 2, export files.
+        for identifier, content in source.objectItems():
+            factory = EXPORTERS.get(content.meta_type, None)
+            if factory is None:
+                logger.info(
+                    u"don't know how to export %s for code source %s",
+                    content.meta_type, source.getId())
+                continue
+            exporter = factory(content)
+            if identifier in existing_mapping:
+                filename = existing_mapping[identifier]
+            else:
+                filename = exporter.get_path(identifier)
+            try:
+                exporter(os.path.join(directory, filename))
+            except:
+                logger.error(
+                    "failed to export %s for code source %s",
+                    content.meta_type, source.getId())
+            files_to_keep.append(filename)
+
+        # Step 3, purge files that were not recreated.
+        for filename in os.listdir(directory):
+            if filename not in files_to_keep:
+                fullname = os.path.join(directory, filename)
+                if os.path.isdir(fullname):
+                    shutil.rmtree(fullname)
+                else:
+                    os.unlink(fullname)
+
+        # Return the list of files
+        return files_to_keep
+
+
+class CodeSourceInstallable(CodeSourceExportable):
+    grok.implements(ICodeSourceInstaller)
+
+    def __init__(self, location, directory, extension=None):
+        super(CodeSourceInstallable, self).__init__()
+        self._config_filename = os.path.join(directory, CONFIGURATION_FILE)
+        if os.path.isfile(self._config_filename):
+            self._config.read(self._config_filename)
+        self._directory = directory
+        self._location = location
+        self.extension = extension
 
     @property
     def identifier(self):
@@ -384,9 +472,7 @@ class CodeSourceInstallable(object):
             return False
 
         factory = folder.manage_addProduct['SilvaExternalSources']
-        factory.manage_addCodeSource(self.identifier,
-                                     fs_location=self.location)
-
+        factory.manage_addCodeSource(self.identifier, fs_location=self.location)
         source = folder._getOb(self.identifier)
         return self.update(source)
 
@@ -405,89 +491,14 @@ class CodeSourceInstallable(object):
                 identifier = filename
             yield identifier, filename, factory()
 
-    def export(self, source, directory=None):
-        assert ICodeSource.providedBy(source)
-        if directory is None:
-            assert source.get_fs_location() == self.location, u"Invalid source"
-            directory = self._directory
-
-        # Step 1, export configuration.
-        if not self._config.has_section('source'):
-            self._config.add_section('source')
-
-        def set_value(key, value):
-            if value:
-                self._config.set('source', key, value)
-            elif self._config.has_option('source', key):
-                self._config.remove_option('source', key)
-
-        set_value('id', source.getId())
-        set_value('title', source.get_title())
-        set_value('description', source.get_description())
-        set_value('render_id', source.get_script_id())
-        set_value('alternate_render_ids', source.get_script_layers())
-        set_value('usuable', source.is_usable() and "yes" or "no")
-        set_value('previewable', source.is_previewable() and "yes" or "no")
-        set_value('cacheable', source.is_cacheable() and "yes" or "no")
-
-        configuration_filename = os.path.join(directory, CONFIGURATION_FILE)
-        files_to_keep = [CONFIGURATION_FILE]
-        with open(configuration_filename, 'wb') as config_file:
-            self._config.write(config_file)
-
-        # Step 2, export parameters if any or delete the file.
-        parameters = source.get_parameters_form()
-        if parameters is not None:
-            parameters_filename = os.path.join(directory, PARAMETERS_FILE)
-            files_to_keep.append(PARAMETERS_FILE)
-            with open(parameters_filename, 'w') as parameters_file:
-                try:
-                    parameters_file.write(formToXML(parameters) + os.linesep)
-                except:
-                    logger.error(
-                        "failed to export parameters for code source %s",
-                        self.identifier)
-
-        existing_mapping = {}
-        for identifier, filename, installer in self._get_installables():
-            existing_mapping[identifier] = filename
-
-        # Step 2, export files.
-        for identifier, content in source.objectItems():
-            factory = EXPORTERS.get(content.meta_type, None)
-            if factory is None:
-                logger.info(
-                    u"don't know how to export %s for code source %s",
-                    content.meta_type, self.identifier)
-                continue
-            exporter = factory(content)
-            if identifier in existing_mapping:
-                filename = existing_mapping[identifier]
-            else:
-                filename = exporter.get_path(identifier)
-            try:
-                exporter(os.path.join(directory, filename))
-            except:
-                logger.error(
-                    "failed to export %s for code source %s",
-                    content.meta_type, self.identifier)
-            files_to_keep.append(filename)
-
-        # Step 3, purge files that were not recreated.
-        for filename in os.listdir(directory):
-            if filename not in files_to_keep:
-                fullname = os.path.join(directory, filename)
-                if os.path.isdir(fullname):
-                    shutil.rmtree(fullname)
-                else:
-                    os.unlink(fullname)
-        if self._directory == directory:
-            self._files = files_to_keep
-
     def update(self, source, purge=False):
         assert ICodeSource.providedBy(source)
-        assert source.get_fs_location() == self.location, u"Invalid source"
-        assert self.validate()
+        if source.get_fs_location() != self.location:
+            raise InstallationError(
+                u"Invalid source location", source.get_fs_location())
+        if not self.validate():
+            raise InstallationError(
+                u"Broken source", source)
         source.set_title(self.title)
         source.set_script_id(self.script_id)
         if self.description:
@@ -511,7 +522,7 @@ class CodeSourceInstallable(object):
         installed = []
         for identifier, filename, installer in self._get_installables():
             if identifier in installed:
-                raise AssertionError(u"Duplicate file")
+                raise InstallationError(u"Duplicate file", filename)
             if identifier in source.objectIds():
                 source.manage_delObjects([identifier])
             installer(source, identifier,
@@ -523,6 +534,20 @@ class CodeSourceInstallable(object):
                 list(set(source.objectIds()).difference(set(installed))))
 
         return True
+
+    def export(self, source, directory=None):
+        local = False
+        if directory is None:
+            if source.get_fs_location() != self.location:
+                raise InstallationError(
+                    u"Invalid source location", source.get_fs_location())
+            directory = self._directory
+            local = True
+
+        source_files = super(CodeSourceInstallable, self).export(
+            source, directory)
+        if local:
+            self._files = source_files
 
 
 class CodeSourceService(SilvaService):

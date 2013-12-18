@@ -235,14 +235,14 @@
 </tal:filesystem>
 
 <h3>
-  Export a Code Source to the filesystem
+  Export a Code Source
 </h3>
 <form action="manage_exportCodeSource" name="updateform" method="post">
-  <input class="form-element" type="submit" name="export"
-         value="Export to filesystem"
-         tal:condition="context/get_fs_location" />
   <input class="form-element" type="submit" name="aszip"
          value="Export and download as a ZIP" />
+  <input class="form-element" type="submit" name="dump"
+         value="Dump to the filesystem"
+         tal:condition="context/get_fs_location" />
 </form>
 
 <h1 tal:replace="structure here/manage_page_footer">Footer</h1>

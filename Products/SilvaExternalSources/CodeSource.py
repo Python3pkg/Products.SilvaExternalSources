@@ -15,13 +15,8 @@ from App.class_init import InitializeClass
 from AccessControl import ClassSecurityInfo
 from OFS.Folder import Folder
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-
 from Products.Formulator.Form import ZMIForm
-from Products.SilvaExternalSources.interfaces import ICodeSource
-from Products.SilvaExternalSources.interfaces import ICodeSourceService
-from Products.SilvaExternalSources.ExternalSource import EditableExternalSource
-from Products.Silva.SilvaPermissions import ViewManagementScreens, \
-    AccessContentsInformation
+from Products.Silva import SilvaPermissions
 from Products.Silva.helpers import add_and_edit
 
 from five import grok
@@ -31,6 +26,10 @@ from zope.publisher.interfaces.browser import IBrowserSkinType
 from silva.core.interfaces.content import IVersion
 from silva.core.services.base import ZMIObject
 from silva.core import conf as silvaconf
+
+from .interfaces import ICodeSource, ICodeSourceService
+from .ExternalSource import EditableExternalSource
+from .CodeSourceService import CodeSourceExportable
 
 
 class CodeSourceErrorSupplement(object):
@@ -87,7 +86,8 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         ) + Folder.manage_options
     management_page_charset = 'utf-8'
 
-    security.declareProtected(ViewManagementScreens, 'editCodeSource')
+    security.declareProtected(
+        SilvaPermissions.ViewManagementScreens, 'editCodeSource')
     editCodeSource = PageTemplateFile(
         'www/codeSourceEdit', globals(),  __name__='editCodeSource')
 
@@ -97,7 +97,8 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         self._script_id = script_id
         self._fs_location = fs_location
 
-    security.declareProtected(ViewManagementScreens, 'test_source')
+    security.declareProtected(
+        SilvaPermissions.ViewManagementScreens, 'test_source')
     def test_source(self):
         # return a list of problems or None
         errors = []
@@ -130,16 +131,19 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             return errors
         return None
 
-    security.declareProtected(AccessContentsInformation, 'get_icon')
+    security.declareProtected(
+        SilvaPermissions.AccessContentsInformation, 'get_icon')
     def get_icon(self):
         return self._getOb('icon.png', None)
 
     # ACCESSORS
-    security.declareProtected(AccessContentsInformation, 'get_script_id')
+    security.declareProtected(
+        SilvaPermissions.AccessContentsInformation, 'get_script_id')
     def get_script_id(self):
         return self._script_id
 
-    security.declareProtected(AccessContentsInformation, 'get_script_layers')
+    security.declareProtected(
+        SilvaPermissions.AccessContentsInformation, 'get_script_layers')
     def get_script_layers(self):
         result = []
         skin = grok.skin.bind(default=lambda l: l.__identifier__)
@@ -147,11 +151,13 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             result.append(":".join((script_id, skin.get(layer))))
         return '\n'.join(result)
 
-    security.declareProtected(AccessContentsInformation, 'get_fs_location')
+    security.declareProtected(
+        SilvaPermissions.AccessContentsInformation, 'get_fs_location')
     def get_fs_location(self):
         return self._fs_location
 
-    security.declareProtected(AccessContentsInformation, 'to_html')
+    security.declareProtected(
+        SilvaPermissions.AccessContentsInformation, 'to_html')
     def to_html(self, content, request, **parameters):
         """Render HTML for code source
         """
@@ -187,11 +193,13 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
 
     # MANAGERS
 
-    security.declareProtected(ViewManagementScreens, 'set_script_id')
+    security.declareProtected(
+        SilvaPermissions.ViewManagementScreens, 'set_script_id')
     def set_script_id(self, script_id):
         self._script_id = script_id
 
-    security.declareProtected(ViewManagementScreens, 'set_script_layers')
+    security.declareProtected(
+        SilvaPermissions.ViewManagementScreens, 'set_script_layers')
     def set_script_layers(self, script_layers):
         found = []
         for lineno, line in enumerate(script_layers.strip().splitlines()):
@@ -227,7 +235,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         return None
 
     security.declareProtected(
-        ViewManagementScreens, 'manage_getFileSystemLocations')
+        SilvaPermissions.ViewManagementScreens, 'manage_getFileSystemLocations')
     def manage_getFileSystemLocations(self):
         service = queryUtility(ICodeSourceService)
         if service is None:
@@ -238,7 +246,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             service.get_installable_source(identifier=self.id))
 
     security.declareProtected(
-        ViewManagementScreens, 'manage_updateCodeSource')
+        SilvaPermissions.ViewManagementScreens, 'manage_updateCodeSource')
     def manage_updateCodeSource(self, purge=False, REQUEST=None):
         """Update a code source from the filesystem.
         """
@@ -257,40 +265,39 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         return True
 
     security.declareProtected(
-        ViewManagementScreens, 'manage_exportCodeSource')
-    def manage_exportCodeSource(self, aszip=False, REQUEST=None):
+        SilvaPermissions.ViewManagementScreens, 'manage_exportCodeSource')
+    def manage_exportCodeSource(self, aszip=False, dump=False, REQUEST=None):
         """Export a code source to the filesystem.
         """
-        installable = self._get_installable()
-        if (installable is None or
+        if dump:
+            installable = self._get_installable()
+            if (installable is None or
                 not os.path.isdir(installable._directory)):
-            if REQUEST is not None:
-                return self.editCodeSource(
-                    manage_tabs_message=\
-                        'Couldn\'t find the code source on the filesystem.')
-            return None
-        directory = None
-        if aszip:
-            directory = tempfile.mkdtemp('-codesource-export')
-        installable.export(self, directory)
-        if not aszip:
-            if REQUEST is not None:
-                return self.editCodeSource(
-                    manage_tabs_message='Source exported to the filesystem.')
-            return None
-        result = io.BytesIO()
-        archive = zipfile.ZipFile(result, 'w')
-        for path, directories, filenames in os.walk(directory):
-            root = path[len(directory):]
-            if root:
-                root = os.path.join(self.getId(), root)
+                message="Couldn't find the code source on the filesystem."
             else:
-                root = self.getId()
-            for filename in filenames:
-                archive.write(os.path.join(path, filename),
-                              os.path.join(root, filename))
-        archive.close()
-        shutil.rmtree(directory)
+                installable.export(self)
+                message="Source dumped to the filesystem."
+            if REQUEST is not None:
+                return self.editCodeSource(manage_tabs_message=message)
+            return None
+
+        directory = tempfile.mkdtemp('-codesource-export')
+        try:
+            CodeSourceExportable().export(self, directory)
+            result = io.BytesIO()
+            archive = zipfile.ZipFile(result, 'w')
+            for path, directories, filenames in os.walk(directory):
+                root = path[len(directory):]
+                if root:
+                    root = os.path.join(self.getId(), root)
+                else:
+                    root = self.getId()
+                for filename in filenames:
+                    archive.write(os.path.join(path, filename),
+                                  os.path.join(root, filename))
+            archive.close()
+        finally:
+            shutil.rmtree(directory)
         if REQUEST is not None:
             REQUEST.RESPONSE.setHeader(
                 'Content-Type',
@@ -301,7 +308,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         return result.getvalue()
 
     security.declareProtected(
-        ViewManagementScreens, 'manage_editCodeSource')
+        SilvaPermissions.ViewManagementScreens, 'manage_editCodeSource')
     def manage_editCodeSource(
         self, title, script_id, data_encoding, description=None, location=None,
         cacheable=None, previewable=None, usable=None, script_layers=None):

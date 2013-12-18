@@ -6,6 +6,7 @@ import os
 
 from ..testing import FunctionalLayer
 from ..CodeSourceService import CodeSourceInstallable
+from ..CodeSourceService import CodeSourceExportable, InstallationError
 
 TEST_DTML = """body { color: red };
 """
@@ -103,7 +104,9 @@ class CodeSourceExportTestCase(unittest.TestCase):
             self.assertEqual(script.read(), TEST_SOURCE)
 
     def test_dtml_document(self):
-        """Test export a code source with a DTML document.
+        """Test export a code source with a DTML document with an invalid
+        installable.
+
         """
         # Add the rendering script
         factory = self.root.source.manage_addProduct['OFS']
@@ -111,8 +114,16 @@ class CodeSourceExportTestCase(unittest.TestCase):
         css = self.root.source._getOb('cool.css')
         css.munge(TEST_DTML)
 
-        installable = CodeSourceInstallable('test:', self.directory)
-        installable.export(self.root.source)
+        # Locations doesn't match, so the export fails.
+        installable = CodeSourceInstallable('other:', '/')
+        with self.assertRaises(InstallationError):
+            installable.export(self.root.source)
+
+        # Nothing got exported.
+        self.assertItemsEqual(os.listdir(self.directory), [])
+
+        # With an explicit location it will work, and not touch the installable.
+        installable.export(self.root.source, directory=self.directory)
 
         self.assertItemsEqual(
             os.listdir(self.directory),
@@ -126,7 +137,8 @@ class CodeSourceExportTestCase(unittest.TestCase):
             self.assertEqual(script.read(), TEST_SOURCE)
 
     def test_folder(self):
-        """Test export a code source with a folder.
+        """Test export a code source via a not valid installable with a
+        folder.
         """
         factory = self.root.source.manage_addProduct['OFS']
         factory.manage_addFolder('helpers')
@@ -141,6 +153,7 @@ class CodeSourceExportTestCase(unittest.TestCase):
         script.write(TEST_SCRIPT % "script")
 
         installable = CodeSourceInstallable('test:', self.directory)
+        self.assertFalse(installable.validate())
         installable.export(self.root.source)
 
         self.assertItemsEqual(
@@ -157,6 +170,40 @@ class CodeSourceExportTestCase(unittest.TestCase):
             self.assertEqual(script.read(), TEST_SCRIPT % "script")
         with open(self.get_path('helpers', 'script.py'), 'rb') as script:
             self.assertEqual(script.read(), TEST_SCRIPT % "script")
+
+    def test_folder_export_only(self):
+        """Test export only a code source containing a folder without using a
+        full installable.
+        """
+        factory = self.root.source.manage_addProduct['OFS']
+        factory.manage_addFolder('helpers')
+        factory = self.root.source.helpers.manage_addProduct['PythonScripts']
+        factory.manage_addPythonScript('script')
+        script = self.root.source.helpers._getOb('script')
+        script.write(TEST_SCRIPT % "script")
+        # Add the rendering script
+        factory = self.root.source.manage_addProduct['PythonScripts']
+        factory.manage_addPythonScript('script')
+        script = self.root.source._getOb('script')
+        script.write(TEST_SCRIPT % "script")
+
+        CodeSourceExportable().export(self.root.source, self.directory)
+
+        self.assertItemsEqual(
+            os.listdir(self.directory),
+            ['parameters.xml', 'script.py', 'helpers', 'source.ini'])
+        self.assertIsDirectory('helpers')
+        self.assertIsFile('helpers', 'script.py')
+        self.assertIsFile('script.py')
+        self.assertIsFile('source.ini')
+        self.assertIsFile('parameters.xml')
+        with open(self.get_path('source.ini'), 'rb') as script:
+            self.assertEqual(script.read(), TEST_SOURCE)
+        with open(self.get_path('script.py'), 'rb') as script:
+            self.assertEqual(script.read(), TEST_SCRIPT % "script")
+        with open(self.get_path('helpers', 'script.py'), 'rb') as script:
+            self.assertEqual(script.read(), TEST_SCRIPT % "script")
+
 
 
 def test_suite():

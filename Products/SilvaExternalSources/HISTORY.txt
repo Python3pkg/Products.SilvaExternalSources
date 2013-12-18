@@ -1,10 +1,18 @@
 ChangeLog
 =========
 
-3.0.3 (unreleased)
+3.0.3 (2013/12/18)
 ------------------
 
-- ...
+- Add two screens in SMI in order to install and update code sources
+  in the Silva site.
+
+- Improve error handling while installing and updating code sources.
+
+- Make the button export as zip usuable on code sources which doesn't
+  have a location.
+
+- Improve cs_iframe and remove cs_java_plugin.
 
 3.0.2 (2013/10/09)
 ------------------

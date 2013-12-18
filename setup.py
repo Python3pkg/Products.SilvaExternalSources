@@ -5,7 +5,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '3.0.3dev'
+version = '3.0.3'
 
 tests_require = [
     'silva.app.document [test]',
@@ -22,11 +22,11 @@ setup(name='Products.SilvaExternalSources',
       long_description=open(os.path.join("Products", "SilvaExternalSources", "README.txt")).read() + "\n" +
                        open(os.path.join("Products", "SilvaExternalSources", "HISTORY.txt")).read(),
       classifiers=[
-              "Framework :: Zope2",
-              "License :: OSI Approved :: BSD License",
-              "Programming Language :: Python",
-              "Topic :: Software Development :: Libraries :: Python Modules",
-              ],
+          "Framework :: Zope2",
+          "License :: OSI Approved :: BSD License",
+          "Programming Language :: Python",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+      ],
       keywords='silva cms document external sources',
       author='Infrae',
       author_email='info@infrae.com',

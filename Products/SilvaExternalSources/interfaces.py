@@ -27,7 +27,7 @@ def availableSources(context):
         if IRoot.providedBy(context):
             break
         context = Acquisition.aq_parent(context)
-    sources = sources.items()
+    sources = list(sources.items())
     sources.sort(key=lambda i: i[1].get_title().lower())
     return sources
 
@@ -38,7 +38,7 @@ def source_source(context):
     def make_term(identifier, source):
         return SimpleTerm(value=source,
                           token=identifier,
-                          title=unicode(source.get_title()))
+                          title=str(source.get_title()))
 
     return SimpleVocabulary([make_term(*t) for t in availableSources(context)])
 
@@ -207,11 +207,11 @@ class ICodeSourceService(ISilvaService, ISilvaLocalService):
 class ICodeSourceInstaller(Interface):
     """Install or update a specific code source.
     """
-    identifier = Attribute(u"Source identifier")
-    title = Attribute(u"User-friendly source title")
-    script_id = Attribute(u"Script identifier used to render the source")
-    description = Attribute(u"User-friendly source description")
-    location = Attribute(u"Filesystem location, relative to the egg")
+    identifier = Attribute("Source identifier")
+    title = Attribute("User-friendly source title")
+    script_id = Attribute("Script identifier used to render the source")
+    description = Attribute("User-friendly source description")
+    location = Attribute("Filesystem location, relative to the egg")
 
     def validate():
         """Return True if the source is correctly defined on the
@@ -271,8 +271,8 @@ class IExternalSourceController(Interface):
 
     This behave and follow the same API than a Silva form.
     """
-    label = Attribute(u'Title of the code source instance')
-    description = Attribute(u'Description of the code source instance')
+    label = Attribute('Title of the code source instance')
+    description = Attribute('Description of the code source instance')
 
     def new():
         """Create a new instance of the code source on the context

@@ -19,13 +19,13 @@ def render_content(content, request, suppress_title=False):
     if not (checkPermission('zope2.View', content)
             or IBrowserRequest.providedBy(request)):
         # You can't see the content or don't have a valid request.
-        return u''
+        return ''
     content = content.get_silva_object()
     if suppress_title:
         if IDocument.providedBy(content):
             version = content.get_viewable()
             if version is None:
-                return u''
+                return ''
             details = getMultiAdapter((version, request), name="details")
             return details.get_text()
         if IAutoTOC.providedBy(content):
@@ -36,7 +36,7 @@ def render_content(content, request, suppress_title=False):
     renderer = queryMultiAdapter((content, request), name='content.html')
     if renderer is not None:
         return renderer()
-    return u''
+    return ''
 
 
 def _include_resources(factory, resources, category, requires, bottom):

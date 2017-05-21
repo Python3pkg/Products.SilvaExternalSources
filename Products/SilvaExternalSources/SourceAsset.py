@@ -2,7 +2,7 @@
 # Copyright (c) 2012-2013 Infrae. All rights reserved.
 # See also LICENSE.txt
 
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from five import grok
 from zope import schema
@@ -105,7 +105,7 @@ class SourceAsset(VersionedNonPublishable):
         if viewable is not None:
             return viewable.get_controller(request).render()
         # Should we put an error message instead ?
-        return u''
+        return ''
 
     def get_description(self):
         source = self.get_viewable_source()
@@ -155,7 +155,7 @@ InitializeClass(SourceAsset)
 
 class ISourceSelectField(Interface):
     source = schema.Choice(
-        title=_(u"Select an external source"),
+        title=_("Select an external source"),
         source=source_source,
         required=True)
 
@@ -164,7 +164,7 @@ class SourceAssetAddForm(silvaforms.SMIAddForm):
     """Add form for a link.
     """
     grok.context(ISourceAsset)
-    grok.name(u'Silva Source Asset')
+    grok.name('Silva Source Asset')
 
     fields = silvaforms.Fields(ISourceSelectField)
     titleFields = silvaforms.Fields(ITitledContent)
@@ -174,7 +174,7 @@ class SourceAssetAddForm(silvaforms.SMIAddForm):
     def publishTraverse(self, request, name):
         factory = getWrapper(self.context, IExternalSourceManager)
         try:
-            self.source = factory(request, name=urllib.unquote(name))
+            self.source = factory(request, name=urllib.parse.unquote(name))
         except SourceError:
             parent = super(SourceAssetAddForm, self)
             return parent.publishTraverse(request, name)
@@ -196,10 +196,10 @@ class SourceAssetAddForm(silvaforms.SMIAddForm):
                     ignoreRequest=False, ignoreContent=True))
 
     @silvaforms.action(
-        _(u"Select source"),
+        _("Select source"),
         available=lambda form: form.source is None,
         implements=silvaforms.IDefaultAction,
-        accesskey=u'ctrl+s')
+        accesskey='ctrl+s')
     def select_source(self):
         data, errors = self.extractData()
         if errors:
@@ -207,10 +207,10 @@ class SourceAssetAddForm(silvaforms.SMIAddForm):
         raise RedirectToPage(sub_tab=data['source'].getId())
 
     @silvaforms.action(
-        _(u"Save"),
+        _("Save"),
         available=lambda form: form.source is not None,
         implements=silvaforms.IDefaultAction,
-        accesskey=u'ctrl+s')
+        accesskey='ctrl+s')
     def save(self):
         data, errors = self.extractData()
         source_data, source_errors = self.source.extractData()
@@ -218,8 +218,8 @@ class SourceAssetAddForm(silvaforms.SMIAddForm):
             return silvaforms.FAILURE
         try:
             content = self._add(self.context, data)
-        except ValueError, error:
-            self.send_message(error.args[0], type=u"error")
+        except ValueError as error:
+            self.send_message(error.args[0], type="error")
             return silvaforms.FAILURE
         editable = content.get_editable()
         factory = getWrapper(editable, IExternalSourceManager)
@@ -227,7 +227,7 @@ class SourceAssetAddForm(silvaforms.SMIAddForm):
         source.create()
         editable.set_parameters_identifier(source.getId())
         notify(ObjectModifiedEvent(content))
-        self.send_message(_(u"Source Asset added."), type="feedback")
+        self.send_message(_("Source Asset added."), type="feedback")
         raise RedirectToPage(content=content)
 
 
@@ -277,14 +277,14 @@ class SourceAssetEditForm(silvaforms.SMIEditForm):
                 self.controller.mode != silvaforms.DISPLAY)
 
     @silvaforms.action(
-        _(u"Save"),
+        _("Save"),
         available=isEditable,
         implements=silvaforms.IDefaultAction,
-        accesskey=u'ctrl+s')
+        accesskey='ctrl+s')
     def save(self):
         status = self.controller.save()
         if status is silvaforms.SUCCESS:
-            self.send_message(_(u"Changes saved."), type="feedback")
+            self.send_message(_("Changes saved."), type="feedback")
         return status
 
 
@@ -305,13 +305,13 @@ class SourceAssetView(silvaviews.View):
         try:
             # Try to fetch the controller.
             controller = self.content.get_controller(self.request)
-        except SourceError, error:
+        except SourceError as error:
             error = error
         else:
             try:
                 # Try to render the source.
                 return controller.render()
-            except SourceError, error:
+            except SourceError as error:
                 error = error
         # Render the error if it returns something.
         message = silvaviews.render(error, self.request).strip()
@@ -322,4 +322,4 @@ class SourceAssetView(silvaviews.View):
         # details).
         text = _('Sorry, this ${meta_type} is not viewable.',
                  mapping={'meta_type': self.context.meta_type})
-        return u'<p>%s</p>' % translate(text, context=self.request)
+        return '<p>%s</p>' % translate(text, context=self.request)

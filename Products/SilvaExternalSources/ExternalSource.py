@@ -266,8 +266,8 @@ class ExternalSourceManager(object):
 class InvalidSourceTemplate(ValueError):
 
     def doc(self):
-        return _(u'The source template marker <!-- source output --> '
-                 u'is missing.')
+        return _('The source template marker <!-- source output --> '
+                 'is missing.')
 
 
 def validateSourceTemplate(value):
@@ -335,13 +335,13 @@ class ExternalSourceController(silvaforms.FormData):
     def label(self):
         if self.source is not None:
             return self.source.get_title()
-        return _(u"Broken source")
+        return _("Broken source")
 
     @property
     def description(self):
         if self.source is not None:
             return self.source.get_description()
-        return u''
+        return ''
 
     @property
     def fields(self):
@@ -356,13 +356,13 @@ class ExternalSourceController(silvaforms.FormData):
         return []
 
     def new(self):
-        assert self.source is not None, u'Cannot create broken source'
-        assert self.getContent() is None, u'Cannot override existing source'
+        assert self.source is not None, 'Cannot create broken source'
+        assert self.getContent() is None, 'Cannot override existing source'
         self.setContentData(self.manager.new(self.source))
         return self.getId()
 
     def copy(self, destination):
-        assert self.source is not None, u'Cannot copy broken source'
+        assert self.source is not None, 'Cannot copy broken source'
         assert self.getSourceId() == destination.getSourceId()
         source = self.getContentData()
         target = destination.getContentData()
@@ -372,14 +372,14 @@ class ExternalSourceController(silvaforms.FormData):
             except KeyError:
                 pass
 
-    @silvaforms.action(_(u"Create"))
+    @silvaforms.action(_("Create"))
     def create(self):
         self.new()
         return self.save()
 
-    @silvaforms.action(_(u"Save"))
+    @silvaforms.action(_("Save"))
     def save(self):
-        assert self.getContent() is not None, u'Cannot save to missing source'
+        assert self.getContent() is not None, 'Cannot save to missing source'
         if self.source is None:
             raise error.SourceMissingError('unknow')
         data, errors = self.extractData()
@@ -392,9 +392,9 @@ class ExternalSourceController(silvaforms.FormData):
                 manager.set(field.identifier, value)
         return silvaforms.SUCCESS
 
-    @silvaforms.action(_(u"Remove"))
+    @silvaforms.action(_("Remove"))
     def remove(self):
-        assert self.getContent() is not None, u'Cannot remove missing source'
+        assert self.getContent() is not None, 'Cannot remove missing source'
         manager = self.getContentData()
         identifier = self.getId()
         for field in self.parameterFields:
@@ -447,7 +447,7 @@ class ExternalSourceController(silvaforms.FormData):
         try:
             html = self.source.to_html(self.context, self.request, **values)
         except:
-            info = u''.join(format_exception(*sys.exc_info()))
+            info = ''.join(format_exception(*sys.exc_info()))
             getUtility(ISourceErrors).report(info)
             raise error.SourceRenderingError(self, info)
         if not preview and template:

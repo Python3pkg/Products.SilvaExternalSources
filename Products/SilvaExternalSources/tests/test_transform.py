@@ -43,7 +43,7 @@ class CreateSourceTransformerTestCase(SourceTransformerTestCase):
         request = TestRequest(layers=layers)
         factory = getMultiAdapter((version, request), ITransformerFactory)
         transformer = factory('body', version.body, text, filter)
-        return unicode(transformer)
+        return str(transformer)
 
     def test_display_broken_xml_source_public(self):
         """Test a source that have an invalid or missing
@@ -57,7 +57,7 @@ class CreateSourceTransformerTestCase(SourceTransformerTestCase):
             IDisplayFilter)
 
         tests.assertXMLEqual(
-            unicode(transformer),
+            str(transformer),
             """
 <div class="external-source">
 </div>
@@ -76,7 +76,7 @@ class CreateSourceTransformerTestCase(SourceTransformerTestCase):
             IDisplayFilter)
 
         tests.assertXMLEqual(
-            unicode(transformer),
+            str(transformer),
             """
 <div class="external-source broken-source">
  <p>
@@ -112,9 +112,9 @@ class CreateSourceTransformerTestCase(SourceTransformerTestCase):
         self.assertEqual(parameters.get_source_identifier(), 'cs_citation')
         self.assertEqual(parameters.get_parameter_identifier(), instance_key)
         self.assertEqual(source.id, 'cs_citation')
-        self.assertEqual(parameters.citation, u'Super citation')
-        self.assertEqual(parameters.author, u'moi')
-        self.assertEqual(parameters.source, u'')
+        self.assertEqual(parameters.citation, 'Super citation')
+        self.assertEqual(parameters.author, 'moi')
+        self.assertEqual(parameters.source, '')
         tests.assertXMLEqual(
             saved_text,
             """
@@ -173,7 +173,7 @@ return '<a href="http://silvacms.org">SilvaCMS</a><b>Silva is cool</b>'
         transformer = factory(
             'body', version.body, self.saved_text, IDisplayFilter)
         tests.assertXMLEqual(
-            unicode(transformer),
+            str(transformer),
 """
 <h1>This is a title</h1>
 <a href="http://silvacms.org">SilvaCMS</a>
@@ -211,7 +211,7 @@ class EditSourceTransformerTestCase(SourceTransformerTestCase):
         transformer = factory(
             'body', version.body, self.saved_text, IDisplayFilter)
         tests.assertXMLEqual(
-            unicode(transformer),
+            str(transformer),
 """
 <div class="citation">
  Don't trust citations on the Internet
@@ -239,7 +239,7 @@ class EditSourceTransformerTestCase(SourceTransformerTestCase):
 </div>
 """ % self.instance_key, IDisplayFilter)
         tests.assertXMLEqual(
-            unicode(transformer),
+            str(transformer),
 """
 <div class="external-source float-left">
  <div class="citation">
@@ -269,7 +269,7 @@ class EditSourceTransformerTestCase(SourceTransformerTestCase):
 </div>
 """ % self.instance_key, IDisplayFilter)
         tests.assertXMLEqual(
-            unicode(transformer),
+            str(transformer),
 """
 <div class="citation">
  Don't trust citations on the Internet
@@ -297,7 +297,7 @@ class EditSourceTransformerTestCase(SourceTransformerTestCase):
         transformer = factory(
             'body', version.body, self.saved_text, IDisplayFilter)
         tests.assertXMLEqual(
-            unicode(transformer),
+            str(transformer),
 """
 <div class="external-source broken-source">
  <p>
@@ -322,7 +322,7 @@ class EditSourceTransformerTestCase(SourceTransformerTestCase):
         transformer = factory(
             'body', version.body, self.saved_text, IDisplayFilter)
         tests.assertXMLEqual(
-            unicode(transformer),
+            str(transformer),
 """
 <div class="external-source">
 </div>
@@ -339,7 +339,7 @@ class EditSourceTransformerTestCase(SourceTransformerTestCase):
         factory = getMultiAdapter((version, TestRequest()), ITransformerFactory)
         transformer = factory('body', version.body, "", ISaveEditorFilter)
         tests.assertXMLEqual(
-            unicode(transformer),
+            str(transformer),
             "")
 
         sources = getWrapper(version, IExternalSourceManager)

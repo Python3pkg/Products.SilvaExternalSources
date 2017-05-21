@@ -17,7 +17,7 @@ from ..testing import FunctionalLayer
 from ..interfaces import IExternalSourceManager
 
 
-HTML_CITATION_CODE_SOURCE = u"""
+HTML_CITATION_CODE_SOURCE = """
 <div>
     <h1>Example</h1>
     <p>some paragraph..</p>
@@ -27,7 +27,7 @@ HTML_CITATION_CODE_SOURCE = u"""
     </div>
 </div>
 """
-HTML_TOC_CODE_SOURCE = u"""
+HTML_TOC_CODE_SOURCE = """
 <div>
     <h1>Document with TOCs</h1>
     <p>A first table of content:</p>
@@ -125,8 +125,8 @@ class CitationCodeSourceDocumentExportTestCase(SilvaXMLTestCase):
         version = self.root.folder.example.get_editable()
         self.assertEqual(
             exporter.getProblems(),
-            [(u'Broken source in document while exporting: '
-              u'source is no longer installed in the Silva site.',
+            [('Broken source in document while exporting: '
+              'source is no longer installed in the Silva site.',
               version)])
 
 
@@ -206,7 +206,7 @@ class SourceAssertExportTestCase(SilvaXMLTestCase):
             [])
         self.assertEqual(
             exporter.getProblems(),
-            [(u"A reference field 'paths' refers to an content outside of the export (../other).",
+            [("A reference field 'paths' refers to an content outside of the export (../other).",
               version)])
 
 

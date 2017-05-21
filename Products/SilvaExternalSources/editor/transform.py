@@ -51,7 +51,7 @@ class ExternalSourceSaveFilter(TransformationFilter):
                     TestRequest(form=parameters), instance=instance, name=name)
             except SourceError:
                 logger.error(
-                    u'Broken source %s(%s) on content %s',
+                    'Broken source %s(%s) on content %s',
                     name, instance, '/'.join(self.context.getPhysicalPath()))
             else:
                 if instance is None:
@@ -65,8 +65,8 @@ class ExternalSourceSaveFilter(TransformationFilter):
                         if error.identifier != 'form':
                             errors[error.identifier] = error.title
                     logger.error(
-                        u"Errors %s while saving source parameters %s "
-                        u"for %s(%s) on content %s",
+                        "Errors %s while saving source parameters %s "
+                        "for %s(%s) on content %s",
                         errors, parameters, name, instance,
                         '/'.join(self.context.getPhysicalPath()))
                 node.attrib['data-source-instance'] = instance
@@ -139,7 +139,7 @@ class ExternalSourceDisplayFilter(TransformationFilter):
                 html = source.render()
                 keep = not set(node.attrib['class'].split()).issubset(
                     DEFAULT_CLASSES)
-            except SourceError, error:
+            except SourceError as error:
                 html = silvaviews.render(error, self.request).strip()
                 if not html:
                     continue

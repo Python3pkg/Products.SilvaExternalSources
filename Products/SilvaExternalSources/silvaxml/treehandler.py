@@ -64,8 +64,8 @@ class ElementTreeContentHandler(ContentHandler):
 
         if attributes:
             attrs = {}
-            for name_tuple, value in attributes.iteritems():
-                if isinstance(name_tuple, basestring):
+            for name_tuple, value in attributes.items():
+                if isinstance(name_tuple, str):
                     attr_name = name_tuple
                 elif name_tuple[0]:
                     attr_name = "{%s}%s" % name_tuple

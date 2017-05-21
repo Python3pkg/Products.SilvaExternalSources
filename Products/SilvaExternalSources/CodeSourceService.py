@@ -6,7 +6,7 @@ import collections
 import os
 import re
 import logging
-import ConfigParser
+import configparser
 import shutil
 import pkg_resources
 import operator
@@ -84,7 +84,7 @@ class PageTemplateExporter(Exporter):
     def __call__(self, path):
         with open(path, 'wb') as target:
             data = self.content.read()
-            if isinstance(data, unicode):
+            if isinstance(data, str):
                 data = data.encode('utf-8')
             if not data.endswith(os.linesep):
                 data += os.linesep
@@ -105,12 +105,12 @@ class FileExporter(Exporter):
     def __call__(self, path):
         with open(path, 'wb') as target:
             data = self.content.data
-            if isinstance(data, basestring):
+            if isinstance(data, str):
                 target.write(data)
             else:
                 while data is not None:
                     target.write(data.data)
-                    data = data.next
+                    data = data.__next__
 
 
 class ScriptExporter(PageTemplateExporter):
@@ -155,7 +155,7 @@ class FolderExporter(Exporter):
             factory = EXPORTERS.get(content.meta_type, None)
             if factory is None:
                 logger.info(
-                    u"don't know how to export %s for code source %s",
+                    "don't know how to export %s for code source %s",
                     content.meta_type, self.identifier)
                 continue
             exporter = factory(content)
@@ -325,7 +325,7 @@ class InstallationError(ValueError):
 class CodeSourceExportable(object):
 
     def __init__(self):
-        self._config = ConfigParser.ConfigParser()
+        self._config = configparser.ConfigParser()
 
     def _get_installables(self):
         return []
@@ -393,7 +393,7 @@ class CodeSourceExportable(object):
             factory = EXPORTERS.get(content.meta_type, None)
             if factory is None:
                 logger.info(
-                    u"don't know how to export %s for code source %s",
+                    "don't know how to export %s for code source %s",
                     content.meta_type, source.getId())
                 continue
             exporter = factory(content)
@@ -499,10 +499,10 @@ class CodeSourceInstallable(CodeSourceExportable):
         assert ICodeSource.providedBy(source)
         if source.get_fs_location() != self.location:
             raise InstallationError(
-                u"Invalid source location", source.get_fs_location())
+                "Invalid source location", source.get_fs_location())
         if not self.validate():
             raise InstallationError(
-                u"Source definition is incomplete", self)
+                "Source definition is incomplete", self)
         source.set_title(self.title)
         source.set_script_id(self.script_id)
         if self.description:
@@ -526,7 +526,7 @@ class CodeSourceInstallable(CodeSourceExportable):
         installed = []
         for identifier, filename, installer in self._get_installables():
             if identifier in installed:
-                raise InstallationError(u"Duplicate file", filename)
+                raise InstallationError("Duplicate file", filename)
             if identifier in source.objectIds():
                 source.manage_delObjects([identifier])
             installer(source, identifier,
@@ -544,7 +544,7 @@ class CodeSourceInstallable(CodeSourceExportable):
         if directory is None:
             if source.get_fs_location() != self.location:
                 raise InstallationError(
-                    u"Invalid source location", source.get_fs_location())
+                    "Invalid source location", source.get_fs_location())
             directory = self._directory
             local = True
 
@@ -743,7 +743,7 @@ class ExistingCodeSourcesMixin(object):
         self.errors = []
         if find:
             self.context.find_installed_sources()
-            self.success.append(_(u"List of sources refreshed."))
+            self.success.append(_("List of sources refreshed."))
 
         self.sources = []
         self.include_child = bool(child)
@@ -759,8 +759,8 @@ class ExistingCodeSourcesMixin(object):
             if isinstance(source, Broken):
                 self.sources.append(
                     {'id': source.getId(),
-                     'problems': [_(u'Filesystem code is missing')],
-                     'title': _(u'Corresponding Source implementation is missing'),
+                     'problems': [_('Filesystem code is missing')],
+                     'title': _('Corresponding Source implementation is missing'),
                      'path': path,
                      'url': None})
                 self.errors.append(_(
@@ -780,7 +780,7 @@ class ExistingCodeSourcesMixin(object):
                     else:
                         self.sources.append(
                             {'id': source.getId(),
-                             'problems': [_(u'Filesystem code have been deleted')],
+                             'problems': [_('Filesystem code have been deleted')],
                              'title': source.get_title(),
                              'path':  path,
                              'url': source.absolute_url()})
@@ -899,7 +899,7 @@ class InstallCodeSourcesMixin(object):
             sources = extensions.setdefault(source.extension, [])
             sources.append(source)
             self.sources += 1
-        for name, sources in extensions.items():
+        for name, sources in list(extensions.items()):
             sources.sort(key=operator.attrgetter('title'))
             if name is None:
                 self.extensions.append({
@@ -993,15 +993,15 @@ def check_extension(name):
 class IExportCodeSourcesFields(Interface):
 
     extension_name = schema.TextLine(
-        title=u'Extension name',
+        title='Extension name',
         description=_(
-            u"Enter the extension name and the entry point name, seperated by "
-            u"a :. The entry point name defaults to defaults if it is not "
-            u"specified."),
+            "Enter the extension name and the entry point name, seperated by "
+            "a :. The entry point name defaults to defaults if it is not "
+            "specified."),
         constraint=check_extension,
         required=True)
     recursive = schema.Bool(
-        title=u'Recursive export ?',
+        title='Recursive export ?',
         default=False,
         required=False)
 
@@ -1010,9 +1010,9 @@ class ManageExportCodeSources(silvaforms.ZMIForm):
     grok.name('manage_export_codesources')
     grok.context(IContainer)
 
-    label = u'Mass export of codesources'
-    description = u'Export every codesources located in this container and ' \
-        u'optionally in sub-containers.'
+    label = 'Mass export of codesources'
+    description = 'Export every codesources located in this container and ' \
+        'optionally in sub-containers.'
     fields = silvaforms.Fields(IExportCodeSourcesFields)
 
     @silvaforms.action('Export')

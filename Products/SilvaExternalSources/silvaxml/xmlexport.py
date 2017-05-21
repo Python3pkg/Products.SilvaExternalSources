@@ -53,8 +53,8 @@ class ExternalSourceExportFilter(TransformationFilter):
                 namespaces={'html': 'http://www.w3.org/1999/xhtml'}):
             if 'data-source-instance' not in node.attrib:
                 exported.reportProblem(
-                    u'Broken source in document while exporting: '
-                    u'Source parameters are missing.',
+                    'Broken source in document while exporting: '
+                    'Source parameters are missing.',
                     self.context)
                 continue
             identifier = node.attrib['data-source-instance']
@@ -64,14 +64,14 @@ class ExternalSourceExportFilter(TransformationFilter):
                 source = self.sources(exported.request, instance=identifier)
             except SourceError as error:
                 exported.reportProblem(
-                    u'Broken source in document while exporting:'
-                    u'{0}'.format(error),
+                    'Broken source in document while exporting:'
+                    '{0}'.format(error),
                     self.context)
                 continue
             if source.source is None:
                 exported.reportProblem(
-                    u'Broken source in document while exporting: '
-                    u'source is no longer installed in the Silva site.',
+                    'Broken source in document while exporting: '
+                    'source is no longer installed in the Silva site.',
                     self.context)
                 continue
             node.attrib['source-identifier'] = source.getSourceId()

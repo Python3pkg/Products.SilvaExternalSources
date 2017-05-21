@@ -112,15 +112,15 @@ class SQLSource(EditableExternalSource, Folder, ZMIObject):
         return self._sql_method(REQUEST=args)
 
     def _decode_dict_helper(self, dictionary):
-        for key, value in dictionary.items():
+        for key, value in list(dictionary.items()):
             if type(value) is type(''):
-                dictionary[key] = unicode(
+                dictionary[key] = str(
                     value, self._data_encoding, 'replace')
         return dictionary
 
     def _encode_dict_helper(self, dictionary):
-        for key, value in dictionary.items():
-            if type(value) is type(u''):
+        for key, value in list(dictionary.items()):
+            if type(value) is type(''):
                 dictionary[key] =  value.encode(
                     self._data_encoding, 'replace')
         return dictionary
@@ -157,7 +157,7 @@ class SQLSource(EditableExternalSource, Folder, ZMIObject):
         ):
         """ Edit SQLSource object
         """
-        msg = u''
+        msg = ''
 
         if reset_layout:
             reset_table_layout(self)
@@ -172,7 +172,7 @@ class SQLSource(EditableExternalSource, Folder, ZMIObject):
 
         if data_encoding and data_encoding != self._data_encoding:
             try:
-                unicode('abcd', data_encoding, 'replace')
+                str('abcd', data_encoding, 'replace')
             except LookupError:
                 # unknown encoding, return error message
                 msg  += "Unknown encoding %s, not changed!" % data_encoding
@@ -185,16 +185,16 @@ class SQLSource(EditableExternalSource, Folder, ZMIObject):
             msg += "Connection id changed. "
 
         if statement:
-            statement = unicode(statement, 'UTF-8')
+            statement = str(statement, 'UTF-8')
             self._set_statement(statement)
             msg += "SQL statement changed. "
 
-        title = unicode(title, self.management_page_charset)
+        title = str(title, self.management_page_charset)
         if title and title != self.title:
             self.set_title(title)
             msg += "Title changed. "
 
-        description = unicode(description, self.management_page_charset)
+        description = str(description, self.management_page_charset)
         if description != self._description:
             self.set_description(description)
             msg += "Description changed. "
@@ -227,7 +227,7 @@ def manage_addSQLSource(context, id, title=None, REQUEST=None):
     """Add a SQLSource object
     """
     source = SQLSource(id)
-    title = unicode(title, source.management_page_charset)
+    title = str(title, source.management_page_charset)
     source.title = title
     context._setObject(id, source)
     source = context._getOb(id)

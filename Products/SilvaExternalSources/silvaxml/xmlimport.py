@@ -47,13 +47,13 @@ class ExternalSourceImportFilter(TransformationFilter):
             name = node.attrib.get('source-identifier')
             if name is None:
                 importer.reportProblem(
-                    u"Broken source in import.", self.context)
+                    "Broken source in import.", self.context)
                 continue
             try:
                 source = self.sources(request, name=name)
             except SourceError as error:
                 importer.reportProblem(
-                    u"Broken source in import: {0}".format(error),
+                    "Broken source in import: {0}".format(error),
                     self.context)
                 continue
             identifier = source.new()
@@ -70,7 +70,7 @@ class ExternalSourceImportFilter(TransformationFilter):
                 if deserializer is None:
                     # This field have been removed. Ignore it.
                     logger.warn(
-                        u"Unknown source parameter %s in %s" % (field_id, name))
+                        "Unknown source parameter %s in %s" % (field_id, name))
                     continue
                 # Deserialize the value
                 deserializer(field_node, self.handler)
@@ -130,7 +130,7 @@ class SourceParametersHandler(handlers.SilvaHandler):
             return
         deserializer = self.deserializers.get(field_id)
         if deserializer is None:
-            logger.warn(u"Unknown source parameter %s." % (field_id))
+            logger.warn("Unknown source parameter %s." % (field_id))
             return
         deserializer(field_node, self)
 
@@ -160,9 +160,9 @@ class SourceHandler(object):
         factory = getWrapper(context, IExternalSourceManager)
         try:
             self.source = factory(importer.request, name=identifier)
-        except SourceError, error:
+        except SourceError as error:
             importer.reportProblem(
-                u"Broken source in import: {0}".format(error),
+                "Broken source in import: {0}".format(error),
                 context)
             return None
         else:

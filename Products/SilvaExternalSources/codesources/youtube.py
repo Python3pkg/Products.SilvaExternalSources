@@ -4,7 +4,7 @@
 
 # Helpers for cs_youtube ...
 
-import urlparse
+import urllib.parse
 
 from AccessControl import ModuleSecurityInfo
 
@@ -74,15 +74,15 @@ def format_youtube_url(source_url):
     if source_url is None:
         return None
 
-    parsed_url = urlparse.urlparse(source_url)
-    parsed_query = urlparse.parse_qs(parsed_url.query)
+    parsed_url = urllib.parse.urlparse(source_url)
+    parsed_query = urllib.parse.parse_qs(parsed_url.query)
     parsed_path = parsed_url.path.strip('/').split('/')
 
     if not len(parsed_path):
         return None
 
     def youtube_url(video_id):
-        return urlparse.urlunsplit((
+        return urllib.parse.urlunsplit((
             parsed_url.scheme,
             'www.youtube.com',
             '/v/' + video_id,

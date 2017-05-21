@@ -2,7 +2,7 @@
 # Copyright (c) 2010-2013 Infrae. All rights reserved.
 # See also LICENSE.txt
 
-import urlparse
+import urllib.parse
 import itertools
 
 
@@ -14,5 +14,5 @@ def parse_qs(qs):
     remove_list = lambda e: e[0] if len(e) == 1 else e
 
     return dict(
-        itertools.imap(lambda (k, v): (k, remove_list(v)),
-                       urlparse.parse_qs(qs, True).iteritems()))
+        map(lambda k_v: (k_v[0], remove_list(k_v[1])),
+                       iter(urllib.parse.parse_qs(qs, True).items())))

@@ -40,8 +40,7 @@ class DefaultCodeSourceTestCase(unittest.TestCase):
         self.assertNotEqual(source.get_parameters_form(), None)
         # The source is available
         self.assertItemsEqual(
-            filter(lambda (name, candidate): name == source.id,
-                   availableSources(self.root)),
+            [name_candidate for name_candidate in availableSources(self.root) if name_candidate[0] == source.id],
             [(source.id, source)])
 
         # By default this source should work
@@ -59,8 +58,7 @@ class DefaultCodeSourceTestCase(unittest.TestCase):
         self.assertNotEqual(source.get_parameters_form(), None)
         # The source is available
         self.assertItemsEqual(
-            filter(lambda (name, candidate): name == source.id,
-                   availableSources(self.root)),
+            [name_candidate1 for name_candidate1 in availableSources(self.root) if name_candidate1[0] == source.id],
             [(source.id, source)])
 
         # By default this source should work
@@ -106,8 +104,7 @@ return "Render source"
         self.assertEqual(source.get_fs_location(), None)
         # The source is available
         self.assertItemsEqual(
-            filter(lambda (name, candidate): name == source.id,
-                   availableSources(self.root)),
+            [name_candidate2 for name_candidate2 in availableSources(self.root) if name_candidate2[0] == source.id],
             [(source.id, source)])
 
 
@@ -242,8 +239,7 @@ return "Render layer"
 
         # The source is no longer available
         self.assertItemsEqual(
-            filter(lambda (name, candidate): name == 'codesource',
-                   availableSources(self.root)),
+            [name_candidate3 for name_candidate3 in availableSources(self.root) if name_candidate3[0] == 'codesource'],
             [])
 
     def test_usable(self):
@@ -254,16 +250,14 @@ return "Render layer"
         self.assertEqual(source.is_usable(), True)
         # The source is available
         self.assertItemsEqual(
-            filter(lambda (name, candidate): name == source.id,
-                   availableSources(self.root)),
+            [name_candidate4 for name_candidate4 in availableSources(self.root) if name_candidate4[0] == source.id],
             [(source.id, source)])
 
         source.set_usable(False)
         self.assertEqual(source.is_usable(), False)
         # The source is no longer available
         self.assertItemsEqual(
-            filter(lambda (name, candidate): name == source.id,
-                   availableSources(self.root)),
+            [name_candidate5 for name_candidate5 in availableSources(self.root) if name_candidate5[0] == source.id],
             [])
 
     def test_previewable(self):
@@ -284,7 +278,7 @@ return "Render layer"
             self.assertEqual(controller.render(preview=True))
 
         preview = silvaviews.render(error.exception, TestRequest())
-        self.assertIsInstance(preview, basestring)
+        self.assertIsInstance(preview, str)
         self.assertIn('Test Source',  preview)
         self.assertNotEqual(preview, "Render source")
         # You can still render the not preview

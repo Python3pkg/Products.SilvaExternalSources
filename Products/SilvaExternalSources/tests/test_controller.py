@@ -14,7 +14,7 @@ from ..interfaces import IExternalSourceController
 from ..interfaces import IExternalSourceManager, IExternalSourceInstance
 from ..testing import FunctionalLayer
 
-HTML_WORKING_SOURCE = u"""
+HTML_WORKING_SOURCE = """
 <div>
     <div class="external-source default"
          data-silva-name="cs_citation"
@@ -22,7 +22,7 @@ HTML_WORKING_SOURCE = u"""
     </div>
 </div>
 """
-HTML_BROKEN_SOURCE = u"""
+HTML_BROKEN_SOURCE = """
 <div>
     <div class="external-source default"
          data-silva-name="cs_data"
@@ -61,9 +61,9 @@ class CreationTestCase(unittest.TestCase):
         self.assertEqual(parameters.get_source_identifier(), 'cs_citation')
         self.assertEqual(parameters.get_parameter_identifier(), instance_key)
         self.assertEqual(source.id, 'cs_citation')
-        self.assertEqual(parameters.citation, u'je bent een klootzak')
-        self.assertEqual(parameters.author, u'jou')
-        self.assertEqual(parameters.source, u'wikipedia')
+        self.assertEqual(parameters.citation, 'je bent een klootzak')
+        self.assertEqual(parameters.author, 'jou')
+        self.assertEqual(parameters.source, 'wikipedia')
 
         # You can bind parameters to a content and a request
         controller = sources(request, instance=instance_key)
@@ -114,9 +114,9 @@ class CreationTestCase(unittest.TestCase):
         self.assertEqual(parameters.get_parameter_identifier(), instance_key)
         self.assertEqual(parameters.get_source_identifier(), 'cs_citation')
         self.assertEqual(source.id, 'cs_citation')
-        self.assertEqual(parameters.citation, u'je bent een hero')
-        self.assertEqual(parameters.author, u'u')
-        self.assertEqual(parameters.source, u'google')
+        self.assertEqual(parameters.citation, 'je bent een hero')
+        self.assertEqual(parameters.author, 'u')
+        self.assertEqual(parameters.source, 'google')
 
     def test_create_broken(self):
         """Create a broken source: you can't access the create method.
@@ -235,9 +235,9 @@ class WorkingControllerTestCase(TestCase):
             instance=self.identifier)
 
         self.assertEqual(parameters.get_source_identifier(), 'cs_citation')
-        self.assertEqual(parameters.citation, u'il fait soleil')
-        self.assertEqual(parameters.author, u'moi')
-        self.assertEqual(parameters.source, u'')
+        self.assertEqual(parameters.citation, 'il fait soleil')
+        self.assertEqual(parameters.author, 'moi')
+        self.assertEqual(parameters.source, '')
         self.assertXMLEqual(controller.render(), """
 <div class="citation">
  il fait soleil
@@ -250,7 +250,7 @@ class WorkingControllerTestCase(TestCase):
         """Updating source parameters, with unicode values.
         """
         request = TestRequest(form={
-                'field_citation': u'Cela est éternel'.encode('utf-8'),
+                'field_citation': 'Cela est éternel'.encode('utf-8'),
                 'field_author': 'moi',
                 'marker_field_citation': '1',
                 'marker_field_author': '1',
@@ -262,10 +262,10 @@ class WorkingControllerTestCase(TestCase):
             instance=self.identifier)
 
         self.assertEqual(parameters.get_source_identifier(), 'cs_citation')
-        self.assertEqual(parameters.citation, u'Cela est éternel')
-        self.assertEqual(parameters.author, u'moi')
-        self.assertEqual(parameters.source, u'')
-        self.assertXMLEqual(controller.render(), u"""
+        self.assertEqual(parameters.citation, 'Cela est éternel')
+        self.assertEqual(parameters.author, 'moi')
+        self.assertEqual(parameters.source, '')
+        self.assertXMLEqual(controller.render(), """
 <div class="citation">
  Cela est éternel
  <div class="author">

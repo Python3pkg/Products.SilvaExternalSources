@@ -16,7 +16,7 @@ def _exec(self, bound_names, args, kw):
         request = aq_get(self, 'REQUEST', None)
         if request is not None:
             response = request.response
-            if not response.headers.has_key('content-type'):
+            if 'content-type' not in response.headers:
                 response.setHeader('content-type', self.content_type)
     else:
         del kw['REQUEST']

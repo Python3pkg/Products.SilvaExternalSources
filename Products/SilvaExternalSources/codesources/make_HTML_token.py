@@ -13,4 +13,4 @@ length = 12
 
 module_security.declarePublic('make_token')
 def make_token():
-    return ''.join(choice(chars) for x in xrange(length))
+    return ''.join(choice(chars) for x in range(length))

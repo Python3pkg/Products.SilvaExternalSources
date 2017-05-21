@@ -43,25 +43,23 @@ class CodeSourceErrorSupplement(object):
 
     def getInfo(self, as_html=0):
         info = list()
-        info.append((u'Source path', '/'.join(self.source.getPhysicalPath())))
+        info.append(('Source path', '/'.join(self.source.getPhysicalPath())))
         if 'model' in self.parameters:
             document = self.parameters['model']
-            info.append((u'Document type', document.meta_type))
-            info.append((u'Document path', '/'.join(document.getPhysicalPath())))
+            info.append(('Document type', document.meta_type))
+            info.append(('Document path', '/'.join(document.getPhysicalPath())))
         if 'version' in self.parameters:
             version = self.parameters['version']
-            info.append((u'Document version', version.getId()))
-        for name, value in self.parameters.items():
+            info.append(('Document version', version.getId()))
+        for name, value in list(self.parameters.items()):
             if name not in ('model', 'version'):
-                info.append((u'Parameter %s' % name, repr(value)))
+                info.append(('Parameter %s' % name, repr(value)))
 
         if not as_html:
-            return '   - ' + '\n   - '.join(map(lambda x: '%s: %s' % x, info))
+            return '   - ' + '\n   - '.join(['%s: %s' % x for x in info])
 
-        return u'<p>Extra information:<br /><li>%s</li></p>' % ''.join(map(
-                lambda x: u'<li><b>%s</b>: %s</li>' % (
-                    cgi.escape(str(x[0])), cgi.escape(str(x[1]))),
-                info))
+        return '<p>Extra information:<br /><li>%s</li></p>' % ''.join(['<li><b>%s</b>: %s</li>' % (
+                    cgi.escape(str(x[0])), cgi.escape(str(x[1]))) for x in info])
 
 
 class CodeSource(EditableExternalSource, Folder, ZMIObject):
@@ -115,17 +113,17 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             except ValueError as error:
                 errors.extend(error.args)
         if not self.title:
-            errors.append(u'Missing required source title.')
+            errors.append('Missing required source title.')
         if not self._script_id:
-            errors.append(u'Missing required renderer id.')
+            errors.append('Missing required renderer id.')
         else:
             ids = self.objectIds()
-            scripts = [self._script_id] + map(
-                itemgetter(0), self._script_layers)
+            scripts = [self._script_id] + list(map(
+                itemgetter(0), self._script_layers))
             for script_id in scripts:
                 if script_id not in ids:
                     errors.append(
-                        u'Missing renderer %s. Please a script or template with this id.' % (
+                        'Missing renderer %s. Please a script or template with this id.' % (
                             script_id))
         if errors:
             return errors
@@ -187,9 +185,9 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             parameters['model'] = content
         __traceback_supplement__ = (CodeSourceErrorSupplement, self, parameters)
         result = script(**parameters)
-        if isinstance(result,  unicode):
+        if isinstance(result,  str):
             return result
-        return unicode(result, self.get_data_encoding(), 'replace')
+        return str(result, self.get_data_encoding(), 'replace')
 
     # MANAGERS
 
@@ -206,13 +204,13 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
             entries = line.strip().split(':', 1)
             if len(entries) != 2:
                 raise ValueError(
-                    u'Invalid script layers: invalid form on line %d' % (
+                    'Invalid script layers: invalid form on line %d' % (
                         lineno))
             script_id, layer_identifier = entries
             layer = queryUtility(IBrowserSkinType, name=layer_identifier)
             if layer is None:
                 raise ValueError(
-                    u'Invalid script layer: layer %s not found on line %d' % (
+                    'Invalid script layer: layer %s not found on line %d' % (
                         layer_identifier, lineno))
             found.append((script_id, layer))
         self._script_layers = found
@@ -241,9 +239,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         if service is None:
             # XXX pre-migration Silva 3.0
             service = self.service_codesources
-        return map(
-            lambda source: source.location,
-            service.get_installable_source(identifier=self.id))
+        return [source.location for source in service.get_installable_source(identifier=self.id)]
 
     security.declareProtected(
         SilvaPermissions.ViewManagementScreens, 'manage_updateCodeSource')
@@ -314,7 +310,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         cacheable=None, previewable=None, usable=None, script_layers=None):
         """ Edit a code source settings.
         """
-        msg = u''
+        msg = ''
 
         if location is not None and location != self._fs_location:
             if location:
@@ -328,13 +324,13 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
 
         if data_encoding != self._data_encoding:
             try:
-                unicode('abcd', data_encoding, 'replace')
+                str('abcd', data_encoding, 'replace')
             except LookupError:
                 # unknown encoding, return error message
                 msg += "Unknown encoding %s, not changed! " % data_encoding
                 return self.editCodeSource(manage_tabs_message=msg)
             self.set_data_encoding(data_encoding)
-            msg += u'Data encoding changed. '
+            msg += 'Data encoding changed. '
 
         if script_layers is not None:
             try:
@@ -343,7 +339,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
                 msg += "Error while setting script layers: %s" % error.args[0]
                 return self.editCodeSource(manage_tabs_message=msg)
 
-        title = unicode(title, self.management_page_charset)
+        title = str(title, self.management_page_charset)
         if title and title != self.title:
             self.title = title
             msg += "Title changed. "
@@ -355,7 +351,7 @@ class CodeSource(EditableExternalSource, Folder, ZMIObject):
         # Assume description is in the encoding as specified
         # by "management_page_charset". Store it in unicode.
         if description is not None:
-            description = unicode(description, self.management_page_charset)
+            description = str(description, self.management_page_charset)
             if description != self._description:
                 self.set_description(description)
                 msg += "Description changed. "
@@ -388,7 +384,7 @@ def manage_addCodeSource(
     """
     cs = CodeSource(id, script_id, fs_location)
     if title is not None:
-        title = unicode(title, cs.management_page_charset)
+        title = str(title, cs.management_page_charset)
         cs.set_title(title)
     context._setObject(id, cs)
     cs = context._getOb(id)

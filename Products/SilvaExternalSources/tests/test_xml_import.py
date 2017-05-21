@@ -46,9 +46,9 @@ class CodeSourceDocumentImportTestCase(SilvaXMLTestCase):
         parameters, source = sources.get_parameters(instance=keys[0])
         self.assertEqual(parameters.get_source_identifier(), 'cs_citation')
         self.assertEqual(source.id, 'cs_citation')
-        self.assertEqual(parameters.citation, u"héhé l'aime le quéqué")
-        self.assertEqual(parameters.author, u'ouam')
-        self.assertEqual(parameters.source, u'wikipedia')
+        self.assertEqual(parameters.citation, "héhé l'aime le quéqué")
+        self.assertEqual(parameters.author, 'ouam')
+        self.assertEqual(parameters.source, 'wikipedia')
 
     def test_document_with_missing_source(self):
         """Import a document that uses a source that is missing on the
@@ -70,8 +70,8 @@ class CodeSourceDocumentImportTestCase(SilvaXMLTestCase):
         self.assertEqual(len(sources.all()), 0)
         self.assertEqual(
             importer.getProblems(),
-            [(u'Broken source in import: '
-              u'External Source cs_ultimate is not available.', version)])
+            [('Broken source in import: '
+              'External Source cs_ultimate is not available.', version)])
 
 
 class SourceAssetImportTestCase(SilvaXMLTestCase):
@@ -116,8 +116,8 @@ class SourceAssetImportTestCase(SilvaXMLTestCase):
 
         self.assertEqual(
             importer.getProblems(),
-            [(u'Broken source in import: '
-              u'External Source cs_missing is not available.', version)])
+            [('Broken source in import: '
+              'External Source cs_missing is not available.', version)])
 
     def test_source_asset_invalid_parameters(self):
         """Import a source asset content with invalid parameters.

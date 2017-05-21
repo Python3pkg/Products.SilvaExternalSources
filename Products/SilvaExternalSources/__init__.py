@@ -39,7 +39,7 @@ class ExternalSourcesInstaller(DefaultInstaller):
                     candidates[0].install(root)
                 else:
                     logger.error(
-                        u"Could not find default source %s to install it.",
+                        "Could not find default source %s to install it.",
                         identifier)
 
 

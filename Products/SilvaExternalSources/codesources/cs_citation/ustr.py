@@ -7,7 +7,7 @@
 ##parameters=s
 ##title=
 ##
-if not same_type(s,u''):
-  s = unicode(s,'utf-8')
+if not same_type(s,''):
+  s = str(s,'utf-8')
 return s
 

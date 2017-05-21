@@ -96,10 +96,10 @@ def validate_googlemaps_iframe(iframe, REQUEST=None):
     for element in elements:
         if element.tag == 'iframe':
             if (len(element.getchildren()) != 0 or
-              'style' in element.keys() or
-              'javascript' in element.values()):
+              'style' in list(element.keys()) or
+              'javascript' in list(element.values())):
                 return False
-        for key, value in element.items():
+        for key, value in list(element.items()):
             #form actions, onclick, etc
             if (key.lower().startswith('on') or
               key.lower() == 'action' or 'javascript' in value.lower()):

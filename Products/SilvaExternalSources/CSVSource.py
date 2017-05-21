@@ -2,7 +2,7 @@
 # Copyright (c) 2002-2013 Infrae. All rights reserved.
 # See also LICENSE.txt
 
-from cStringIO import StringIO
+from io import StringIO
 import csv
 import os
 
@@ -143,14 +143,12 @@ class CSVSource(Folder, Asset, EditableExternalSource):
     def _update_data(self, data):
 
         def convert_to_unicode(line):
-            return map(
-                lambda v: v.decode(self._data_encoding, 'replace'),
-                line)
+            return [v.decode(self._data_encoding, 'replace') for v in line]
 
         try:
-            csv_data = map(convert_to_unicode, csv.reader(StringIO(data)))
+            csv_data = list(map(convert_to_unicode, csv.reader(StringIO(data))))
         except csv.Error as error:
-            raise ValueError(u"Invalid CSV file: %s" % error.args[0])
+            raise ValueError("Invalid CSV file: %s" % error.args[0])
 
         self._data = csv_data
         self._raw_data = data
@@ -175,7 +173,7 @@ class CSVSource(Folder, Asset, EditableExternalSource):
     security.declareProtected(
         SilvaPermissions.ChangeSilvaContent, 'set_description')
     def set_description(self, desc):
-        if not isinstance(desc, unicode):
+        if not isinstance(desc, str):
             desc = desc.encode('utf-8')
 
         binding = getUtility(IMetadataService).getMetadata(self)
@@ -229,12 +227,12 @@ def encoding_source():
 class ICSVSourceFields(ITitledContent):
 
     file = silvaschema.Bytes(
-        title=_(u"file"),
-        description=_(u"File to upload as source data."),
+        title=_("file"),
+        description=_("File to upload as source data."),
         required=True)
     data_encoding = schema.Choice(
-        title=_(u"character encoding"),
-        description=_(u'Character encoding of the source data.'),
+        title=_("character encoding"),
+        description=_('Character encoding of the source data.'),
         source=encoding_source,
         required=False)
 
@@ -243,7 +241,7 @@ class CSVSourceAddForm(silvaforms.SMIAddForm):
     """CSVSource Add Form.
     """
     grok.context(ICSVSource)
-    grok.name(u'Silva CSV Source')
+    grok.name('Silva CSV Source')
 
     fields = silvaforms.Fields(ICSVSourceFields)
 
@@ -254,13 +252,13 @@ class CSVSourceEditForm(silvaforms.SMISubForm):
     grok.view(AssetEditTab)
     grok.order(10)
 
-    label = _(u'Edit file content')
+    label = _('Edit file content')
     ignoreContent = False
     dataManager = silvaforms.SilvaDataManager
 
     fields = silvaforms.Fields(ICSVSourceFields).omit('id')
     fields['file'].fileSetLabel = _(
-        u"Click the Upload button to replace the current CSV with a new one.")
+        "Click the Upload button to replace the current CSV with a new one.")
     actions  = silvaforms.Actions(
         silvaforms.CancelEditAction(),
         silvaforms.EditAction())

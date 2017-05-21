@@ -16,7 +16,7 @@ class SourceError(ValueError):
     """
 
     def message(self):
-        return _(u"External Source errored during the processing.")
+        return _("External Source errored during the processing.")
 
     def __unicode__(self):
         return translate(self.message())
@@ -32,11 +32,11 @@ class SourceErrorView(silvaviews.Render):
         if preview is None:
             preview = IPreviewLayer.providedBy(self.request)
         if preview:
-            return u"".join(
+            return "".join(
                 ("<p>",
                  translate(self.context.message(), context=self.request),
                  "</p>"))
-        return u""
+        return ""
 
 
 class SourceRenderingError(SourceError):
@@ -90,7 +90,7 @@ class SourceMissingError(SourceError):
         self.identifier = identifier
 
     def message(self):
-        return _(u"External Source ${identifier} is not available.",
+        return _("External Source ${identifier} is not available.",
                  mapping=dict(identifier=self.identifier))
 
 
